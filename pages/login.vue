@@ -1,21 +1,64 @@
 <script lang="ts" setup>
+import * as yup from "yup";
+import { useAuthStore } from "~/store/AuthStore";
+
+const { setUserToken, getUserToken } = useAuthStore();
+const router = useRouter();
+
+if (getUserToken) router.push("/dashboard");
+
 const form = reactive({
-    email: "",
-    password: "",
+    email: "carlinhos@test.com",
+    password: "@#s1$541As15A",
 });
+
+const pageStatus = reactive({ fetching: false });
+
+const schema = yup.object({
+    email: yup.string().email().required(),
+    password: yup.string().min(6).max(32).required(),
+});
+
+const submit = async () => {
+    pageStatus.fetching = true;
+
+    const { data, error } = await useFetch("/auth/login", {
+        baseURL: "http://localhost:33123/api/v1",
+        method: "post",
+        body: {
+            Email: form.email,
+            Password: form.password,
+        },
+    });
+
+    if (error.value) {
+        useToast().add({
+            title: error.value?.data.message || "Error",
+            color: "red",
+        });
+
+        pageStatus.fetching = false;
+        return;
+    }
+
+    const { Token } = data.value as { Token: string };
+    setUserToken(Token);
+
+    pageStatus.fetching = false;
+    router.push("/dashboard");
+};
 </script>
 
 <template>
     <UContainer
         :ui="{
-            base: 'flex flex flex-row items-center',
-            background: 'bg-neutral-900',
+            base: 'flex flex-col items-center justify-center gap-5',
             constrained: 'min-h-svh max-w-sm',
         }"
     >
         <UCard
             :ui="{
-                base: 'grow',
+                base: 'w-full',
                 footer: {
                     base: 'text-center',
                 },
@@ -23,7 +66,12 @@ const form = reactive({
         >
             <template #header> Acessar Painel </template>
 
-            <UForm :state="form" class="space-y-4">
+            <UForm
+                :schema="schema"
+                :state="form"
+                class="space-y-4"
+                @submit="submit"
+            >
                 <UFormGroup label="Email" name="email">
                     <UInput type="email" v-model="form.email" />
                 </UFormGroup>
@@ -32,7 +80,12 @@ const form = reactive({
                     <UInput type="password" v-model="form.password" />
                 </UFormGroup>
 
-                <UButton block label="Entrar" />
+                <UButton
+                    :loading="pageStatus.fetching"
+                    block
+                    type="submit"
+                    label="Entrar"
+                />
             </UForm>
 
             <template #footer>
@@ -44,5 +97,10 @@ const form = reactive({
                 </ULink>
             </template>
         </UCard>
+
+        <ULink to="/dashboard" inactive-class="text-primary font-bold text-xs">
+            Ir para Página Inicial
+        </ULink>
     </UContainer>
+    <UNotifications />
 </template>
