@@ -10,13 +10,13 @@ const form = reactive({
 <template>
     <UContainer
         :ui="{
-            base: 'flex flex flex-row items-center',
+            base: 'flex flex-col items-center justify-center gap-5',
             constrained: 'min-h-svh max-w-sm',
         }"
     >
         <UCard
             :ui="{
-                base: 'grow',
+                base: 'w-full',
                 footer: {
                     base: 'text-center',
                 },
@@ -53,5 +53,9 @@ const form = reactive({
                 </ULink>
             </template>
         </UCard>
+
+        <ULink to="/dashboard" inactive-class="text-primary font-bold text-xs">
+            Ir para Página Inicial
+        </ULink>
     </UContainer>
 </template>
