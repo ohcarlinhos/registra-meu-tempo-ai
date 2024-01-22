@@ -45,11 +45,12 @@ const form = reactive({
             </UForm>
 
             <template #footer>
-                <UButton
-                    size="xs"
-                    variant="link"
-                    label="Clique aqui para acessar o Painel"
-                />
+                <ULink
+                    to="/login"
+                    inactive-class="text-primary font-bold text-xs"
+                >
+                    Clique aqui para acessar o Painel!
+                </ULink>
             </template>
         </UCard>
     </UContainer>

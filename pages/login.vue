@@ -9,6 +9,7 @@ const form = reactive({
     <UContainer
         :ui="{
             base: 'flex flex flex-row items-center',
+            background: 'bg-neutral-900',
             constrained: 'min-h-svh max-w-sm',
         }"
     >
@@ -35,11 +36,12 @@ const form = reactive({
             </UForm>
 
             <template #footer>
-                <UButton
-                    size="xs"
-                    variant="link"
-                    label="Clique aqui para registrar!"
-                />
+                <ULink
+                    to="/register"
+                    inactive-class="text-primary font-bold text-xs"
+                >
+                    Clique aqui para registrar!
+                </ULink>
             </template>
         </UCard>
     </UContainer>
