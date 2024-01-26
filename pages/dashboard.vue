@@ -1,40 +1,19 @@
 <script lang="ts" setup>
-import { useAuthStore } from "~/store/AuthStore";
-import { FormatedFocus } from "~/domain/FormatedFocus";
-import type { FocusType } from "~/types/FocusType";
+import { FormatedFocus } from "~/classes/FormatedFocus";
 
-const userToken = useAuthStore().getUserToken;
-if (!userToken) useRouter().push("/");
+definePageMeta({
+    middleware: ["auth"],
+});
 
 const tableData = reactive<{ rows: FormatedFocus[] }>({
     rows: [],
 });
 
-const getFocusList = async function () {
-    const { data } = await useAsyncData("focus", () =>
-        $fetch("/focus", {
-            baseURL: "http://localhost:33123/api/v1",
-            method: "get",
-            headers: {
-                Authorization: `Bearer ${userToken}`,
-            },
-        })
-    );
-
-    const { Data } = data.value as { Data: FocusType[] };
-    tableData.rows = Data.map<FormatedFocus>(
-        (i) =>
-            new FormatedFocus(
-                i.Id,
-                i.Title,
-                i.RegisterDate,
-                i.Duration.InSeconds,
-                i.CategoryName
-            )
-    );
-};
-
-await getFocusList();
+try {
+    tableData.rows = (await getFocusList()) || [];
+} catch (error) {
+    useToast().add({ title: error as string, color: "red" });
+}
 
 const columns = [
     { key: "Id", label: "Id" },
@@ -53,11 +32,12 @@ const columns = [
         }"
     >
         <GeneralHeader />
-
-        <UTable
-            :ui="{ base: 'bg-neutral-900 rounded-md' }"
-            :columns="columns"
-            :rows="tableData.rows"
-        />
+        <Suspense>
+            <UTable
+                :ui="{ base: 'bg-neutral-900 rounded-md' }"
+                :columns="columns"
+                :rows="tableData.rows"
+            />
+        </Suspense>
     </UContainer>
 </template>
