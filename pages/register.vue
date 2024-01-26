@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+definePageMeta({ middleware: ["auth"] });
+
 const form = reactive({
     email: "",
     name: "",
