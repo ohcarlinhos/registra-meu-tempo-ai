@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import * as yup from "yup";
-import { useAuthStore } from "~/store/AuthStore";
 
-const { setUserToken, getUserToken } = useAuthStore();
-const router = useRouter();
+definePageMeta({ middleware: ["auth"] });
 
-if (getUserToken) router.push("/dashboard");
+const { setUserToken } = useAuthStore();
 
 const form = reactive({
     email: "carlinhos@test.com",
@@ -45,7 +43,7 @@ const submit = async () => {
     setUserToken(Token);
 
     pageStatus.fetching = false;
-    router.push("/dashboard");
+    useRouter().push("/dashboard");
 };
 </script>
 
@@ -59,9 +57,7 @@ const submit = async () => {
         <UCard
             :ui="{
                 base: 'w-full',
-                footer: {
-                    base: 'text-center',
-                },
+                footer: { base: 'text-center' },
             }"
         >
             <template #header> Acessar Painel </template>
@@ -102,5 +98,4 @@ const submit = async () => {
             Ir para Página Inicial
         </ULink>
     </UContainer>
-    <UNotifications />
 </template>
