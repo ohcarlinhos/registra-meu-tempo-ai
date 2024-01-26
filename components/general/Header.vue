@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useAuthStore } from "~/store/AuthStore";
-
 const { getUserToken, clearUserToken } = useAuthStore();
 const userToken = getUserToken;
 
