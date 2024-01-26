@@ -5,7 +5,7 @@ export const getFocusList = async function () {
     const { data, error } = await useAsyncData("focus", () =>
         $fetch("/focus", {
             retry: false,
-            baseURL: "http://localhost:33123/api/v1",
+            baseURL: useRuntimeConfig().public.apiBase,
             method: "get",
             headers: {
                 Authorization: `Bearer ${useAuthStore().getUserToken}`,
