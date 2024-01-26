@@ -18,32 +18,17 @@ const schema = yup.object({
 });
 
 const submit = async () => {
-    pageStatus.fetching = true;
+    try {
+        pageStatus.fetching = true;
 
-    const { data, error } = await useFetch("/auth/login", {
-        baseURL: "http://localhost:33123/api/v1",
-        method: "post",
-        body: {
-            Email: form.email,
-            Password: form.password,
-        },
-    });
-
-    if (error.value) {
-        useToast().add({
-            title: error.value?.data.message || "Error",
-            color: "red",
-        });
-
+        const token: string = await postLogin(form.email, form.password);
+        setUserToken(token);
+        useRouter().push("/dashboard");
+    } catch (error) {
+        useToast().add({ title: error as string, color: "red" });
+    } finally {
         pageStatus.fetching = false;
-        return;
     }
-
-    const { Token } = data.value as { Token: string };
-    setUserToken(Token);
-
-    pageStatus.fetching = false;
-    useRouter().push("/dashboard");
 };
 </script>
 
