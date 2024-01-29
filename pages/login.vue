@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
-definePageMeta({ middleware: ["auth"] });
-
-const { setUserToken } = useAuthStore();
+definePageMeta({ middleware: ["guest"] });
 
 const form = reactive({
-    email: "carlinhos@test.com",
-    password: "@#s1$541As15A",
+    email: "carlinhos@teste.com",
+    password: "123456",
 });
 
 const pageStatus = reactive({ fetching: false });
@@ -22,7 +20,7 @@ const submit = async () => {
         pageStatus.fetching = true;
 
         const token: string = await postLogin(form.email, form.password);
-        setUserToken(token);
+        useAuthStore().setUserToken(token);
         useRouter().push("/dashboard");
     } catch (error) {
         useToast().add({ title: error as string, color: "red" });
