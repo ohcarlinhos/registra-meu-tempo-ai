@@ -1,12 +1,43 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["auth"] });
+import * as yup from "yup";
+
+definePageMeta({ middleware: ["guest"] });
+
+const pageStatus = reactive({ fetching: false });
 
 const form = reactive({
-    email: "",
-    name: "",
-    password: "",
-    confirm_password: "",
+    email: "carlinhos@teste.com",
+    name: "Carlinhos",
+    password: "123456",
+    confirm_password: "123456",
 });
+
+const schema = yup.object({
+    name: yup.string().min(3).required(),
+    email: yup.string().email().required(),
+    password: yup.string().min(6).max(32).required(),
+    confirm_password: yup
+        .string()
+        .oneOf([yup.ref("password")])
+        .required(),
+});
+
+const submit = async () => {
+    try {
+        pageStatus.fetching = true;
+
+        await postRegister(form.name, form.email, form.password);
+
+        const token: string = await postLogin(form.email, form.password);
+        useAuthStore().setUserToken(token);
+
+        useRouter().push("/dashboard");
+    } catch (error) {
+        useToast().add({ title: error as string, color: "red" });
+    } finally {
+        pageStatus.fetching = false;
+    }
+};
 </script>
 
 <template>
@@ -26,9 +57,14 @@ const form = reactive({
         >
             <template #header> Registrar </template>
 
-            <UForm :state="form" class="space-y-4">
+            <UForm
+                :schema="schema"
+                :state="form"
+                class="space-y-4"
+                @submit="submit"
+            >
                 <UFormGroup label="Nome" name="name">
-                    <UInput type="text" v-model="form.email" />
+                    <UInput type="text" v-model="form.name" />
                 </UFormGroup>
 
                 <UFormGroup label="Email" name="email">
@@ -43,7 +79,12 @@ const form = reactive({
                     <UInput type="password" v-model="form.confirm_password" />
                 </UFormGroup>
 
-                <UButton block label="Registar" />
+                <UButton
+                    label="Registar"
+                    type="submit"
+                    :loading="pageStatus.fetching"
+                    block
+                />
             </UForm>
 
             <template #footer>
