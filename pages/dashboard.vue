@@ -5,6 +5,10 @@ definePageMeta({
     middleware: ["auth"],
 });
 
+const modal = reactive({
+    isOpen: false,
+});
+
 const tableData = reactive<{ rows: FormatedFocus[] }>({
     rows: [],
 });
@@ -32,6 +36,16 @@ const columns = [
         }"
     >
         <GeneralHeader />
+
+        <UContainer
+            :ui="{
+                base: 'flex justify-end',
+                padding: 'pb-6 px-0 lg:px-0 sm:px-0',
+            }"
+        >
+            <UButton label="Registrar Tempo" @click="modal.isOpen = true" />
+        </UContainer>
+
         <Suspense>
             <UTable
                 :ui="{ base: 'bg-neutral-900 rounded-md' }"
@@ -39,5 +53,9 @@ const columns = [
                 :rows="tableData.rows"
             />
         </Suspense>
+
+        <UModal v-model="modal.isOpen" prevent-close>
+            <DashboardAddFocusForm @close="modal.isOpen = false" />
+        </UModal>
     </UContainer>
 </template>
