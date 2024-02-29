@@ -7,18 +7,18 @@ const pageStatus = reactive({ fetching: false });
 
 const form = reactive({
     email: "carlinhos@teste.com",
-    name: "Carlinhos",
-    password: "123456",
-    confirm_password: "123456",
+    nome: "Carlinhos",
+    senha: "123456",
+    confirm_senha: "123456",
 });
 
 const schema = yup.object({
-    name: yup.string().min(3).required(),
+    nome: yup.string().min(3).required(),
     email: yup.string().email().required(),
-    password: yup.string().min(6).max(32).required(),
-    confirm_password: yup
+    senha: yup.string().min(6).max(32).required(),
+    confirm_senha: yup
         .string()
-        .oneOf([yup.ref("password")])
+        .oneOf([yup.ref("senha")])
         .required(),
 });
 
@@ -26,9 +26,9 @@ const submit = async () => {
     try {
         pageStatus.fetching = true;
 
-        await postRegister(form.name, form.email, form.password);
+        await postRegister(form);
 
-        const token: string = await postLogin(form.email, form.password);
+        const token = await postLogin(form);
         useAuthStore().setUserToken(token);
 
         useRouter().push("/dashboard");
@@ -64,7 +64,7 @@ const submit = async () => {
                 @submit="submit"
             >
                 <UFormGroup label="Nome" name="name">
-                    <UInput type="text" v-model="form.name" />
+                    <UInput type="text" v-model="form.nome" />
                 </UFormGroup>
 
                 <UFormGroup label="Email" name="email">
@@ -72,11 +72,11 @@ const submit = async () => {
                 </UFormGroup>
 
                 <UFormGroup label="Senha" name="password">
-                    <UInput type="password" v-model="form.password" />
+                    <UInput type="password" v-model="form.senha" />
                 </UFormGroup>
 
                 <UFormGroup label="Repita a Senha" name="confirm_password">
-                    <UInput type="password" v-model="form.confirm_password" />
+                    <UInput type="password" v-model="form.confirm_senha" />
                 </UFormGroup>
 
                 <UButton

@@ -4,8 +4,8 @@ import * as yup from "yup";
 definePageMeta({ middleware: ["guest"] });
 
 const form = reactive({
-    email: "carlinhos@teste.com",
-    password: "123456",
+    email: "carlos@teste.com",
+    password: "12345678",
 });
 
 const pageStatus = reactive({ fetching: false });
@@ -19,11 +19,17 @@ const submit = async () => {
     try {
         pageStatus.fetching = true;
 
-        const token: string = await postLogin(form.email, form.password);
+        const token: string = await postLogin({
+            email: form.email,
+            senha: form.password,
+        });
+
+        console.log(token);
+
         useAuthStore().setUserToken(token);
         useRouter().push("/dashboard");
     } catch (error) {
-        useToast().add({ title: error as string, color: "red" });
+        if (error) useToast().add({ title: error as string, color: "red" });
     } finally {
         pageStatus.fetching = false;
     }

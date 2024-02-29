@@ -1,15 +1,17 @@
-export const postLogin = async (email: string, password: string) => {
-    const { data, error } = await useFetch("/auth/login", {
+type Payload = {
+    email: string;
+    senha: string;
+};
+
+export const postLogin = async (payload: Payload) => {
+    const { data, error } = await useFetch("auth/login", {
         baseURL: useRuntimeConfig().public.apiBase,
         method: "post",
-        body: {
-            Email: email,
-            Password: password,
-        },
+        body: payload,
     });
 
     if (error.value) throw error.value?.data.message;
 
-    const { Token } = data.value as { Token: string };
-    return Token;
+    const { token } = data.value as { token: string };
+    return token;
 };

@@ -1,16 +1,14 @@
-export const postRegister = async (
-    name: string,
-    email: string,
-    password: string
-) => {
-    const { error } = await useFetch("/users", {
+type Payload = {
+    nome: string;
+    email: string;
+    senha: string;
+};
+
+export const postRegister = async (payload: Payload) => {
+    const { error } = await useFetch("usuario", {
         baseURL: useRuntimeConfig().public.apiBase,
         method: "post",
-        body: {
-            Name: name,
-            Email: email,
-            Password: password,
-        },
+        body: payload,
     });
 
     if (error.value) throw error.value?.data.message;
