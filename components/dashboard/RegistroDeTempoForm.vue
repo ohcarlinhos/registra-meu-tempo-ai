@@ -1,28 +1,22 @@
 <script lang="ts" setup>
 import * as yup from "yup";
-import { computed, type PropType } from "vue";
-import { subDays, subMonths } from "date-fns";
-import type { DatePickerDate } from "v-calendar/dist/types/src/use/datePicker";
-import type { Categoria } from "~/classes/Categoria";
+import { addHours, addMinutes } from "date-fns";
 
-const emit = defineEmits(["close"]);
+const categoriaStore = useCategoriaStore();
 
-const props = defineProps({
-  categorias: {
-    type: [Array] as PropType<Categoria[]>,
-    default: () => [],
-  },
+const emit = defineEmits(["close", "refresh"]);
+
+const status = reactive({
+  fetching: false,
 });
-
-const status = reactive({ fetching: false });
 
 const form = reactive<{
   titulo: string;
-  date: DatePickerDate | null;
-  categoria: Object;
+  dataDoRegistro: Date | string;
+  categoria: string;
   periodos: { inicio: Date | string; fim: Date | string }[];
 }>({
-  date: null,
+  dataDoRegistro: "",
   titulo: "",
   categoria: "",
   periodos: [],
@@ -31,21 +25,43 @@ const form = reactive<{
 // TODO: finalizar validações
 const schema = yup.object({
   titulo: yup.string().required(),
-  dataDeRegistro: yup.date().required(),
+  dataDoRegistro: yup.date().required(),
 });
 
 const categoriaLabel = computed({
   get: () => form.categoria,
+
   set: async (label) => {
+    const findded = categoriaStore.categorias.find(
+      (categoria) => categoria === label
+    );
+
+    if (!findded) categoriaStore.categorias.push(label);
+
     form.categoria = label;
-    return label;
   },
+});
+
+const initalMaxDate = computed(() => {
+  return addMinutes(addHours(form.dataDoRegistro, 23), 59);
+});
+
+const disableAddButton = computed(() => {
+  const initialValue = true;
+  const allHasValue = form.periodos.reduce((acc, current) => {
+    return !!current.inicio && !!current.fim && acc;
+  }, initialValue);
+
+  return !form.dataDoRegistro || allHasValue === false;
 });
 
 const addPeriodoToForm = () => {
   form.periodos.push({
-    inicio: form.periodos.length == 0 ? new Date() : "",
-    fim: "",
+    inicio: form.periodos.length == 0 ? form.dataDoRegistro : "",
+    fim:
+      form.periodos.length > 0
+        ? addMinutes(form.periodos[form.periodos.length - 1].fim, 10)
+        : "",
   });
 };
 
@@ -53,14 +69,22 @@ const removeEventFromForm = (index: number) => {
   form.periodos.splice(index, 1);
 };
 
-const closeModal = () => {
+const closeModal = (refresh = false) => {
   emit("close");
+  if (refresh) emit("refresh");
 };
 
 // TODO: implementar envio
-const submit = () => {
-  closeModal();
+const submit = async () => {
+  try {
+    await postRegistroDeTempo(form);
+    closeModal(true);
+  } catch {}
 };
+
+onMounted(async () => {
+  await categoriaStore.fetchCategoria();
+});
 </script>
 
 <template>
@@ -78,61 +102,68 @@ const submit = () => {
         />
       </div>
     </template>
+
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
       <UFormGroup label="Título" name="titulo">
-        <UInput type="text" v-model="form.titulo" />
+        <UInput type="text" v-model="form.titulo" autofocus />
       </UFormGroup>
 
-      <UFormGroup label="Categoria" name="categoria">
+      <UFormGroup label="Categoria" name="categoria" class="z-100 relative">
         <USelectMenu
           v-model="categoriaLabel"
-          by="id"
-          name="categoria"
-          :options="props.categorias"
-          option-attribute="nome"
+          :options="categoriaStore.categorias"
+          :clear-search-on-close="true"
+          show-create-option-when="always"
           searchable
           creatable
-          placeholder="Selecionar Categoria"
+          :ui-menu="{
+            height: 'max-h-40',
+          }"
         >
           <template #option-create="{ option }">
-            <span class="flex-shrink-0">Nova Categoria:</span>
+            <span class="flex-shrink-0">Criar:</span>
             <span class="block truncate">{{ option }}</span>
           </template>
         </USelectMenu>
       </UFormGroup>
 
+      <UFormGroup
+        label="Date do Registro"
+        name="data-do-registro"
+        class="z-100 relative"
+      >
+        <GeneralDatePicker
+          v-model="form.dataDoRegistro"
+          class="py-1"
+          disable-time-picker
+        />
+      </UFormGroup>
+
       <div class="flex justify-between pt-6">
-        <h3>Perídos de Tempo</h3>
+        <h3>Períodos de Tempo</h3>
 
         <UButton
           label="Adicionar"
           size="sm"
           type="button"
+          :disabled="disableAddButton"
           @click="addPeriodoToForm"
         />
       </div>
 
       <div
-        v-for="(event, index) in form.periodos"
-        class="grid grid-cols-2 justify-stretch gap-5 pr-10 relative border-gray-800 border-b-2 pb-2"
+        v-for="(_, index) in form.periodos"
+        class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
       >
-        <UButton
-          icon="i-heroicons-x-mark"
-          color="gray"
-          variant="ghost"
-          :ui="{ base: 'absolute right-0 top-6' }"
-          @click="removeEventFromForm(index)"
-        />
-
         <UFormGroup label="Início do período" :name="'inicio-' + index">
           <GeneralDatePicker
             v-model="form.periodos[index].inicio"
-            class="py-1"
             :min="
-              index != 0
-                ? form.periodos[index - 1].fim
-                : subMonths(new Date(), 6)
+              index == 0 ? form.dataDoRegistro : form.periodos[index - 1].fim
             "
+            :max="initalMaxDate"
+            class="py-1"
+            @change="form.periodos[index].fim = $event"
           />
         </UFormGroup>
 
@@ -141,8 +172,16 @@ const submit = () => {
             v-model="form.periodos[index].fim"
             class="py-1"
             :min="form.periodos[index].inicio"
+            :max="addHours(initalMaxDate, 4)"
           />
         </UFormGroup>
+
+        <UButton
+          icon="i-heroicons-x-mark"
+          color="white"
+          variant="solid"
+          @click="removeEventFromForm(index)"
+        />
       </div>
 
       <UButton :loading="status.fetching" block type="submit" label="Enviar" />
