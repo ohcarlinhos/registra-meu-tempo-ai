@@ -4,87 +4,78 @@ import * as yup from "yup";
 definePageMeta({ middleware: ["guest"] });
 
 const form = reactive({
-    email: "carlos@teste.com",
-    password: "12345678",
+  email: "carlos@teste.com",
+  password: "12345678",
 });
 
 const pageStatus = reactive({ fetching: false });
 
 const schema = yup.object({
-    email: yup.string().email().required(),
-    password: yup.string().min(6).max(32).required(),
+  email: yup.string().email().required(),
+  password: yup.string().min(6).max(32).required(),
 });
 
 const submit = async () => {
-    try {
-        pageStatus.fetching = true;
+  try {
+    pageStatus.fetching = true;
 
-        const token: string = await postLogin({
-            email: form.email,
-            senha: form.password,
-        });
+    const token: string = await postLogin({
+      email: form.email,
+      senha: form.password,
+    });
 
-        console.log(token);
-
-        useAuthStore().setUserToken(token);
-        useRouter().push("/dashboard");
-    } catch (error) {
-        if (error) useToast().add({ title: error as string, color: "red" });
-    } finally {
-        pageStatus.fetching = false;
-    }
+    useAuthStore().setUserToken(token);
+    useRouter().push("/dashboard");
+  } catch (error) {
+    if (error) useToast().add({ title: error as string, color: "red" });
+  } finally {
+    pageStatus.fetching = false;
+  }
 };
 </script>
 
 <template>
-    <UContainer
-        :ui="{
-            base: 'flex flex-col items-center justify-center gap-5',
-            constrained: 'min-h-svh max-w-sm',
-        }"
+  <UContainer
+    :ui="{
+      base: 'flex flex-col items-center justify-center gap-5',
+      constrained: 'min-h-svh max-w-sm',
+    }"
+  >
+    <UCard
+      :ui="{
+        base: 'w-full',
+        footer: { base: 'text-center' },
+      }"
     >
-        <UCard
-            :ui="{
-                base: 'w-full',
-                footer: { base: 'text-center' },
-            }"
-        >
-            <template #header> Acessar Painel </template>
+      <template #header> Acessar Painel </template>
 
-            <UForm
-                :schema="schema"
-                :state="form"
-                class="space-y-4"
-                @submit="submit"
-            >
-                <UFormGroup label="Email" name="email">
-                    <UInput type="email" v-model="form.email" />
-                </UFormGroup>
+      <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
+        <UFormGroup label="Email" name="email">
+          <UInput type="email" v-model="form.email" autofocus />
+        </UFormGroup>
 
-                <UFormGroup label="Senha" name="password">
-                    <UInput type="password" v-model="form.password" />
-                </UFormGroup>
+        <UFormGroup label="Senha" name="password">
+          <UInput type="password" v-model="form.password" />
+        </UFormGroup>
 
-                <UButton
-                    :loading="pageStatus.fetching"
-                    block
-                    type="submit"
-                    label="Entrar"
-                />
-            </UForm>
+        <UButton
+          :loading="pageStatus.fetching"
+          block
+          type="submit"
+          label="Entrar"
+        />
+      </UForm>
 
-            <template #footer>
-                <ULink
-                    to="/register"
-                    inactive-class="text-primary font-bold text-xs"
-                >
-                    Clique aqui para registrar!
-                </ULink>
-            </template>
-        </UCard>
-
-        <ULink to="/dashboard" inactive-class="text-primary font-bold text-xs">
-            Ir para Página Inicial
+      <template #footer>
+        <ULink to="/register" inactive-class="text-primary font-bold text-xs">
+          Clique aqui para registrar!
         </ULink>
-    </UContainer>
+      </template>
+    </UCard>
+
+    <ULink to="/dashboard" inactive-class="text-primary font-bold text-xs">
+      Ir para Página Inicial
+    </ULink>
+  </UContainer>
 </template>
+~/composables/store/useAuthStore
