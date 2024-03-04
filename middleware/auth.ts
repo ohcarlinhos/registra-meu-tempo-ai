@@ -1,4 +1,4 @@
 export default defineNuxtRouteMiddleware((to) => {
-    const token = useAuthStore().getUserToken;
-    if (!token) return navigateTo("/");
+  const token = useAuthStore().getUserToken;
+  if (!token) return navigateTo("/");
 });

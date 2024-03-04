@@ -1,3 +1,3 @@
 export default defineNuxtRouteMiddleware((to) => {
-    if (useAuthStore().getUserToken) return navigateTo("/dashboard");
+  if (useAuthStore().getUserToken) return navigateTo("/dashboard");
 });
