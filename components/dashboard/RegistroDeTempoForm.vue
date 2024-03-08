@@ -14,29 +14,40 @@ const form = reactive<{
   titulo: string;
   dataDoRegistro: Date | string;
   categoria: string;
+  categoriaId: number | null;
   periodos: { inicio: Date | string; fim: Date | string }[];
 }>({
   dataDoRegistro: "",
   titulo: "",
   categoria: "",
+  categoriaId: null,
   periodos: [],
 });
 
 // TODO: finalizar validações
 const schema = yup.object({
-  titulo: yup.string().required(),
-  dataDoRegistro: yup.date().required(),
+  titulo: yup.string().required("O título é obrigatório."),
+  dataDoRegistro: yup
+    .string()
+    .required("Informe uma data para seu registro de tempo."),
+});
+
+const newCategoria = ref<string[]>([]);
+
+const categorias = computed(() => {
+  return [
+    ...newCategoria.value,
+    ...categoriaStore.categorias.map((c) => c.nome),
+  ];
 });
 
 const categoriaLabel = computed({
   get: () => form.categoria,
 
   set: async (label) => {
-    const findded = categoriaStore.categorias.find(
-      (categoria) => categoria === label
-    );
+    const findded = categorias.value.find((categoria) => categoria === label);
 
-    if (!findded) categoriaStore.categorias.push(label);
+    if (!findded) newCategoria.value.push(label);
 
     form.categoria = label;
   },
@@ -74,12 +85,29 @@ const closeModal = (refresh = false) => {
   if (refresh) emit("refresh");
 };
 
-// TODO: implementar envio
-const submit = async () => {
+const submitAction = async () => {
   try {
-    await postRegistroDeTempo(form);
+    if (newCategoria.value.length && form.categoria === newCategoria.value[0]) {
+      const categoria = await postCategoria({ nome: newCategoria.value[0] });
+      newCategoria.value.splice(0, 1);
+      form.categoriaId = categoria.value.id;
+    } else if (form.categoria) {
+      const categoria = categoriaStore.categorias.find(
+        (categoria) => categoria.nome === form.categoria
+      );
+
+      if (categoria) form.categoriaId = categoria.id;
+    }
+
+    await postRegistroDeTempo({ ...form });
     closeModal(true);
-  } catch {}
+  } catch (error) {
+    ErrorToast(error);
+  }
+};
+
+const submit = async () => {
+  await schema.validate(await submitAction());
 };
 
 onMounted(async () => {
@@ -111,14 +139,12 @@ onMounted(async () => {
       <UFormGroup label="Categoria" name="categoria" class="z-100 relative">
         <USelectMenu
           v-model="categoriaLabel"
-          :options="categoriaStore.categorias"
+          :options="categorias"
           :clear-search-on-close="true"
           show-create-option-when="always"
           searchable
           creatable
-          :ui-menu="{
-            height: 'max-h-40',
-          }"
+          :ui-menu="{ height: 'max-h-40' }"
         >
           <template #option-create="{ option }">
             <span class="flex-shrink-0">Criar:</span>
@@ -129,13 +155,15 @@ onMounted(async () => {
 
       <UFormGroup
         label="Date do Registro"
-        name="data-do-registro"
+        name="dataDoRegistro"
         class="z-100 relative"
       >
         <GeneralDatePicker
           v-model="form.dataDoRegistro"
+          name="dataDoRegistro"
           class="py-1"
           disable-time-picker
+          @change="schema.validateAt('dataDoRegistro', form)"
         />
       </UFormGroup>
 

@@ -1,11 +1,11 @@
 export type RegistroDeTempoType = {
-  id: number;
+  id?: number;
   titulo: string;
-  categoriaId: number | null;
+  categoriaId?: number | null;
+  nomeDaCategoria?: string;
   dataDoRegistro: string;
-  nomeDaCategoria: string;
-  tempoFormatado: string;
+  tempoFormatado?: string;
   periodos: PeriodoDeTempoType[];
-  periodosCount: number;
+  periodosCount?: number;
   periodosCountText?: string;
 };

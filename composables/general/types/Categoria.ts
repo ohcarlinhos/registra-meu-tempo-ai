@@ -1,4 +1,5 @@
 export type CategoriaType = {
-  id?: number;
+  id: number;
   nome: string;
 };
+

@@ -4,30 +4,33 @@ import * as yup from "yup";
 definePageMeta({ middleware: ["guest"] });
 
 const form = reactive({
-  email: "carlos@teste.com",
-  password: "12345678",
+  email: "carlinhos@teste.com",
+  password: "123456",
 });
 
 const pageStatus = reactive({ fetching: false });
 
 const schema = yup.object({
-  email: yup.string().email().required(),
-  password: yup.string().min(6).max(32).required(),
+  email: yup
+    .string()
+    .email("Digite um e-mail válido.")
+    .required("Digite seu e-mail"),
+  password: yup.string().min(6).max(32).required("Informe sua senha"),
 });
 
 const submit = async () => {
   try {
     pageStatus.fetching = true;
 
-    const token: string = await postLogin({
+    const data = await postLogin({
       email: form.email,
       senha: form.password,
     });
 
-    useAuthStore().setUserToken(token);
+    useAuthStore().setUserToken(data.value.token);
     useRouter().push("/dashboard");
   } catch (error) {
-    if (error) useToast().add({ title: error as string, color: "red" });
+    ErrorToast(error);
   } finally {
     pageStatus.fetching = false;
   }
@@ -47,7 +50,7 @@ const submit = async () => {
         footer: { base: 'text-center' },
       }"
     >
-      <template #header> Acessar Painel </template>
+      <template #header> Acessar Painel</template>
 
       <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
         <UFormGroup label="Email" name="email">

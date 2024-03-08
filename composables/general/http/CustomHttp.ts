@@ -14,9 +14,6 @@ export const CustomHttp = async <P, R>(
   method: MethodType = "get",
   payload: P | null = null
 ) => {
-  const opts: { body?: object } = {};
-  if (!!payload) opts.body = payload;
-
   const { data, error } = await useAsyncData("focus", () =>
     $fetch(route, {
       retry: false,
@@ -25,20 +22,18 @@ export const CustomHttp = async <P, R>(
       headers: {
         Authorization: `Bearer ${useAuthStore().getUserToken}`,
       },
-      ...opts,
+      body: payload || undefined,
     })
   );
 
   if (error.value) {
-    const { data } = error.value;
-    const err = data as { message?: string; title?: string };
-    if (err.message) {
-      throw err.message;
-    } else if (err.title) {
-      throw err.title;
-    } else {
-      throw "Erro no servidor.";
-    }
+    const err = error.value.data as { message?: string; title?: string };
+
+    if (err && err.message) throw new Error(err.message);
+
+    throw new Error(
+      "Não foi possível realizar essa ação, espere alguns minutos e tente novamente."
+    );
   }
 
   return data as Ref<R>;

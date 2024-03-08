@@ -1,5 +1,5 @@
 export type PeriodoDeTempoType = {
-  id: number | null;
+  id?: number;
   inicio: Date;
   fim: Date;
 };

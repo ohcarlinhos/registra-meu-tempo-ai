@@ -1,18 +1,16 @@
 export const useCategoriaStore = defineStore("CategoriaStore", {
   state: () => {
     return {
-      categorias: [] as string[],
+      categorias: [] as CategoriaType[],
     };
   },
 
   actions: {
     async fetchCategoria() {
       try {
-        const data = await getCategorias();
-
-        this.categorias = data.value.map((c) => c.nome);
-      } catch (err) {
-        console.log("deu ruim");
+        this.categorias = (await getCategorias()).value;
+      } catch (error) {
+        ErrorToast(error);
       }
     },
   },

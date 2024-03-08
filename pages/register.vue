@@ -28,12 +28,12 @@ const submit = async () => {
 
     await postRegister(form);
 
-    const token = await postLogin(form);
-    useAuthStore().setUserToken(token);
+    const loginData = await postLogin(form);
+    useAuthStore().setUserToken(loginData.value.token);
 
     useRouter().push("/dashboard");
   } catch (error) {
-    useToast().add({ title: error as string, color: "red" });
+    ErrorToast(error);
   } finally {
     pageStatus.fetching = false;
   }
@@ -55,7 +55,7 @@ const submit = async () => {
         },
       }"
     >
-      <template #header> Registrar </template>
+      <template #header> Registrar</template>
 
       <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
         <UFormGroup label="Nome" name="name">
@@ -94,4 +94,3 @@ const submit = async () => {
     </ULink>
   </UContainer>
 </template>
-~/composables/store/useAuthStore

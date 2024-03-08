@@ -10,7 +10,7 @@ const activeClass = "text-primary font-bold";
 </script>
 
 <template>
-  <header class="pb-20">
+  <header class="pb-12">
     <section>
       <h1 class="font-bold text-6xl text-primary">Registra meu tempo aí!</h1>
       <p class="pt-4">

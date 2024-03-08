@@ -23,16 +23,15 @@ export const useRegistroDeTempoStore = defineStore("RegistroDeTempoStore", {
 
           if (!registro.nomeDaCategoria) registro.nomeDaCategoria = "-";
           if (!registro.tempoFormatado) registro.tempoFormatado = "Nenhum";
-          registro.periodosCountText =
-            registro.periodosCount === 0
-              ? "Nenhum"
-              : registro.periodosCount +
-                ` ${registro.periodosCount === 1 ? "período" : "períodos"}`;
+
+          registro.periodosCountText = formatPeriodosLabel(
+            registro.periodosCount!
+          );
         });
 
         this.registrosDeTempo = data.value;
-      } catch (err) {
-        console.log("deu ruim");
+      } catch (error) {
+        ErrorToast(error);
       } finally {
         this.fetchingRegistros = false;
       }
@@ -42,9 +41,7 @@ export const useRegistroDeTempoStore = defineStore("RegistroDeTempoStore", {
       try {
         this.deletingRegistro = true;
         await deleteRegistroDeTempo(id);
-
         await this.fetchRegistrosDeTempo();
-      } catch (err) {
       } finally {
         this.deletingRegistro = false;
       }
