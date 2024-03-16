@@ -1,11 +1,29 @@
 <script lang="ts" setup>
-const modal = reactive({ createOrUpdateRegistro: false, confirmDelete: false });
+const modal = reactive({
+  createOrUpdateRegistro: false,
+  confirmDelete: {
+    open: false,
+    id: null as null | number,
+  },
+});
 const registroStore = useRegistroDeTempoStore();
 
-const deleteRegistro = async (id: number) => {
-  // modal.confirmDelete = true;
+const closeConfirmDeleteModal = () => {
+  modal.confirmDelete.open = false;
+  modal.confirmDelete.id = null;
+};
+
+const openConfirmDeleteModal = async (id: number) => {
+  modal.confirmDelete.open = true;
+  modal.confirmDelete.id = id;
+};
+
+const deleteRegistro = async () => {
+  if (!modal.confirmDelete.id) return;
+
   try {
-    await registroStore.deleteRegistro(id);
+    await registroStore.deleteRegistro(modal.confirmDelete.id!);
+    closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
   }
@@ -27,10 +45,15 @@ const deleteRegistro = async (id: number) => {
 
   <RegistroDeTempoTable
     @update="modal.createOrUpdateRegistro = true"
-    @delete="deleteRegistro"
+    @delete="openConfirmDeleteModal"
   />
 
-  <GeneralModalConfirm v-model:open="modal.confirmDelete" />
+  <GeneralModalConfirm
+    v-model:open="modal.confirmDelete.open"
+    text="Tem certeza que quer excluir esse registro?"
+    @confirm="deleteRegistro"
+    @cancel="closeConfirmDeleteModal"
+  />
 
   <UModal v-model="modal.createOrUpdateRegistro" prevent-close>
     <RegistroDeTempoFormCreateAndUpdate
