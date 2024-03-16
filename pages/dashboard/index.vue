@@ -9,7 +9,7 @@ definePageMeta({ middleware: ["auth"] });
       constrained: 'min-h-svh',
     }"
   >
-    <GeneralHeader />
+    <GHeader />
     <RegistroDeTempoDashboard />
   </UContainer>
 </template>

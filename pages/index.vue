@@ -16,7 +16,7 @@ const page = reactive({
     <div class="flex flex-col">
       <div class="flex flex-col items-start">
         <div class="flex flex-col items-center">
-          <GeneralHeader />
+          <GHeader />
 
           <UButton
             v-if="store.registrosDeTempo.length >= 2"

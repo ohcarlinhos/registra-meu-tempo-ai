@@ -48,7 +48,7 @@ const deleteRegistro = async () => {
     @delete="openConfirmDeleteModal"
   />
 
-  <GeneralModalConfirm
+  <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     text="Tem certeza que quer excluir esse registro?"
     @confirm="deleteRegistro"

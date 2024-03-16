@@ -159,7 +159,7 @@ onMounted(async () => {
         name="dataDoRegistro"
         class="z-100 relative"
       >
-        <GeneralDatePicker
+        <GDatePicker
           v-model="form.dataDoRegistro"
           name="dataDoRegistro"
           class="py-1"
@@ -185,7 +185,7 @@ onMounted(async () => {
         class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
       >
         <UFormGroup label="Início do período" :name="'inicio-' + index">
-          <GeneralDatePicker
+          <GDatePicker
             v-model="form.periodos[index].inicio"
             :min="
               index == 0 ? form.dataDoRegistro : form.periodos[index - 1].fim
@@ -197,7 +197,7 @@ onMounted(async () => {
         </UFormGroup>
 
         <UFormGroup label="Final do período" :name="'fim-' + index">
-          <GeneralDatePicker
+          <GDatePicker
             v-model="form.periodos[index].fim"
             class="py-1"
             :min="form.periodos[index].inicio"
