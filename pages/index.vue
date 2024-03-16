@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 const store = useTimerStore();
 
-const columns = [
-  { key: "titulo", label: "Título" },
-  { key: "dataDoRegistro", label: "Data" },
-  { key: "periodos", label: "Períodos" },
-  { key: "actions" },
-];
+const page = reactive({
+  openTable: false,
+});
 </script>
 
 <template>
@@ -19,34 +16,24 @@ const columns = [
     <div class="flex flex-col">
       <div class="flex flex-col items-start">
         <div class="flex flex-col items-center">
-          <ULink
-            v-if="store.registrosDeTempo.length >= 2"
-            to="/local"
-            active-class="text-primary"
-            inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-            class="pb-3"
-          >
-            Veja seus {{ store.registrosDeTempo.length }} registros!
-          </ULink>
+          <GeneralHeader />
 
-          <TimerDefault class="pb-12" />
+          <UButton
+            v-if="store.registrosDeTempo.length >= 2"
+            color="black"
+            variant="link"
+            class="pb-4"
+            @click="page.openTable = !page.openTable"
+          >
+            Você possui {{ store.registrosDeTempo.length }} registros locais.
+            <br />(Clique para {{ page.openTable ? "fechar" : "visualizar" }})
+          </UButton>
+
+          <TimerDefault />
         </div>
       </div>
 
-      <GeneralHeader />
-
-      <UTable
-        :ui="{ base: 'bg-neutral-900 rounded-md' }"
-        :columns="columns"
-        :rows="store.registrosDeTempoFormated"
-      >
-        <template #periodos-data="{ row }">
-          <RegistroDeTempoPeriodosCol
-            :periodos="(row as RegistroDeTempoType).periodos"
-            :label="formatPeriodosLabel((row as RegistroDeTempoType).periodos.length)"
-          />
-        </template>
-      </UTable>
+      <RegistroDeTempoTableLocal v-if="page.openTable" />
     </div>
   </UContainer>
 </template>
