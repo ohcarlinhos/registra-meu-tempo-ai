@@ -1,27 +1,62 @@
 <script lang="ts" setup>
-import { useTimerStore } from "~/composables/store/useTimerStore";
+const timerStore = useTimerStore();
 
-const store = useTimerStore();
+const getVariantBtn = (type: TimerType) =>
+  timerStore.timerType == type ? "outline" : "solid";
+
+const getColorBtn = (type: TimerType) =>
+  timerStore.timerType == type ? "primary" : "white";
+
+timerStore.off();
 </script>
 
 <template>
   <UCard>
     <div class="flex flex-col gap-5 justify-center items-center">
-      <h3 class="text-6xl font-bold">{{ store.formated }}</h3>
+      <div class="flex gap-4">
+        <UButton
+          label="Cronômetro"
+          :variant="getVariantBtn('timer')"
+          :color="getColorBtn('timer')"
+          :disabled="timerStore.hasMiliseconds"
+          @click="timerStore.setTimerType('timer')"
+        />
+
+        <UButton
+          label="Pomodoro"
+          :variant="getVariantBtn('pomodoro')"
+          :color="getColorBtn('pomodoro')"
+          :disabled="timerStore.hasMiliseconds"
+          @click="timerStore.setTimerType('pomodoro')"
+        />
+      </div>
+
+      <h3 class="text-6xl font-bold">{{ timerStore.formated }}</h3>
 
       <div class="flex gap-3">
         <UButton
-          :label="store.currentPeriodoList.length ? 'Continuar' : 'Iniciar'"
-          :disabled="store.running"
-          @click="store.start"
+          :title="timerStore.periodosLength ? 'Continuar' : 'Iniciar'"
+          :disabled="timerStore.isRunning"
+          color="blue"
+          icon="i-heroicons-play"
+          @click="timerStore.start"
         />
 
         <UButton
-          label="Parar"
-          @click="store.pause"
-          :disabled="!store.running"
+          :disabled="!timerStore.isRunning"
+          title="Pausar"
+          color="yellow"
+          icon="i-heroicons-pause"
+          @click="timerStore.pause"
         />
-        <UButton label="Finalizar" @click="store.end" />
+
+        <UButton
+          :disabled="timerStore.dontHasMiliseconds"
+          title="Finalizar"
+          color="green"
+          icon="i-heroicons-check"
+          @click="timerStore.end"
+        />
       </div>
     </div>
   </UCard>
