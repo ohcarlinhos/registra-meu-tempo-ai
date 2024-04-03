@@ -6,12 +6,17 @@ export const useCategoriaStore = defineStore("CategoriaStore", {
   },
 
   actions: {
-    async fetchCategoria() {
+    async fetchCategoria(errorCallback: Function) {
       try {
         this.categorias = (await getCategorias()).value;
       } catch (error) {
         ErrorToast(error);
+        errorCallback();
       }
+    },
+
+    findCategoriaById(id: number) {
+      return this.categorias.find((c) => c.id == id);
     },
   },
 

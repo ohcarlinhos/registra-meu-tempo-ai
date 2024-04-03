@@ -1,19 +1,24 @@
 export const useAuthStore = defineStore("AuthStore", {
   state: () => {
     return {
-      userToken: "",
+      _userToken: "",
     };
   },
   actions: {
     setUserToken(token: string) {
-      this.userToken = token;
+      this._userToken = token;
     },
     clearUserToken() {
-      this.userToken = "";
+      this._userToken = "";
     },
   },
   getters: {
-    getUserToken: (state) => state.userToken,
+    getUserToken: (state) => state._userToken,
+
+    isAuthenticad: (state) => {
+      return state._userToken != "";
+    },
   },
   persist: true,
 });
+

@@ -6,7 +6,9 @@ const modal = reactive({
     id: null as null | number,
   },
 });
+
 const registroStore = useRegistroDeTempoStore();
+const editRegistroObject = ref<RegistroFormType | undefined>(undefined);
 
 const closeConfirmDeleteModal = () => {
   modal.confirmDelete.open = false;
@@ -16,6 +18,19 @@ const closeConfirmDeleteModal = () => {
 const openConfirmDeleteModal = async (id: number) => {
   modal.confirmDelete.open = true;
   modal.confirmDelete.id = id;
+};
+
+const openEditModal = (id: number) => {
+  const registro = registroStore.findRegistroById(id);
+  if (!registro) return;
+
+  editRegistroObject.value = editRegistroObjectFactory(registro);
+  modal.createOrUpdateRegistro = true;
+};
+
+const closeModal = () => {
+  modal.createOrUpdateRegistro = false;
+  editRegistroObject.value = undefined;
 };
 
 const deleteRegistro = async () => {
@@ -39,12 +54,13 @@ const deleteRegistro = async () => {
   >
     <UButton
       label="Registrar Tempo"
+      icon="i-heroicons-pencil-square-20-solid"
       @click="modal.createOrUpdateRegistro = true"
     />
   </UContainer>
 
   <RegistroDeTempoTable
-    @update="modal.createOrUpdateRegistro = true"
+    @update="openEditModal"
     @delete="openConfirmDeleteModal"
   />
 
@@ -57,9 +73,9 @@ const deleteRegistro = async () => {
 
   <UModal v-model="modal.createOrUpdateRegistro" prevent-close>
     <RegistroDeTempoFormCreateAndUpdate
-      @close="modal.createOrUpdateRegistro = false"
+      :edit-object="editRegistroObject"
+      @close="closeModal"
     />
   </UModal>
 </template>
 
-<style></style>

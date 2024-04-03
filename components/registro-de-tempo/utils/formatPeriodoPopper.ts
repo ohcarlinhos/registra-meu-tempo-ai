@@ -1,8 +1,8 @@
 import { format, getDayOfYear } from "date-fns";
 
 export const formatPeriodoPopper = (periodo: PeriodoDeTempoType) => {
-  const fullFormat = "dd/mm/yyyy HH:mm";
-  const onlyTime = "HH:mm";
+  const fullFormat = "dd/mm/yyyy HH:mm::ss";
+  const onlyTime = "HH:mm:ss";
   const onlyDate = "dd/mm/yyyy";
 
   if (getDayOfYear(periodo.inicio) === getDayOfYear(periodo.fim)) {

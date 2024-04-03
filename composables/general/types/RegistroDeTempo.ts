@@ -1,11 +1,18 @@
 export type RegistroDeTempoType = {
-  id?: number;
-  titulo: string;
-  categoriaId?: number | null;
-  nomeDaCategoria?: string;
-  dataDoRegistro: string;
-  tempoFormatado?: string;
+  descricao: string;
+  registroDate: string | null;
   periodos: PeriodoDeTempoType[];
+  id?: number;
+  categoriaId?: number | null;
+  categoriaNome?: string;
+  tempoFormatado?: string;
   periodosCount?: number;
-  periodosCountText?: string;
 };
+
+export interface IRegistroDeTempoLocal extends RegistroDeTempoType {
+  localUuid: string;
+}
+
+export interface IRegistroDeTempoTable extends RegistroDeTempoType {
+  periodosCountText?: string;
+}

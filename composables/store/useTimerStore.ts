@@ -1,108 +1,139 @@
 import { format } from "date-fns";
-
-type PeriodoTimerType = {
-  inicio: number;
-  fim: number;
-};
+import { v4 as uuidv4 } from "uuid";
 
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
-      currentPeriodoList: [] as PeriodoTimerType[],
-      currentPeriodo: { inicio: 0, fim: 0 } as PeriodoTimerType,
-      registrosDeTempo: [] as RegistroDeTempoType[],
-      running: false,
-      interval: null as NodeJS.Timeout | null,
+      _currentPeriodoList: [] as PeriodoTimerType[],
+      _currentPeriodo: { inicio: 0, fim: 0 } as PeriodoTimerType,
+      _registrosDeTempo: [] as IRegistroDeTempoLocal[],
+      _running: false,
+      _interval: null as NodeJS.Timeout | null,
+      _type: "timer" as TimerType,
     };
   },
 
   actions: {
     reset() {
       const timeNow = Date.now();
-      this.currentPeriodo.inicio = timeNow;
-      this.currentPeriodo.fim = timeNow;
+      this._currentPeriodo.inicio = timeNow;
+      this._currentPeriodo.fim = timeNow;
     },
 
     clearInterval() {
-      clearInterval(this.interval as NodeJS.Timeout);
+      clearInterval(this._interval as NodeJS.Timeout);
     },
 
-    add(registro: RegistroDeTempoType) {
-      this.registrosDeTempo.push(registro);
-    },
-
-    async postRegistroDeTempo(registro: RegistroDeTempoType) {
-      // remover registro da lista e submeter registro específico.
+    add(registro: IRegistroDeTempoLocal) {
+      this._registrosDeTempo.push(registro);
     },
 
     start() {
-      if (this.running === true) this.pause();
+      if (this._running === true) this.pause();
 
-      this.interval = setInterval(() => {
-        if (this.running) {
-          this.currentPeriodo.fim = Date.now();
+      this._interval = setInterval(() => {
+        if (this._running) {
+          this._currentPeriodo.fim = Date.now();
         } else {
           this.clearInterval();
         }
       }, 1000);
 
       this.reset();
-      this.running = true;
+      this._running = true;
     },
 
     pause() {
       this.clearInterval();
 
-      if (this.running && this.totalMiliseconds !== 0) {
-        this.currentPeriodoList.push({
-          inicio: this.currentPeriodo.inicio,
-          fim: this.currentPeriodo.fim,
+      if (this._running && this._totalMiliseconds !== 0) {
+        this._currentPeriodoList.push({
+          inicio: this._currentPeriodo.inicio,
+          fim: this._currentPeriodo.fim,
         });
       }
 
       this.reset();
-      this.running = false;
+      this._running = false;
     },
 
     end() {
-      if (this.running) this.pause();
+      if (this._running) this.pause();
 
-      if (this.currentPeriodoList.length) {
+      if (this._currentPeriodoList.length) {
         this.add({
-          titulo: "Registro local",
-          dataDoRegistro: new Date().toISOString(),
-          periodos: this.currentPeriodoList.map((p) => ({
+          localUuid: uuidv4(),
+          descricao: "",
+          registroDate: new Date().toISOString(),
+          periodos: this._currentPeriodoList.map((p) => ({
             inicio: new Date(p.inicio),
             fim: new Date(p.fim),
           })),
         });
 
-        this.currentPeriodoList = [];
+        this._currentPeriodoList = [];
+      }
+    },
+
+    off() {
+      this._running = false;
+    },
+
+    setTimerType(type: TimerType) {
+      this._type = type;
+    },
+
+    deleteRegistro(uuid: string) {
+      const index = this._registrosDeTempo.findIndex(
+        (r) => r.localUuid === uuid
+      );
+
+      if (index != -1) {
+        this._registrosDeTempo.splice(index, 1);
       }
     },
   },
 
   getters: {
-    periodoListTotalSeconds: (state) => {
-      return state.currentPeriodoList.reduce(
+    isRunning(state) {
+      return state._running;
+    },
+
+    timerType(state) {
+      return state._type;
+    },
+
+    periodosLength(state) {
+      return state._currentPeriodoList.length;
+    },
+
+    _periodosTotalSeconds(state) {
+      return state._currentPeriodoList.reduce(
         (accumulator, current) => accumulator + (current.fim - current.inicio),
         0
       );
     },
 
-    actualPeriodoSecondsPast(state) {
-      return state.currentPeriodo.fim - state.currentPeriodo.inicio;
+    _secondsPast(state) {
+      return state._currentPeriodo.fim - state._currentPeriodo.inicio;
     },
 
-    totalMiliseconds(): number {
+    _totalMiliseconds(): number {
       return (
-        this.periodoListTotalSeconds +
-        (this.running ? this.actualPeriodoSecondsPast : 0)
+        this._periodosTotalSeconds + (this._running ? this._secondsPast : 0)
       );
     },
 
+    hasMiliseconds(): boolean {
+      return this._totalMiliseconds > 0;
+    },
+
+    dontHasMiliseconds(): boolean {
+      return this._totalMiliseconds === 0;
+    },
+
     formated(): string {
-      const totalSeconds = Math.floor(this.totalMiliseconds / 1000);
+      const totalSeconds = Math.floor(this._totalMiliseconds / 1000);
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds - minutes * 60;
       let formated = "";
@@ -113,13 +144,17 @@ export const useTimerStore = defineStore("TimerStore", {
       return formated;
     },
 
-    registrosDeTempoFormated: (state) => {
-      return state.registrosDeTempo.map((r) => {
-        return {
-          ...r,
-          dataDoRegistro: format(r.dataDoRegistro, "dd/MM/yyyy"),
-        };
-      });
+    registros: (state) => {
+      return state._registrosDeTempo
+        .map((registro) => {
+          return {
+            ...registro,
+            registroDate: format(registro.periodos[0].inicio, "dd/MM/yyyy"),
+            periodos: registro.periodos.map((e) => e),
+            tempoFormatado: "25m (TODO)",
+          };
+        })
+        .reverse();
     },
   },
 

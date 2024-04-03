@@ -1,56 +1,67 @@
 import { format } from "date-fns";
+import type { RegistroDeTempoType } from "../general/types/RegistroDeTempo";
 
 export const useRegistroDeTempoStore = defineStore("RegistroDeTempoStore", {
   state: () => {
     return {
-      registrosDeTempo: [] as RegistroDeTempoType[],
-      fetchingRegistros: false,
-      deletingRegistro: false,
+      _registrosDeTempo: [] as RegistroDeTempoType[],
+      _fetchingRegistros: false,
+      _deletingRegistro: false,
     };
   },
 
   actions: {
     async fetchRegistrosDeTempo() {
       try {
-        this.fetchingRegistros = true;
+        this._fetchingRegistros = true;
         const data = await getRegistrosDeTempo();
-
-        data.value.forEach((registro) => {
-          registro.dataDoRegistro = format(
-            registro.dataDoRegistro,
-            "dd/MM/yyyy"
-          );
-
-          if (!registro.nomeDaCategoria) registro.nomeDaCategoria = "-";
-          if (!registro.tempoFormatado) registro.tempoFormatado = "Nenhum";
-
-          registro.periodosCountText = formatPeriodosLabel(
-            registro.periodosCount!
-          );
-        });
-
-        this.registrosDeTempo = data.value;
+        this._registrosDeTempo = data.value;
       } catch (error) {
         ErrorToast(error);
       } finally {
-        this.fetchingRegistros = false;
+        this._fetchingRegistros = false;
       }
     },
 
     async deleteRegistro(id: number) {
       try {
-        this.deletingRegistro = true;
+        this._deletingRegistro = true;
         await deleteRegistroDeTempo(id);
         await this.fetchRegistrosDeTempo();
       } finally {
-        this.deletingRegistro = false;
+        this._deletingRegistro = false;
       }
+    },
+
+    findRegistroById(id: number) {
+      return this._registrosDeTempo.find((r) => r.id == id);
     },
   },
 
   getters: {
-    getRegistrosDeTempo: (state) => state.registrosDeTempo,
-    fetching: (state) => state.fetchingRegistros || state.deletingRegistro,
+    registrosDeTempo: (state) => state._registrosDeTempo,
+
+    registrosDeTempoTable: (state) => {
+      const registrosTable: IRegistroDeTempoTable[] = [];
+
+      state._registrosDeTempo.forEach((registro) => {
+        registrosTable.push({
+          ...registro,
+          registroDate:
+            (registro.registroDate &&
+              format(registro.registroDate, "dd/MM/yyyy")) ||
+            "-",
+          descricao: registro.descricao || "-",
+          categoriaNome: registro.categoriaNome || "-",
+          tempoFormatado: registro.tempoFormatado || "Nenhum",
+          periodosCountText: periodosLabel(registro.periodosCount!),
+        });
+      });
+
+      return registrosTable;
+    },
+
+    fetching: (state) => state._fetchingRegistros || state._deletingRegistro,
   },
 
   persist: false,
