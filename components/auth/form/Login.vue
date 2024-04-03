@@ -2,8 +2,8 @@
 import * as yup from "yup";
 
 const form = reactive({
-  email: "carlinhos@teste.com",
-  password: "123456",
+  email: "carlinhos@test.com",
+  password: "Ska$312d%$1",
 });
 
 const pageStatus = reactive({ fetching: false });
@@ -68,3 +68,4 @@ const submit = async () => {
     </template>
   </UCard>
 </template>
+

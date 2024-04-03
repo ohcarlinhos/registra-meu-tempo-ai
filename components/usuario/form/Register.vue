@@ -4,10 +4,10 @@ import * as yup from "yup";
 const pageStatus = reactive({ fetching: false });
 
 const form = reactive({
-  email: "carlinhos@teste.com",
+  email: "carlinhos@test.com",
   nome: "Carlinhos",
-  senha: "123456",
-  confirm_senha: "123456",
+  senha: "Ska$312d%$1",
+  confirm_senha: "Ska$312d%$1",
 });
 
 const schema = yup.object({
@@ -62,7 +62,7 @@ const submit = async () => {
         <UInput type="password" v-model="form.senha" />
       </UFormGroup>
 
-      <UFormGroup label="Repita a Senha" name="confirm_password">
+      <UFormGroup label="Confirme a senha" name="confirm_password">
         <UInput type="password" v-model="form.confirm_senha" />
       </UFormGroup>
 
@@ -81,3 +81,4 @@ const submit = async () => {
     </template>
   </UCard>
 </template>
+
