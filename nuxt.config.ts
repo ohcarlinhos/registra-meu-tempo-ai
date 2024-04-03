@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
   ui: { global: true },
   imports: {
-    dirs: ["composables/**"],
+    dirs: ["composables/**", "utils/**"],
   },
   build: {
     transpile: ["@vuepic/vue-datepicker"],
@@ -16,3 +16,4 @@ export default defineNuxtConfig({
     },
   },
 });
+
