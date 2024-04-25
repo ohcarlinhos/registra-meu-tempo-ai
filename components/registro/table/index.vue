@@ -17,7 +17,7 @@ const columns = [
 const items = (row: RegistroType) => [
   [
     {
-      label: "Editar",
+      label: "Acessar",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => emit("update", row.id!),
     },
