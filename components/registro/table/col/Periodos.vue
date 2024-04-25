@@ -2,7 +2,7 @@
 import { formatPeriodoPopper } from "../../utils/formatPeriodoPopper";
 
 defineProps<{
-  periodos: PeriodoDeTempoType[];
+  periodos: PeriodoType[];
   label: string;
 }>();
 </script>

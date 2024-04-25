@@ -1,4 +1,4 @@
-export default (registro: RegistroDeTempoType, callback = () => {}) => {
+export default (registro: RegistroType, callback = () => {}) => {
   const categoriaStore = useCategoriaStore();
 
   const categoriaStored =
@@ -14,4 +14,3 @@ export default (registro: RegistroDeTempoType, callback = () => {}) => {
     callback,
   };
 };
-

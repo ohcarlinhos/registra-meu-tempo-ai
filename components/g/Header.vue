@@ -47,10 +47,10 @@ const activeClass = "text-primary font-bold";
 
       <ULink
         v-if="authStore.isAuthenticad"
-        to="/dashboard"
+        to="/registros"
         :active-class="activeClass"
       >
-        Painel
+        Registros
       </ULink>
 
       <ULink
@@ -80,4 +80,3 @@ const activeClass = "text-primary font-bold";
     </nav>
   </header>
 </template>
-

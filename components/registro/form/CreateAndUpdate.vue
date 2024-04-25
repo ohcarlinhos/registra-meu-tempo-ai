@@ -2,7 +2,7 @@
 import * as yup from "yup";
 import { addMinutes } from "date-fns";
 
-const registroStore = useRegistroDeTempoStore();
+const registroStore = useRegistroStore();
 const categoriaStore = useCategoriaStore();
 
 const emit = defineEmits(["close", "refresh"]);
@@ -84,7 +84,7 @@ const submitButtonIsDisabled = computed(() => {
 
 const closeModal = (refresh = false) => {
   emit("close");
-  if (refresh) registroStore.fetchRegistrosDeTempo();
+  if (refresh) registroStore.fetchRegistros();
 };
 
 const addPeriodoToForm = () => {
@@ -127,7 +127,7 @@ const submit = async () => {
 
 const createAction = async () => {
   try {
-    await postRegistroDeTempo({
+    await postRegistro({
       ...form,
       categoriaId: await handleCategoria(),
     });
@@ -142,6 +142,7 @@ const createAction = async () => {
 
 const editAction = async (id: number) => {
   // TODO
+  console.log(props.editObject);
 };
 
 const submitAction = async () => {
@@ -162,7 +163,6 @@ onMounted(async () => {
     form.descricao = props.editObject.descricao;
     form.categoria = props.editObject.categoria;
     form.categoriaId = props.editObject.categoriaId;
-    form.periodos = props.editObject.periodos.map((e) => e);
     form.callback = props.editObject.callback;
   } else if (form.periodos.length === 0) {
     addPeriodoToForm();
@@ -208,7 +208,7 @@ onMounted(async () => {
         <UInput type="text" v-model="form.descricao" autofocus />
       </UFormGroup>
 
-      <div class="flex justify-between pt-6">
+      <div v-if="!editObject" class="flex justify-between pt-6">
         <h3>Períodos de Tempo</h3>
 
         <UButton
@@ -221,6 +221,7 @@ onMounted(async () => {
       </div>
 
       <div
+        v-if="!editObject"
         v-for="(_, index) in form.periodos"
         class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
       >
@@ -259,4 +260,3 @@ onMounted(async () => {
     </UForm>
   </UCard>
 </template>
-

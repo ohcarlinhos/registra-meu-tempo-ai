@@ -30,7 +30,7 @@ const page = reactive({
         </UButton>
       </div>
 
-      <RegistroDeTempoTableLocal
+      <RegistroTableLocal
         v-if="page.openTable && timerStore.registros.length"
       />
     </div>

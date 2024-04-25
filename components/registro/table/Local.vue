@@ -33,7 +33,7 @@ const columns = [
   { key: "actions" },
 ];
 
-const items = (row: IRegistroDeTempoLocal) => {
+const items = (row: IRegistroLocal) => {
   const actions = [
     [
       {
@@ -54,7 +54,7 @@ const items = (row: IRegistroDeTempoLocal) => {
   return actions;
 };
 
-const openModal = (registro: IRegistroDeTempoLocal) => {
+const openModal = (registro: IRegistroLocal) => {
   if (!registro) return;
 
   editRegistroObject.value = editRegistroObjectFactory(registro, () => {
@@ -78,9 +78,9 @@ const closeModal = () => {
     class="pt-10"
   >
     <template #periodos-data="{ row }">
-      <RegistroDeTempoTableColPeriodos
-        :periodos="(row as IRegistroDeTempoLocal).periodos"
-        :label="periodosLabel((row as IRegistroDeTempoLocal).periodos.length)"
+      <RegistroTableColPeriodos
+        :periodos="(row as IRegistroLocal).periodos"
+        :label="periodosLabel((row as IRegistroLocal).periodos.length)"
       />
     </template>
 
@@ -98,7 +98,7 @@ const closeModal = () => {
   </UTable>
 
   <UModal v-model="modal.open" prevent-close>
-    <RegistroDeTempoFormCreateAndUpdate
+    <RegistroFormCreateAndUpdate
       :edit-object="editRegistroObject"
       @close="closeModal"
     />
@@ -111,4 +111,3 @@ const closeModal = () => {
     @cancel="closeConfirmDeleteModal"
   />
 </template>
-

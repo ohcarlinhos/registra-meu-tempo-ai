@@ -6,7 +6,7 @@ export const useTimerStore = defineStore("TimerStore", {
     return {
       _currentPeriodoList: [] as PeriodoTimerType[],
       _currentPeriodo: { inicio: 0, fim: 0 } as PeriodoTimerType,
-      _registrosDeTempo: [] as IRegistroDeTempoLocal[],
+      _registrosLocal: [] as IRegistroLocal[],
       _running: false,
       _interval: null as NodeJS.Timeout | null,
       _type: "timer" as TimerType,
@@ -24,8 +24,8 @@ export const useTimerStore = defineStore("TimerStore", {
       clearInterval(this._interval as NodeJS.Timeout);
     },
 
-    add(registro: IRegistroDeTempoLocal) {
-      this._registrosDeTempo.push(registro);
+    add(registro: IRegistroLocal) {
+      this._registrosLocal.push(registro);
     },
 
     start() {
@@ -84,12 +84,10 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     deleteRegistro(uuid: string) {
-      const index = this._registrosDeTempo.findIndex(
-        (r) => r.localUuid === uuid
-      );
+      const index = this._registrosLocal.findIndex((r) => r.localUuid === uuid);
 
       if (index != -1) {
-        this._registrosDeTempo.splice(index, 1);
+        this._registrosLocal.splice(index, 1);
       }
     },
   },
@@ -145,7 +143,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     registros: (state) => {
-      return state._registrosDeTempo
+      return state._registrosLocal
         .map((registro) => {
           return {
             ...registro,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const registroStore = useRegistroDeTempoStore();
+const registroStore = useRegistroStore();
 const emit = defineEmits<{
   update: [value: number];
   delete: [value: number];
@@ -14,7 +14,7 @@ const columns = [
   { key: "actions" },
 ];
 
-const items = (row: RegistroDeTempoType) => [
+const items = (row: RegistroType) => [
   [
     {
       label: "Editar",
@@ -30,7 +30,7 @@ const items = (row: RegistroDeTempoType) => [
 ];
 
 onMounted(async () => {
-  await registroStore.fetchRegistrosDeTempo();
+  await registroStore.fetchRegistros();
 });
 </script>
 
@@ -38,13 +38,13 @@ onMounted(async () => {
   <UTable
     :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
     :columns="columns"
-    :rows="registroStore.registrosDeTempoTable"
+    :rows="registroStore.registrosTableData"
     :loading="registroStore.fetching"
   >
     <template #periodos-data="{ row }">
-      <RegistroDeTempoTableColPeriodos
-        :periodos="(row as IRegistroDeTempoTable).periodos"
-        :label="(row as IRegistroDeTempoTable).periodosCountText || '0'"
+      <RegistroTableColPeriodos
+        :periodos="(row as IRegistroTable).periodos"
+        :label="(row as IRegistroTable).periodosCountText || '0'"
       />
     </template>
 
@@ -61,4 +61,3 @@ onMounted(async () => {
     </template>
   </UTable>
 </template>
-

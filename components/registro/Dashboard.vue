@@ -7,8 +7,9 @@ const modal = reactive({
   },
 });
 
-const registroStore = useRegistroDeTempoStore();
+const registroStore = useRegistroStore();
 const editRegistroObject = ref<RegistroFormType | undefined>(undefined);
+const router = useRouter();
 
 const closeConfirmDeleteModal = () => {
   modal.confirmDelete.open = false;
@@ -20,12 +21,14 @@ const openConfirmDeleteModal = async (id: number) => {
   modal.confirmDelete.id = id;
 };
 
-const openEditModal = (id: number) => {
-  const registro = registroStore.findRegistroById(id);
-  if (!registro) return;
+const edit = (id: number) => {
+  router.push(`/registros/${id}`);
 
-  editRegistroObject.value = editRegistroObjectFactory(registro);
-  modal.createOrUpdateRegistro = true;
+  // const registro = registroStore.findRegistroById(id);
+  // if (!registro) return;
+
+  // editRegistroObject.value = editRegistroObjectFactory(registro);
+  // modal.createOrUpdateRegistro = true;
 };
 
 const closeModal = () => {
@@ -59,10 +62,7 @@ const deleteRegistro = async () => {
     />
   </UContainer>
 
-  <RegistroDeTempoTable
-    @update="openEditModal"
-    @delete="openConfirmDeleteModal"
-  />
+  <RegistroTable @update="edit" @delete="openConfirmDeleteModal" />
 
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
@@ -72,10 +72,9 @@ const deleteRegistro = async () => {
   />
 
   <UModal v-model="modal.createOrUpdateRegistro" prevent-close>
-    <RegistroDeTempoFormCreateAndUpdate
+    <RegistroFormCreateAndUpdate
       :edit-object="editRegistroObject"
       @close="closeModal"
     />
   </UModal>
 </template>
-
