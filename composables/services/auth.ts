@@ -10,13 +10,3 @@ export const postLogin = async (payload: PayloadLogin) => {
     payload
   );
 };
-
-type PayloadRegister = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export const postRegister = async (payload: PayloadRegister) => {
-  return await CustomHttp<PayloadRegister, unknown>("user", "post", payload);
-};

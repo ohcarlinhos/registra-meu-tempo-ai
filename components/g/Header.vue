@@ -18,7 +18,7 @@ withDefaults(
 
 const exit = () => {
   authStore.clearUserToken();
-  useRouter().push("login");
+  useRouter().push("/login");
 };
 
 const activeClass = "text-primary font-bold";
@@ -47,7 +47,7 @@ const activeClass = "text-primary font-bold";
 
       <ULink
         v-if="authStore.isAuthenticad"
-        to="/registros"
+        to="/time-record"
         :active-class="activeClass"
       >
         Registros

@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-const registroStore = useRegistroStore();
+const timeRecordStore = useTimeRecordStore();
 const emit = defineEmits<{
   update: [value: number];
   delete: [value: number];
 }>();
 
 const columns = [
-  { key: "registroDate", label: "Data" },
-  { key: "categoriaNome", label: "Categoria" },
-  { key: "descricao", label: "Descrição" },
-  { key: "tempoFormatado", label: "Tempo" },
-  { key: "periodos", label: "Períodos" },
+  { key: "timeRecordDate", label: "Data" },
+  { key: "categoryName", label: "Categoria" },
+  { key: "description", label: "Descrição" },
+  { key: "timeFormatted", label: "Tempo" },
+  { key: "timePeriods", label: "Períodos" },
   { key: "actions" },
 ];
 
-const items = (row: RegistroType) => [
+const items = (row: TimeRecordType) => [
   [
     {
       label: "Acessar",
@@ -30,7 +30,7 @@ const items = (row: RegistroType) => [
 ];
 
 onMounted(async () => {
-  await registroStore.fetchRegistros();
+  await timeRecordStore.fetchTimeRecords();
 });
 </script>
 
@@ -38,13 +38,13 @@ onMounted(async () => {
   <UTable
     :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
     :columns="columns"
-    :rows="registroStore.registrosTableData"
-    :loading="registroStore.fetching"
+    :rows="timeRecordStore.timeRecordsTableData"
+    :loading="timeRecordStore.fetching"
   >
-    <template #periodos-data="{ row }">
-      <RegistroTableColPeriodos
-        :periodos="(row as IRegistroTable).periodos"
-        :label="(row as IRegistroTable).periodosCountText || '0'"
+    <template #timePeriods-data="{ row }">
+      <TimeRecordTableColTimePeriod
+        :timePeriods="(row as ITimeRecordTable).timePeriods"
+        :label="(row as ITimeRecordTable).timePeriodsCountText || '0'"
       />
     </template>
 

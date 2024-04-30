@@ -9,7 +9,7 @@ const confirmDelete = reactive({
   uuid: "",
 });
 
-const editRegistroObject = ref<RegistroFormType | undefined>(undefined);
+const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
 
 const closeConfirmDeleteModal = () => {
   confirmDelete.open = false;
@@ -21,19 +21,19 @@ const openConfirmDeleteModal = (uuid: string) => {
   confirmDelete.uuid = uuid;
 };
 
-const deleteRegistro = () => {
-  timerStore.deleteRegistro(confirmDelete.uuid);
+const deleteTimeRecord = () => {
+  timerStore.deleteTimeRecord(confirmDelete.uuid);
   closeConfirmDeleteModal();
 };
 
 const columns = [
-  { key: "registroDate", label: "Data" },
-  { key: "periodos", label: "Períodos" },
-  { key: "tempoFormatado", label: "Tempo" },
+  { key: "timeRecordDate", label: "Data" },
+  { key: "timePeriods", label: "Períodos" },
+  { key: "timeFormatted", label: "Tempo" },
   { key: "actions" },
 ];
 
-const items = (row: IRegistroLocal) => {
+const items = (row: ITimeRecordLocal) => {
   const actions = [
     [
       {
@@ -54,11 +54,11 @@ const items = (row: IRegistroLocal) => {
   return actions;
 };
 
-const openModal = (registro: IRegistroLocal) => {
-  if (!registro) return;
+const openModal = (timeRecord: ITimeRecordLocal) => {
+  if (!timeRecord) return;
 
-  editRegistroObject.value = editRegistroObjectFactory(registro, () => {
-    timerStore.deleteRegistro(registro.localUuid);
+  editTimeRecordObject.value = editTimeRecordObjectFactory(timeRecord, () => {
+    timerStore.deleteTimeRecord(timeRecord.localUuid);
   });
 
   modal.open = true;
@@ -66,7 +66,7 @@ const openModal = (registro: IRegistroLocal) => {
 
 const closeModal = () => {
   modal.open = false;
-  editRegistroObject.value = undefined;
+  editTimeRecordObject.value = undefined;
 };
 </script>
 
@@ -74,12 +74,12 @@ const closeModal = () => {
   <UTable
     :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
     :columns="columns"
-    :rows="timerStore.registros"
+    :rows="timerStore.timeRecords"
   >
-    <template #periodos-data="{ row }">
-      <RegistroTableColPeriodos
-        :periodos="(row as IRegistroLocal).periodos"
-        :label="periodosLabel((row as IRegistroLocal).periodos.length)"
+    <template #timePeriods-data="{ row }">
+      <TimeRecordTableColTimePeriod
+        :timePeriods="(row as ITimeRecordLocal).timePeriods"
+        :label="timePeriodsLabel((row as ITimeRecordLocal).timePeriods.length)"
       />
     </template>
 
@@ -97,8 +97,8 @@ const closeModal = () => {
   </UTable>
 
   <UModal v-model="modal.open" prevent-close>
-    <RegistroFormCreateAndUpdate
-      :edit-object="editRegistroObject"
+    <TimeRecordFormCreateAndUpdate
+      :edit-object="editTimeRecordObject"
       @close="closeModal"
     />
   </UModal>
@@ -106,7 +106,7 @@ const closeModal = () => {
   <GModalConfirm
     v-model:open="confirmDelete.open"
     text="Tem certeza que quer excluir esse registro?"
-    @confirm="deleteRegistro"
+    @confirm="deleteTimeRecord"
     @cancel="closeConfirmDeleteModal"
   />
 </template>

@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { formatPeriodoPopper } from "../../utils/formatPeriodoPopper";
-
 defineProps<{
-  periodos: PeriodoType[];
+  timePeriods: TimePeriodType[];
   label: string;
 }>();
 </script>
 
 <template>
-  <div v-if="periodos.length === 0">
+  <div v-if="timePeriods.length === 0">
     <span>{{ label }}</span>
   </div>
 
@@ -18,8 +16,8 @@ defineProps<{
 
       <template #panel>
         <div class="p-4 flex flex-col gap-3">
-          <div v-for="periodo in periodos">
-            {{ formatPeriodoPopper(periodo) }}
+          <div v-for="timePeriod in timePeriods">
+            {{ formatTimePeriodPopper(timePeriod) }}
           </div>
         </div>
       </template>

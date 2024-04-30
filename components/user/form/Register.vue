@@ -24,12 +24,12 @@ const submit = async () => {
   try {
     pageStatus.fetching = true;
 
-    await postRegister(form);
+    await postUser(form);
 
     const loginData = await postLogin(form);
     useAuthStore().setUserToken(loginData.value.token);
 
-    useRouter().push("/registros");
+    useRouter().push("/time-record");
   } catch (error) {
     ErrorToast(error);
   } finally {

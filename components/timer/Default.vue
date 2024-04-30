@@ -35,7 +35,7 @@ timerStore.off();
 
       <div class="flex gap-3">
         <UButton
-          :title="timerStore.periodosLength ? 'Continuar' : 'Iniciar'"
+          :title="timerStore.timePeriodsLength ? 'Continuar' : 'Iniciar'"
           :disabled="timerStore.isRunning"
           color="blue"
           icon="i-heroicons-play"

@@ -26,7 +26,7 @@ const submit = async () => {
     });
 
     useAuthStore().setUserToken(data.value.token);
-    useRouter().push("/registros");
+    useRouter().push("/time-record");
   } catch (error) {
     ErrorToast(error);
   } finally {

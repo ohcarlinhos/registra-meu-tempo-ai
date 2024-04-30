@@ -11,6 +11,6 @@ definePageMeta({ middleware: ["auth"] });
   >
     <GHeader small-title />
 
-    <RegistroDashboard />
+    <TimeRecordDashboard />
   </UContainer>
 </template>

@@ -7,13 +7,17 @@ const props = defineProps<{
 }>();
 
 const isRunning = computed(() => {
-  const index = timerStore.periodos.findIndex((p) => p.registroId === props.id);
+  const index = timerStore.timePeriods.findIndex(
+    (p) => p.timeRecordId === props.id
+  );
   return index != -1;
 });
 
 const currentPeriodo = computed(() => {
-  const index = timerStore.periodos.findIndex((p) => p.registroId === props.id);
-  return index != -1 ? timerStore.periodos[index] : null;
+  const index = timerStore.timePeriods.findIndex(
+    (p) => p.timeRecordId === props.id
+  );
+  return index != -1 ? timerStore.timePeriods[index] : null;
 });
 
 const interval = ref<NodeJS.Timeout | null>(null);

@@ -7,8 +7,8 @@ const modal = reactive({
   },
 });
 
-const registroStore = useRegistroStore();
-const editRegistroObject = ref<RegistroFormType | undefined>(undefined);
+const timeRecordStore = useTimeRecordStore();
+const editRegistroObject = ref<TimeRecordFormType | undefined>(undefined);
 const router = useRouter();
 
 const closeConfirmDeleteModal = () => {
@@ -22,12 +22,12 @@ const openConfirmDeleteModal = async (id: number) => {
 };
 
 const edit = (id: number) => {
-  router.push(`/registros/${id}`);
+  router.push(`/time-record/${id}`);
 
-  // const registro = registroStore.findRegistroById(id);
-  // if (!registro) return;
+  // const timeRecord = timeRecordStore.findRegistroById(id);
+  // if (!timeRecord) return;
 
-  // editRegistroObject.value = editRegistroObjectFactory(registro);
+  // editRegistroObject.value = editTimeRecordObjectFactory(timeRecord);
   // modal.createOrUpdateRegistro = true;
 };
 
@@ -36,11 +36,11 @@ const closeModal = () => {
   editRegistroObject.value = undefined;
 };
 
-const deleteRegistro = async () => {
+const deleteTimeRecord = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
-    await registroStore.deleteRegistro(modal.confirmDelete.id!);
+    await timeRecordStore.deleteTimeRecord(modal.confirmDelete.id!);
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
@@ -56,7 +56,7 @@ const deleteRegistro = async () => {
       <h2 class="mb-5 mt-5 text-2xl font-bold">Registros Locais</h2>
 
       <UCard>
-        <RegistroTableLocal />
+        <TimeRecordTableLocal />
       </UCard>
     </div>
 
@@ -76,7 +76,7 @@ const deleteRegistro = async () => {
         />
       </UContainer>
       <UCard>
-        <RegistroTable @update="edit" @delete="openConfirmDeleteModal" />
+        <TimeRecordTable @update="edit" @delete="openConfirmDeleteModal" />
       </UCard>
     </div>
   </div>
@@ -84,12 +84,12 @@ const deleteRegistro = async () => {
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     text="Tem certeza que quer excluir esse registro?"
-    @confirm="deleteRegistro"
+    @confirm="deleteTimeRecord"
     @cancel="closeConfirmDeleteModal"
   />
 
   <UModal v-model="modal.createOrUpdateRegistro" prevent-close>
-    <RegistroFormCreateAndUpdate
+    <TimeRecordFormCreateAndUpdate
       :edit-object="editRegistroObject"
       @close="closeModal"
     />

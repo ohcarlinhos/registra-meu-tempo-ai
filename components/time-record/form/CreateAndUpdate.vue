@@ -2,14 +2,14 @@
 import * as yup from "yup";
 import { addMinutes } from "date-fns";
 
-const registroStore = useRegistroStore();
-const categoriaStore = useCategoriaStore();
+const timeRecordStore = useTimeRecordStore();
+const categoryStore = useCategoryStore();
 
 const emit = defineEmits(["close", "refresh"]);
 
 const props = withDefaults(
   defineProps<{
-    editObject?: RegistroFormType;
+    editObject?: TimeRecordFormType;
   }>(),
   {}
 );
@@ -22,12 +22,12 @@ const status = reactive({
   fetching: false,
 });
 
-const form = reactive<RegistroFormType>({
+const form = reactive<TimeRecordFormType>({
   id: undefined,
-  descricao: "",
-  categoria: "",
-  categoriaId: undefined,
-  periodos: [],
+  description: "",
+  category: "",
+  categoryId: undefined,
+  timePeriods: [],
   callback: undefined,
 });
 
@@ -39,43 +39,43 @@ const newCategorias = ref<string[]>([]);
 
 // TODO: finalizar validações
 const schema = yup.object({
-  descricao: yup.string(),
+  description: yup.string(),
 });
 
 /**
  * Computeds
  */
 
-const categorias = computed(() => {
+const categories = computed(() => {
   return [
     ...newCategorias.value,
-    ...categoriaStore.categorias.map((c) => c.nome),
+    ...categoryStore.getCategories.map((c) => c.name),
   ];
 });
 
-const categoriaValue = computed({
-  get: () => form.categoria,
+const categoryValue = computed({
+  get: () => form.category,
 
   set: async (label) => {
-    const findded = categorias.value.find((categoria) => categoria === label);
+    const findded = categories.value.find((category) => category === label);
     if (!findded) newCategorias.value.push(label);
 
-    form.categoria = label;
+    form.category = label;
   },
 });
 
 const addButtonIsDisabled = computed(() => {
   const initialValue = true;
 
-  const allHasValue = form.periodos.reduce((acc, current) => {
-    return !!current.inicio && !!current.fim && acc;
+  const allHasValue = form.timePeriods.reduce((acc, current) => {
+    return !!current.start && !!current.end && acc;
   }, initialValue);
 
   return allHasValue === false;
 });
 
 const submitButtonIsDisabled = computed(() => {
-  return form.periodos.length === 0;
+  return form.timePeriods.length === 0;
 });
 
 /**
@@ -84,38 +84,38 @@ const submitButtonIsDisabled = computed(() => {
 
 const closeModal = (refresh = false) => {
   emit("close");
-  if (refresh) registroStore.fetchRegistros();
+  if (refresh) timeRecordStore.fetchTimeRecords();
 };
 
 const addPeriodoToForm = () => {
-  const inicio =
-    form.periodos.length === 0
+  const start =
+    form.timePeriods.length === 0
       ? new Date()
-      : addMinutes(form.periodos[form.periodos.length - 1].fim, 15);
+      : addMinutes(form.timePeriods[form.timePeriods.length - 1].end, 15);
 
-  const fim = addMinutes(inicio, 25);
+  const end = addMinutes(start, 25);
 
-  form.periodos.push({ inicio, fim });
+  form.timePeriods.push({ start, end });
 };
 
 const deletePeriodoFromForm = (index: number) => {
-  form.periodos.splice(index, 1);
+  form.timePeriods.splice(index, 1);
 };
 
-const handleCategoria = async () => {
-  if (newCategorias.value.length && form.categoria === newCategorias.value[0]) {
-    const categoria = await postCategoria({ nome: newCategorias.value[0] });
+const handleCategory = async () => {
+  if (newCategorias.value.length && form.category === newCategorias.value[0]) {
+    const category = await postCategory({ name: newCategorias.value[0] });
     newCategorias.value.splice(0, 1);
 
-    return categoria.value.id;
+    return category.value.id;
   }
 
-  if (form.categoria) {
-    const categoria = categoriaStore.categorias.find(
-      (categoria) => categoria.nome === form.categoria
+  if (form.category) {
+    const category = categoryStore.getCategories.find(
+      (category) => category.name === form.category
     );
 
-    if (categoria) return categoria.id;
+    if (category) return category.id;
   }
 
   return undefined;
@@ -127,9 +127,9 @@ const submit = async () => {
 
 const createAction = async () => {
   try {
-    await postRegistro({
+    await postTimeRecord({
       ...form,
-      categoriaId: await handleCategoria(),
+      categoryId: await handleCategory(),
     });
 
     if (form.callback) form.callback();
@@ -156,16 +156,16 @@ const submitAction = async () => {
  */
 
 onMounted(async () => {
-  await categoriaStore.fetchCategoria(closeModal);
+  await categoryStore.fetchCategories(closeModal);
 
   if (props.editObject) {
     form.id = props.editObject.id;
-    form.descricao = props.editObject.descricao;
-    form.categoria = props.editObject.categoria;
-    form.categoriaId = props.editObject.categoriaId;
-    form.periodos = props.editObject.periodos;
+    form.description = props.editObject.description;
+    form.category = props.editObject.category;
+    form.categoryId = props.editObject.categoryId;
+    form.timePeriods = props.editObject.timePeriods;
     form.callback = props.editObject.callback;
-  } else if (form.periodos.length === 0) {
+  } else if (form.timePeriods.length === 0) {
     addPeriodoToForm();
   }
 });
@@ -188,14 +188,14 @@ onMounted(async () => {
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <UFormGroup label="Descrição" name="descricao">
-        <UInput type="text" v-model="form.descricao" autofocus />
+      <UFormGroup label="Descrição" name="description">
+        <UInput type="text" v-model="form.description" autofocus />
       </UFormGroup>
 
-      <UFormGroup label="Categoria" name="categoria" class="z-100 relative">
+      <UFormGroup label="Categoria" name="category" class="z-100 relative">
         <USelectMenu
-          v-model="categoriaValue"
-          :options="categorias"
+          v-model="categoryValue"
+          :options="categories"
           :clear-search-on-close="true"
           show-create-option-when="always"
           searchable
@@ -222,23 +222,23 @@ onMounted(async () => {
       </div>
 
       <div
-        v-for="(_, index) in form.periodos"
+        v-for="(_, index) in form.timePeriods"
         class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
       >
-        <UFormGroup label="Início do período" :name="'inicio-' + index">
+        <UFormGroup label="Início do período" :name="'start-' + index">
           <GDatePicker
-            v-model="form.periodos[index].inicio"
-            :min="index !== 0 ? form.periodos[index - 1].fim : ''"
+            v-model="form.timePeriods[index].start"
+            :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
             class="py-1"
-            @change="form.periodos[index].fim = $event"
+            @change="form.timePeriods[index].end = $event"
           />
         </UFormGroup>
 
-        <UFormGroup label="Final do período" :name="'fim-' + index">
+        <UFormGroup label="Final do período" :name="'end-' + index">
           <GDatePicker
-            v-model="form.periodos[index].fim"
+            v-model="form.timePeriods[index].end"
             class="py-1"
-            :min="form.periodos[index].inicio"
+            :min="form.timePeriods[index].start"
           />
         </UFormGroup>
 
