@@ -5,18 +5,18 @@ const pageStatus = reactive({ fetching: false });
 
 const form = reactive({
   email: "carlinhos@test.com",
-  nome: "Carlinhos",
-  senha: "Ska$312d%$1",
-  confirm_senha: "Ska$312d%$1",
+  name: "Carlinhos",
+  password: "Ska$312d%$1",
+  confirm_password: "Ska$312d%$1",
 });
 
 const schema = yup.object({
-  nome: yup.string().min(3).required(),
+  name: yup.string().min(3).required(),
   email: yup.string().email().required(),
-  senha: yup.string().min(6).max(32).required(),
-  confirm_senha: yup
+  password: yup.string().min(6).max(32).required(),
+  confirm_password: yup
     .string()
-    .oneOf([yup.ref("senha")])
+    .oneOf([yup.ref("password")])
     .required(),
 });
 
@@ -51,7 +51,7 @@ const submit = async () => {
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
       <UFormGroup label="Nome" name="name">
-        <UInput type="text" v-model="form.nome" autofocus />
+        <UInput type="text" v-model="form.name" autofocus />
       </UFormGroup>
 
       <UFormGroup label="Email" name="email">
@@ -59,11 +59,11 @@ const submit = async () => {
       </UFormGroup>
 
       <UFormGroup label="Senha" name="password">
-        <UInput type="password" v-model="form.senha" />
+        <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
       <UFormGroup label="Confirme a senha" name="confirm_password">
-        <UInput type="password" v-model="form.confirm_senha" />
+        <UInput type="password" v-model="form.confirm_password" />
       </UFormGroup>
 
       <UButton

@@ -9,7 +9,7 @@ definePageMeta({ middleware: ["guest"] });
       constrained: 'min-h-svh max-w-sm',
     }"
   >
-    <UsuarioFormRegister />
+    <UserFormRegister />
 
     <ULink to="/" inactive-class="text-primary font-bold text-xs">
       Ir para Página Inicial

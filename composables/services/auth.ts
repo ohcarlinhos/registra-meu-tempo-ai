@@ -12,11 +12,11 @@ export const postLogin = async (payload: PayloadLogin) => {
 };
 
 type PayloadRegister = {
-  nome: string;
+  name: string;
   email: string;
-  senha: string;
+  password: string;
 };
 
 export const postRegister = async (payload: PayloadRegister) => {
-  return await CustomHttp<PayloadRegister, unknown>("usuario", "post", payload);
+  return await CustomHttp<PayloadRegister, unknown>("user", "post", payload);
 };

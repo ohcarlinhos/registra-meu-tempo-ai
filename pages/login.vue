@@ -16,4 +16,4 @@ definePageMeta({ middleware: ["guest"] });
     </ULink>
   </UContainer>
 </template>
-~/composables/store/useAuthStore
+
