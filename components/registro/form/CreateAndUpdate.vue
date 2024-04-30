@@ -163,6 +163,7 @@ onMounted(async () => {
     form.descricao = props.editObject.descricao;
     form.categoria = props.editObject.categoria;
     form.categoriaId = props.editObject.categoriaId;
+    form.periodos = props.editObject.periodos;
     form.callback = props.editObject.callback;
   } else if (form.periodos.length === 0) {
     addPeriodoToForm();
@@ -187,6 +188,10 @@ onMounted(async () => {
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+      <UFormGroup label="Descrição" name="descricao">
+        <UInput type="text" v-model="form.descricao" autofocus />
+      </UFormGroup>
+
       <UFormGroup label="Categoria" name="categoria" class="z-100 relative">
         <USelectMenu
           v-model="categoriaValue"
@@ -204,11 +209,7 @@ onMounted(async () => {
         </USelectMenu>
       </UFormGroup>
 
-      <UFormGroup label="Descrição" name="descricao">
-        <UInput type="text" v-model="form.descricao" autofocus />
-      </UFormGroup>
-
-      <div v-if="!editObject" class="flex justify-between pt-6">
+      <div class="flex justify-between pt-6">
         <h3>Períodos de Tempo</h3>
 
         <UButton
@@ -221,7 +222,6 @@ onMounted(async () => {
       </div>
 
       <div
-        v-if="!editObject"
         v-for="(_, index) in form.periodos"
         class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
       >
