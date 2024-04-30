@@ -29,7 +29,7 @@ const submit = async () => {
     const loginData = await postLogin(form);
     useAuthStore().setUserToken(loginData.value.token);
 
-    useRouter().push("/dashboard");
+    useRouter().push("/registros");
   } catch (error) {
     ErrorToast(error);
   } finally {
@@ -81,4 +81,3 @@ const submit = async () => {
     </template>
   </UCard>
 </template>
-
