@@ -22,7 +22,7 @@ const submit = async () => {
 
     const data = await postLogin({
       email: form.email,
-      senha: form.password,
+      password: form.password,
     });
 
     useAuthStore().setUserToken(data.value.token);

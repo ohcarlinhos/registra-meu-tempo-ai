@@ -1,6 +1,6 @@
 type PayloadLogin = {
   email: string;
-  senha: string;
+  password: string;
 };
 
 export const postLogin = async (payload: PayloadLogin) => {
