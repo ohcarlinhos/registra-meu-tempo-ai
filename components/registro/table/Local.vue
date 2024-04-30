@@ -75,7 +75,6 @@ const closeModal = () => {
     :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
     :columns="columns"
     :rows="timerStore.registros"
-    class="pt-10"
   >
     <template #periodos-data="{ row }">
       <RegistroTableColPeriodos
