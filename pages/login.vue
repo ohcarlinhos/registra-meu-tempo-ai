@@ -11,7 +11,7 @@ definePageMeta({ middleware: ["guest"] });
   >
     <AuthFormLogin />
 
-    <ULink to="/dashboard" inactive-class="text-primary font-bold text-xs">
+    <ULink to="/" inactive-class="text-primary font-bold text-xs">
       Ir para Página Inicial
     </ULink>
   </UContainer>
