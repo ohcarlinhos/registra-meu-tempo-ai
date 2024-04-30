@@ -30,9 +30,9 @@ const page = reactive({
         </UButton>
       </div>
 
-      <RegistroTableLocal
-        v-if="page.openTable && timerStore.registros.length"
-      />
+      <UCard v-if="page.openTable && timerStore.registros.length" class="mt-10">
+        <RegistroTableLocal />
+      </UCard>
     </div>
   </UContainer>
 </template>

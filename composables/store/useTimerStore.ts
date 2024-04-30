@@ -131,15 +131,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     formated(): string {
-      const totalSeconds = Math.floor(this._totalMiliseconds / 1000);
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds - minutes * 60;
-      let formated = "";
-
-      formated += ("00" + minutes).slice(-2) + ":";
-      formated += ("00" + seconds).slice(-2);
-
-      return formated;
+      return formatToTimerDisplay(this._totalMiliseconds);
     },
 
     registros: (state) => {

@@ -5,11 +5,12 @@ definePageMeta({ middleware: ["auth"] });
 <template>
   <UContainer
     :ui="{
-      padding: 'py-32',
+      padding: 'py-16',
       constrained: 'min-h-svh',
     }"
   >
-    <GHeader />
+    <GHeader small-title />
+
     <RegistroDashboard />
   </UContainer>
 </template>
