@@ -27,7 +27,7 @@ export const useSimpleTimerStore = defineStore("SimpleTimerStore", {
 
         timePeriod.fetching = true;
 
-        this.savePeriodo(this._timePeriodsList[index]).then(async () => {
+        this.saveTimePeriod(this._timePeriodsList[index]).then(async () => {
           this._timePeriodsList.splice(index, 1);
           await callback();
         });
@@ -54,7 +54,7 @@ export const useSimpleTimerStore = defineStore("SimpleTimerStore", {
       }
     },
 
-    savePeriodo(timePeriod: TimePeriodSimpleTimerType) {
+    saveTimePeriod(timePeriod: TimePeriodSimpleTimerType) {
       return postTimePeriod({
         timeRecordId: timePeriod.timeRecordId,
         start: new Date(timePeriod.current.start),

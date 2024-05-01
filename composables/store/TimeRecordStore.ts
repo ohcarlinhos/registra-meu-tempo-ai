@@ -32,7 +32,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
       }
     },
 
-    findRegistroById(id: number) {
+    findTimeRecordById(id: number) {
       return this._timeRecords.find((r) => r.id == id);
     },
   },

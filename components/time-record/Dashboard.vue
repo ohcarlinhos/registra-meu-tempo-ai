@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const modal = reactive({
-  createOrUpdateRegistro: false,
+  createOrUpdateTimeRecord: false,
   confirmDelete: {
     open: false,
     id: null as null | number,
@@ -8,7 +8,7 @@ const modal = reactive({
 });
 
 const timeRecordStore = useTimeRecordStore();
-const editRegistroObject = ref<TimeRecordFormType | undefined>(undefined);
+const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
 const router = useRouter();
 
 const closeConfirmDeleteModal = () => {
@@ -27,13 +27,13 @@ const edit = (id: number) => {
   // const timeRecord = timeRecordStore.findRegistroById(id);
   // if (!timeRecord) return;
 
-  // editRegistroObject.value = editTimeRecordObjectFactory(timeRecord);
-  // modal.createOrUpdateRegistro = true;
+  // editTimeRecordObject.value = editTimeRecordObjectFactory(timeRecord);
+  // modal.createOrUpdateTimeRecord = true;
 };
 
 const closeModal = () => {
-  modal.createOrUpdateRegistro = false;
-  editRegistroObject.value = undefined;
+  modal.createOrUpdateTimeRecord = false;
+  editTimeRecordObject.value = undefined;
 };
 
 const deleteTimeRecord = async () => {
@@ -72,7 +72,7 @@ const deleteTimeRecord = async () => {
         <UButton
           label="Registro Manual"
           icon="i-heroicons-pencil-square-20-solid"
-          @click="modal.createOrUpdateRegistro = true"
+          @click="modal.createOrUpdateTimeRecord = true"
         />
       </UContainer>
       <UCard>
@@ -88,9 +88,9 @@ const deleteTimeRecord = async () => {
     @cancel="closeConfirmDeleteModal"
   />
 
-  <UModal v-model="modal.createOrUpdateRegistro" prevent-close>
+  <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
     <TimeRecordFormCreateAndUpdate
-      :edit-object="editRegistroObject"
+      :edit-object="editTimeRecordObject"
       @close="closeModal"
     />
   </UModal>

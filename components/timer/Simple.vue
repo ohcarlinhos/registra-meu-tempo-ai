@@ -13,7 +13,7 @@ const isRunning = computed(() => {
   return index != -1;
 });
 
-const currentPeriodo = computed(() => {
+const currentTimePeriod = computed(() => {
   const index = timerStore.timePeriods.findIndex(
     (p) => p.timeRecordId === props.id
   );
@@ -48,7 +48,7 @@ const startTimer = () => {
       @click="startTimer"
     />
     <div>
-      <p>{{ currentPeriodo ? currentPeriodo.timerDisplay : "00:00" }}</p>
+      <p>{{ currentTimePeriod ? currentTimePeriod.timerDisplay : "00:00" }}</p>
     </div>
   </div>
 </template>

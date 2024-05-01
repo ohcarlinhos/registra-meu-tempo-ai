@@ -31,7 +31,7 @@ const form = reactive<TimeRecordFormType>({
   callback: undefined,
 });
 
-const newCategorias = ref<string[]>([]);
+const newCategories = ref<string[]>([]);
 
 /**
  * Validations
@@ -48,7 +48,7 @@ const schema = yup.object({
 
 const categories = computed(() => {
   return [
-    ...newCategorias.value,
+    ...newCategories.value,
     ...categoryStore.getCategories.map((c) => c.name),
   ];
 });
@@ -58,7 +58,7 @@ const categoryValue = computed({
 
   set: async (label) => {
     const findded = categories.value.find((category) => category === label);
-    if (!findded) newCategorias.value.push(label);
+    if (!findded) newCategories.value.push(label);
 
     form.category = label;
   },
@@ -87,7 +87,7 @@ const closeModal = (refresh = false) => {
   if (refresh) timeRecordStore.fetchTimeRecords();
 };
 
-const addPeriodoToForm = () => {
+const addTimePeriodToForm = () => {
   const start =
     form.timePeriods.length === 0
       ? new Date()
@@ -98,14 +98,14 @@ const addPeriodoToForm = () => {
   form.timePeriods.push({ start, end });
 };
 
-const deletePeriodoFromForm = (index: number) => {
+const deleteTimePeriodFromForm = (index: number) => {
   form.timePeriods.splice(index, 1);
 };
 
 const handleCategory = async () => {
-  if (newCategorias.value.length && form.category === newCategorias.value[0]) {
-    const category = await postCategory({ name: newCategorias.value[0] });
-    newCategorias.value.splice(0, 1);
+  if (newCategories.value.length && form.category === newCategories.value[0]) {
+    const category = await postCategory({ name: newCategories.value[0] });
+    newCategories.value.splice(0, 1);
 
     return category.value.id;
   }
@@ -166,7 +166,7 @@ onMounted(async () => {
     form.timePeriods = props.editObject.timePeriods;
     form.callback = props.editObject.callback;
   } else if (form.timePeriods.length === 0) {
-    addPeriodoToForm();
+    addTimePeriodToForm();
   }
 });
 </script>
@@ -217,7 +217,7 @@ onMounted(async () => {
           size="sm"
           type="button"
           :disabled="addButtonIsDisabled"
-          @click="addPeriodoToForm"
+          @click="addTimePeriodToForm"
         />
       </div>
 
@@ -246,7 +246,7 @@ onMounted(async () => {
           icon="i-heroicons-x-mark"
           color="white"
           variant="solid"
-          @click="deletePeriodoFromForm(index)"
+          @click="deleteTimePeriodFromForm(index)"
         />
       </div>
 
