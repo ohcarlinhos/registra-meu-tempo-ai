@@ -146,7 +146,7 @@ export const useTimerStore = defineStore("TimerStore", {
               "dd/MM/yyyy"
             ),
             timePeriods: timeRecord.timePeriods.map((e) => e),
-            tempoFormatado: "25m (TODO)",
+            formattedTime: "25m (TODO)",
           };
         })
         .reverse();
