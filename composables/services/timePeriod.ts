@@ -4,9 +4,13 @@ type Payload = {
   end: Date;
 };
 
-export const getTimePeriods = async function (timeRecordId: number) {
-  return await CustomHttp<null, TimePeriodType[]>(
-    `/time-period/${timeRecordId}`,
+export const getTimePeriods = async function (
+  timeRecordId: number,
+  page = 1,
+  perPage = 4
+) {
+  return await CustomHttp<null, Pagination<TimePeriodType>>(
+    `/time-period/${timeRecordId}?page=${page}&perPage=${perPage}`,
     "get"
   );
 };

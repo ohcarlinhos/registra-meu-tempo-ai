@@ -6,19 +6,41 @@ const route = useRoute();
 const columns = [
   { key: "start", label: "Início" },
   { key: "end", label: "Fim" },
+  { key: "formattedTime", label: "Tempo" },
   { key: "actions" },
 ];
 
 const timeRecord = ref<TimeRecordType>();
-const timePeriod = ref<TimePeriodType[]>([]);
+const timePeriodReq = ref<Pagination<TimePeriodType>>();
+const tpReqFetching = ref(false);
+
+const computedPage = computed({
+  get: () => {
+    return timePeriodReq.value?.page || 1;
+  },
+  set: async (page: number) => {
+    await getTp(page, computedPerPage.value);
+  },
+});
+
+const computedPerPage = computed({
+  get: () => {
+    return timePeriodReq.value?.perPage || 4;
+  },
+  set: async (perPage: number) => {
+    await getTp(1, perPage);
+  },
+});
+
+const perPageList = ref([4, 8, 12]);
 
 const emit = defineEmits<{
   delete: [value: number];
 }>();
 
 const timePeriodFormatted = computed(() => {
-  return timePeriod.value
-    ? timePeriod.value?.map((p) => {
+  return timePeriodReq.value?.data.length
+    ? timePeriodReq.value.data.map((p) => {
         return {
           ...p,
           start: format(p.start, "dd/MM/yyyy HH:mm:ss"),
@@ -43,9 +65,18 @@ const getTimeRecordData = async () => {
     await getTimeRecordById(parseInt(route.params.id as string))
   ).value;
 
-  timePeriod.value = (
-    await getTimePeriods(parseInt(route.params.id as string))
-  ).value;
+  await getTp();
+};
+
+const getTp = async (page = 1, perPage = 4) => {
+  try {
+    tpReqFetching.value = true;
+    timePeriodReq.value = (
+      await getTimePeriods(parseInt(route.params.id as string), page, perPage)
+    ).value;
+  } finally {
+    tpReqFetching.value = false;
+  }
 };
 
 onMounted(async () => {
@@ -87,7 +118,7 @@ onMounted(async () => {
         <h2 class="mb-5 mt-5 text-2xl font-bold">Estatísticas</h2>
 
         <UCard>
-          <p><b>Tempo Total:</b> {{ timeRecord.timeFormatted }}</p>
+          <p><b>Tempo Total:</b> {{ timeRecord.formattedTime }}</p>
           <p><b>Total de Períodos:</b> {{ timeRecord.timePeriodsCount }}</p>
         </UCard>
       </div>
@@ -121,6 +152,27 @@ onMounted(async () => {
               </div>
             </template>
           </UTable>
+
+          <div class="flex justify-between items-end mt-3">
+            <div>
+              <UPagination
+                v-if="timePeriodReq && timePeriodReq.totalPages > 1"
+                v-model="computedPage"
+                :page-count="timePeriodReq.perPage"
+                :total="timePeriodReq.totalItems"
+                :disabled="tpReqFetching"
+              />
+            </div>
+
+            <div class="flex items-center gap-2">
+              Itens por página:
+              <USelect
+                v-model="computedPerPage"
+                :options="perPageList"
+                :disabled="tpReqFetching"
+              />
+            </div>
+          </div>
         </UCard>
       </div>
     </div>
