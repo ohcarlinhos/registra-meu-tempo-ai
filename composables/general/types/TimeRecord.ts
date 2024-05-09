@@ -5,7 +5,7 @@ export type TimeRecordType = {
   id?: number;
   categoryId?: number | null;
   categoryName?: string;
-  timeFormatted?: string;
+  formattedTime?: string;
   timePeriodsCount?: number;
 };
 

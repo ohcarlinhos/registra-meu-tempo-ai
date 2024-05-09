@@ -23,12 +23,6 @@ const openConfirmDeleteModal = async (id: number) => {
 
 const edit = (id: number) => {
   router.push(`/time-record/${id}`);
-
-  // const timeRecord = timeRecordStore.findRegistroById(id);
-  // if (!timeRecord) return;
-
-  // editTimeRecordObject.value = editTimeRecordObjectFactory(timeRecord);
-  // modal.createOrUpdateTimeRecord = true;
 };
 
 const closeModal = () => {

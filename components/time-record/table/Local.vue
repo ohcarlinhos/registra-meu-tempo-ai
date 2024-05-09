@@ -29,7 +29,7 @@ const deleteTimeRecord = () => {
 const columns = [
   { key: "timeRecordDate", label: "Data" },
   { key: "timePeriods", label: "Períodos" },
-  { key: "timeFormatted", label: "Tempo" },
+  { key: "formattedTime", label: "Tempo" },
   { key: "actions" },
 ];
 
@@ -78,7 +78,7 @@ const closeModal = () => {
   >
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
-        :timePeriods="(row as ITimeRecordLocal).timePeriods"
+        :time-periods="(row as ITimeRecordLocal).timePeriods"
         :label="timePeriodsLabel((row as ITimeRecordLocal).timePeriods.length)"
       />
     </template>
