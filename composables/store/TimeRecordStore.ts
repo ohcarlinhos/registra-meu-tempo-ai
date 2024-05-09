@@ -3,18 +3,18 @@ import { format } from "date-fns";
 export const useTimeRecordStore = defineStore("TimeRecordStore", {
   state: () => {
     return {
-      _timeRecords: [] as TimeRecordType[],
+      _apiRes: {} as Pagination<TimeRecordType>,
       _fetching: false,
       _deletingTimeRecord: false,
     };
   },
 
   actions: {
-    async fetchTimeRecords() {
+    async fetchTimeRecords(page = 1, perPage = 8) {
       try {
         this._fetching = true;
-        const data = await getTimeRecords();
-        this._timeRecords = data.value;
+        const data = await getTimeRecords(page, perPage);
+        this._apiRes = data.value;
       } catch (error) {
         ErrorToast(error);
       } finally {
@@ -33,29 +33,36 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
     },
 
     findTimeRecordById(id: number) {
-      return this._timeRecords.find((r) => r.id == id);
+      return this._apiRes.data!.length
+        ? this._apiRes.data.find((r) => r.id == id)
+        : null;
     },
   },
 
   getters: {
-    timeRecords: (state) => state._timeRecords,
+    timeRecords: (state) => state._apiRes,
+
+    apiRes: (state) => (state._apiRes!.data ? state._apiRes : null),
 
     timeRecordsTableData: (state) => {
       const timeRecordsTable: ITimeRecordTable[] = [];
 
-      state._timeRecords.forEach((timeRecord) => {
-        timeRecordsTable.push({
-          ...timeRecord,
-          timeRecordDate:
-            (timeRecord.timeRecordDate &&
-              format(timeRecord.timeRecordDate, "dd/MM/yyyy")) ||
-            "-",
-          description: timeRecord.description || "-",
-          categoryName: timeRecord.categoryName || "-",
-          timeFormatted: timeRecord.timeFormatted || "Nenhum",
-          timePeriodsCountText: timePeriodsLabel(timeRecord.timePeriodsCount!),
+      if (state._apiRes!.data)
+        state._apiRes.data.forEach((timeRecord) => {
+          timeRecordsTable.push({
+            ...timeRecord,
+            timeRecordDate:
+              (timeRecord.timeRecordDate &&
+                format(timeRecord.timeRecordDate, "dd/MM/yyyy")) ||
+              "-",
+            description: timeRecord.description || "-",
+            categoryName: timeRecord.categoryName || "-",
+            formattedTime: timeRecord.formattedTime || "Nenhum",
+            timePeriodsCountText: timePeriodsLabel(
+              timeRecord.timePeriodsCount!
+            ),
+          });
         });
-      });
 
       return timeRecordsTable;
     },

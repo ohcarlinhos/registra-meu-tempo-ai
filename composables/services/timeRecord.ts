@@ -1,7 +1,6 @@
-export const getTimeRecords = async function () {
-  return await CustomHttp<null, TimeRecordType[]>(
-    // TODO: remover parâmetros mocados
-    "/time-record?page=1&perPage=24",
+export const getTimeRecords = async function (page = 1, perPage = 8) {
+  return await CustomHttp<null, Pagination<TimeRecordType>>(
+    `/time-record?page=${page}&perPage=${perPage}`,
     "get"
   );
 };
