@@ -13,7 +13,7 @@ timerStore.off();
 <template>
   <UCard>
     <div class="flex flex-col gap-5 justify-center items-center">
-      <div class="flex gap-4">
+      <!-- <div class="flex gap-4">
         <UButton
           label="Cronômetro"
           :variant="getVariantBtn('timer')"
@@ -29,7 +29,7 @@ timerStore.off();
           :disabled="timerStore.hasMiliseconds"
           @click="timerStore.setTimerType('pomodoro')"
         />
-      </div>
+      </div> -->
 
       <h3 class="text-6xl font-bold">{{ timerStore.formated }}</h3>
 
