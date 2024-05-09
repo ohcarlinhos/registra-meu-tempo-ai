@@ -25,7 +25,12 @@ const page = reactive({
           variant="link"
           @click="page.openTable = !page.openTable"
         >
-          Você possui {{ timerStore.timeRecords.length }} timeRecords locais.
+          Você possui {{ timerStore.timeRecords.length }}
+          {{
+            timerStore.timeRecords.length > 1
+              ? "registros locais."
+              : "registro local."
+          }}
           <br />(Clique para {{ page.openTable ? "fechar" : "visualizar" }})
         </UButton>
       </div>
