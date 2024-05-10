@@ -8,7 +8,7 @@ export const useCategoryStore = defineStore("CategoryStore", {
   actions: {
     async fetchCategories(errorCallback: Function) {
       try {
-        this._categories = (await getCategories()).value;
+        this._categories = (await getAllCategories()).value;
       } catch (error) {
         ErrorToast(error);
         errorCallback();
@@ -21,7 +21,7 @@ export const useCategoryStore = defineStore("CategoryStore", {
   },
 
   getters: {
-    getCategories(state) {
+    getAllCategories(state) {
       return state._categories;
     },
   },

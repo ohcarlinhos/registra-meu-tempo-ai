@@ -49,7 +49,7 @@ const schema = yup.object({
 const categories = computed(() => {
   return [
     ...newCategories.value,
-    ...categoryStore.getCategories.map((c) => c.name),
+    ...categoryStore.getAllCategories.map((c) => c.name),
   ];
 });
 
@@ -111,7 +111,7 @@ const handleCategory = async () => {
   }
 
   if (form.category) {
-    const category = categoryStore.getCategories.find(
+    const category = categoryStore.getAllCategories.find(
       (category) => category.name === form.category
     );
 
