@@ -1,4 +1,4 @@
-import { format, getDayOfYear } from "date-fns";
+import { format, getDayOfYear, intervalToDuration } from "date-fns";
 
 export const timePeriodsLabel = (count: number) => {
   const countText = count === 1 ? " período" : " períodos";
@@ -57,4 +57,28 @@ export const formatTimePeriodPopper = (timePeriod: TimePeriodType) => {
     " até " +
     format(timePeriod.end, fullFormat)
   );
+};
+
+export const formatTimePeriodListToString = (timePeriods: TimePeriodType[]) => {
+  let totalMiliseconds = 0;
+
+  for (let i = 0; timePeriods.length > i; i++) {
+    const calc =
+      new Date(timePeriods[i].end).getTime() -
+      new Date(timePeriods[i].start).getTime();
+
+    totalMiliseconds += calc;
+  }
+
+  const duration = intervalToDuration({ start: 0, end: totalMiliseconds });
+  const { days, hours, minutes, seconds } = duration;
+
+  let fString = "";
+
+  if (days != undefined) fString += days + "d ";
+  if (hours != undefined) fString += hours + "h ";
+  if (minutes != undefined) fString += minutes + "m ";
+  if (seconds != undefined) fString += seconds + "s ";
+
+  return fString || "-";
 };
