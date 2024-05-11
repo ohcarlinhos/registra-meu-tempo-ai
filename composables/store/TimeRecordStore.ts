@@ -10,7 +10,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
   },
 
   actions: {
-    async fetchTimeRecords(page = 1, perPage = 8) {
+    async fetchTimeRecords(page = 1, perPage = 4) {
       try {
         this._fetching = true;
         const data = await getTimeRecords(page, perPage);
@@ -22,11 +22,11 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
       }
     },
 
-    async deleteTimeRecord(id: number) {
+    async deleteTimeRecord(id: number, page = 1, perPage = 4) {
       try {
         this._deletingTimeRecord = true;
         await deleteTimeRecord(id);
-        await this.fetchTimeRecords();
+        await this.fetchTimeRecords(page, perPage);
       } finally {
         this._deletingTimeRecord = false;
       }

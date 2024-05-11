@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+export type DeletePayload = { id: number; page: number; perPage: number };
+
 const trStore = useTimeRecordStore();
 const emit = defineEmits<{
   update: [value: number];
-  delete: [value: number];
+  delete: [value: DeletePayload];
 }>();
 
 const computedPage = computed({
@@ -16,7 +18,7 @@ const computedPage = computed({
 
 const computedPerPage = computed({
   get: () => {
-    return trStore.apiRes?.perPage || 8;
+    return trStore.apiRes?.perPage || 4;
   },
   set: async (perPage: number) => {
     await trStore.fetchTimeRecords(1, perPage);
@@ -44,7 +46,12 @@ const items = (row: TimeRecordType) => [
     {
       label: "Apagar",
       icon: "i-heroicons-trash-20-solid",
-      click: async () => emit("delete", row.id!),
+      click: async () =>
+        emit("delete", {
+          id: row.id!,
+          page: computedPage.value,
+          perPage: computedPerPage.value,
+        }),
     },
   ],
 ];

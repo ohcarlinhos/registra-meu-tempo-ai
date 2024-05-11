@@ -1,9 +1,13 @@
 <script lang="ts" setup>
+import type { DeletePayload } from "./table/index.vue";
+
 const modal = reactive({
   createOrUpdateTimeRecord: false,
   confirmDelete: {
     open: false,
     id: null as null | number,
+    page: 1,
+    perPage: 4,
   },
 });
 
@@ -16,9 +20,11 @@ const closeConfirmDeleteModal = () => {
   modal.confirmDelete.id = null;
 };
 
-const openConfirmDeleteModal = async (id: number) => {
+const openConfirmDeleteModal = async (payload: DeletePayload) => {
   modal.confirmDelete.open = true;
-  modal.confirmDelete.id = id;
+  modal.confirmDelete.id = payload.id;
+  modal.confirmDelete.page = payload.page;
+  modal.confirmDelete.perPage = payload.perPage;
 };
 
 const edit = (id: number) => {
@@ -34,7 +40,11 @@ const deleteTimeRecord = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
-    await timeRecordStore.deleteTimeRecord(modal.confirmDelete.id!);
+    await timeRecordStore.deleteTimeRecord(
+      modal.confirmDelete.id,
+      modal.confirmDelete.page,
+      modal.confirmDelete.perPage
+    );
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
