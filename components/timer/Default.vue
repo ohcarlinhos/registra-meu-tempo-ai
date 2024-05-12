@@ -7,7 +7,7 @@ const getVariantBtn = (type: TimerType) =>
 const getColorBtn = (type: TimerType) =>
   timerStore.timerType == type ? "primary" : "white";
 
-timerStore.off();
+timerStore.validateAndConfigure();
 </script>
 
 <template>

@@ -14,6 +14,20 @@ export const useTimerStore = defineStore("TimerStore", {
   },
 
   actions: {
+    validateAndConfigure() {
+      const alreadyAdd = localStorage.getItem("alreadyAddEventListener");
+
+      if (!alreadyAdd || alreadyAdd === "0") {
+        if (this._running) this.pause();
+
+        window.addEventListener("beforeunload", function () {
+          localStorage.setItem("alreadyAddEventListener", "0");
+        });
+
+        localStorage.setItem("alreadyAddEventListener", "1");
+      }
+    },
+
     reset() {
       const timeNow = Date.now();
       this._currentTimePeriod.start = timeNow;
