@@ -15,10 +15,15 @@ defineProps<{
       <span>{{ label }}</span>
 
       <template #panel>
-        <div class="p-4 flex flex-col gap-3">
-          <div v-for="timePeriod in timePeriods">
-            {{ formatTimePeriodPopper(timePeriod) }}
-          </div>
+        <div class="p-2 flex justify-center gap-2 max-w-40 flex-wrap">
+          <UBadge
+            v-for="timePeriod in timePeriods"
+            color="gray"
+            variant="solid"
+            :title="formatTimePeriodPopper(timePeriod).date"
+          >
+            {{ formatTimePeriodPopper(timePeriod).formatted }}
+          </UBadge>
         </div>
       </template>
     </UPopover>
