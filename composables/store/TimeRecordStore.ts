@@ -10,10 +10,10 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
   },
 
   actions: {
-    async fetchTimeRecords(page = 1, perPage = 4) {
+    async fetchTimeRecords(page = 1, perPage = 4, search = "") {
       try {
         this._fetching = true;
-        const data = await getTimeRecords(page, perPage);
+        const data = await getTimeRecords(page, perPage, search);
         this._apiRes = data.value;
       } catch (error) {
         ErrorToast(error);

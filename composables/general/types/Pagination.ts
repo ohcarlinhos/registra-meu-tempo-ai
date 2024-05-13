@@ -3,5 +3,6 @@ export type Pagination<T> = {
   perPage: number;
   totalItems: number;
   totalPages: number;
+  search: string;
   data: T[];
 };

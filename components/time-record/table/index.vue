@@ -3,16 +3,39 @@ export type DeletePayload = { id: number; page: number; perPage: number };
 
 const trStore = useTimeRecordStore();
 const emit = defineEmits<{
-  update: [value: number];
+  access: [value: number];
   delete: [value: DeletePayload];
+  create: [];
 }>();
+
+const debounce = ref();
+
+const setDebounce = async (value: string) => {
+  clearInterval(debounce.value);
+
+  search.value = value;
+  debounce.value = setTimeout(async () => {
+    await trStore.fetchTimeRecords(1, computedPerPage.value, value);
+  }, 1000);
+};
+
+const search = ref("");
+
+const computedSearch = computed({
+  get: () => {
+    return search.value;
+  },
+  set: async (value: string) => {
+    setDebounce(value);
+  },
+});
 
 const computedPage = computed({
   get: () => {
     return trStore.apiRes?.page || 1;
   },
   set: async (page: number) => {
-    await trStore.fetchTimeRecords(page, computedPerPage.value);
+    await trStore.fetchTimeRecords(page, computedPerPage.value, search.value);
   },
 });
 
@@ -21,7 +44,7 @@ const computedPerPage = computed({
     return trStore.apiRes?.perPage || 4;
   },
   set: async (perPage: number) => {
-    await trStore.fetchTimeRecords(1, perPage);
+    await trStore.fetchTimeRecords(1, perPage, search.value);
   },
 });
 
@@ -41,7 +64,7 @@ const items = (row: TimeRecordType) => [
     {
       label: "Acessar",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => emit("update", row.id!),
+      click: () => emit("access", row.id!),
     },
     {
       label: "Apagar",
@@ -62,49 +85,91 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UTable
-    :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
-    :columns="columns"
-    :rows="trStore.timeRecordsTableData"
-    :loading="trStore.fetching"
-  >
-    <template #timePeriods-data="{ row }">
-      <TimeRecordTableColTimePeriod
-        :timePeriods="(row as ITimeRecordTable).timePeriods"
-        :label="(row as ITimeRecordTable).timePeriodsCountText || '0'"
-      />
-    </template>
+  <div class="flex-1">
+    <UContainer
+      :ui="{
+        base: 'flex justify-between gap-10',
+        padding: 'pb-6 px-0 lg:px-0 sm:px-0',
+      }"
+    >
+      <h2 class="text-2xl font-bold">Registros de Tempo</h2>
 
-    <template #actions-data="{ row }">
-      <div class="flex justify-end">
-        <UDropdown :items="items(row)">
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
-          />
-        </UDropdown>
+      <div class="flex gap-5">
+        <UInput
+          v-model="computedSearch"
+          name="search"
+          placeholder="Pesquisar"
+          icon="i-heroicons-magnifying-glass-20-solid"
+          autocomplete="off"
+          :loading="trStore.fetching"
+          :ui="{ icon: { trailing: { pointer: '' } } }"
+        >
+          <template #trailing>
+            <UButton
+              v-show="computedSearch !== ''"
+              color="gray"
+              variant="link"
+              icon="i-heroicons-x-mark-20-solid"
+              :padded="false"
+              @click="computedSearch = ''"
+            />
+          </template>
+        </UInput>
+
+        <UButton
+          label="Registro Manual"
+          icon="i-heroicons-pencil-square-20-solid"
+          @click="emit('create')"
+        />
       </div>
-    </template>
-  </UTable>
+    </UContainer>
 
-  <div class="flex justify-between items-end mt-3">
-    <UPagination
-      v-if="trStore.apiRes && trStore.apiRes.totalPages > 1"
-      class="mt-2"
-      v-model="computedPage"
-      :page-count="trStore.apiRes.perPage"
-      :total="trStore.apiRes.totalItems"
-      :disabled="trStore.fetching"
-    />
+    <UCard>
+      <UTable
+        :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
+        :columns="columns"
+        :rows="trStore.timeRecordsTableData"
+        :loading="trStore.fetching"
+      >
+        <template #timePeriods-data="{ row }">
+          <TimeRecordTableColTimePeriod
+            :timePeriods="(row as ITimeRecordTable).timePeriods"
+            :label="(row as ITimeRecordTable).timePeriodsCountText || '0'"
+          />
+        </template>
 
-    <div class="flex items-center gap-2">
-      Itens por página:
-      <USelect
-        v-model="computedPerPage"
-        :options="perPageList"
-        :disabled="trStore.fetching"
-      />
-    </div>
+        <template #actions-data="{ row }">
+          <div class="flex justify-end">
+            <UDropdown :items="items(row)">
+              <UButton
+                color="gray"
+                variant="ghost"
+                icon="i-heroicons-ellipsis-horizontal-20-solid"
+              />
+            </UDropdown>
+          </div>
+        </template>
+      </UTable>
+
+      <div class="flex justify-between items-end mt-3">
+        <UPagination
+          v-if="trStore.apiRes && trStore.apiRes.totalPages > 1"
+          class="mt-2"
+          v-model="computedPage"
+          :page-count="trStore.apiRes.perPage"
+          :total="trStore.apiRes.totalItems"
+          :disabled="trStore.fetching"
+        />
+
+        <div class="flex items-center gap-2">
+          Itens por página:
+          <USelect
+            v-model="computedPerPage"
+            :options="perPageList"
+            :disabled="trStore.fetching"
+          />
+        </div>
+      </div>
+    </UCard>
   </div>
 </template>

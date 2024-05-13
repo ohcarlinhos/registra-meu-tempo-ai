@@ -1,6 +1,10 @@
-export const getTimeRecords = async function (page = 1, perPage = 8) {
+export const getTimeRecords = async function (
+  page = 1,
+  perPage = 8,
+  search = ""
+) {
   return await CustomHttp<null, Pagination<TimeRecordType>>(
-    `/time-record?page=${page}&perPage=${perPage}`,
+    `/time-record?page=${page}&perPage=${perPage}&search=${search}`,
     "get"
   );
 };

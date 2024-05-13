@@ -27,7 +27,7 @@ const openConfirmDeleteModal = async (payload: DeletePayload) => {
   modal.confirmDelete.perPage = payload.perPage;
 };
 
-const edit = (id: number) => {
+const access = (id: number) => {
   router.push(`/time-record/${id}`);
 };
 
@@ -64,25 +64,11 @@ const deleteTimeRecord = async () => {
       </UCard>
     </div>
 
-    <div class="flex-1">
-      <UContainer
-        :ui="{
-          base: 'flex justify-between gap-10',
-          padding: 'pb-6 px-0 lg:px-0 sm:px-0',
-        }"
-      >
-        <h2 class="text-2xl font-bold">Registros de Tempo</h2>
-
-        <UButton
-          label="Registro Manual"
-          icon="i-heroicons-pencil-square-20-solid"
-          @click="modal.createOrUpdateTimeRecord = true"
-        />
-      </UContainer>
-      <UCard>
-        <TimeRecordTable @update="edit" @delete="openConfirmDeleteModal" />
-      </UCard>
-    </div>
+    <TimeRecordTable
+      @access="access"
+      @create="modal.createOrUpdateTimeRecord = true"
+      @delete="openConfirmDeleteModal"
+    />
   </div>
 
   <GModalConfirm
