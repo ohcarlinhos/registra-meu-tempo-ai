@@ -13,13 +13,13 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@types/uuid": "^9.0.8",
     "nuxt": "3.11.2",
-    "vue": "3.4.26",
+    "vue": "3.4.27",
     "vue-router": "4.3.2"
   },
   "dependencies": {
-    "@nuxt/ui": "2.15.2",
+    "@nuxt/ui": "2.16.0",
     "@pinia/nuxt": "^0.5.1",
-    "@vuepic/vue-datepicker": "8.5.0",
+    "@vuepic/vue-datepicker": "8.6.0",
     "date-fns": "3.6.0",
     "uuid": "^9.0.1",
     "yup": "1.4.0"
