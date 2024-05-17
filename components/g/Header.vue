@@ -54,6 +54,14 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <ULink
+        v-if="authStore.isAuthenticad"
+        to="/options"
+        :active-class="activeClass"
+      >
+        Opções
+      </ULink>
+
+      <ULink
         v-if="!authStore.isAuthenticad"
         to="/login"
         :active-class="activeClass"
