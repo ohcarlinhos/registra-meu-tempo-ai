@@ -156,7 +156,7 @@ const submitAction = async () => {
  */
 
 onMounted(async () => {
-  await categoryStore.fetchCategories(closeModal);
+  await categoryStore.fetchAllCategories(closeModal);
 
   if (props.editObject) {
     form.id = props.editObject.id;
