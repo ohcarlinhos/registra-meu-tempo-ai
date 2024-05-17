@@ -45,11 +45,11 @@ const submit = async () => {
     <template #header> Acessar Painel</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-      <UFormGroup label="Email" name="email">
+      <UFormGroup label="Email" name="email" required>
         <UInput type="email" v-model="form.email" autofocus />
       </UFormGroup>
 
-      <UFormGroup label="Senha" name="password">
+      <UFormGroup label="Senha" name="password" required>
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
@@ -63,7 +63,7 @@ const submit = async () => {
 
     <template #footer>
       <ULink to="/register" inactive-class="text-primary font-bold text-xs">
-        Clique aqui para criar um usuário!
+        Criar conta
       </ULink>
     </template>
   </UCard>
