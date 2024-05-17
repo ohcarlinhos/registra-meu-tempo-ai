@@ -42,6 +42,7 @@ export const CustomHttp = async <P, R>(
 
     return data.value;
   } else {
+    // TODO: remover duplicação
     try {
       const data = await $fetch<R>(route, {
         retry: false,
@@ -54,8 +55,14 @@ export const CustomHttp = async <P, R>(
       });
 
       return data;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      const err = error as { data: { message?: string; title?: string } };
+
+      if (err && err.data.message) throw new Error(err.data.message);
+
+      throw new Error(
+        "Não foi possível realizar essa ação, espere alguns minutos e tente novamente."
+      );
     }
   }
 };
