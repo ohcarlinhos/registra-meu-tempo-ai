@@ -1,26 +1,39 @@
 import type { Pagination } from "../general/types/Pagination";
 
 export const getAllCategories = async function () {
-  return await CustomHttp<null, CategoryType[]>("/category/all", "get");
+  return CustomHttp<null, CategoryType[]>("/category/all", "get", null, true);
 };
 
 export const getCategories = async function (
   page = 1,
   perPage = 5,
-  search = ""
+  search = "",
+  mounted = false
 ) {
-  return await CustomHttp<null, Pagination<CategoryType>>(
+  return CustomHttp<null, Pagination<CategoryType>>(
     `/category?page=${page}&perPage=${perPage}&search=${search}`,
-    "get"
+    "get",
+    null,
+    mounted
   );
 };
 
-type Payload = { name: string };
+type PayloadPost = { name: string };
 
-export const postCategory = async (payload: Payload) => {
-  return await CustomHttp<Payload, CategoryType>("/category", "post", payload);
+export const postCategory = async (payload: PayloadPost) => {
+  return CustomHttp<PayloadPost, CategoryType>(
+    "/category",
+    "post",
+    payload,
+    true
+  );
 };
 
 export const deleteCategory = async (id: number) => {
-  return await CustomHttp<null, TimeRecordType>(`/category/${id}`, "delete");
+  return CustomHttp<null, TimeRecordType>(
+    `/category/${id}`,
+    "delete",
+    null,
+    true
+  );
 };

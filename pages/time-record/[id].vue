@@ -10,7 +10,7 @@ const columns = [
   { key: "actions" },
 ];
 
-const timeRecord = ref<TimeRecordType>();
+const timeRecordReq = ref<TimeRecordType>();
 const timePeriodReq = ref<Pagination<TimePeriodType>>();
 const tpReqFetching = ref(false);
 
@@ -61,9 +61,12 @@ const items = (row: TimeRecordType) => [
 ];
 
 const getTimeRecordData = async () => {
-  timeRecord.value = (
-    await getTimeRecordById(parseInt(route.params.id as string))
-  ).value;
+  const data = await getTimeRecordById(
+    parseInt(route.params.id as string),
+    true
+  );
+
+  if (data) timeRecordReq.value = data;
 
   await getTp();
 };
@@ -71,9 +74,15 @@ const getTimeRecordData = async () => {
 const getTp = async (page = 1, perPage = 4) => {
   try {
     tpReqFetching.value = true;
-    timePeriodReq.value = (
-      await getTimePeriods(parseInt(route.params.id as string), page, perPage)
-    ).value;
+
+    const data = await getTimePeriods(
+      parseInt(route.params.id as string),
+      page,
+      perPage,
+      true
+    );
+
+    if (data) timePeriodReq.value = data;
   } finally {
     tpReqFetching.value = false;
   }
@@ -93,7 +102,7 @@ onMounted(async () => {
   >
     <GHeader small-title />
 
-    <div v-if="timeRecord" class="flex flex-wrap gap-10">
+    <div v-if="timeRecordReq" class="flex flex-wrap gap-10">
       <div class="flex-1">
         <h2 class="text-2xl mb-2 font-bold">Salve seu tempo!</h2>
         <p>Continue a registrar períodos de tempo.</p>
@@ -111,15 +120,15 @@ onMounted(async () => {
         <h2 class="mb-5 text-2xl font-bold">Informações</h2>
 
         <UCard>
-          <p><b>Categoria:</b> {{ timeRecord.categoryName || "Nenhuma" }}</p>
-          <p><b>Descrição:</b> {{ timeRecord.description || "Nenhuma" }}</p>
+          <p><b>Categoria:</b> {{ timeRecordReq.categoryName || "Nenhuma" }}</p>
+          <p><b>Descrição:</b> {{ timeRecordReq.description || "Nenhuma" }}</p>
         </UCard>
 
         <h2 class="mb-5 mt-5 text-2xl font-bold">Estatísticas</h2>
 
         <UCard>
-          <p><b>Tempo Total:</b> {{ timeRecord.formattedTime }}</p>
-          <p><b>Total de Períodos:</b> {{ timeRecord.timePeriodsCount }}</p>
+          <p><b>Tempo Total:</b> {{ timeRecordReq.formattedTime }}</p>
+          <p><b>Total de Períodos:</b> {{ timeRecordReq.timePeriodsCount }}</p>
         </UCard>
       </div>
 

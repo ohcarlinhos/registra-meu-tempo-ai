@@ -15,7 +15,7 @@ const setDebounce = async (value: string) => {
 
   search.value = value;
   debounce.value = setTimeout(async () => {
-    await trStore.fetchTimeRecords(1, computedPerPage.value, value);
+    await trStore.fetchTimeRecords(1, computedPerPage.value, value, true);
   }, 1000);
 };
 
@@ -35,7 +35,12 @@ const computedPage = computed({
     return trStore.apiRes?.page || 1;
   },
   set: async (page: number) => {
-    await trStore.fetchTimeRecords(page, computedPerPage.value, search.value);
+    await trStore.fetchTimeRecords(
+      page,
+      computedPerPage.value,
+      search.value,
+      true
+    );
   },
 });
 
@@ -44,7 +49,7 @@ const computedPerPage = computed({
     return trStore.apiRes?.perPage || 4;
   },
   set: async (perPage: number) => {
-    await trStore.fetchTimeRecords(1, perPage, search.value);
+    await trStore.fetchTimeRecords(1, perPage, search.value, true);
   },
 });
 
@@ -79,9 +84,7 @@ const items = (row: TimeRecordType) => [
   ],
 ];
 
-onMounted(async () => {
-  await trStore.fetchTimeRecords();
-});
+await trStore.fetchTimeRecords();
 </script>
 
 <template>

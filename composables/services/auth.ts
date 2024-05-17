@@ -4,9 +4,10 @@ type PayloadLogin = {
 };
 
 export const postLogin = async (payload: PayloadLogin) => {
-  return await CustomHttp<PayloadLogin, { token: string }>(
+  return CustomHttp<PayloadLogin, { token: string }>(
     "/auth/login",
     "post",
-    payload
+    payload,
+    true
   );
 };

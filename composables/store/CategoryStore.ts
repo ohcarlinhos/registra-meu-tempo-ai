@@ -11,7 +11,7 @@ export const useCategoryStore = defineStore("CategoryStore", {
   actions: {
     async fetchAllCategories(errorCallback: Function) {
       try {
-        this._categories = (await getAllCategories()).value;
+        this._categories = (await getAllCategories()) || [];
       } catch (error) {
         ErrorToast(error);
         errorCallback();
@@ -22,11 +22,11 @@ export const useCategoryStore = defineStore("CategoryStore", {
       return this._categories.find((c) => c.id == id);
     },
 
-    async fetchCategories(page = 1, perPage = 5, search = "") {
+    async fetchCategories(page = 1, perPage = 5, search = "", mounted = false) {
       try {
         this._fetching = true;
-        const data = await getCategories(page, perPage, search);
-        this._apiRes = data.value;
+        const data = await getCategories(page, perPage, search, mounted);
+        if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);
       } finally {

@@ -27,9 +27,11 @@ const submit = async () => {
     await postUser(form);
 
     const loginData = await postLogin(form);
-    useAuthStore().setUserToken(loginData.value.token);
 
-    useRouter().push("/time-record");
+    if (loginData) {
+      useAuthStore().setUserToken(loginData.token);
+      useRouter().push("/time-record");
+    }
   } catch (error) {
     ErrorToast(error);
   } finally {
@@ -76,7 +78,7 @@ const submit = async () => {
 
     <template #footer>
       <ULink to="/login" inactive-class="text-primary font-bold text-xs">
-        Acessar
+        Acessar conta
       </ULink>
     </template>
   </UCard>

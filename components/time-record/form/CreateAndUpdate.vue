@@ -84,7 +84,7 @@ const submitButtonIsDisabled = computed(() => {
 
 const closeModal = (refresh = false) => {
   emit("close");
-  if (refresh) timeRecordStore.fetchTimeRecords();
+  if (refresh) timeRecordStore.refetchTimeRecords();
 };
 
 const addTimePeriodToForm = () => {
@@ -107,7 +107,7 @@ const handleCategory = async () => {
     const category = await postCategory({ name: newCategories.value[0] });
     newCategories.value.splice(0, 1);
 
-    return category.value.id;
+    return category!.id;
   }
 
   if (form.category) {
