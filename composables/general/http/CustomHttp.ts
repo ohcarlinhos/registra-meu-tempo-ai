@@ -13,9 +13,9 @@ export const CustomHttp = async <P, R>(
   route: string,
   method: MethodType = "get",
   payload: P | null = null,
-  mounted = false
+  is$fetch = false
 ) => {
-  if (!mounted) {
+  if (!is$fetch) {
     const { data, error } = await useFetch<R>(route, {
       key: `request:${route}`,
       retry: false,
