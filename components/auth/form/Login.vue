@@ -25,7 +25,7 @@ const submit = async () => {
       password: form.password,
     });
 
-    useAuthStore().setUserToken(data.value.token);
+    useAuthStore().setUserToken(data!.token);
     useRouter().push("/time-record");
   } catch (error) {
     ErrorToast(error);
