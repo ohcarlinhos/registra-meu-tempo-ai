@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DeletePayload } from "./types";
 
-const trCategory = useCategoryStore();
+const categoryStore = useCategoryStore();
 
 const emit = defineEmits<{
   edit: [value: number];
@@ -11,12 +11,24 @@ const emit = defineEmits<{
 
 const debounce = ref();
 
+const modal = reactive({
+  createOrUpdateTimeRecord: false,
+  confirmDelete: {
+    open: false,
+    id: null as null | number,
+    page: 1,
+    perPage: 4,
+  },
+});
+
+const editTimeRecordObject = ref<CategoryFormType | undefined>(undefined);
+
 const setDebounce = async (value: string) => {
   clearInterval(debounce.value);
 
   search.value = value;
   debounce.value = setTimeout(async () => {
-    await trCategory.fetchCategories(1, computedPerPage.value, value, true);
+    await categoryStore.fetch(1, computedPerPage.value, value, true);
   }, 1000);
 };
 
@@ -33,23 +45,26 @@ const computedSearch = computed({
 
 const computedPage = computed({
   get: () => {
-    return trCategory.apiRes?.page || 1;
+    return categoryStore.apiRes?.page || 1;
   },
   set: async (page: number) => {
-    trCategory.fetchCategories(page, computedPerPage.value, search.value);
+    categoryStore.fetch(page, computedPerPage.value, search.value);
   },
 });
 
 const computedPerPage = computed({
   get: () => {
-    return trCategory.apiRes?.perPage || 5;
+    return categoryStore.apiRes?.perPage || 5;
   },
   set: async (perPage: number) => {
-    trCategory.fetchCategories(1, perPage, search.value);
+    categoryStore.fetch(1, perPage, search.value);
   },
 });
 
-const perPageList = ref([5, 10, 15]);
+const computedPerPageList = computed(() => {
+  const list = [5, 10, 15];
+  return list.filter((i) => (categoryStore.apiRes?.totalItems || 5) >= i);
+});
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 
@@ -64,7 +79,7 @@ const items = (row: TimeRecordType) => [
       label: "Apagar",
       icon: "i-heroicons-trash-20-solid",
       click: async () =>
-        emit("delete", {
+        openConfirmDeleteModal({
           id: row.id!,
           page: computedPage.value,
           perPage: computedPerPage.value,
@@ -73,11 +88,43 @@ const items = (row: TimeRecordType) => [
   ],
 ];
 
-await trCategory.fetchCategories();
+const closeModal = () => {
+  modal.createOrUpdateTimeRecord = false;
+  editTimeRecordObject.value = undefined;
+};
+
+const deleteCategory = async () => {
+  if (!modal.confirmDelete.id) return;
+
+  try {
+    await categoryStore.delete(
+      modal.confirmDelete.id,
+      modal.confirmDelete.page,
+      modal.confirmDelete.perPage
+    );
+    closeConfirmDeleteModal();
+  } catch (error) {
+    ErrorToast(error);
+  }
+};
+
+const closeConfirmDeleteModal = () => {
+  modal.confirmDelete.open = false;
+  modal.confirmDelete.id = null;
+};
+
+const openConfirmDeleteModal = async (payload: DeletePayload) => {
+  modal.confirmDelete.open = true;
+  modal.confirmDelete.id = payload.id;
+  modal.confirmDelete.page = payload.page;
+  modal.confirmDelete.perPage = payload.perPage;
+};
+
+await categoryStore.fetch();
 </script>
 
 <template>
-  <GPanelCol class="w-1/3">
+  <GPanelCol custom-class="w-full">
     <div class="flex justify-between gap-10">
       <GPanelTitle text="Categorias" />
 
@@ -88,7 +135,7 @@ await trCategory.fetchCategories();
           placeholder="Pesquisar"
           icon="i-heroicons-magnifying-glass-20-solid"
           autocomplete="off"
-          :loading="trCategory.fetching"
+          :loading="categoryStore.fetching"
           :ui="{ icon: { trailing: { pointer: '' } } }"
         >
           <template #trailing>
@@ -103,11 +150,10 @@ await trCategory.fetchCategories();
           </template>
         </UInput>
 
-        <!-- <UButton
-          label="Cadastrar"
+        <UButton
           icon="i-heroicons-pencil-square-20-solid"
-          @click="emit('create')"
-        /> -->
+          @click="modal.createOrUpdateTimeRecord = true"
+        />
       </div>
     </div>
 
@@ -115,8 +161,8 @@ await trCategory.fetchCategories();
       <UTable
         :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
         :columns="columns"
-        :rows="trCategory.categoryTableData"
-        :loading="trCategory.fetching"
+        :rows="categoryStore.categoryTableData"
+        :loading="categoryStore.fetching"
       >
         <template #timePeriods-data="{ row }">
           <TimeRecordTableColTimePeriod
@@ -140,23 +186,37 @@ await trCategory.fetchCategories();
 
       <div class="flex justify-between items-end mt-3">
         <UPagination
-          v-if="trCategory.apiRes && trCategory.apiRes.totalPages > 1"
+          v-if="categoryStore.apiRes && categoryStore.apiRes.totalPages > 1"
           class="mt-2"
           v-model="computedPage"
-          :page-count="trCategory.apiRes.perPage"
-          :total="trCategory.apiRes.totalItems"
-          :disabled="trCategory.fetching"
+          :page-count="categoryStore.apiRes.perPage"
+          :total="categoryStore.apiRes.totalItems"
+          :disabled="categoryStore.fetching"
         />
 
-        <div class="flex items-center gap-2">
+        <div v-if="computedPerPageList.length" class="flex items-center gap-2">
           Itens por página:
           <USelect
             v-model="computedPerPage"
-            :options="perPageList"
-            :disabled="trCategory.fetching"
+            :options="computedPerPageList"
+            :disabled="categoryStore.fetching"
           />
         </div>
       </div>
     </UCard>
   </GPanelCol>
+
+  <GModalConfirm
+    v-model:open="modal.confirmDelete.open"
+    text="Tem certeza que quer excluir esse registro?"
+    @confirm="deleteCategory"
+    @cancel="closeConfirmDeleteModal"
+  />
+
+  <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
+    <CategoryFormCreateAndUpdate
+      :edit-object="editTimeRecordObject"
+      @close="closeModal"
+    />
+  </UModal>
 </template>
