@@ -5,8 +5,12 @@ definePageMeta({ middleware: ["auth"] });
 <template>
   <NuxtLayout name="panel">
     <div class="flex flex-row gap-10 flex-g items-start">
-      <UserFormUpdate class="w-1/3" />
-      <CategoryTable class="w-1/3" />
+      <div class="w-1/3 flex">
+        <UserFormUpdate />
+      </div>
+      <div class="w-1/3 flex">
+        <CategoryTable />
+      </div>
     </div>
   </NuxtLayout>
 </template>

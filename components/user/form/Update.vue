@@ -38,7 +38,7 @@ await userStore.fetchMyself((data) => {
 </script>
 
 <template>
-  <GPanelCol>
+  <GPanelCol custom-class="w-full">
     <GPanelTitle text="Dados do Usuário" />
 
     <UCard :key="form">
