@@ -53,7 +53,10 @@ const computedPerPage = computed({
   },
 });
 
-const perPageList = ref([4, 8, 12]);
+const computedPerPageList = computed(() => {
+  const list = [4, 8, 12];
+  return list.filter((i) => (trStore.apiRes?.totalItems || 0) >= i);
+});
 
 const columns = [
   { key: "timeRecordDate", label: "Data" },
@@ -168,7 +171,7 @@ await trStore.fetchTimeRecords();
           Itens por página:
           <USelect
             v-model="computedPerPage"
-            :options="perPageList"
+            :options="computedPerPageList"
             :disabled="trStore.fetching"
           />
         </div>
@@ -176,3 +179,4 @@ await trStore.fetchTimeRecords();
     </UCard>
   </div>
 </template>
+

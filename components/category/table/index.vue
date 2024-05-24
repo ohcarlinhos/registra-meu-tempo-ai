@@ -63,7 +63,7 @@ const computedPerPage = computed({
 
 const computedPerPageList = computed(() => {
   const list = [5, 10, 15];
-  return list.filter((i) => (categoryStore.apiRes?.totalItems || 5) >= i);
+  return list.filter((i) => (categoryStore.apiRes?.totalItems || 0) >= i);
 });
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
@@ -220,3 +220,4 @@ await categoryStore.fetch();
     />
   </UModal>
 </template>
+
