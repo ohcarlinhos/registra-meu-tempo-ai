@@ -8,11 +8,11 @@ export const postUser = async (payload: PayloadPost) => {
   return CustomHttp<PayloadPost, unknown>("user", "post", payload, true);
 };
 
-type PayloadUpdate = {
+export type PayloadUpdate = {
   name: string;
   email: string;
-  password: string;
-  oldPassword: string;
+  password?: string;
+  oldPassword?: string;
 };
 
 type UpdateUserResponse = {
@@ -34,3 +34,4 @@ export const updateUser = async (id: number, payload: PayloadUpdate) => {
 export const getMyself = async (mounted = false) => {
   return CustomHttp<null, UserType>("user/myself", "get", null, mounted);
 };
+

@@ -4,7 +4,7 @@ import * as yup from "yup";
 const userStore = useUserStore();
 const pageStatus = reactive({ fetching: false });
 
-const form = reactive({
+const form = reactive(<PayloadUpdate>{
   email: "",
   name: "",
   password: "",
@@ -14,12 +14,29 @@ const form = reactive({
 const schema = yup.object({
   name: yup.string().min(3, "Nome deve ter pelo menos 3 caractéres.").max(120),
   email: yup.string().email(),
-  // TODO: implementar verificação de password
+  password: yup.string().when("hasPassword", {
+    is: (value: string) => value && value.length > 0,
+    then: (s) => s.required(),
+    otherwise: (s) => s.notRequired(),
+  }),
+  oldPassword: yup.string().when("confirmOldPassword", {
+    is: () => form.password && form.password.length > 0,
+    then: (s) =>
+      s
+        .required("A confirmação da senha é obrigatória.")
+        .oneOf([yup.ref("password")], "Senhas diferentes."),
+    otherwise: (s) => s.notRequired(),
+  }),
 });
 
 const submit = async () => {
   try {
     pageStatus.fetching = true;
+
+    const data = toRaw(form);
+
+    if (!data.password) delete data.password;
+    if (!data.oldPassword) delete data.oldPassword;
 
     await updateUser(userStore.myself.id, form);
   } catch (error) {
@@ -75,3 +92,4 @@ await userStore.fetchMyself((data) => {
     </UCard>
   </GPanelCol>
 </template>
+
