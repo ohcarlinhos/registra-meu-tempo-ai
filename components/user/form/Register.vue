@@ -13,7 +13,7 @@ const form = reactive({
 const schema = yup.object({
   name: yup.string().min(3).max(120).required(),
   email: yup.string().email().required(),
-  password: yup.string().min(8).max(32).required(),
+  password: yup.string().min(8).max(48).required(),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref("password")])
@@ -83,3 +83,4 @@ const submit = async () => {
     </template>
   </UCard>
 </template>
+

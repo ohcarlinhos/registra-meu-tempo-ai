@@ -13,7 +13,7 @@ const schema = yup.object({
     .string()
     .email("Digite um e-mail válido.")
     .required("Digite seu e-mail"),
-  password: yup.string().min(6).max(32).required("Informe sua senha"),
+  password: yup.string().min(8).max(32).required("Informe sua senha"),
 });
 
 const submit = async () => {
@@ -68,3 +68,4 @@ const submit = async () => {
     </template>
   </UCard>
 </template>
+
