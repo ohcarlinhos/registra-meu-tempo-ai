@@ -2,8 +2,16 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
-  modules: ["@nuxt/ui", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
+  modules: [
+    "@nuxt/ui",
+    "@pinia/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
+    "@nuxtjs/i18n",
+  ],
   ui: { global: true },
+  i18n: {
+    vueI18n: "./i18n.config.ts",
+  },
   imports: {
     dirs: ["composables/**", "utils/**"],
   },
