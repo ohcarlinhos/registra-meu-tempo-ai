@@ -50,6 +50,10 @@ const submit = async () => {
     await updateUser(userStore.myself.id, form);
 
     OkToast("Usuário atualizado com sucesso!");
+
+    form.oldPassword = "";
+    form.confirmPassword = "";
+    form.password = "";
   } catch (error) {
     ErrorToast(error);
   } finally {
