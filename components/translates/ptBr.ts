@@ -25,5 +25,42 @@ export default {
       },
     },
   },
+
+  form: {
+    user: {
+      create: {
+        title: "Registrar",
+        success: "Usuário criado com sucesso.",
+        button: "Registrar",
+      },
+
+      update: {
+        title: "Dados do Usuário",
+        success: "Usuário atualizado com sucesso.",
+        button: "Salvar",
+      },
+
+      name: "Nome",
+      email: "Email",
+      password: "Senha",
+      newPassword: "Nova senha",
+      confirmPassword: "Confirmação da senha",
+      confirmNewPassword: "Confirmação da nova senha",
+      oldPassword: "Senha antiga",
+    },
+
+    register: {
+      access: "Acessar conta",
+    },
+
+    login: {
+      title: "Acessar",
+      success: "Autenticação feita com sucesso.",
+      button: "Acessar",
+      create: "Criar conta",
+    },
+  },
+
+  goToHome: "Ir para página inicial",
 };
 

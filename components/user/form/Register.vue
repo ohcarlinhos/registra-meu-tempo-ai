@@ -28,6 +28,7 @@ const submit = async () => {
     const loginData = await postLogin(form);
 
     if (loginData) {
+      OkToast(t("form.user.create.success"));
       useAuthStore().setUserToken(loginData.token);
       useRouter().push("/time-record");
     }
@@ -48,27 +49,31 @@ const submit = async () => {
       },
     }"
   >
-    <template #header> Registrar</template>
+    <template #header>{{ t("form.user.create.title") }}</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-      <UFormGroup label="Nome" name="name" required>
+      <UFormGroup :label="t('form.user.name')" name="name" required>
         <UInput type="text" v-model="form.name" autofocus />
       </UFormGroup>
 
-      <UFormGroup label="Email" name="email" required>
+      <UFormGroup :label="t('form.user.email')" name="email" required>
         <UInput type="email" v-model="form.email" />
       </UFormGroup>
 
-      <UFormGroup label="Senha" name="password" required>
+      <UFormGroup :label="t('form.user.password')" name="password" required>
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
-      <UFormGroup label="Confirme a senha" name="confirmPassword" required>
+      <UFormGroup
+        :label="t('form.user.confirmPassword')"
+        name="confirmPassword"
+        required
+      >
         <UInput type="password" v-model="form.confirmPassword" />
       </UFormGroup>
 
       <UButton
-        label="Registar"
+        :label="t('form.user.create.button')"
         type="submit"
         :loading="pageStatus.fetching"
         block
@@ -77,7 +82,7 @@ const submit = async () => {
 
     <template #footer>
       <ULink to="/login" inactive-class="text-primary font-bold text-xs">
-        Acessar conta
+        {{ t("form.register.access") }}
       </ULink>
     </template>
   </UCard>

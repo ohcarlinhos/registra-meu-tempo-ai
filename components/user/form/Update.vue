@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
+const { t } = useI18n();
+
 const userStore = useUserStore();
 const pageStatus = reactive({ fetching: false });
 
@@ -49,7 +51,7 @@ const submit = async () => {
 
     await updateUser(userStore.myself.id, form);
 
-    OkToast("Usuário atualizado com sucesso!");
+    OkToast(t("form.user.update.success"));
 
     form.oldPassword = "";
     form.confirmPassword = "";
@@ -71,34 +73,37 @@ await userStore.fetchMyself((data) => {
 
 <template>
   <GPanelCol custom-class="w-full">
-    <GPanelTitle text="Dados do Usuário" />
+    <GPanelTitle :text="t('form.user.update.title')" />
 
     <UCard :key="form">
       <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-        <UFormGroup label="Nome" name="name" required>
+        <UFormGroup :label="t('form.user.name')" name="name" required>
           <UInput type="text" v-model="form.name" autofocus />
         </UFormGroup>
 
-        <UFormGroup label="Email" name="email" required>
+        <UFormGroup :label="t('form.user.email')" name="email" required>
           <UInput type="email" v-model="form.email" />
         </UFormGroup>
 
-        <UFormGroup label="Senha antiga" name="oldPassword">
+        <UFormGroup :label="t('form.user.oldPassword')" name="oldPassword">
           <UInput type="password" v-model="form.oldPassword" />
         </UFormGroup>
 
-        <UFormGroup label="Nova senha" name="password">
+        <UFormGroup :label="t('form.user.newPassword')" name="password">
           <UInput type="password" v-model="form.password" />
         </UFormGroup>
 
-        <UFormGroup label="Confirmação da nova senha" name="confirmPassword">
+        <UFormGroup
+          :label="t('form.user.confirmNewPassword')"
+          name="confirmPassword"
+        >
           <UInput type="password" v-model="form.confirmPassword" />
         </UFormGroup>
 
         <UButton
-          label="Salvar"
-          type="submit"
+          :label="t('form.user.update.button')"
           :loading="pageStatus.fetching"
+          type="submit"
           block
         />
       </UForm>

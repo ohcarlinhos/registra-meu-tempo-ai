@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["guest"] });
+const { t } = useI18n();
 </script>
 
 <template>
@@ -12,7 +13,7 @@ definePageMeta({ middleware: ["guest"] });
     <UserFormRegister />
 
     <ULink to="/" inactive-class="text-primary font-bold text-xs">
-      Ir para Página Inicial
+      {{ t("goToHome") }}
     </ULink>
   </UContainer>
 </template>
