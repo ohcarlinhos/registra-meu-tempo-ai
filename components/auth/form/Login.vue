@@ -9,11 +9,8 @@ const form = reactive({
 const pageStatus = reactive({ fetching: false });
 
 const schema = yup.object({
-  email: yup
-    .string()
-    .email("Digite um e-mail válido.")
-    .required("Digite seu e-mail"),
-  password: yup.string().min(8).max(32).required("Informe sua senha"),
+  email: vUser.email(),
+  password: vUser.password(),
 });
 
 const submit = async () => {

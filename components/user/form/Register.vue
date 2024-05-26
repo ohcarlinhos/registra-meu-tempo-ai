@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
+const { t } = useI18n();
+
 const pageStatus = reactive({ fetching: false });
 
 const form = reactive({
@@ -11,13 +13,10 @@ const form = reactive({
 });
 
 const schema = yup.object({
-  name: yup.string().min(3).max(120).required(),
-  email: yup.string().email().required(),
-  password: yup.string().min(8).max(48).required(),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password")])
-    .required(),
+  name: vUser.name(),
+  email: vUser.email(),
+  password: vUser.password(),
+  confirmPassword: vUser.confirmPassword(),
 });
 
 const submit = async () => {

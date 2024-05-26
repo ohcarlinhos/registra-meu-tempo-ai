@@ -13,31 +13,24 @@ const form = reactive(<PayloadUpdate & { confirmPassword: string }>{
 });
 
 const schema = yup.object({
-  name: yup.string().min(3, "Nome deve ter pelo menos 3 caractéres.").max(120),
-  email: yup.string().email(),
+  name: vUser.name(),
+  email: vUser.email(),
 
   oldPassword: yup.string().when("modifyPassword", {
-    is: () => form.password || form.confirmPassword,
-    then: (s) => s.required("Informe a senha antiga para modificar sua senha."),
+    is: () => form.oldPassword || form.password || form.confirmPassword,
+    then: (s) => vUser.oldPassword(s),
     otherwise: (s) => s.notRequired(),
   }),
 
   password: yup.string().when("hasPassword", {
-    is: () => form.oldPassword || form.confirmPassword,
-    then: (s) =>
-      s
-        .min(8, "Mínimo de 8 caractéres.")
-        .max(48, "Máximo de 48 caractéres.")
-        .required("Informe a nova senha."),
+    is: () => form.password || form.oldPassword || form.confirmPassword,
+    then: (s) => vUser.password(s),
     otherwise: (s) => s.notRequired(),
   }),
 
   confirmPassword: yup.string().when("confirmOldPassword", {
-    is: () => form.oldPassword || form.password,
-    then: (s) =>
-      s
-        .required("A confirmação da nova senha é obrigatória.")
-        .oneOf([yup.ref("password")], "Senhas diferentes."),
+    is: () => form.confirmPassword || form.oldPassword || form.password,
+    then: (s) => vUser.confirmPassword(s),
     otherwise: (s) => s.notRequired(),
   }),
 });
