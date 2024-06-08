@@ -61,6 +61,12 @@ export default {
     },
   },
 
+  api: {
+    error: {
+      generic:
+        "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
+    },
+  },
+
   goToHome: "Ir para página inicial",
 };
-

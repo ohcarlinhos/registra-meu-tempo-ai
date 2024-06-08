@@ -9,6 +9,18 @@ type MethodType =
   | "options"
   | "trace";
 
+const clearSession = () => {
+  const userStore = useAuthStore();
+  const router = useRouter();
+  userStore.clearUserToken();
+  router.push("/login");
+};
+
+const emitGenericError = () => {
+  const { $i18n } = useNuxtApp();
+  throw new Error($i18n.t("api.error.generic"));
+};
+
 export const CustomHttp = async <P, R>(
   route: string,
   method: MethodType = "get",
@@ -31,13 +43,14 @@ export const CustomHttp = async <P, R>(
     });
 
     if (error.value) {
-      const err = error.value.data as { message?: string; title?: string };
+      if (error.value.statusCode === 401) {
+        return clearSession();
+      }
 
+      const err = error.value.data as { message?: string; title?: string };
       if (err && err.message) throw new Error(err.message);
 
-      throw new Error(
-        "Não foi possível realizar essa ação, espere alguns minutos e tente novamente."
-      );
+      emitGenericError();
     }
 
     return data.value;
@@ -56,13 +69,19 @@ export const CustomHttp = async <P, R>(
 
       return data;
     } catch (error) {
-      const err = error as { data: { message?: string; title?: string } };
+      const err = error as {
+        data: { message?: string; title?: string };
+        status: number;
+      };
 
-      if (err && err.data.message) throw new Error(err.data.message);
+      if (error === 401) {
+        return clearSession();
+      }
 
-      throw new Error(
-        "Não foi possível realizar essa ação, espere alguns minutos e tente novamente."
-      );
+      if (err && err.data && err.data.message)
+        throw new Error(err.data.message);
+
+      emitGenericError();
     }
   }
 };
