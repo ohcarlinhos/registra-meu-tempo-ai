@@ -61,6 +61,14 @@ export default {
     },
   },
 
+  timer: {
+    title: {
+      t1: "1, 2, 3 e...",
+      t2: "Prontos?",
+      t3: "Dá um start!",
+    },
+  },
+
   api: {
     error: {
       generic:
@@ -70,3 +78,4 @@ export default {
 
   goToHome: "Ir para página inicial",
 };
+

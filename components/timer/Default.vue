@@ -1,37 +1,30 @@
 <script lang="ts" setup>
 const timerStore = useTimerStore();
-
-const getVariantBtn = (type: TimerType) =>
-  timerStore.timerType == type ? "outline" : "solid";
-
-const getColorBtn = (type: TimerType) =>
-  timerStore.timerType == type ? "primary" : "white";
+const { t } = useI18n();
 
 timerStore.validateAndConfigure();
+
+const title = computed(() => {
+  const titles = [
+    t("timer.title.t1"),
+    t("timer.title.t2"),
+    t("timer.title.t3"),
+  ];
+  const randomIndex = Math.floor(Math.random() * titles.length);
+  return titles[randomIndex];
+});
 </script>
 
 <template>
   <UCard>
     <div class="flex flex-col gap-5 justify-center items-center">
-      <!-- <div class="flex gap-4">
-        <UButton
-          label="Cronômetro"
-          :variant="getVariantBtn('timer')"
-          :color="getColorBtn('timer')"
-          :disabled="timerStore.hasMiliseconds"
-          @click="timerStore.setTimerType('timer')"
-        />
+      <h3 v-if="timerStore.dontHasMiliseconds" class="text-4xl font-bold">
+        {{ title }}
+      </h3>
 
-        <UButton
-          label="Pomodoro"
-          :variant="getVariantBtn('pomodoro')"
-          :color="getColorBtn('pomodoro')"
-          :disabled="timerStore.hasMiliseconds"
-          @click="timerStore.setTimerType('pomodoro')"
-        />
-      </div> -->
-
-      <h3 class="text-6xl font-bold">{{ timerStore.formated }}</h3>
+      <h3 v-else class="text-4xl font-bold">
+        {{ timerStore.formated }}
+      </h3>
 
       <div class="flex gap-3">
         <UButton
