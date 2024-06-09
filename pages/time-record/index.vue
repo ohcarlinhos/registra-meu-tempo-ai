@@ -9,7 +9,9 @@ definePageMeta({ middleware: ["auth"] });
       constrained: 'min-h-svh max-w-8xl',
     }"
   >
-    <GHeader small-title />
+    <GHeader small-title>
+      <TimerDefault />
+    </GHeader>
 
     <TimeRecordDashboard />
   </UContainer>
