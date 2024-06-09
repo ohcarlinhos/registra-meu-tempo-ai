@@ -96,7 +96,8 @@ await trStore.fetchTimeRecords();
     <UContainer
       :ui="{
         base: 'flex flex-col md:flex-row justify-between gap-5',
-        padding: 'pb-6 px-0 lg:px-0 sm:px-0',
+        padding: 'pb-5 px-0 lg:px-0 sm:px-0',
+        constrained: 'max-w-8xl',
       }"
     >
       <h2 class="text-2xl font-bold">Registros de Tempo</h2>
