@@ -5,6 +5,7 @@ export type TimeRecordType = {
   id?: number;
   categoryId?: number | null;
   categoryName?: string;
+  code?: string;
   formattedTime?: string;
   timePeriodsCount?: number;
 };
@@ -22,6 +23,8 @@ export type TimeRecordFormType = {
   description: string;
   category: string;
   categoryId?: number;
+  code: string;
   timePeriods: { start: Date | string; end: Date | string }[];
   callback?: () => void;
 };
+

@@ -60,6 +60,7 @@ const computedPerPageList = computed(() => {
 
 const columns = [
   { key: "timeRecordDate", label: "Data" },
+  { key: "code", label: "Código" },
   { key: "categoryName", label: "Categoria" },
   { key: "description", label: "Descrição" },
   { key: "formattedTime", label: "Tempo" },
@@ -94,13 +95,13 @@ await trStore.fetchTimeRecords();
   <div class="flex-1">
     <UContainer
       :ui="{
-        base: 'flex justify-between gap-10',
+        base: 'flex flex-col md:flex-row justify-between gap-5',
         padding: 'pb-6 px-0 lg:px-0 sm:px-0',
       }"
     >
       <h2 class="text-2xl font-bold">Registros de Tempo</h2>
 
-      <div class="flex gap-5">
+      <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <UInput
           v-model="computedSearch"
           name="search"

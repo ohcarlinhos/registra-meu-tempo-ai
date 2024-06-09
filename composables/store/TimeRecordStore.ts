@@ -65,6 +65,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
                 format(timeRecord.timeRecordDate, "dd/MM/yyyy")) ||
               "-",
             description: timeRecord.description || "-",
+            code: timeRecord.code || "-",
             categoryName: timeRecord.categoryName || "-",
             formattedTime: timeRecord.formattedTime || "Nenhum",
             timePeriodsCountText: timePeriodsLabel(
@@ -81,3 +82,4 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
 
   persist: false,
 });
+

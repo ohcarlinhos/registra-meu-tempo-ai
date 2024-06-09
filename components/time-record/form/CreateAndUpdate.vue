@@ -26,6 +26,7 @@ const form = reactive<TimeRecordFormType>({
   id: undefined,
   description: "",
   category: "",
+  code: "",
   categoryId: undefined,
   timePeriods: [],
   callback: undefined,
@@ -40,6 +41,7 @@ const newCategories = ref<string[]>([]);
 // TODO: finalizar validações
 const schema = yup.object({
   description: yup.string(),
+  code: yup.string(),
 });
 
 /**
@@ -188,8 +190,12 @@ onMounted(async () => {
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+      <UFormGroup label="Código" name="code">
+        <UInput type="text" v-model="form.code" autofocus />
+      </UFormGroup>
+
       <UFormGroup label="Descrição" name="description">
-        <UInput type="text" v-model="form.description" autofocus />
+        <UInput type="text" v-model="form.description" />
       </UFormGroup>
 
       <UFormGroup label="Categoria" name="category" class="z-100 relative">
@@ -260,3 +266,4 @@ onMounted(async () => {
     </UForm>
   </UCard>
 </template>
+

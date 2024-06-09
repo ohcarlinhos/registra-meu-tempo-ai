@@ -34,6 +34,7 @@ type PayloadPost = {
   description: string;
   timePeriods: { start: Date | string; end: Date | string }[];
   categoryId?: number | null;
+  code?: string;
 };
 
 export const postTimeRecord = async (payload: PayloadPost) => {
@@ -46,3 +47,4 @@ export const postTimeRecord = async (payload: PayloadPost) => {
     true
   );
 };
+
