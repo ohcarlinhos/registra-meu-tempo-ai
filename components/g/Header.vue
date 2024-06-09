@@ -26,20 +26,25 @@ const activeClass = "text-primary font-bold";
 
 <template>
   <header :class="{ 'text-center': center, 'pb-12': !disablePadding }">
-    <section>
-      <h1
-        class="font-bold text-primary"
-        :class="{ 'text-6xl': !smallTitle, 'text-5xl': smallTitle }"
-      >
-        Registra meu <br />
-        tempo aí!
-      </h1>
+    <section class="flex justify-between">
+      <div>
+        <h1
+          class="font-bold text-primary"
+          :class="{ 'text-6xl': !smallTitle, 'text-5xl': smallTitle }"
+        >
+          Registra meu <br />
+          tempo aí!
+        </h1>
 
-      <p v-if="!hideDescription" class="pt-4">
-        Sua ferramenta de
-        <span class="font-bold text-primary">registro de tempo</span>
-        personalizada.
-      </p>
+        <p v-if="!hideDescription" class="pt-4">
+          Sua ferramenta de
+          <span class="font-bold text-primary">registro de tempo</span>
+          personalizada.
+        </p>
+      </div>
+      <div>
+        <slot> </slot>
+      </div>
     </section>
 
     <nav class="pt-6 flex gap-4" :class="{ 'justify-center': center }">
@@ -88,3 +93,4 @@ const activeClass = "text-primary font-bold";
     </nav>
   </header>
 </template>
+
