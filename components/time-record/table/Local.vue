@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { watch } from "vue";
+
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 
@@ -10,6 +12,26 @@ const confirmDelete = reactive({
 });
 
 const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
+
+const computedPerPageList = computed(() => {
+  const list = [4, 8, 12];
+  return list.filter((i) => timerStore.totalItems >= i);
+});
+
+const setPage = (p: string) => {
+  timerStore._page = parseInt(p);
+};
+
+const setPerPage = (p: string) => {
+  timerStore._perPage = parseInt(p);
+};
+
+watch(
+  () => timerStore.totalPages,
+  (newTp) => {
+    if (timerStore._page > newTp) timerStore._page = newTp;
+  }
+);
 
 const closeConfirmDeleteModal = () => {
   confirmDelete.open = false;
@@ -96,6 +118,26 @@ const closeModal = () => {
     </template>
   </UTable>
 
+  <div class="flex justify-between items-end mt-3">
+    <UPagination
+      v-if="timerStore.totalPages > 1"
+      class="mt-2"
+      :modelValue="timerStore._page"
+      :page-count="timerStore._perPage"
+      :total="timerStore.totalItems"
+      @update:modelValue="setPage"
+    />
+
+    <div class="flex items-center gap-2">
+      Itens por página:
+      <USelect
+        :modelValue="timerStore._perPage"
+        :options="computedPerPageList"
+        @update:modelValue="setPerPage"
+      />
+    </div>
+  </div>
+
   <UModal v-model="modal.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
@@ -110,3 +152,4 @@ const closeModal = () => {
     @cancel="closeConfirmDeleteModal"
   />
 </template>
+

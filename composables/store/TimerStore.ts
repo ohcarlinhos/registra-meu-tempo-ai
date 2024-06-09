@@ -10,6 +10,8 @@ export const useTimerStore = defineStore("TimerStore", {
       _running: false,
       _interval: null as NodeJS.Timeout | null,
       _type: "timer" as TimerType,
+      _perPage: 4,
+      _page: 1,
     };
   },
 
@@ -109,6 +111,14 @@ export const useTimerStore = defineStore("TimerStore", {
   },
 
   getters: {
+    totalItems(): number {
+      return this._timeRecordsLocal.length;
+    },
+
+    totalPages(): number {
+      return Math.ceil(this.totalItems / this._perPage);
+    },
+
     isRunning(state) {
       return state._running;
     },
@@ -151,7 +161,12 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     timeRecords: (state) => {
+      const start: number = (state._page - 1) * state._perPage;
+      const end: number = start + state._perPage;
+
       return state._timeRecordsLocal
+        .reverse()
+        .slice(start, end)
         .map((timeRecord) => {
           return {
             ...timeRecord,
@@ -162,8 +177,7 @@ export const useTimerStore = defineStore("TimerStore", {
             timePeriods: timeRecord.timePeriods.map((e) => e),
             formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
           };
-        })
-        .reverse();
+        });
     },
   },
 
