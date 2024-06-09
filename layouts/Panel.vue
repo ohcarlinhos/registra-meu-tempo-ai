@@ -1,5 +1,3 @@
-<script lang="ts" setup></script>
-
 <template>
   <UContainer
     :ui="{
@@ -11,3 +9,4 @@
     <slot></slot>
   </UContainer>
 </template>
+
