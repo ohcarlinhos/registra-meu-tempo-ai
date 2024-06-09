@@ -53,8 +53,18 @@ const deleteTimeRecord = async () => {
 </script>
 
 <template>
-  <div class="flex gap-10">
-    <div>
+  <div class="grid grid-cols-12 gap-5">
+    <div class="col-span-full lg:col-span-8 overflow-auto">
+      <TimeRecordTable
+        @access="access"
+        @create="modal.createOrUpdateTimeRecord = true"
+        @delete="openConfirmDeleteModal"
+      />
+    </div>
+
+    <div class="col-span-full lg:col-span-4">
+      <h2 class="mb-5 text-2xl font-bold">Contador</h2>
+
       <TimerDefault />
 
       <h2 class="mb-5 mt-5 text-2xl font-bold">Registros Locais</h2>
@@ -63,12 +73,6 @@ const deleteTimeRecord = async () => {
         <TimeRecordTableLocal />
       </UCard>
     </div>
-
-    <TimeRecordTable
-      @access="access"
-      @create="modal.createOrUpdateTimeRecord = true"
-      @delete="openConfirmDeleteModal"
-    />
   </div>
 
   <GModalConfirm
@@ -85,3 +89,4 @@ const deleteTimeRecord = async () => {
     />
   </UModal>
 </template>
+
