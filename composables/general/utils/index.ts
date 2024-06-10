@@ -30,6 +30,7 @@ export const editTimeRecordObjectFactory = (
   return {
     id: timeRecord.id,
     description: timeRecord.description,
+    code: timeRecord.code || "",
     category: categoryStored ? categoryStored.name : "",
     categoryId: timeRecord.categoryId || undefined,
     timePeriods: timeRecord.timePeriods,
@@ -80,7 +81,7 @@ export const formatTimePeriodListToString = (timePeriods: TimePeriodType[]) => {
   return millisecondsToString(totalMilliseconds);
 };
 
-const millisecondsToString = (milliseconds: number) => {
+export const millisecondsToString = (milliseconds: number) => {
   const duration = intervalToDuration({ start: 0, end: milliseconds });
   const { days, hours, minutes, seconds } = duration;
 
@@ -91,5 +92,6 @@ const millisecondsToString = (milliseconds: number) => {
   if (minutes != undefined) fString += minutes + "m ";
   if (seconds != undefined) fString += seconds + "s ";
 
-  return fString.trim() || "-";
+  return fString.trim() || "0s";
 };
+
