@@ -68,9 +68,10 @@ export const useSimpleTimerStore = defineStore("SimpleTimerStore", {
       return state._timePeriodsList.map((p) => {
         return {
           ...p,
-          timerDisplay: formatToTimerDisplay(p.current.end - p.current.start),
+          timerDisplay: millisecondsToString(p.current.end - p.current.start),
         };
       });
     },
   },
 });
+

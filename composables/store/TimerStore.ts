@@ -157,7 +157,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     formated(): string {
-      return formatToTimerDisplay(this._totalMiliseconds);
+      return millisecondsToString(this._totalMiliseconds);
     },
 
     timeRecords: (state) => {
