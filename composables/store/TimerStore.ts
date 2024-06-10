@@ -41,7 +41,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     add(timeRecord: ITimeRecordLocal) {
-      this._timeRecordsLocal.push(timeRecord);
+      this._timeRecordsLocal.unshift(timeRecord);
     },
 
     start() {
@@ -164,20 +164,14 @@ export const useTimerStore = defineStore("TimerStore", {
       const start: number = (state._page - 1) * state._perPage;
       const end: number = start + state._perPage;
 
-      return state._timeRecordsLocal
-        .reverse()
-        .slice(start, end)
-        .map((timeRecord) => {
-          return {
-            ...timeRecord,
-            timeRecordDate: format(
-              timeRecord.timePeriods[0].start,
-              "dd/MM/yyyy"
-            ),
-            timePeriods: timeRecord.timePeriods.map((e) => e),
-            formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
-          };
-        });
+      return state._timeRecordsLocal.slice(start, end).map((timeRecord) => {
+        return {
+          ...timeRecord,
+          timeRecordDate: format(timeRecord.timePeriods[0].start, "dd/MM/yyyy"),
+          timePeriods: timeRecord.timePeriods.map((e) => e),
+          formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
+        };
+      });
     },
   },
 
