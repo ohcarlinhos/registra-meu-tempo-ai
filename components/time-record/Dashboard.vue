@@ -61,18 +61,6 @@ const deleteTimeRecord = async () => {
         @delete="openConfirmDeleteModal"
       />
     </div>
-
-    <!-- <div class="col-span-full lg:col-span-4">
-      <h2 class="mb-5 text-2xl font-bold">Registros Locais</h2>
-
-      <UCard>
-        <TimeRecordTableLocal />
-      </UCard>
-    </div>
-
-    <div class="col-span-full lg:col-span-4">
-      <CategoryTable />
-    </div> -->
   </div>
 
   <GModalConfirm
