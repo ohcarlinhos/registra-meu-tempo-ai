@@ -2,6 +2,8 @@
 const props = defineProps<{
   open: boolean;
   text: string;
+  confirmText?: string;
+  cancelText?: string;
 }>();
 
 const emit = defineEmits(["update:open", "confirm", "cancel"]);
@@ -32,16 +34,20 @@ const isOpen = computed({
           <UButton
             color="blue"
             block
-            label="Cancelar"
+            :label="props.cancelText ? props.cancelText : 'Cancelar'"
             @click="emit('cancel')"
           />
 
-          <UButton block label="Confirmar" @click="emit('confirm')" />
+          <UButton
+            block
+            :label="props.confirmText ? props.confirmText : 'Confirmar'"
+            @click="emit('confirm')"
+          />
         </div>
-        <!-- <Placeholder class="h-8" /> -->
       </template>
     </UCard>
   </UModal>
 </template>
 
 <style></style>
+
