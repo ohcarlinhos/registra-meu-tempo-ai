@@ -1,8 +1,30 @@
 <script lang="ts" setup>
 const timerStore = useTimerStore();
+const authStore = useAuthStore();
 const { t } = useI18n();
 
 timerStore.validateAndConfigure();
+
+const chooseModal = reactive({
+  open: false,
+});
+
+const end = () => {
+  if (authStore.isAuthenticad) {
+    timerStore.pause();
+    chooseModal.open = true;
+  } else {
+    timerStore.end();
+  }
+};
+
+const saveOnBrowser = () => {
+  timerStore.end();
+  chooseModal.open = false;
+};
+
+// TODO: finalizar isso aqui
+const openRegisterTimerRecordModal = () => {};
 
 const title = computed(() => {
   const titles = [
@@ -48,9 +70,18 @@ const title = computed(() => {
           title="Finalizar"
           color="green"
           icon="i-heroicons-check"
-          @click="timerStore.end"
+          @click="end"
         />
       </div>
     </div>
   </UCard>
+
+  <GModalConfirm
+    v-model:open="chooseModal.open"
+    text="Tem certeza que quer excluir esse registro?"
+    confirm-text="Salvar"
+    cancel-text="Salvar no navegador"
+    @confirm="openRegisterTimerRecordModal"
+    @cancel="saveOnBrowser"
+  />
 </template>
