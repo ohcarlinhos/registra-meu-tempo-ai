@@ -2,6 +2,7 @@
 import * as yup from "yup";
 import { addMinutes } from "date-fns";
 
+const { t } = useI18n();
 const timeRecordStore = useTimeRecordStore();
 const categoryStore = useCategoryStore();
 
@@ -59,8 +60,8 @@ const categoryValue = computed({
   get: () => form.category,
 
   set: async (label) => {
-    const findded = categories.value.find((category) => category === label);
-    if (!findded) newCategories.value.push(label);
+    const search = categories.value.find((category) => category === label);
+    if (!search) newCategories.value.push(label);
 
     form.category = label;
   },
@@ -137,6 +138,7 @@ const createAction = async () => {
     if (form.callback) form.callback();
 
     closeModal(true);
+    OkToast(t("form.timeRecord.status.success.create"));
   } catch (error) {
     ErrorToast(error);
   }
@@ -190,39 +192,45 @@ onMounted(async () => {
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <UFormGroup label="Código" name="code">
+      <UFormGroup :label="$t('form.timeRecord.code')" name="code">
         <UInput type="text" v-model="form.code" autofocus />
       </UFormGroup>
 
-      <UFormGroup label="Descrição" name="description">
+      <UFormGroup :label="$t('form.timeRecord.description')" name="description">
         <UInput type="text" v-model="form.description" />
       </UFormGroup>
 
-      <UFormGroup label="Categoria" name="category" class="z-100 relative">
+      <UFormGroup
+        :label="$t('form.timeRecord.category')"
+        name="category"
+        class="z-100 relative"
+      >
         <USelectMenu
           v-model="categoryValue"
           :options="categories"
           :clear-search-on-close="true"
+          :ui-menu="{ height: 'max-h-40' }"
           show-create-option-when="always"
           searchable
           creatable
-          :ui-menu="{ height: 'max-h-40' }"
         >
           <template #option-create="{ option }">
-            <span class="flex-shrink-0">Criar:</span>
+            <span class="flex-shrink-0">{{
+              $t("form.timeRecord.selectCategoryAdd")
+            }}</span>
             <span class="block truncate">{{ option }}</span>
           </template>
         </USelectMenu>
       </UFormGroup>
 
       <div class="flex justify-between pt-6">
-        <h3>Períodos de Tempo</h3>
+        <h3>{{ $t("g.time.periodList") }}</h3>
 
         <UButton
-          label="Adicionar"
+          :label="$t('g.add')"
+          :disabled="addButtonIsDisabled"
           size="sm"
           type="button"
-          :disabled="addButtonIsDisabled"
           @click="addTimePeriodToForm"
         />
       </div>
@@ -231,7 +239,10 @@ onMounted(async () => {
         v-for="(_, index) in form.timePeriods"
         class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
       >
-        <UFormGroup label="Início do período" :name="'start-' + index">
+        <UFormGroup
+          :label="$t('form.timeRecord.period.start')"
+          :name="'start-' + index"
+        >
           <GDatePicker
             v-model="form.timePeriods[index].start"
             :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
@@ -240,11 +251,14 @@ onMounted(async () => {
           />
         </UFormGroup>
 
-        <UFormGroup label="Final do período" :name="'end-' + index">
+        <UFormGroup
+          :label="$t('form.timeRecord.period.end')"
+          :name="'end-' + index"
+        >
           <GDatePicker
             v-model="form.timePeriods[index].end"
-            class="py-1"
             :min="form.timePeriods[index].start"
+            class="py-1"
           />
         </UFormGroup>
 
@@ -259,11 +273,10 @@ onMounted(async () => {
       <UButton
         :loading="status.fetching"
         :disabled="submitButtonIsDisabled"
+        :label="$t('g.send')"
         block
         type="submit"
-        label="Enviar"
       />
     </UForm>
   </UCard>
 </template>
-

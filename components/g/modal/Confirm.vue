@@ -4,6 +4,7 @@ const props = defineProps<{
   text: string;
   confirmText?: string;
   cancelText?: string;
+  customWidth?: string;
 }>();
 
 const emit = defineEmits(["update:open", "confirm", "cancel"]);
@@ -23,7 +24,7 @@ const isOpen = computed({
     v-model="isOpen"
     prevent-close
     :ui="{
-      width: 'sm:w-72',
+      width: customWidth ? customWidth : 'sm:w-72',
     }"
   >
     <UCard>
@@ -34,13 +35,13 @@ const isOpen = computed({
           <UButton
             color="blue"
             block
-            :label="props.cancelText ? props.cancelText : 'Cancelar'"
+            :label="props.cancelText ? props.cancelText : $t('g.cancel')"
             @click="emit('cancel')"
           />
 
           <UButton
             block
-            :label="props.confirmText ? props.confirmText : 'Confirmar'"
+            :label="props.confirmText ? props.confirmText : $t('g.confirm')"
             @click="emit('confirm')"
           />
         </div>
@@ -48,6 +49,3 @@ const isOpen = computed({
     </UCard>
   </UModal>
 </template>
-
-<style></style>
-
