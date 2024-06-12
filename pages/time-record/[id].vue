@@ -88,6 +88,14 @@ const getTp = async (page = 1, perPage = 4) => {
   }
 };
 
+const showInfos = computed(
+  () =>
+    timeRecordReq.value &&
+    (timeRecordReq.value?.code ||
+      timeRecordReq.value?.categoryName ||
+      timeRecordReq.value?.description)
+);
+
 onMounted(async () => {
   await getTimeRecordData();
 });
@@ -117,11 +125,20 @@ onMounted(async () => {
       </div>
 
       <div class="flex-1">
-        <h2 class="mb-5 text-2xl font-bold">{{ $t("g.infos") }}</h2>
+        <h2 v-if="showInfos" class="mb-5 text-2xl font-bold">
+          {{ $t("g.infos") }}
+        </h2>
 
-        <UCard>
-          <p><b>Categoria:</b> {{ timeRecordReq.categoryName || "Nenhuma" }}</p>
-          <p><b>Descrição:</b> {{ timeRecordReq.description || "Nenhuma" }}</p>
+        <UCard v-if="showInfos">
+          <p v-if="timeRecordReq.code">
+            <b>Código:</b> {{ timeRecordReq.code }}
+          </p>
+          <p v-if="timeRecordReq.categoryName">
+            <b>Categoria:</b> {{ timeRecordReq.categoryName }}
+          </p>
+          <p v-if="timeRecordReq.description">
+            <b>Descrição:</b> {{ timeRecordReq.description }}
+          </p>
         </UCard>
 
         <h2 class="mb-5 mt-5 text-2xl font-bold">Estatísticas</h2>
