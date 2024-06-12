@@ -36,6 +36,10 @@ export const useTimerStore = defineStore("TimerStore", {
       this._currentTimePeriod.end = timeNow;
     },
 
+    clearTimePeriodList() {
+      this._currentTimePeriodList = [];
+    },
+
     clearInterval() {
       clearInterval(this._interval as NodeJS.Timeout);
     },
@@ -177,4 +181,3 @@ export const useTimerStore = defineStore("TimerStore", {
 
   persist: true,
 });
-

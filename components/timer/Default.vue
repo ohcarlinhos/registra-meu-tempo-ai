@@ -5,35 +5,67 @@ const { t } = useI18n();
 
 timerStore.validateAndConfigure();
 
-const chooseModal = reactive({
-  open: false,
+const modal = reactive({
+  createTimeRecord: {
+    open: false,
+  },
+  confirmPersistMethod: {
+    open: false,
+  },
 });
+
+const editTimeRecordObject = ref<TimeRecordFormType>();
 
 const end = () => {
   if (authStore.isAuthenticad) {
     timerStore.pause();
-    chooseModal.open = true;
+
+    editTimeRecordObject.value = {
+      description: "",
+      category: "",
+      code: "",
+      timePeriods: [
+        ...timerStore._currentTimePeriodList.map((t) => ({
+          start: new Date(t.start),
+          end: new Date(t.end),
+        })),
+      ],
+      callback: () => {
+        timerStore.clearTimePeriodList();
+      },
+    };
+    modal.confirmPersistMethod.open = true;
   } else {
     timerStore.end();
   }
 };
 
+const persistOnServer = () => {
+  modal.confirmPersistMethod.open = false;
+  modal.createTimeRecord.open = true;
+};
+
 const saveOnBrowser = () => {
   timerStore.end();
-  chooseModal.open = false;
+  modal.confirmPersistMethod.open = false;
+};
+
+const closeTimeRecordModal = () => {
+  modal.createTimeRecord.open = false;
+  editTimeRecordObject.value = undefined;
 };
 
 // TODO: finalizar isso aqui
-const openRegisterTimerRecordModal = () => {};
 
 const title = computed(() => {
-  const titles = [
+  const titleList = [
     t("timer.title.t1"),
     t("timer.title.t2"),
     t("timer.title.t3"),
   ];
-  const randomIndex = Math.floor(Math.random() * titles.length);
-  return titles[randomIndex];
+
+  const randomIndex = Math.floor(Math.random() * titleList.length);
+  return titleList[randomIndex];
 });
 </script>
 
@@ -50,7 +82,11 @@ const title = computed(() => {
 
       <div class="flex gap-3">
         <UButton
-          :title="timerStore.timePeriodsLength ? 'Continuar' : 'Iniciar'"
+          :title="
+            timerStore.timePeriodsLength
+              ? $t('timer.buttons.continue')
+              : $t('timer.buttons.start')
+          "
           :disabled="timerStore.isRunning"
           color="blue"
           icon="i-heroicons-play"
@@ -59,7 +95,7 @@ const title = computed(() => {
 
         <UButton
           :disabled="!timerStore.isRunning"
-          title="Pausar"
+          :title="$t('timer.buttons.pause')"
           color="yellow"
           icon="i-heroicons-pause"
           @click="timerStore.pause"
@@ -67,7 +103,7 @@ const title = computed(() => {
 
         <UButton
           :disabled="timerStore.dontHasMiliseconds"
-          title="Finalizar"
+          :title="$t('timer.buttons.finish')"
           color="green"
           icon="i-heroicons-check"
           @click="end"
@@ -77,11 +113,19 @@ const title = computed(() => {
   </UCard>
 
   <GModalConfirm
-    v-model:open="chooseModal.open"
-    text="Tem certeza que quer excluir esse registro?"
-    confirm-text="Salvar"
-    cancel-text="Salvar no navegador"
-    @confirm="openRegisterTimerRecordModal"
+    v-model:open="modal.confirmPersistMethod.open"
+    custom-width="sm:w-88"
+    :text="$t('timer.persistModal.text')"
+    :cancel-text="$t('timer.persistModal.browserButton')"
+    :confirm-text="$t('timer.persistModal.accountButton')"
+    @confirm="persistOnServer"
     @cancel="saveOnBrowser"
   />
+
+  <UModal v-model="modal.createTimeRecord.open" prevent-close>
+    <TimeRecordFormCreateAndUpdate
+      :edit-object="editTimeRecordObject"
+      @close="closeTimeRecordModal"
+    />
+  </UModal>
 </template>
