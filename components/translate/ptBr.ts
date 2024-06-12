@@ -7,6 +7,7 @@ export default {
       periodList: "Períodos de Tempo",
     },
 
+    infos: "Informações",
     add: "Adicionar",
     send: "Enviar",
     save: "Salvar",

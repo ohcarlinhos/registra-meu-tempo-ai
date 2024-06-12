@@ -6,7 +6,7 @@ definePageMeta({ middleware: ["auth"] });
   <UContainer
     :ui="{
       padding: 'py-16',
-      constrained: 'min-h-svh max-w-8xl',
+      constrained: 'min-h-svh',
     }"
   >
     <GHeader small-title>
@@ -16,4 +16,3 @@ definePageMeta({ middleware: ["auth"] });
     <TimeRecordDashboard />
   </UContainer>
 </template>
-

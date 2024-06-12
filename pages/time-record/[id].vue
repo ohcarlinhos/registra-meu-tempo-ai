@@ -117,7 +117,7 @@ onMounted(async () => {
       </div>
 
       <div class="flex-1">
-        <h2 class="mb-5 text-2xl font-bold">Informações</h2>
+        <h2 class="mb-5 text-2xl font-bold">{{ $t("g.infos") }}</h2>
 
         <UCard>
           <p><b>Categoria:</b> {{ timeRecordReq.categoryName || "Nenhuma" }}</p>
@@ -133,7 +133,21 @@ onMounted(async () => {
       </div>
 
       <div class="flex-1">
-        <h2 class="mb-5 text-2xl font-bold">Períodos de Tempo</h2>
+        <UContainer
+          :ui="{
+            base: 'flex flex-col md:flex-row justify-between gap-5',
+            padding: 'pb-5 px-0 lg:px-0 sm:px-0',
+          }"
+        >
+          <h2 class="text-2xl font-bold">{{ $t("g.time.periodList") }}</h2>
+
+          <div class="flex gap-5 flex-row items-start mt-1">
+            <UButton
+              icon="i-heroicons-pencil-square-20-solid"
+              label="Adicionar Período"
+            />
+          </div>
+        </UContainer>
 
         <UCard>
           <UTable
