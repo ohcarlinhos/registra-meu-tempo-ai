@@ -36,6 +36,10 @@ const modal = reactive({
     open: false,
     timeRecordId: 0,
   },
+  confirmDeleteTp: {
+    open: false,
+    timePeriodId: 0,
+  },
 });
 
 const computedPage = computed({
@@ -84,7 +88,7 @@ const dropMenuItems = (row: TimePeriodType) => [
     {
       label: t("g.delete"),
       icon: "i-heroicons-trash-20-solid",
-      click: async () => deleteTimePeriodAction(row.id!),
+      click: () => openConfirmDeleteTpModal(row.id!),
     },
   ],
 ];
@@ -111,11 +115,12 @@ const editTimePeriod = async (tp: TimePeriodType) => {
   editTpObject.callback = () => {};
 };
 
-const deleteTimePeriodAction = async (id: number) => {
+const deleteTimePeriodAction = async () => {
   try {
-    await deleteTimePeriod(id);
+    await deleteTimePeriod(modal.confirmDeleteTp.timePeriodId);
     OkToast(t("form.timePeriod.status.success.delete"));
     await getTpList();
+    modal.confirmDeleteTp.open = false;
   } catch (err) {
     ErrorToast(err);
   }
@@ -159,6 +164,15 @@ const closeTimePeriodModal = async (refresh = false) => {
   if (refresh) {
     await getTimeRecordData();
   }
+};
+
+const openConfirmDeleteTpModal = (id: number) => {
+  modal.confirmDeleteTp.open = true;
+  modal.confirmDeleteTp.timePeriodId = id;
+};
+
+const closeConfirmDeleteTpModal = () => {
+  modal.confirmDeleteTp.open = false;
 };
 
 onMounted(async () => {
@@ -279,6 +293,13 @@ onMounted(async () => {
             </div>
           </div>
         </UCard>
+
+        <GModalConfirm
+          v-model:open="modal.confirmDeleteTp.open"
+          text="Tem certeza que quer excluir esse registro?"
+          @confirm="deleteTimePeriodAction"
+          @cancel="closeConfirmDeleteTpModal"
+        />
 
         <UModal v-model="modal.createOrUpdateTp.open" prevent-close>
           <TimePeriodFormCreateAndUpdate
