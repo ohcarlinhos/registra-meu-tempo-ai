@@ -8,7 +8,7 @@ const form = reactive({
   password: "Ska$312d%$1",
 });
 
-const pageStatus = reactive({ fetching: false });
+const page = reactive({ fetch: false });
 
 const schema = yup.object({
   email: vUser.email(),
@@ -17,7 +17,7 @@ const schema = yup.object({
 
 const submit = async () => {
   try {
-    pageStatus.fetching = true;
+    page.fetch = true;
 
     const data = await postLogin({
       email: form.email,
@@ -31,7 +31,7 @@ const submit = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    pageStatus.fetching = false;
+    page.fetch = false;
   }
 };
 </script>
@@ -43,7 +43,7 @@ const submit = async () => {
       footer: { base: 'text-center' },
     }"
   >
-    <template #header>{{ t("form.login") }}</template>
+    <template #header>{{ t("form.login.title") }}</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
       <UFormGroup :label="t('form.user.email')" name="email" required>
@@ -55,7 +55,7 @@ const submit = async () => {
       </UFormGroup>
 
       <UButton
-        :loading="pageStatus.fetching"
+        :loading="page.fetch"
         :label="t('form.login.button')"
         block
         type="submit"
@@ -69,4 +69,3 @@ const submit = async () => {
     </template>
   </UCard>
 </template>
-
