@@ -2,14 +2,9 @@
 import "@vuepic/vue-datepicker/dist/main.css";
 import VDatePicker from "@vuepic/vue-datepicker";
 
-import { set } from "date-fns";
+const model = defineModel<Date | string>();
 
-const props = defineProps({
-  modelValue: {
-    type: [Date, String],
-    default: "",
-  },
-
+defineProps({
   min: {
     type: [Date, String],
     default: "",
@@ -36,29 +31,16 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:model-value", "change"]);
+const emit = defineEmits(["change"]);
 
-const date = computed({
-  get: () => props.modelValue,
-
-  set: (value) => {
-    if (props.disableTimePicker && value) {
-      value = set(new Date(value), {
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0,
-      });
-    }
-    emit("update:model-value", value);
-    emit("change", value);
-  },
+watch(model, (value) => {
+  emit("change", value);
 });
 </script>
 
 <template>
   <VDatePicker
-    v-model="date"
+    v-model="model"
     :is24="true"
     :action-row="{ showNow: true }"
     :min-date="min || ''"
@@ -72,6 +54,7 @@ const date = computed({
     select-text="Selecionar"
     cancel-text="Fechar"
     now-button-label="Agora"
+    enable-seconds
     dark
   />
 </template>
@@ -81,4 +64,3 @@ const date = computed({
   background-color: transparent;
 }
 </style>
-
