@@ -26,3 +26,21 @@ export const postTimePeriod = async (payload: PayloadPost) => {
     true
   );
 };
+
+export const putTimePeriod = async (id: number, payload: PayloadPost) => {
+  return CustomHttp<PayloadPost, TimeRecordType>(
+    `/time-period/${id}`,
+    "put",
+    payload,
+    true
+  );
+};
+
+export const deleteTimePeriod = async (id: number) => {
+  return CustomHttp<PayloadPost, TimeRecordType>(
+    `/time-period/${id}`,
+    "delete",
+    null,
+    true
+  );
+};

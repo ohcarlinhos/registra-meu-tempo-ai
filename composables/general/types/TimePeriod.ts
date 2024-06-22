@@ -1,5 +1,14 @@
 export type TimePeriodType = {
   id?: number;
+  timeRecordId?: number;
   start: Date;
   end: Date;
+};
+
+export type TimePeriodFormType = {
+  id?: number;
+  start: Date | string;
+  end: Date | string;
+  timeRecordId: number;
+  callback?: () => void;
 };

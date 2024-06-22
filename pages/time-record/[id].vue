@@ -2,33 +2,57 @@
 import { format } from "date-fns";
 
 const route = useRoute();
+const { t } = useI18n();
 
-const columns = [
-  { key: "start", label: "Início" },
-  { key: "end", label: "Fim" },
-  { key: "formattedTime", label: "Tempo" },
+const columns = computed(() => [
+  { key: "startFormatted", label: t("g.start") },
+  { key: "endFormatted", label: t("g.end") },
+  { key: "formattedTime", label: t("g.time") },
   { key: "actions" },
-];
+]);
 
-const timeRecordReq = ref<TimeRecordType>();
-const timePeriodReq = ref<Pagination<TimePeriodType>>();
-const tpReqFetching = ref(false);
+const trReq = ref<TimeRecordType>();
+
+const tpReq = ref<Pagination<TimePeriodType>>();
+const tpReqFetch = ref(false);
+
+const editTpObject = reactive<TimePeriodFormType>({
+  id: 0,
+  timeRecordId: 0,
+  end: "",
+  start: "",
+  callback: () => {},
+});
+
+const clearTimePeriodObject = () => {
+  editTpObject.id = 0;
+  editTpObject.timeRecordId = 0;
+  editTpObject.start = "";
+  editTpObject.end = "";
+};
+
+const modal = reactive({
+  createOrUpdateTp: {
+    open: false,
+    timeRecordId: 0,
+  },
+});
 
 const computedPage = computed({
   get: () => {
-    return timePeriodReq.value?.page || 1;
+    return tpReq.value?.page || 1;
   },
   set: async (page: number) => {
-    await getTp(page, computedPerPage.value);
+    await getTpList(page, computedPerPage.value);
   },
 });
 
 const computedPerPage = computed({
   get: () => {
-    return timePeriodReq.value?.perPage || 4;
+    return tpReq.value?.perPage || 4;
   },
   set: async (perPage: number) => {
-    await getTp(1, perPage);
+    await getTpList(1, perPage);
   },
 });
 
@@ -38,24 +62,29 @@ const emit = defineEmits<{
   delete: [value: number];
 }>();
 
-const timePeriodFormatted = computed(() => {
-  return timePeriodReq.value?.data.length
-    ? timePeriodReq.value.data.map((p) => {
+const tpFormatted = computed(() => {
+  return tpReq.value?.data.length
+    ? tpReq.value.data.map((p) => {
         return {
           ...p,
-          start: format(p.start, "dd/MM/yyyy HH:mm:ss"),
-          end: format(p.end, "dd/MM/yyyy HH:mm:ss"),
+          startFormatted: format(p.start, "dd/MM/yyyy HH:mm:ss"),
+          endFormatted: format(p.end, "dd/MM/yyyy HH:mm:ss"),
         };
       })
     : [];
 });
 
-const items = (row: TimeRecordType) => [
+const dropMenuItems = (row: TimePeriodType) => [
   [
     {
-      label: "Apagar",
+      label: t("g.edit"),
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: async () => editTimePeriod(row),
+    },
+    {
+      label: t("g.delete"),
       icon: "i-heroicons-trash-20-solid",
-      click: async () => emit("delete", row.id!),
+      click: async () => deleteTimePeriodAction(row.id!),
     },
   ],
 ];
@@ -66,14 +95,35 @@ const getTimeRecordData = async () => {
     true
   );
 
-  if (data) timeRecordReq.value = data;
+  if (data) trReq.value = data;
 
-  await getTp();
+  await getTpList();
 };
 
-const getTp = async (page = 1, perPage = 4) => {
+const editTimePeriod = async (tp: TimePeriodType) => {
+  modal.createOrUpdateTp.open = true;
+  modal.createOrUpdateTp.timeRecordId = tp.timeRecordId!;
+
+  editTpObject.id = tp.id;
+  editTpObject.start = tp.start;
+  editTpObject.end = tp.end;
+  editTpObject.timeRecordId = tp.timeRecordId!;
+  editTpObject.callback = () => {};
+};
+
+const deleteTimePeriodAction = async (id: number) => {
   try {
-    tpReqFetching.value = true;
+    await deleteTimePeriod(id);
+    OkToast(t("form.timePeriod.status.success.delete"));
+    await getTpList();
+  } catch (err) {
+    ErrorToast(err);
+  }
+};
+
+const getTpList = async (page = 1, perPage = 4) => {
+  try {
+    tpReqFetch.value = true;
 
     const data = await getTimePeriods(
       parseInt(route.params.id as string),
@@ -82,19 +132,34 @@ const getTp = async (page = 1, perPage = 4) => {
       true
     );
 
-    if (data) timePeriodReq.value = data;
+    if (data) tpReq.value = data;
   } finally {
-    tpReqFetching.value = false;
+    tpReqFetch.value = false;
   }
 };
 
 const showInfos = computed(
   () =>
-    timeRecordReq.value &&
-    (timeRecordReq.value?.code ||
-      timeRecordReq.value?.categoryName ||
-      timeRecordReq.value?.description)
+    trReq.value &&
+    (trReq.value?.code || trReq.value?.categoryName || trReq.value?.description)
 );
+
+const openTimePeriodModal = (timeRecordId?: number) => {
+  if (!timeRecordId) return;
+
+  clearTimePeriodObject();
+
+  modal.createOrUpdateTp.open = true;
+  modal.createOrUpdateTp.timeRecordId = timeRecordId;
+};
+
+const closeTimePeriodModal = async (refresh = false) => {
+  modal.createOrUpdateTp.open = false;
+
+  if (refresh) {
+    await getTimeRecordData();
+  }
+};
 
 onMounted(async () => {
   await getTimeRecordData();
@@ -105,14 +170,15 @@ onMounted(async () => {
   <UContainer
     :ui="{
       padding: 'py-16',
-      constrained: 'min-h-svh',
+      constrained: 'min-h-svh w-full lg:max-w-7xl',
     }"
   >
     <GHeader small-title />
 
-    <div v-if="timeRecordReq" class="flex flex-wrap gap-10">
-      <div class="flex-1">
+    <div v-if="trReq" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div class="w-full col-span-1 lg:col-span-2">
         <h2 class="text-2xl mb-2 font-bold">Salve seu tempo!</h2>
+
         <p>Continue a registrar períodos de tempo.</p>
 
         <TimerSimple
@@ -124,44 +190,43 @@ onMounted(async () => {
         <p>// TODO: Ops</p> -->
       </div>
 
-      <div class="flex-1">
+      <div class="w-full col-span-1 lg:col-span-4">
         <h2 v-if="showInfos" class="mb-5 text-2xl font-bold">
           {{ $t("g.infos") }}
         </h2>
 
         <UCard v-if="showInfos">
-          <p v-if="timeRecordReq.code">
-            <b>Código:</b> {{ timeRecordReq.code }}
+          <p v-if="trReq.code"><b>Código:</b> {{ trReq.code }}</p>
+          <p v-if="trReq.categoryName">
+            <b>Categoria:</b> {{ trReq.categoryName }}
           </p>
-          <p v-if="timeRecordReq.categoryName">
-            <b>Categoria:</b> {{ timeRecordReq.categoryName }}
-          </p>
-          <p v-if="timeRecordReq.description">
-            <b>Descrição:</b> {{ timeRecordReq.description }}
+          <p v-if="trReq.description">
+            <b>Descrição:</b> {{ trReq.description }}
           </p>
         </UCard>
 
         <h2 class="mb-5 mt-5 text-2xl font-bold">Estatísticas</h2>
 
         <UCard>
-          <p><b>Tempo Total:</b> {{ timeRecordReq.formattedTime }}</p>
-          <p><b>Total de Períodos:</b> {{ timeRecordReq.timePeriodsCount }}</p>
+          <p><b>Tempo Total:</b> {{ trReq.formattedTime }}</p>
+          <p><b>Total de Períodos:</b> {{ trReq.timePeriodsCount }}</p>
         </UCard>
       </div>
 
-      <div class="flex-1">
+      <div class="w-full col-span-1 lg:col-span-6">
         <UContainer
           :ui="{
             base: 'flex flex-col md:flex-row justify-between gap-5',
             padding: 'pb-5 px-0 lg:px-0 sm:px-0',
           }"
         >
-          <h2 class="text-2xl font-bold">{{ $t("g.time.periodList") }}</h2>
+          <h2 class="text-2xl font-bold">{{ $t("time.periodList") }}</h2>
 
-          <div class="flex gap-5 flex-row items-start mt-1">
+          <div v-if="trReq.id" class="flex gap-5 flex-row items-start mt-1">
             <UButton
               icon="i-heroicons-pencil-square-20-solid"
               label="Adicionar Período"
+              @click="openTimePeriodModal(trReq!.id)"
             />
           </div>
         </UContainer>
@@ -170,7 +235,7 @@ onMounted(async () => {
           <UTable
             :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
             :columns="columns"
-            :rows="timePeriodFormatted"
+            :rows="tpFormatted"
             :loading="false"
           >
             <template #timePeriod-data="{ row }">
@@ -182,7 +247,7 @@ onMounted(async () => {
 
             <template #actions-data="{ row }">
               <div class="flex justify-end">
-                <UDropdown :items="items(row)">
+                <UDropdown :items="dropMenuItems(row)">
                   <UButton
                     color="gray"
                     variant="ghost"
@@ -196,11 +261,11 @@ onMounted(async () => {
           <div class="flex justify-between items-end mt-3">
             <div>
               <UPagination
-                v-if="timePeriodReq && timePeriodReq.totalPages > 1"
+                v-if="tpReq && tpReq.totalPages > 1"
                 v-model="computedPage"
-                :page-count="timePeriodReq.perPage"
-                :total="timePeriodReq.totalItems"
-                :disabled="tpReqFetching"
+                :page-count="tpReq.perPage"
+                :total="tpReq.totalItems"
+                :disabled="tpReqFetch"
               />
             </div>
 
@@ -209,11 +274,19 @@ onMounted(async () => {
               <USelect
                 v-model="computedPerPage"
                 :options="perPageList"
-                :disabled="tpReqFetching"
+                :disabled="tpReqFetch"
               />
             </div>
           </div>
         </UCard>
+
+        <UModal v-model="modal.createOrUpdateTp.open" prevent-close>
+          <TimePeriodFormCreateAndUpdate
+            :time-record-id="modal.createOrUpdateTp.timeRecordId"
+            :edit-object="editTpObject"
+            @close="closeTimePeriodModal"
+          />
+        </UModal>
       </div>
     </div>
   </UContainer>
