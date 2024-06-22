@@ -1,18 +1,19 @@
 export default {
   g: {
-    time: {
-      record: "Registro de Tempo",
-      recordList: "Registros de Tempo",
-      period: "Período de Tempo",
-      periodList: "Períodos de Tempo",
-    },
-
     infos: "Informações",
     add: "Adicionar",
     send: "Enviar",
     save: "Salvar",
     cancel: "Cancelar",
     confirm: "Confirmar",
+    start: "Início",
+    end: "Fim",
+    time: "Tempo",
+    create: "Criar",
+    delete: "Apagar",
+    remove: "Remover",
+    edit: "Editar",
+    access: "Acessar",
   },
 
   v: {
@@ -70,6 +71,17 @@ export default {
       access: "Acessar conta",
     },
 
+    category: {
+      create: {
+        title: "Categoria",
+        submit: "Criar",
+      },
+      update: {
+        title: "Atualizar Categoria",
+        submit: "Salvar",
+      },
+    },
+
     login: {
       title: "Acessar",
       success: "Autenticação feita com sucesso.",
@@ -93,6 +105,23 @@ export default {
         },
       },
     },
+
+    timePeriod: {
+      status: {
+        success: {
+          create: "Período adicionado com sucesso.",
+          update: "Período atualizado com sucesso.",
+          delete: "Período excluído com sucesso.",
+        },
+      },
+    },
+  },
+
+  time: {
+    record: "Registro de Tempo",
+    recordList: "Registros de Tempo",
+    period: "Período de Tempo",
+    periodList: "Períodos de Tempo",
   },
 
   timer: {
@@ -121,5 +150,5 @@ export default {
     },
   },
 
-  goToHome: "Ir para página inicial",
+  goToHome: "Ir para Página Inicial",
 };
