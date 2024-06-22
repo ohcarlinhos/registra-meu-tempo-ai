@@ -20,25 +20,20 @@ const page = reactive({
         <TimerDefault />
 
         <UButton
-          v-if="timerStore.timeRecords.length >= 1"
+          v-if="timerStore.totalItems >= 1"
           color="black"
           variant="link"
           @click="page.openTable = !page.openTable"
         >
-          Você possui {{ timerStore.timeRecords.length }}
+          Você possui {{ timerStore.totalItems }}
           {{
-            timerStore.timeRecords.length > 1
-              ? "registros locais."
-              : "registro local."
+            timerStore.totalItems > 1 ? "registros locais." : "registro local."
           }}
           <br />(Clique para {{ page.openTable ? "fechar" : "visualizar" }})
         </UButton>
       </div>
 
-      <UCard
-        v-if="page.openTable && timerStore.timeRecords.length"
-        class="mt-10"
-      >
+      <UCard v-if="page.openTable && timerStore.totalItems" class="mt-10">
         <TimeRecordTableLocal />
       </UCard>
     </div>
