@@ -88,7 +88,7 @@ onMounted(async () => {
   <UCard>
     <template #header>
       <div class="flex items-center justify-between">
-        <h2>Registro de Tempo</h2>
+        <h2>{{ $t("form.category.create.title") }}</h2>
 
         <UButton
           color="gray"
@@ -108,9 +108,9 @@ onMounted(async () => {
       <UButton
         :loading="status.fetching"
         :disabled="submitButtonIsDisabled"
+        :label="$t('form.category.create.submit')"
         block
         type="submit"
-        label="Enviar"
       />
     </UForm>
   </UCard>
