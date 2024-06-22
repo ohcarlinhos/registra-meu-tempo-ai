@@ -224,7 +224,7 @@ onMounted(async () => {
       </UFormGroup>
 
       <div class="flex justify-between pt-6">
-        <h3>{{ $t("g.time.periodList") }}</h3>
+        <h3>{{ $t("time.periodList") }}</h3>
 
         <UButton
           :label="$t('g.add')"
