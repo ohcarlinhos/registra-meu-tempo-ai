@@ -119,7 +119,10 @@ const deleteTimePeriodAction = async () => {
   try {
     await deleteTimePeriod(modal.confirmDeleteTp.timePeriodId);
     OkToast(t("form.timePeriod.status.success.delete"));
+
+    await getTimeRecordData();
     await getTpList();
+
     modal.confirmDeleteTp.open = false;
   } catch (err) {
     ErrorToast(err);
@@ -219,10 +222,10 @@ onMounted(async () => {
           </p>
         </UCard>
 
-        <h2 class="mb-5 mt-5 text-2xl font-bold">Estatísticas</h2>
+        <h2 class="mb-5 text-2xl font-bold">Estatísticas</h2>
 
         <UCard>
-          <p><b>Tempo Total:</b> {{ trReq.formattedTime }}</p>
+          <p><b>Tempo Total:</b> {{ trReq.formattedTime || $t("g.none") }}</p>
           <p><b>Total de Períodos:</b> {{ trReq.timePeriodsCount }}</p>
         </UCard>
       </div>
