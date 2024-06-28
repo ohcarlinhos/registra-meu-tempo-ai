@@ -29,6 +29,15 @@ export const postCategory = async (payload: PayloadPost) => {
   );
 };
 
+export const putCategory = async (id: number, payload: PayloadPost) => {
+  return CustomHttp<PayloadPost, CategoryType>(
+    `/category/${id}`,
+    "put",
+    payload,
+    true
+  );
+};
+
 export const deleteCategory = async (id: number) => {
   return CustomHttp<null, TimeRecordType>(
     `/category/${id}`,

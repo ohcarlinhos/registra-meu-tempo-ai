@@ -24,7 +24,7 @@ const form = reactive<CategoryFormType>({
 });
 
 const submitButtonIsDisabled = computed(() => {
-  return form.name.length === 0;
+  return form.name.length === 0 || form.name === props.editObject?.name;
 });
 
 /**
@@ -61,8 +61,15 @@ const createAction = async () => {
 };
 
 const editAction = async (id: number) => {
-  // TODO
-  console.log(props.editObject);
+  try {
+    await putCategory(id, form);
+
+    if (form.callback) form.callback();
+
+    closeModal(true);
+  } catch (error) {
+    ErrorToast(error);
+  }
 };
 
 const submitAction = async () => {
@@ -82,6 +89,20 @@ onMounted(async () => {
     form.callback = props.editObject.callback;
   }
 });
+
+watch(
+  () => props.editObject,
+  (newObj) => {
+    if (newObj) {
+      form.id = newObj.id;
+      form.name = newObj.name;
+      form.callback = newObj.callback;
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>
@@ -108,7 +129,7 @@ onMounted(async () => {
       <UButton
         :loading="status.fetching"
         :disabled="submitButtonIsDisabled"
-        :label="$t('form.category.create.submit')"
+        :label="props.editObject?.id ? $t('g.save') : $t('g.create')"
         block
         type="submit"
       />

@@ -12,7 +12,7 @@ const emit = defineEmits<{
 const debounce = ref();
 
 const modal = reactive({
-  createOrUpdateTimeRecord: false,
+  createOrUpdateCategory: false,
   confirmDelete: {
     open: false,
     id: null as null | number,
@@ -21,7 +21,7 @@ const modal = reactive({
   },
 });
 
-const editTimeRecordObject = ref<CategoryFormType | undefined>(undefined);
+const editCategoryObject = ref<CategoryFormType | undefined>(undefined);
 
 const setDebounce = async (value: string) => {
   clearInterval(debounce.value);
@@ -68,19 +68,19 @@ const computedPerPageList = computed(() => {
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 
-const items = (row: TimeRecordType) => [
+const items = (row: CategoryType) => [
   [
-    // {
-    //   label: "Editar",
-    //   icon: "i-heroicons-pencil-square-20-solid",
-    //   click: () => emit("edit", row.id!),
-    // },
+    {
+      label: "Editar",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => openEditCategoryModal(row),
+    },
     {
       label: "Apagar",
       icon: "i-heroicons-trash-20-solid",
       click: async () =>
         openConfirmDeleteModal({
-          id: row.id!,
+          id: row.id,
           page: computedPage.value,
           perPage: computedPerPage.value,
         }),
@@ -89,11 +89,16 @@ const items = (row: TimeRecordType) => [
 ];
 
 const closeModal = () => {
-  modal.createOrUpdateTimeRecord = false;
-  editTimeRecordObject.value = undefined;
+  modal.createOrUpdateCategory = false;
+  editCategoryObject.value = undefined;
 };
 
-const deleteCategory = async () => {
+const openEditCategoryModal = (category: CategoryType) => {
+  editCategoryObject.value = category;
+  modal.createOrUpdateCategory = true;
+};
+
+const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
@@ -152,7 +157,7 @@ await categoryStore.fetch();
 
         <UButton
           icon="i-heroicons-pencil-square-20-solid"
-          @click="modal.createOrUpdateTimeRecord = true"
+          @click="modal.createOrUpdateCategory = true"
         />
       </div>
     </div>
@@ -164,13 +169,6 @@ await categoryStore.fetch();
         :rows="categoryStore.categoryTableData"
         :loading="categoryStore.fetching"
       >
-        <template #timePeriods-data="{ row }">
-          <TimeRecordTableColTimePeriod
-            :timePeriods="(row as ITimeRecordTable).timePeriods"
-            :label="(row as ITimeRecordTable).timePeriodsCountText || '0'"
-          />
-        </template>
-
         <template #actions-data="{ row }">
           <div class="flex justify-end">
             <UDropdown :items="items(row)">
@@ -209,15 +207,14 @@ await categoryStore.fetch();
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     text="Tem certeza que quer excluir esse registro?"
-    @confirm="deleteCategory"
+    @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"
   />
 
-  <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
+  <UModal v-model="modal.createOrUpdateCategory" prevent-close>
     <CategoryFormCreateAndUpdate
-      :edit-object="editTimeRecordObject"
+      :edit-object="editCategoryObject"
       @close="closeModal"
     />
   </UModal>
 </template>
-

@@ -14,6 +14,7 @@ export default {
     remove: "Remover",
     edit: "Editar",
     access: "Acessar",
+    none: "Nenhum",
   },
 
   v: {
