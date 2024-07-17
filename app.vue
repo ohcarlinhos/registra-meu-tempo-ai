@@ -1,7 +1,7 @@
 <template>
-    <NuxtLoadingIndicator />
-    <NuxtLayout>
-        <NuxtPage />
-    </NuxtLayout>
-    <UNotifications />
+  <NuxtLoadingIndicator />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+  <UNotifications />
 </template>

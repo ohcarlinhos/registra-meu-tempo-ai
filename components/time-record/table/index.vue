@@ -125,7 +125,7 @@ await trStore.fetchTimeRecords();
         </UInput>
 
         <UButton
-          label="Registro Manual"
+          label="Criar Registro"
           icon="i-heroicons-pencil-square-20-solid"
           @click="emit('create')"
         />
@@ -181,4 +181,3 @@ await trStore.fetchTimeRecords();
     </UCard>
   </div>
 </template>
-
