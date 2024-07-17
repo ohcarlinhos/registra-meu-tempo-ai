@@ -27,6 +27,8 @@ export const CustomHttp = async <P, R>(
   payload: P | null = null,
   is$fetch = false
 ) => {
+  if (!useRuntimeConfig().public.apiBase) throw new Error("API_BASE_DONT_SET");
+
   if (!is$fetch) {
     const { data, error } = await useFetch<R>(route, {
       key: `request:${route}`,
