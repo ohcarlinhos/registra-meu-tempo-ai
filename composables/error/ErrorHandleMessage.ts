@@ -1,4 +1,4 @@
-import { Notification } from "@nuxt/ui/dist/runtime/types";
+import type { Notification } from "#ui/types";
 
 export const ErrorHandleMessage = (error: unknown): Partial<Notification> => {
   const e = error as Error;

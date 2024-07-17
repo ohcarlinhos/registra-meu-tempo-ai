@@ -1,4 +1,4 @@
-import type { Pagination } from "../general/types/Pagination";
+import type { Pagination } from "../types/Pagination";
 
 export const getAllCategories = async function () {
   return CustomHttp<null, CategoryType[]>("/category/all", "get", null, true);
