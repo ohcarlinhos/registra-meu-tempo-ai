@@ -212,7 +212,12 @@ onMounted(async () => {
           {{ $t("g.infos") }}
         </h2>
 
-        <UCard v-if="showInfos">
+        <UCard
+          v-if="showInfos"
+          :ui="{
+            base: 'mb-5',
+          }"
+        >
           <p v-if="trReq.code"><b>Código:</b> {{ trReq.code }}</p>
           <p v-if="trReq.categoryName">
             <b>Categoria:</b> {{ trReq.categoryName }}
