@@ -1,4 +1,4 @@
-import ptBr from "./components/translate/ptBr";
+import ptBr from "./translate/ptBr";
 
 export default defineI18nConfig(() => ({
   legacy: false,
