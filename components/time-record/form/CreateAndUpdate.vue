@@ -192,38 +192,7 @@ onMounted(async () => {
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <UFormGroup :label="$t('form.timeRecord.code')" name="code">
-        <UInput type="text" v-model="form.code" autofocus />
-      </UFormGroup>
-
-      <UFormGroup :label="$t('form.timeRecord.description')" name="description">
-        <UInput type="text" v-model="form.description" />
-      </UFormGroup>
-
-      <UFormGroup
-        :label="$t('form.timeRecord.category')"
-        name="category"
-        class="z-100 relative"
-      >
-        <USelectMenu
-          v-model="categoryValue"
-          :options="categories"
-          :clear-search-on-close="true"
-          :ui-menu="{ height: 'max-h-40' }"
-          show-create-option-when="always"
-          searchable
-          creatable
-        >
-          <template #option-create="{ option }">
-            <span class="flex-shrink-0">{{
-              $t("form.timeRecord.selectCategoryAdd")
-            }}</span>
-            <span class="block truncate">{{ option }}</span>
-          </template>
-        </USelectMenu>
-      </UFormGroup>
-
-      <div class="flex justify-between pt-6">
+      <div class="flex justify-between">
         <h3>{{ $t("time.periodList") }}</h3>
 
         <UButton
@@ -269,6 +238,37 @@ onMounted(async () => {
           @click="deleteTimePeriodFromForm(index)"
         />
       </div>
+
+      <UFormGroup
+        :label="$t('form.timeRecord.category')"
+        name="category"
+        class="z-100 relative"
+      >
+        <USelectMenu
+          v-model="categoryValue"
+          :options="categories"
+          :clear-search-on-close="true"
+          :ui-menu="{ height: 'max-h-40' }"
+          show-create-option-when="always"
+          searchable
+          creatable
+        >
+          <template #option-create="{ option }">
+            <span class="flex-shrink-0">{{
+              $t("form.timeRecord.selectCategoryAdd")
+            }}</span>
+            <span class="block truncate">{{ option }}</span>
+          </template>
+        </USelectMenu>
+      </UFormGroup>
+
+      <UFormGroup :label="$t('form.timeRecord.code')" name="code">
+        <UInput type="text" v-model="form.code" />
+      </UFormGroup>
+
+      <UFormGroup :label="$t('form.timeRecord.description')" name="description">
+        <UInput type="text" v-model="form.description" />
+      </UFormGroup>
 
       <UButton
         :loading="status.fetching"
