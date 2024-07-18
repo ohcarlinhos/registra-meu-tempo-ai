@@ -8,7 +8,10 @@ export default defineNuxtConfig({
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/i18n",
   ],
-  ui: { global: true },
+  ui: {
+    global: true,
+    icons: ["icon-park-outline"],
+  },
   i18n: {
     vueI18n: "./i18n.config.ts",
   },
@@ -24,4 +27,3 @@ export default defineNuxtConfig({
     },
   },
 });
-
