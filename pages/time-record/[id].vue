@@ -227,11 +227,31 @@ onMounted(async () => {
           </p>
         </UCard>
 
-        <h2 class="mb-5 text-2xl font-bold">Estatísticas</h2>
-
         <UCard>
-          <p><b>Tempo Total:</b> {{ trReq.formattedTime || $t("g.none") }}</p>
-          <p><b>Total de Períodos:</b> {{ trReq.timePeriodsCount }}</p>
+          <h2 class="mb-2 text-2xl font-bold">Estatísticas</h2>
+
+          <section class="text-lg">
+            <p class="mb-1">
+              <b>Períodos de tempo:</b> {{ trReq.timePeriodsCount }}
+            </p>
+
+            <p class="mb-1">
+              <b>Tempo total do registro:</b>
+              {{ trReq.formattedTime || $t("g.none") }}
+            </p>
+
+            <p class="mb-1">
+              Que equivale à
+              <b>
+                {{
+                  trReq.timeTotalMilliseconds
+                    ? (trReq.timeTotalMilliseconds / 1000 / 60 / 25).toFixed(2)
+                    : 0
+                }}
+              </b>
+              pomodoros!
+            </p>
+          </section>
         </UCard>
       </div>
 
