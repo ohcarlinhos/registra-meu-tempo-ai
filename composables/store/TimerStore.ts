@@ -97,9 +97,9 @@ export const useTimerStore = defineStore("TimerStore", {
             end: new Date(p.end),
           })),
         });
-
-        this._currentTimePeriodList = [];
       }
+
+      this._currentTimePeriodList = [];
     },
 
     off() {
