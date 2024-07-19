@@ -10,6 +10,9 @@ export const useTimerStore = defineStore("TimerStore", {
       _running: false,
       _interval: null as NodeJS.Timeout | null,
       _type: "timer" as TimerType,
+      _pomodoroPeiod: 25,
+      _breakPeriod: 5,
+      _showConfig: false,
       _perPage: 4,
       _page: 1,
     };
@@ -17,9 +20,11 @@ export const useTimerStore = defineStore("TimerStore", {
 
   actions: {
     validateAndConfigure() {
-      const alreadyAdd = localStorage.getItem("alreadyAddEventListener");
+      const alreadyAddEventListener = localStorage.getItem(
+        "alreadyAddEventListener"
+      );
 
-      if (!alreadyAdd || alreadyAdd === "0") {
+      if (!alreadyAddEventListener || alreadyAddEventListener === "0") {
         if (this._running) this.pause();
 
         window.addEventListener("beforeunload", function () {
@@ -54,10 +59,12 @@ export const useTimerStore = defineStore("TimerStore", {
       this._interval = setInterval(() => {
         if (this._running) {
           this._currentTimePeriod.end = Date.now();
+
+          // TODO: implementar diferenças do pomodoro, cronômetro e pausa.
         } else {
           this.clearInterval();
         }
-      }, 1000);
+      }, 200);
 
       this.reset();
       this._running = true;
@@ -80,7 +87,7 @@ export const useTimerStore = defineStore("TimerStore", {
     end() {
       if (this._running) this.pause();
 
-      if (this._currentTimePeriodList.length) {
+      if (this._currentTimePeriodList.length && !this.isBreak) {
         this.add({
           localUuid: uuidv4(),
           description: "",
@@ -103,6 +110,14 @@ export const useTimerStore = defineStore("TimerStore", {
       this._type = type;
     },
 
+    setPomodoroPeiod(value: number) {
+      this._pomodoroPeiod = value;
+    },
+
+    setBreakPeiod(value: number) {
+      this._breakPeriod = value;
+    },
+
     deleteTimeRecord(uuid: string) {
       const index = this._timeRecordsLocal.findIndex(
         (r) => r.localUuid === uuid
@@ -112,9 +127,17 @@ export const useTimerStore = defineStore("TimerStore", {
         this._timeRecordsLocal.splice(index, 1);
       }
     },
+
+    toggleConfig() {
+      this._showConfig = !this._showConfig;
+    },
   },
 
   getters: {
+    showConfig(): boolean {
+      return this._showConfig;
+    },
+
     totalItems(): number {
       return this._timeRecordsLocal.length;
     },
@@ -123,12 +146,38 @@ export const useTimerStore = defineStore("TimerStore", {
       return Math.ceil(this.totalItems / this._perPage);
     },
 
-    isRunning(state) {
-      return state._running;
+    pomodoroOrBreakInMilisecondsPeriod(): number {
+      return (
+        (this.isPomodoro ? this._pomodoroPeiod : this._breakPeriod) * 60 * 1000
+      );
+    },
+
+    pomodoroPeiod(): number {
+      return this._pomodoroPeiod;
+    },
+
+    breakPeiod(): number {
+      return this._breakPeriod;
     },
 
     timerType(state) {
       return state._type;
+    },
+
+    isRunning(state) {
+      return state._running;
+    },
+
+    isPomodoro(state) {
+      return state._type === "pomodoro";
+    },
+
+    isTimer(state) {
+      return state._type === "timer";
+    },
+
+    isBreak(state) {
+      return state._type === "break";
     },
 
     timePeriodsLength(state) {
@@ -161,7 +210,11 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     formated(): string {
-      return millisecondsToString(this._totalMiliseconds);
+      return millisecondsToString(
+        this.isPomodoro || this.isBreak
+          ? this.pomodoroOrBreakInMilisecondsPeriod - this._totalMiliseconds
+          : this._totalMiliseconds
+      );
     },
 
     timeRecords: (state) => {

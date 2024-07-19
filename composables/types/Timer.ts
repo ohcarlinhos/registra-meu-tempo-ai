@@ -1,4 +1,4 @@
-export type TimerType = "timer" | "pomodoro";
+export type TimerType = "timer" | "pomodoro" | "break";
 
 export type TimePeriodTimerType = {
   start: number;
