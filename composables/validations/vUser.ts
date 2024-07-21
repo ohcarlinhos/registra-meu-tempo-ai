@@ -40,5 +40,8 @@ export class vUser {
       .max(48, this.t("v.user.password.max"))
       .required(this.t("v.user.oldPassword.required"));
   }
-}
 
+  static registerCode(y = yup.string()) {
+    return y.required(this.t("v.user.registerCode.required"));
+  }
+}

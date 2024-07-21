@@ -8,6 +8,7 @@ const pageStatus = reactive({ fetching: false });
 const form = reactive({
   email: "carlinhos@test.com",
   name: "Carlinhos",
+  registerCode: "1463a5d2-63ee-469a-8481-05deecca3f53",
   password: "Ska$312d%$1",
   confirmPassword: "Ska$312d%$1",
 });
@@ -15,6 +16,7 @@ const form = reactive({
 const schema = yup.object({
   name: vUser.name(),
   email: vUser.email(),
+  registerCode: vUser.registerCode(),
   password: vUser.password(),
   confirmPassword: vUser.confirmPassword(),
 });
@@ -58,6 +60,14 @@ const submit = async () => {
 
       <UFormGroup :label="t('form.user.email')" name="email" required>
         <UInput type="email" v-model="form.email" />
+      </UFormGroup>
+
+      <UFormGroup
+        :label="t('form.user.registerCode')"
+        name="registerCode"
+        required
+      >
+        <UInput type="registerCode" v-model="form.registerCode" />
       </UFormGroup>
 
       <UFormGroup :label="t('form.user.password')" name="password" required>

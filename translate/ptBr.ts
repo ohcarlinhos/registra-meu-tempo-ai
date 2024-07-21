@@ -42,6 +42,9 @@ export default {
       oldPassword: {
         required: "Informe a senha antiga para criar uma nova senha.",
       },
+      registerCode: {
+        required: "Código de registro obrigatório.",
+      },
     },
   },
 
@@ -62,6 +65,7 @@ export default {
       name: "Nome",
       email: "Email",
       password: "Senha",
+      registerCode: "Código de registro",
       newPassword: "Nova senha",
       confirmPassword: "Confirmação da senha",
       confirmNewPassword: "Confirmação da nova senha",
