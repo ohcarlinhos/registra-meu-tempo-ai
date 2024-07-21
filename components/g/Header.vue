@@ -38,8 +38,8 @@ const activeClass = "text-primary font-bold";
 
         <p v-if="!hideDescription" class="pt-4">
           Sua ferramenta de
-          <span class="font-bold text-primary">registro de tempo</span>
-          personalizada.
+          <br v-if="smallTitle" />
+          <span class="font-bold text-primary">gerenciamento de tempo.</span>
         </p>
       </div>
       <div>
@@ -47,8 +47,12 @@ const activeClass = "text-primary font-bold";
       </div>
     </section>
 
-    <nav class="pt-6 flex gap-4" :class="{ 'justify-center': center }">
-      <ULink to="/" :active-class="activeClass">Página Inicial</ULink>
+    <nav
+      v-if="useRuntimeConfig().public.onlyGuestMode != '1'"
+      class="pt-6 flex gap-4"
+      :class="{ 'justify-center': center }"
+    >
+      <ULink to="/" :active-class="activeClass">Início</ULink>
 
       <ULink
         v-if="authStore.isAuthenticad"
@@ -84,8 +88,9 @@ const activeClass = "text-primary font-bold";
 
       <UButton
         v-if="authStore.isAuthenticad"
-        variant="link"
         :padded="false"
+        color="black"
+        variant="link"
         size="xl"
         label="Sair"
         @click="exit"
@@ -93,4 +98,3 @@ const activeClass = "text-primary font-bold";
     </nav>
   </header>
 </template>
-

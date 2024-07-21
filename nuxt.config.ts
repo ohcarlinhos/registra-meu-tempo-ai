@@ -24,6 +24,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE,
+      onlyGuestMode: process.env.ONLY_GUEST_MODE,
     },
   },
 });
