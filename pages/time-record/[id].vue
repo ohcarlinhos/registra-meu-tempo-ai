@@ -5,9 +5,8 @@ const route = useRoute();
 const { t } = useI18n();
 
 const columns = computed(() => [
-  { key: "startFormatted", label: t("g.start") },
-  { key: "endFormatted", label: t("g.end") },
   { key: "formattedTime", label: t("g.time") },
+  { key: "date", label: t("g.date") },
   { key: "actions" },
 ]);
 
@@ -193,47 +192,51 @@ onMounted(async () => {
     <GHeader small-title />
 
     <div v-if="trReq" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-      <div class="w-full col-span-1 lg:col-span-2">
-        <h2 class="text-2xl mb-2 font-bold">Salve seu tempo!</h2>
+      <div class="w-full col-span-1 lg:col-span-4">
+        <TimerDefault options-modal :id="trReq.id" />
 
-        <p>Continue a registrar períodos de tempo.</p>
+        <h2 class="text-2xl mb-2 mt-6 font-bold">Cronômetro Simples</h2>
+
+        <p>
+          Aperte o botão de iniciar e de finalizar, dessa forma seu tempo será
+          salvo nesse registro.
+        </p>
 
         <TimerSimple
           :id="parseInt(route.params.id as string)"
           :callback="getTimeRecordData"
         />
-
-        <!-- <h2 class="mb-2 mt-2 text-2xl font-bold">Anotações</h2>
-        <p>// TODO: Ops</p> -->
       </div>
 
       <div class="w-full col-span-1 lg:col-span-4">
-        <h2 v-if="showInfos" class="mb-5 text-2xl font-bold">
-          {{ $t("g.infos") }}
-        </h2>
-
         <UCard
           v-if="showInfos"
           :ui="{
             base: 'mb-5',
           }"
         >
-          <p v-if="trReq.code"><b>Código:</b> {{ trReq.code }}</p>
-          <p v-if="trReq.categoryName">
-            <b>Categoria:</b> {{ trReq.categoryName }}
-          </p>
-          <p v-if="trReq.description">
-            <b>Descrição:</b> {{ trReq.description }}
-          </p>
+          <h2 v-if="showInfos" class="mb-2 text-2xl font-bold">
+            {{ $t("g.infos") }}
+          </h2>
+
+          <section class="text-lg">
+            <p v-if="trReq.code"><b>Código:</b> {{ trReq.code }}</p>
+
+            <p v-if="trReq.categoryName">
+              <b>Categoria:</b> {{ trReq.categoryName }}
+            </p>
+
+            <p v-if="trReq.description">
+              <b>Descrição:</b> {{ trReq.description }}
+            </p>
+          </section>
         </UCard>
 
         <UCard>
           <h2 class="mb-2 text-2xl font-bold">Estatísticas</h2>
 
           <section class="text-lg">
-            <p class="mb-1">
-              <b>Períodos de tempo:</b> {{ trReq.timePeriodsCount }}
-            </p>
+            <p class="mb-1"><b>Períodos:</b> {{ trReq.timePeriodsCount }}</p>
 
             <p class="mb-1">
               <b>Tempo total do registro:</b>
@@ -255,7 +258,7 @@ onMounted(async () => {
         </UCard>
       </div>
 
-      <div class="w-full col-span-1 lg:col-span-6">
+      <div class="w-full col-span-1 lg:col-span-4">
         <UContainer
           :ui="{
             base: 'flex flex-col md:flex-row justify-between gap-5',
@@ -267,7 +270,7 @@ onMounted(async () => {
           <div v-if="trReq.id" class="flex gap-5 flex-row items-start mt-1">
             <UButton
               icon="i-heroicons-pencil-square-20-solid"
-              label="Adicionar Período"
+              label="Adicionar"
               @click="openTimePeriodModal(trReq!.id)"
             />
           </div>
@@ -280,11 +283,26 @@ onMounted(async () => {
             :rows="tpFormatted"
             :loading="false"
           >
-            <template #timePeriod-data="{ row }">
-              <TimeRecordTableColTimePeriod
-                :time-periods="(row as ITimeRecordTable).timePeriods"
-                :label="(row as ITimeRecordTable).timePeriodsCountText || '0'"
-              />
+            <template #date-data="{ row }">
+              <div class="flex">
+                <UPopover mode="hover">
+                  <span>{{ row.startFormatted.split(" ")[0] }}</span>
+
+                  <template #panel>
+                    <div
+                      class="p-2 flex justify-center gap-2 max-w-40 flex-wrap"
+                    >
+                      <UBadge color="gray" variant="solid">
+                        {{ $t("g.start") + ": " + row.startFormatted }}
+                      </UBadge>
+
+                      <UBadge color="gray" variant="solid">
+                        {{ $t("g.end") + ": " + row.endFormatted }}
+                      </UBadge>
+                    </div>
+                  </template>
+                </UPopover>
+              </div>
             </template>
 
             <template #actions-data="{ row }">
