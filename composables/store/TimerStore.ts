@@ -12,36 +12,19 @@ export const useTimerStore = defineStore("TimerStore", {
       _type: "timer" as TimerType,
       _pomodoroPeiod: 25,
       _breakPeriod: 5,
-      _showConfig: false,
+      _showOptions: false,
       _perPage: 4,
       _page: 1,
     };
   },
 
   actions: {
-    validateAndConfigure() {
-      const alreadyAddEventListener = localStorage.getItem(
-        "alreadyAddEventListener"
-      );
-
-      if (!alreadyAddEventListener || alreadyAddEventListener === "0") {
-        if (this._running) this.pause();
-
-        window.addEventListener("beforeunload", function () {
-          localStorage.setItem("alreadyAddEventListener", "0");
-        });
-
-        localStorage.setItem("alreadyAddEventListener", "1");
-      }
+    initTimerConfig(hideOptions = false) {
+      if (hideOptions) this._showOptions = false;
+      this.pauseTimer();
     },
 
-    reset() {
-      const timeNow = Date.now();
-      this._currentTimePeriod.start = timeNow;
-      this._currentTimePeriod.end = timeNow;
-    },
-
-    clearTimePeriodList() {
+    clearCurrentTimePeriodList() {
       this._currentTimePeriodList = [];
     },
 
@@ -49,46 +32,69 @@ export const useTimerStore = defineStore("TimerStore", {
       clearInterval(this._interval as NodeJS.Timeout);
     },
 
-    add(timeRecord: ITimeRecordLocal) {
+    addTimeRecordLocal(timeRecord: ITimeRecordLocal) {
       this._timeRecordsLocal.unshift(timeRecord);
     },
 
-    start() {
-      if (this._running === true) this.pause();
+    deleteTimeRecordLocal(uuid: string) {
+      const index = this._timeRecordsLocal.findIndex(
+        (r) => r.localUuid === uuid
+      );
 
+      if (index != -1) {
+        this._timeRecordsLocal.splice(index, 1);
+      }
+    },
+
+    startTimer() {
+      if (this._running === true) this.pauseTimer();
+
+      this.defineIntervalTimer();
+      this.resetTimer();
+
+      this._running = true;
+    },
+
+    defineIntervalTimer() {
       this._interval = setInterval(() => {
         if (this._running) {
           this._currentTimePeriod.end = Date.now();
 
-          // TODO: implementar diferenças do pomodoro, cronômetro e pausa.
+          if (this.isBreak || this.isPomodoro) {
+            this.validadePomodoroOrBreakEnd();
+          }
         } else {
           this.clearInterval();
         }
       }, 200);
-
-      this.reset();
-      this._running = true;
     },
 
-    pause() {
+    validadePomodoroOrBreakEnd() {
+      if (this.regressiveMilissecondsNecessary <= this._totalMilisecondsPast) {
+        this.playAlarmSound();
+        this.endTimer();
+      }
+    },
+
+    pauseTimer() {
       this.clearInterval();
 
-      if (this._running && this._totalMiliseconds !== 0) {
+      if (this._running && this._totalMilisecondsPast !== 0) {
         this._currentTimePeriodList.push({
           start: this._currentTimePeriod.start,
           end: this._currentTimePeriod.end,
         });
       }
 
-      this.reset();
+      this.resetTimer();
       this._running = false;
     },
 
-    end() {
-      if (this._running) this.pause();
+    endTimer(manualClick = false) {
+      if (this._running) this.pauseTimer();
 
       if (this._currentTimePeriodList.length && !this.isBreak) {
-        this.add({
+        this.addTimeRecordLocal({
           localUuid: uuidv4(),
           description: "",
           timeRecordDate: new Date().toISOString(),
@@ -102,8 +108,10 @@ export const useTimerStore = defineStore("TimerStore", {
       this._currentTimePeriodList = [];
     },
 
-    off() {
-      this._running = false;
+    resetTimer() {
+      const timeNow = Date.now();
+      this._currentTimePeriod.start = timeNow;
+      this._currentTimePeriod.end = timeNow;
     },
 
     setTimerType(type: TimerType) {
@@ -118,24 +126,22 @@ export const useTimerStore = defineStore("TimerStore", {
       this._breakPeriod = value;
     },
 
-    deleteTimeRecord(uuid: string) {
-      const index = this._timeRecordsLocal.findIndex(
-        (r) => r.localUuid === uuid
-      );
-
-      if (index != -1) {
-        this._timeRecordsLocal.splice(index, 1);
-      }
+    toggleOptions() {
+      this._showOptions = !this._showOptions;
     },
 
-    toggleConfig() {
-      this._showConfig = !this._showConfig;
+    playClickSound() {
+      clickSound.play();
+    },
+
+    playAlarmSound() {
+      alarmSound.play();
     },
   },
 
   getters: {
-    showConfig(): boolean {
-      return this._showConfig;
+    showOptions(): boolean {
+      return this._showOptions;
     },
 
     totalItems(): number {
@@ -146,10 +152,10 @@ export const useTimerStore = defineStore("TimerStore", {
       return Math.ceil(this.totalItems / this._perPage);
     },
 
-    pomodoroOrBreakInMilisecondsPeriod(): number {
-      return (
-        (this.isPomodoro ? this._pomodoroPeiod : this._breakPeriod) * 60 * 1000
-      );
+    regressiveMilissecondsNecessary(): number {
+      const mult = 60000;
+      if (this.isPomodoro) return mult * this._pomodoroPeiod;
+      return mult * this._breakPeriod;
     },
 
     pomodoroPeiod(): number {
@@ -191,29 +197,30 @@ export const useTimerStore = defineStore("TimerStore", {
       );
     },
 
-    _secondsPast(state) {
+    _currentMilisecondsPast(state) {
       return state._currentTimePeriod.end - state._currentTimePeriod.start;
     },
 
-    _totalMiliseconds(): number {
+    _totalMilisecondsPast(): number {
       return (
-        this._timePeriodsTotalSeconds + (this._running ? this._secondsPast : 0)
+        this._timePeriodsTotalSeconds +
+        (this._running ? this._currentMilisecondsPast : 0)
       );
     },
 
     hasMiliseconds(): boolean {
-      return this._totalMiliseconds > 0;
+      return this._totalMilisecondsPast > 0;
     },
 
     dontHasMiliseconds(): boolean {
-      return this._totalMiliseconds === 0;
+      return this._totalMilisecondsPast <= 0;
     },
 
     formated(): string {
       return millisecondsToString(
         this.isPomodoro || this.isBreak
-          ? this.pomodoroOrBreakInMilisecondsPeriod - this._totalMiliseconds
-          : this._totalMiliseconds
+          ? this.regressiveMilissecondsNecessary - this._totalMilisecondsPast
+          : this._totalMilisecondsPast
       );
     },
 

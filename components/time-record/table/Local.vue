@@ -43,8 +43,8 @@ const openConfirmDeleteModal = (uuid: string) => {
   confirmDelete.uuid = uuid;
 };
 
-const deleteTimeRecord = () => {
-  timerStore.deleteTimeRecord(confirmDelete.uuid);
+const deleteAction = () => {
+  timerStore.deleteTimeRecordLocal(confirmDelete.uuid);
   closeConfirmDeleteModal();
 };
 
@@ -80,7 +80,7 @@ const openModal = (timeRecord: ITimeRecordLocal) => {
   if (!timeRecord) return;
 
   editTimeRecordObject.value = editTimeRecordObjectFactory(timeRecord, () => {
-    timerStore.deleteTimeRecord(timeRecord.localUuid);
+    timerStore.deleteTimeRecordLocal(timeRecord.localUuid);
   });
 
   modal.open = true;
@@ -148,8 +148,7 @@ const closeModal = () => {
   <GModalConfirm
     v-model:open="confirmDelete.open"
     text="Tem certeza que quer excluir esse registro?"
-    @confirm="deleteTimeRecord"
+    @confirm="deleteAction"
     @cancel="closeConfirmDeleteModal"
   />
 </template>
-

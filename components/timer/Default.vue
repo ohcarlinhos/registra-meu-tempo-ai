@@ -3,7 +3,14 @@ const timerStore = useTimerStore();
 const authStore = useAuthStore();
 const { t } = useI18n();
 
-timerStore.validateAndConfigure();
+const props = defineProps({
+  float: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+timerStore.initTimerConfig(props.float);
 
 const modal = reactive({
   createTimeRecord: {
@@ -14,19 +21,23 @@ const modal = reactive({
   },
 });
 
-const customPomodoroPeriod = ref("");
-
-watch(customPomodoroPeriod, (newValue) => {
-  setPomodoroPeriod(newValue, false);
-});
-
-customPomodoroPeriod.value = timerStore.pomodoroPeiod.toString();
-
 const editTimeRecordObject = ref<TimeRecordFormType>();
 
-const end = () => {
+const startTimer = () => {
+  clickSound.play();
+  timerStore.startTimer();
+};
+
+const pauseTimer = () => {
+  clickSound.play();
+  timerStore.pauseTimer();
+};
+
+const endTimer = () => {
+  clickSound.play();
+
   if (authStore.isAuthenticad) {
-    timerStore.pause();
+    timerStore.pauseTimer();
 
     editTimeRecordObject.value = {
       description: "",
@@ -39,12 +50,13 @@ const end = () => {
         })),
       ],
       callback: () => {
-        timerStore.clearTimePeriodList();
+        timerStore.clearCurrentTimePeriodList();
       },
     };
+
     modal.confirmPersistMethod.open = true;
   } else {
-    timerStore.end();
+    timerStore.endTimer();
   }
 };
 
@@ -54,7 +66,7 @@ const persistOnServer = () => {
 };
 
 const saveOnBrowser = () => {
-  timerStore.end();
+  timerStore.endTimer();
   modal.confirmPersistMethod.open = false;
 };
 
@@ -82,146 +94,53 @@ const getButtonColor = computed(() => {
   return "green";
 });
 
-const setPomodoroPeriod = (value: number | string, clear = true) => {
-  if (clear) customPomodoroPeriod.value = "";
-
-  if (typeof value === "string" && value) {
-    return timerStore.setPomodoroPeiod(parseInt(value));
-  }
-
-  if (typeof value === "number") {
-    return timerStore.setPomodoroPeiod(value);
-  }
-
-  return timerStore.setPomodoroPeiod(timerStore.pomodoroPeiod || 25);
-};
-
-const setBreakPeriod = (value: number) => {
-  return timerStore.setBreakPeiod(value);
-};
-
-const showConfigUi = reactive({
+const showOptionsButtonUi = reactive({
   base: "absolute top-1 right-1",
 });
+
+const timerCardUiBase = computed(
+  () =>
+    `pt-3 ${props.float ? "fixed top-5 right-5 max-w-60 w-full" : "relative"}`
+);
 </script>
 
 <template>
   <section>
-    <section v-if="timerStore.showConfig" class="mb-5">
-      <section class="flex gap-3 mb-3 justify-center">
-        <UButton
-          label="Pomodoro"
-          :variant="isSolidOrSoftButton(timerStore.isPomodoro)"
-          :disabled="timerStore.hasMiliseconds"
-          color="red"
-          icon="i-icon-park-outline-tomato"
-          @click="timerStore.setTimerType('pomodoro')"
-        />
+    <TimerOptions v-if="timerStore.showOptions && !props.float" />
 
-        <UButton
-          :variant="isSolidOrSoftButton(timerStore.isBreak)"
-          :disabled="timerStore.hasMiliseconds"
-          label="Pausa"
-          color="blue"
-          icon="i-icon-park-outline-sleep-two"
-          @click="timerStore.setTimerType('break')"
-        />
-
-        <UButton
-          :variant="isSolidOrSoftButton(timerStore.isTimer)"
-          :disabled="timerStore.hasMiliseconds"
-          label="Cronômetro"
-          icon="i-icon-park-outline-timer"
-          @click="timerStore.setTimerType('timer')"
-        />
-      </section>
-
-      <section
-        v-if="timerStore.isPomodoro"
-        class="flex gap-3 items-center pt-2"
-      >
-        <p class="leading-1">Minutos:</p>
-
-        <UButton
-          label="25"
-          :variant="isSolidOrOutlineButton(timerStore.pomodoroPeiod === 25)"
-          :disabled="timerStore.hasMiliseconds"
-          color="red"
-          @click="setPomodoroPeriod(25)"
-        />
-
-        <UButton
-          label="50"
-          :variant="isSolidOrOutlineButton(timerStore.pomodoroPeiod === 50)"
-          :disabled="timerStore.hasMiliseconds"
-          color="red"
-          @click="setPomodoroPeriod(50)"
-        />
-
-        <UInput
-          v-model="customPomodoroPeriod"
-          :ui="{ base: 'w-16' }"
-          :disabled="timerStore.hasMiliseconds"
-          type="number"
-          min="0"
-          step="1"
-          @blur="setPomodoroPeriod(customPomodoroPeriod, false)"
-        />
-      </section>
-
-      <section v-if="timerStore.isBreak" class="flex gap-3 items-center pt-2">
-        <p class="leading-1">Minutos:</p>
-
-        <UButton
-          label="5"
-          :variant="isSolidOrOutlineButton(timerStore.breakPeiod === 5)"
-          :disabled="timerStore.hasMiliseconds"
-          color="blue"
-          @click="setBreakPeriod(5)"
-        />
-
-        <UButton
-          label="10"
-          :variant="isSolidOrOutlineButton(timerStore.breakPeiod === 10)"
-          :disabled="timerStore.hasMiliseconds"
-          color="blue"
-          @click="setBreakPeriod(10)"
-        />
-
-        <UButton
-          label="15"
-          :variant="isSolidOrOutlineButton(timerStore.breakPeiod === 15)"
-          :disabled="timerStore.hasMiliseconds"
-          color="blue"
-          @click="setBreakPeriod(15)"
-        />
-      </section>
-    </section>
+    <UModal
+      v-model="timerStore._showOptions"
+      v-if="timerStore.showOptions && props.float"
+    >
+      <h3 class="text-xl text-center pt-6">Qual modo quer ativar?</h3>
+      <GCloseButton @close="timerStore.toggleOptions" />
+      <TimerOptions :float="props.float" />
+    </UModal>
 
     <UCard
       :ui="{
-        base: 'relative pt-3',
+        base: timerCardUiBase,
         background: `dark:bg-${getButtonColor}-950 dark:bg-opacity-70`,
       }"
     >
       <UButton
-        v-if="timerStore.showConfig"
-        :ui="showConfigUi"
+        v-if="timerStore.showOptions"
+        :ui="showOptionsButtonUi"
         title="Abrir"
         color="white"
         variant="ghost"
         icon="i-icon-park-outline-preview-open"
-        @click="timerStore.toggleConfig"
+        @click="timerStore.toggleOptions"
       />
 
       <UButton
         v-else
-        :ui="showConfigUi"
+        :ui="showOptionsButtonUi"
         title="Fechar"
         color="white"
         variant="ghost"
         icon="i-icon-park-outline-preview-close"
-        @click="timerStore.toggleConfig"
+        @click="timerStore.toggleOptions"
       />
 
       <div class="flex flex-col gap-5 justify-center items-center">
@@ -248,7 +167,7 @@ const showConfigUi = reactive({
             {{
               timerStore.isRunning
                 ? "até finalizar o Pomodoro."
-                : "Pronto para esse Pomodoro?"
+                : "com seu Pomodoro?"
             }}
           </p>
 
@@ -277,7 +196,7 @@ const showConfigUi = reactive({
             :disabled="timerStore.isRunning"
             color="blue"
             icon="i-icon-park-outline-play-one"
-            @click="timerStore.start"
+            @click="startTimer"
           />
 
           <UButton
@@ -285,7 +204,7 @@ const showConfigUi = reactive({
             :title="$t('timer.buttons.pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
-            @click="timerStore.pause"
+            @click="pauseTimer"
           />
 
           <UButton
@@ -293,7 +212,7 @@ const showConfigUi = reactive({
             :title="$t('timer.buttons.finish')"
             color="green"
             icon="i-icon-park-outline-hard-disk-one"
-            @click="end"
+            @click="endTimer"
           />
         </div>
       </div>
