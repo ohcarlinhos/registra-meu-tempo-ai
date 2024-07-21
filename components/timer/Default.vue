@@ -8,6 +8,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  optionsModal: {
+    type: Boolean,
+    default: false,
+  },
+  id: {
+    type: Number,
+    default: null,
+  },
 });
 
 timerStore.initTimerConfig(props.float);
@@ -106,15 +114,15 @@ const timerCardUiBase = computed(
 
 <template>
   <section>
-    <TimerOptions v-if="timerStore.showOptions && !props.float" />
+    <TimerOptions v-if="timerStore.showOptions && !props.optionsModal" />
 
     <UModal
       v-model="timerStore._showOptions"
-      v-if="timerStore.showOptions && props.float"
+      v-if="timerStore.showOptions && props.optionsModal"
     >
       <h3 class="text-xl text-center pt-6">Qual modo quer ativar?</h3>
       <GCloseButton @close="timerStore.toggleOptions" />
-      <TimerOptions :float="props.float" />
+      <TimerOptions :float="props.optionsModal" />
     </UModal>
 
     <UCard
@@ -216,6 +224,10 @@ const timerCardUiBase = computed(
           />
         </div>
       </div>
+
+      <p v-if="props.id" class="text-center pt-5 text-sm opacity-50">
+        Sincronizado com registro: #{{ props.id }}
+      </p>
     </UCard>
   </section>
 
