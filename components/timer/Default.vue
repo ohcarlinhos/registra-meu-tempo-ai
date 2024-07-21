@@ -106,10 +106,23 @@ const showOptionsButtonUi = reactive({
   base: "absolute top-1 right-1",
 });
 
-const timerCardUiBase = computed(
-  () =>
-    `pt-3 ${props.float ? "fixed top-5 right-5 max-w-60 w-full" : "relative"}`
-);
+const timerCardUi = computed(() => {
+  const getColor = () => {
+    if (timerStore.isPomodoro) return "red";
+    if (timerStore.isBreak) return "blue";
+    return "green";
+  };
+
+  return {
+    base: `pt-3 ${
+      props.float ? "fixed top-5 right-5 max-w-60 w-full" : "relative"
+    }`,
+
+    background: `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
+
+    ring: `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
+  };
+});
 </script>
 
 <template>
@@ -125,12 +138,7 @@ const timerCardUiBase = computed(
       <TimerOptions :float="props.optionsModal" />
     </UModal>
 
-    <UCard
-      :ui="{
-        base: timerCardUiBase,
-        background: `dark:bg-${getButtonColor}-950 dark:bg-opacity-70`,
-      }"
-    >
+    <UCard :ui="timerCardUi">
       <UButton
         v-if="timerStore.showOptions"
         :ui="showOptionsButtonUi"

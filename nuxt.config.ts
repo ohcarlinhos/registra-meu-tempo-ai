@@ -8,6 +8,9 @@ export default defineNuxtConfig({
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/i18n",
   ],
+  colorMode: {
+    preference: "system",
+  },
   ui: {
     global: true,
     icons: ["icon-park-outline"],

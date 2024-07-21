@@ -93,11 +93,7 @@ const closeModal = () => {
 </script>
 
 <template>
-  <UTable
-    :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
-    :columns="columns"
-    :rows="timerStore.timeRecords"
-  >
+  <UTable :columns="columns" :rows="timerStore.timeRecords">
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
         :time-periods="(row as ITimeRecordLocal).timePeriods"

@@ -54,7 +54,7 @@ const deleteTimeRecord = async () => {
 
 <template>
   <div class="grid grid-cols-12 gap-5">
-    <div class="col-span-full lg:col-span-12 overflow-auto">
+    <div class="col-span-full lg:col-span-12">
       <TimeRecordTable
         @access="access"
         @create="modal.createOrUpdateTimeRecord = true"
@@ -77,4 +77,3 @@ const deleteTimeRecord = async () => {
     />
   </UModal>
 </template>
-

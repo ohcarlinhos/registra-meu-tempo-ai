@@ -277,12 +277,7 @@ onMounted(async () => {
         </UContainer>
 
         <UCard>
-          <UTable
-            :ui="{ base: `bg-neutral-${isDark ? '900' : '100'} rounded-md` }"
-            :columns="columns"
-            :rows="tpFormatted"
-            :loading="false"
-          >
+          <UTable :columns="columns" :rows="tpFormatted" :loading="false">
             <template #date-data="{ row }">
               <div class="flex">
                 <UPopover mode="hover">

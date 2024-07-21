@@ -50,12 +50,12 @@ watch(model, (value) => {
     :teleport="true"
     :format="disableTimePicker ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'"
     :name="name"
+    :dark="isDark"
     locale="pt-BR"
     select-text="Selecionar"
     cancel-text="Fechar"
     now-button-label="Agora"
     enable-seconds
-    dark
   />
 </template>
 

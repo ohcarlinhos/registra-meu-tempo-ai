@@ -200,7 +200,7 @@ onMounted(async () => {
 
       <div
         v-for="(_, index) in form.timePeriods"
-        class="flex gap-4 relative border-gray-800 border-b-2 pb-3"
+        class="flex gap-4 relative dark:border-gray-800 border-b-2 pb-3"
       >
         <UFormGroup
           :label="$t('form.timeRecord.period.start')"
