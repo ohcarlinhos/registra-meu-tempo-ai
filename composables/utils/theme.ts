@@ -1,5 +1,9 @@
+const colorMode = useColorMode();
+
 export const isDark = computed(() => {
-  const html = document.querySelector("html");
-  return !!html?.classList.contains("dark");
+  return colorMode && colorMode.value === "dark";
 });
 
+export const toggleDark = () => {
+  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+};
