@@ -29,6 +29,8 @@ const setTimerInterval = () => {
 };
 
 const startTimer = () => {
+  clickSound.play();
+
   timerStore.start(props.id, props.callback);
   if (interval.value === null) setTimerInterval();
   else {
@@ -41,15 +43,21 @@ const startTimer = () => {
 <template>
   <div class="flex gap-3 py-4">
     <UButton
-      :title="isRunning ? 'Finalizar' : 'Iniciar'"
+      :title="isRunning ? 'Salvar' : 'Iniciar'"
       :color="isRunning ? 'green' : 'blue'"
-      :icon="isRunning ? 'i-heroicons-check' : 'i-heroicons-play'"
-      size="xs"
+      :icon="
+        isRunning
+          ? 'i-icon-park-outline-hard-disk-one'
+          : 'i-icon-park-outline-play-one'
+      "
       @click="startTimer"
     />
-    <div>
-      <p>{{ currentTimePeriod ? currentTimePeriod.timerDisplay : "00:00" }}</p>
-    </div>
+    <section>
+      <p v-if="currentTimePeriod" class="text-2xl">
+        Total: <b class="text-primary">{{ currentTimePeriod.timerDisplay }}</b>
+      </p>
+      <p v-else class="text-2xl">Começar?</p>
+    </section>
   </div>
 </template>
 
