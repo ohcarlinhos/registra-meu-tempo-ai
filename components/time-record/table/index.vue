@@ -100,7 +100,7 @@ await trStore.fetchTimeRecords();
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-2xl font-bold">Registros de Tempo</h2>
+      <h2 class="text-2xl font-bold">{{ $t("time.recordList") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <UInput
@@ -125,7 +125,7 @@ await trStore.fetchTimeRecords();
         </UInput>
 
         <UButton
-          label="Criar Registro"
+          label="Criar"
           icon="i-heroicons-pencil-square-20-solid"
           @click="emit('create')"
         />

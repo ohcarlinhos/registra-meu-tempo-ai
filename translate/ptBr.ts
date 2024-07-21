@@ -15,6 +15,7 @@ export default {
     edit: "Editar",
     access: "Acessar",
     none: "Nenhum",
+    date: "Data",
   },
 
   v: {
@@ -123,10 +124,10 @@ export default {
   },
 
   time: {
-    record: "Registro de Tempo",
-    recordList: "Registros de Tempo",
-    period: "Período de Tempo",
-    periodList: "Períodos de Tempo",
+    record: "Registro",
+    recordList: "Registros",
+    period: "Período",
+    periodList: "Períodos",
   },
 
   timer: {
