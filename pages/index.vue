@@ -15,7 +15,7 @@ const page = reactive({
   >
     <div class="flex flex-col flex-1">
       <div class="flex flex-col items-center gap-10">
-        <GHeader center small-title hide-description disable-padding />
+        <GHeader center small-title disable-padding />
 
         <TimerDefault />
 
