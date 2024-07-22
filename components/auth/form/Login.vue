@@ -4,9 +4,16 @@ import * as yup from "yup";
 const { t } = useI18n();
 
 const form = reactive({
-  email: "carlinhos@test.com",
-  password: "Ska$312d%$1",
+  email: "",
+  password: "",
 });
+
+const env = useRuntimeConfig().public;
+
+if (env.registerFormMockEnable === "1") {
+  form.email = env.registerFormMockEmail;
+  form.password = env.registerFormMockPassword;
+}
 
 const page = reactive({ fetch: false });
 

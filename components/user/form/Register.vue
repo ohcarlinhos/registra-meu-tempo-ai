@@ -6,12 +6,22 @@ const { t } = useI18n();
 const pageStatus = reactive({ fetching: false });
 
 const form = reactive({
-  email: "carlinhos@test.com",
-  name: "Carlinhos",
-  registerCode: "1463a5d2-63ee-469a-8481-05deecca3f53",
-  password: "Ska$312d%$1",
-  confirmPassword: "Ska$312d%$1",
+  name: "",
+  email: "",
+  registerCode: "",
+  password: "",
+  confirmPassword: "",
 });
+
+const env = useRuntimeConfig().public;
+
+if (env.registerFormMockEnable === "1") {
+  form.name = env.registerFormMockName;
+  form.email = env.registerFormMockEmail;
+  form.registerCode = env.registerFormMockCode;
+  form.password = env.registerFormMockPassword;
+  form.confirmPassword = env.registerFormMockPassword;
+}
 
 const schema = yup.object({
   name: vUser.name(),

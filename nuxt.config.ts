@@ -28,6 +28,11 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.API_BASE,
       onlyGuestMode: process.env.ONLY_GUEST_MODE,
+      registerFormMockEnable: process.env.REGISTER_FORM_MOCK_ENABLE,
+      registerFormMockName: process.env.REGISTER_FORM_MOCK_NAME,
+      registerFormMockEmail: process.env.REGISTER_FORM_MOCK_EMAIL,
+      registerFormMockCode: process.env.REGISTER_FORM_MOCK_CODE,
+      registerFormMockPassword: process.env.REGISTER_FORM_MOCK_PASSWORD,
     },
   },
 });
