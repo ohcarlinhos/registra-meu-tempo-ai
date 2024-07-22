@@ -276,7 +276,7 @@ onMounted(async () => {
           </div>
         </UContainer>
 
-        <UCard>
+        <!-- <UCard v-if="false">
           <UTable :columns="columns" :rows="tpFormatted" :loading="false">
             <template #date-data="{ row }">
               <div class="flex">
@@ -333,6 +333,75 @@ onMounted(async () => {
               />
             </div>
           </div>
+        </UCard> -->
+
+        <UCard v-if="trReq && trReq.timePeriods && trReq.timePeriods.length">
+          <section class="flex flex-row gap-2">
+            <UPopover
+              v-for="(period, index) in trReq.timePeriods"
+              :key="period.id"
+              mode="hover"
+            >
+              <UBadge
+                color="primary"
+                :variant="index % 2 == 0 ? 'subtle' : 'soft'"
+                size="md"
+              >
+                {{ period.formattedTime }}
+              </UBadge>
+
+              <template #panel>
+                <div class="p-2 pt-4 flex flex-col items-center gap-3">
+                  <span>
+                    <span class="p-2">#{{ index + 1 }}</span>
+
+                    <UBadge
+                      color="primary"
+                      :variant="index % 2 == 0 ? 'subtle' : 'soft'"
+                    >
+                      {{ period.formattedTime }}
+                    </UBadge>
+                  </span>
+
+                  <section class="flex flex-col items-center gap-2">
+                    <UBadge color="gray" variant="solid">
+                      {{
+                        $t("g.start") +
+                        ": " +
+                        format(period.start, "dd/MM/yyyy HH:mm:ss")
+                      }}
+                    </UBadge>
+
+                    <UBadge color="gray" variant="solid">
+                      {{
+                        $t("g.end") +
+                        ": " +
+                        format(period.end, "dd/MM/yyyy HH:mm:ss")
+                      }}
+                    </UBadge>
+                  </section>
+
+                  <section>
+                    <UButton
+                      color="gray"
+                      variant="ghost"
+                      label="Editar"
+                      icon="i-heroicons-trash-20-solid"
+                      @click="editTimePeriod(period)"
+                    />
+
+                    <UButton
+                      color="gray"
+                      variant="ghost"
+                      label="Apagar"
+                      icon="i-heroicons-pencil-square-20-solid"
+                      @click="openConfirmDeleteTpModal(period.id!)"
+                    />
+                  </section>
+                </div>
+              </template>
+            </UPopover>
+          </section>
         </UCard>
 
         <GModalConfirm
