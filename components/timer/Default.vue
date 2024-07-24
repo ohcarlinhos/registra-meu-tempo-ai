@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 
-timerStore.initTimerConfig(props.float);
+timerStore.initTimerConfig(props.id, props.float);
 
 const modal = reactive({
   createTimeRecord: {
@@ -47,16 +47,31 @@ const endTimer = () => {
   if (authStore.isAuthenticad) {
     timerStore.pauseTimer();
 
+    const timePeriods = [
+      ...timerStore._currentTimePeriodList.map((t) => ({
+        start: new Date(t.start),
+        end: new Date(t.end),
+      })),
+    ];
+
+    if (props.id) {
+      return postTimePeriodList(timePeriods, props.id)
+        .then(() => {
+          timerStore.clearCurrentTimePeriodList();
+          // TODO: corrigir mensagem.
+          OkToast("Mensagem");
+        })
+        .catch(() => {
+          // TODO: adicionar mensagem que o tempo foi registrado localmente.
+          timerStore.endTimer();
+        });
+    }
+
     editTimeRecordObject.value = {
       description: "",
       category: "",
       code: "",
-      timePeriods: [
-        ...timerStore._currentTimePeriodList.map((t) => ({
-          start: new Date(t.start),
-          end: new Date(t.end),
-        })),
-      ],
+      timePeriods,
       callback: () => {
         timerStore.clearCurrentTimePeriodList();
       },
@@ -234,7 +249,10 @@ const timerCardUi = computed(() => {
       </div>
 
       <p v-if="props.id" class="text-center pt-5 text-sm opacity-50">
-        Sincronizado com registro: #{{ props.id }}
+        Sincronizado com registro:
+        <UBadge :color="getButtonColor" variant="soft" size="md">
+          Id: {{ props.id }}
+        </UBadge>
       </p>
     </UCard>
   </section>

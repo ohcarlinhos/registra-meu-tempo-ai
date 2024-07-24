@@ -6,6 +6,7 @@ export const useTimerStore = defineStore("TimerStore", {
     return {
       _currentTimePeriodList: [] as TimePeriodTimerType[],
       _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimerType,
+      _currentTimeRecordId: null as number | null,
       _timeRecordsLocal: [] as ITimeRecordLocal[],
       _running: false,
       _interval: null as NodeJS.Timeout | null,
@@ -19,8 +20,11 @@ export const useTimerStore = defineStore("TimerStore", {
   },
 
   actions: {
-    initTimerConfig(hideOptions = false) {
+    initTimerConfig(id: number | null, hideOptions = false) {
+      this._currentTimeRecordId = id;
+
       if (hideOptions) this._showOptions = false;
+
       this.pauseTimer();
     },
 
@@ -90,11 +94,11 @@ export const useTimerStore = defineStore("TimerStore", {
       this._running = false;
     },
 
-    endTimer(manualClick = false) {
+    endTimer() {
       if (this._running) this.pauseTimer();
 
       if (this._currentTimePeriodList.length && !this.isBreak) {
-        this.addTimeRecordLocal({
+        const timeRecord: ITimeRecordLocal = {
           localUuid: uuidv4(),
           description: "",
           timeRecordDate: new Date().toISOString(),
@@ -102,7 +106,12 @@ export const useTimerStore = defineStore("TimerStore", {
             start: new Date(p.start),
             end: new Date(p.end),
           })),
-        });
+        };
+
+        if (this._currentTimeRecordId)
+          timeRecord.id = this._currentTimeRecordId;
+
+        this.addTimeRecordLocal(timeRecord);
       }
 
       this._currentTimePeriodList = [];
