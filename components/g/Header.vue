@@ -38,7 +38,7 @@ const activeClass = "text-primary font-bold";
 
         <p v-if="!hideDescription" class="pt-4">
           Sua ferramenta de
-          <br v-if="smallTitle" />
+          <br v-if="center" />
           <span class="font-bold text-primary">gerenciamento de tempo.</span>
         </p>
       </div>
