@@ -4,16 +4,7 @@ import { format } from "date-fns";
 const route = useRoute();
 const { t } = useI18n();
 
-const columns = computed(() => [
-  { key: "formattedTime", label: t("g.time") },
-  { key: "date", label: t("g.date") },
-  { key: "actions" },
-]);
-
 const trReq = ref<TimeRecordType>();
-
-const tpReq = ref<Pagination<TimePeriodType>>();
-const tpReqFetch = ref(false);
 
 const editTpObject = reactive<TimePeriodFormType>({
   id: 0,
@@ -41,56 +32,9 @@ const modal = reactive({
   },
 });
 
-const computedPage = computed({
-  get: () => {
-    return tpReq.value?.page || 1;
-  },
-  set: async (page: number) => {
-    await getTpList(page, computedPerPage.value);
-  },
-});
-
-const computedPerPage = computed({
-  get: () => {
-    return tpReq.value?.perPage || 4;
-  },
-  set: async (perPage: number) => {
-    await getTpList(1, perPage);
-  },
-});
-
-const perPageList = ref([4, 8, 12]);
-
 const emit = defineEmits<{
   delete: [value: number];
 }>();
-
-const tpFormatted = computed(() => {
-  return tpReq.value?.data.length
-    ? tpReq.value.data.map((p) => {
-        return {
-          ...p,
-          startFormatted: format(p.start, "dd/MM/yyyy HH:mm:ss"),
-          endFormatted: format(p.end, "dd/MM/yyyy HH:mm:ss"),
-        };
-      })
-    : [];
-});
-
-const dropMenuItems = (row: TimePeriodType) => [
-  [
-    {
-      label: t("g.edit"),
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: async () => editTimePeriod(row),
-    },
-    {
-      label: t("g.delete"),
-      icon: "i-heroicons-trash-20-solid",
-      click: () => openConfirmDeleteTpModal(row.id!),
-    },
-  ],
-];
 
 const getTimeRecordData = async () => {
   const data = await getTimeRecordById(
@@ -99,8 +43,6 @@ const getTimeRecordData = async () => {
   );
 
   if (data) trReq.value = data;
-
-  await getTpList();
 };
 
 const editTimePeriod = async (tp: TimePeriodType) => {
@@ -120,36 +62,12 @@ const deleteTimePeriodAction = async () => {
     OkToast(t("form.timePeriod.status.success.delete"));
 
     await getTimeRecordData();
-    await getTpList();
 
     modal.confirmDeleteTp.open = false;
   } catch (err) {
     ErrorToast(err);
   }
 };
-
-const getTpList = async (page = 1, perPage = 4) => {
-  try {
-    tpReqFetch.value = true;
-
-    const data = await getTimePeriods(
-      parseInt(route.params.id as string),
-      page,
-      perPage,
-      true
-    );
-
-    if (data) tpReq.value = data;
-  } finally {
-    tpReqFetch.value = false;
-  }
-};
-
-const showInfos = computed(
-  () =>
-    trReq.value &&
-    (trReq.value?.code || trReq.value?.categoryName || trReq.value?.description)
-);
 
 const openTimePeriodModal = (timeRecordId?: number) => {
   if (!timeRecordId) return;
@@ -192,6 +110,20 @@ onMounted(async () => {
     <GHeader small-title />
 
     <div v-if="trReq" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div class="w-full col-span-12 mb-5">
+        <h2 class="text-4xl font-bold mb-2">
+          {{ "Id: " + trReq.id }}{{ trReq.code ? " | " + trReq.code : "" }}
+        </h2>
+
+        <p v-if="trReq.categoryName" class="text-lg">
+          <b>Categoria:</b> {{ trReq.categoryName }}
+        </p>
+
+        <p v-if="trReq.description" class="text-lg">
+          <b>Descrição:</b> {{ trReq.description }}
+        </p>
+      </div>
+
       <div class="w-full col-span-1 lg:col-span-4">
         <TimerDefault options-modal :id="trReq.id" />
 
@@ -209,29 +141,6 @@ onMounted(async () => {
       </div>
 
       <div class="w-full col-span-1 lg:col-span-4">
-        <UCard
-          v-if="showInfos"
-          :ui="{
-            base: 'mb-5',
-          }"
-        >
-          <h2 v-if="showInfos" class="mb-2 text-2xl font-bold">
-            {{ $t("g.infos") }}
-          </h2>
-
-          <section class="text-lg">
-            <p v-if="trReq.code"><b>Código:</b> {{ trReq.code }}</p>
-
-            <p v-if="trReq.categoryName">
-              <b>Categoria:</b> {{ trReq.categoryName }}
-            </p>
-
-            <p v-if="trReq.description">
-              <b>Descrição:</b> {{ trReq.description }}
-            </p>
-          </section>
-        </UCard>
-
         <UCard>
           <h2 class="mb-2 text-2xl font-bold">Estatísticas</h2>
 
@@ -276,67 +185,8 @@ onMounted(async () => {
           </div>
         </UContainer>
 
-        <!-- <UCard v-if="false">
-          <UTable :columns="columns" :rows="tpFormatted" :loading="false">
-            <template #date-data="{ row }">
-              <div class="flex">
-                <UPopover mode="hover">
-                  <span>{{ row.startFormatted.split(" ")[0] }}</span>
-
-                  <template #panel>
-                    <div
-                      class="p-2 flex justify-center gap-2 max-w-40 flex-wrap"
-                    >
-                      <UBadge color="gray" variant="solid">
-                        {{ $t("g.start") + ": " + row.startFormatted }}
-                      </UBadge>
-
-                      <UBadge color="gray" variant="solid">
-                        {{ $t("g.end") + ": " + row.endFormatted }}
-                      </UBadge>
-                    </div>
-                  </template>
-                </UPopover>
-              </div>
-            </template>
-
-            <template #actions-data="{ row }">
-              <div class="flex justify-end">
-                <UDropdown :items="dropMenuItems(row)">
-                  <UButton
-                    color="gray"
-                    variant="ghost"
-                    icon="i-heroicons-ellipsis-horizontal-20-solid"
-                  />
-                </UDropdown>
-              </div>
-            </template>
-          </UTable>
-
-          <div class="flex justify-between items-end mt-3">
-            <div>
-              <UPagination
-                v-if="tpReq && tpReq.totalPages > 1"
-                v-model="computedPage"
-                :page-count="tpReq.perPage"
-                :total="tpReq.totalItems"
-                :disabled="tpReqFetch"
-              />
-            </div>
-
-            <div class="flex items-center gap-2">
-              Itens por página:
-              <USelect
-                v-model="computedPerPage"
-                :options="perPageList"
-                :disabled="tpReqFetch"
-              />
-            </div>
-          </div>
-        </UCard> -->
-
         <UCard v-if="trReq && trReq.timePeriods && trReq.timePeriods.length">
-          <section class="flex flex-row gap-2">
+          <section class="flex flex-row gap-2 flex-wrap">
             <UPopover
               v-for="(period, index) in trReq.timePeriods"
               :key="period.id"
@@ -347,7 +197,7 @@ onMounted(async () => {
                 :variant="index % 2 == 0 ? 'subtle' : 'soft'"
                 size="md"
               >
-                {{ period.formattedTime }}
+                {{ period.formattedTime || "0s" }}
               </UBadge>
 
               <template #panel>
@@ -359,7 +209,7 @@ onMounted(async () => {
                       color="primary"
                       :variant="index % 2 == 0 ? 'subtle' : 'soft'"
                     >
-                      {{ period.formattedTime }}
+                      {{ period.formattedTime || "0s" }}
                     </UBadge>
                   </span>
 
