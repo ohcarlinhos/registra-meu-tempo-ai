@@ -27,6 +27,9 @@ const modal = reactive({
   confirmPersistMethod: {
     open: false,
   },
+  timeRecordsTable: {
+    open: false,
+  },
 });
 
 const editTimeRecordObject = ref<TimeRecordFormType>();
@@ -129,29 +132,19 @@ const timerCardUi = computed(() => {
   };
 
   return {
-    base: `pt-3 ${
-      props.float ? "fixed top-5 right-5 max-w-60 w-full" : "relative"
-    }`,
-
+    base: `pt-3 relative w-full`,
     background: `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
-
     ring: `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
   };
 });
 </script>
 
 <template>
-  <section>
+  <section
+    class="flex flex-col gap-3 items-center"
+    :class="[props.float ? 'fixed top-5 right-5 max-w-60 w-full' : 'relative']"
+  >
     <TimerOptions v-if="timerStore.showOptions && !props.optionsModal" />
-
-    <UModal
-      v-model="timerStore._showOptions"
-      v-if="timerStore.showOptions && props.optionsModal"
-    >
-      <h3 class="text-xl text-center pt-6">Qual modo quer ativar?</h3>
-      <GCloseButton @close="timerStore.toggleOptions" />
-      <TimerOptions :float="props.optionsModal" />
-    </UModal>
 
     <UCard :ui="timerCardUi">
       <UButton
@@ -205,7 +198,7 @@ const timerCardUi = computed(() => {
           <p v-else-if="timerStore.isBreak">
             {{
               timerStore.isRunning
-                ? "para acabar o descanço..."
+                ? "para acabar o descanso..."
                 : "para descansar."
             }}
           </p>
@@ -255,7 +248,39 @@ const timerCardUi = computed(() => {
         </UBadge>
       </p>
     </UCard>
+
+    <UButton
+      v-if="timerStore.totalItems >= 1"
+      color="black"
+      variant="link"
+      @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
+    >
+      <template v-if="!id">
+        Há {{ timerStore.totalItems }}
+        {{
+          timerStore.totalItems > 1 ? "registros locais." : "registro local."
+        }}
+      </template>
+
+      <template v-else> Há registros não sincronizados.</template>
+    </UButton>
   </section>
+
+  <UModal
+    v-model="timerStore._showOptions"
+    v-if="timerStore.showOptions && props.optionsModal"
+  >
+    <h3 class="text-xl text-center pt-6">Qual modo deseja ativar?</h3>
+    <GCloseButton @close="timerStore.toggleOptions" />
+    <TimerOptions :float="props.optionsModal" />
+  </UModal>
+
+  <UModal v-model="modal.timeRecordsTable.open">
+    <UCard v-if="modal.timeRecordsTable.open && timerStore.totalItems">
+      <GCloseButton @close="modal.timeRecordsTable.open = false" />
+      <TimeRecordTableLocal />
+    </UCard>
+  </UModal>
 
   <GModalConfirm
     v-model:open="modal.confirmPersistMethod.open"
