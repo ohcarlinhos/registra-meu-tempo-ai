@@ -66,19 +66,28 @@ const items = (row: ITimeRecordLocal) => {
   const actions = [
     [
       {
-        label: "Apagar",
-        icon: "i-heroicons-trash-20-solid",
+        label: "Apagar do Navegador",
+        icon: "i-icon-park-outline-delete-themes",
         click: () => openConfirmDeleteModal(row.localUuid),
       },
     ],
   ];
 
-  if (authStore.isAuthenticad)
-    actions[0].unshift({
-      label: "Persistir (Registros)",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: async () => openModal(row),
-    });
+  if (authStore.isAuthenticad) {
+    if (row.id) {
+      actions[0].unshift({
+        label: "Sincronizar (Registro)",
+        icon: "i-icon-park-outline-refresh-one",
+        click: async () => openModal(row),
+      });
+    } else {
+      actions[0].unshift({
+        label: "Persistir (Registros)",
+        icon: "i-icon-park-outline-save-one",
+        click: async () => openModal(row),
+      });
+    }
+  }
 
   return actions;
 };
