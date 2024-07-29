@@ -1,25 +1,45 @@
 export default {
-  g: {
-    infos: "Informações",
-    add: "Adicionar",
-    send: "Enviar",
-    save: "Salvar",
-    cancel: "Cancelar",
-    confirm: "Confirmar",
-    start: "Início",
-    end: "Fim",
-    time: "Tempo",
-    create: "Criar",
-    delete: "Apagar",
-    remove: "Remover",
-    edit: "Editar",
-    access: "Acessar",
-    none: "Nenhum",
-    date: "Data",
-  },
+  infos: "Informações",
+  add: "Adicionar",
+  send: "Enviar",
+  save: "Salvar",
+  cancel: "Cancelar",
+  confirm: "Confirmar",
+  start: "Início",
+  end: "Fim",
+  time: "Tempo",
+  create: "Criar",
+  delete: "Apagar",
+  remove: "Remover",
+  edit: "Editar",
+  access: "Acessar",
+  none: "Nenhum",
+  date: "Data",
+  code: "Código",
+  category: "Categoria",
+  categories: "Categorias",
+  description: "Descrição",
+  period: "Período",
+  periods: "Períodos",
+  required: "Obrigatório",
+  record: "Registro",
+  records: "Registros",
+  toRecord: "Registrar",
+  name: "Nome",
+  email: "Email",
+  password: "Senha",
+  oldPassword: "Senha antiga",
+  goToHome: "Ir para Página Inicial",
+  itemsPerPage: "Itens por página",
+
+  registerCode: "Código de registro",
+  newPassword: "Nova senha",
+  confirmPassword: "Confirmação da senha",
+  confirmNewPassword: "Confirmação da nova senha",
+  externalLink: "Link externo",
+  statistics: "Estatísticas",
 
   v: {
-    required: "Obrigatório.",
     email: {
       format: "Digite um e-mail válido.",
       required: "E-mail é obrigatório.",
@@ -52,9 +72,7 @@ export default {
   form: {
     user: {
       create: {
-        title: "Registrar",
         success: "Usuário criado com sucesso.",
-        button: "Registrar",
       },
 
       update: {
@@ -62,19 +80,6 @@ export default {
         success: "Usuário atualizado com sucesso.",
         button: "Salvar",
       },
-
-      name: "Nome",
-      email: "Email",
-      password: "Senha",
-      registerCode: "Código de registro",
-      newPassword: "Nova senha",
-      confirmPassword: "Confirmação da senha",
-      confirmNewPassword: "Confirmação da nova senha",
-      oldPassword: "Senha antiga",
-    },
-
-    register: {
-      access: "Acessar conta",
     },
 
     category: {
@@ -89,14 +94,13 @@ export default {
     },
 
     login: {
-      title: "Acessar",
       success: "Autenticação feita com sucesso.",
-      button: "Acessar",
       create: "Criar conta",
     },
 
     timeRecord: {
       code: "Código",
+      title: "Título",
       description: "Descrição",
       date: "Data",
       category: "Categoria",
@@ -108,6 +112,7 @@ export default {
       status: {
         success: {
           create: "Registro de tempo criado com sucesso.",
+          update: "Registro de atualizado com sucesso.",
         },
       },
     },
@@ -121,13 +126,6 @@ export default {
         },
       },
     },
-  },
-
-  time: {
-    record: "Registro",
-    recordList: "Registros",
-    period: "Período",
-    periodList: "Períodos",
   },
 
   timer: {
@@ -155,6 +153,4 @@ export default {
         "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
     },
   },
-
-  goToHome: "Ir para Página Inicial",
 };

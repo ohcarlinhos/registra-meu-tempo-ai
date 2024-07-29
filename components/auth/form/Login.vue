@@ -50,23 +50,18 @@ const submit = async () => {
       footer: { base: 'text-center' },
     }"
   >
-    <template #header>{{ t("form.login.title") }}</template>
+    <template #header>{{ t("access") }}</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-      <UFormGroup :label="t('form.user.email')" name="email" required>
+      <UFormGroup :label="t('email')" name="email" required>
         <UInput type="email" v-model="form.email" autofocus />
       </UFormGroup>
 
-      <UFormGroup :label="t('form.user.password')" name="password" required>
+      <UFormGroup :label="t('password')" name="password" required>
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
-      <UButton
-        :loading="page.fetch"
-        :label="t('form.login.button')"
-        block
-        type="submit"
-      />
+      <UButton :loading="page.fetch" :label="t('access')" block type="submit" />
     </UForm>
 
     <template #footer>

@@ -122,15 +122,14 @@ watch(
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <UFormGroup label="Nome" name="name">
+      <UFormGroup :label="$t('name')" name="name">
         <UInput type="text" v-model="form.name" autofocus />
       </UFormGroup>
 
       <UButton
         :loading="status.fetching"
         :disabled="submitButtonIsDisabled"
-        :label="props.editObject?.id ? $t('g.save') : $t('g.create')"
-        block
+        :label="props.editObject?.id ? $t('save') : $t('create')"
         type="submit"
       />
     </UForm>

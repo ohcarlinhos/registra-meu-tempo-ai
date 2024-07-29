@@ -35,13 +35,13 @@ const isOpen = computed({
           <UButton
             color="blue"
             block
-            :label="props.cancelText ? props.cancelText : $t('g.cancel')"
+            :label="props.cancelText ? props.cancelText : $t('cancel')"
             @click="emit('cancel')"
           />
 
           <UButton
             block
-            :label="props.confirmText ? props.confirmText : $t('g.confirm')"
+            :label="props.confirmText ? props.confirmText : $t('confirm')"
             @click="emit('confirm')"
           />
         </div>

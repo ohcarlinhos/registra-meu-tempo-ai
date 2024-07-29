@@ -234,7 +234,7 @@ onMounted(async () => {
       </div>
 
       <UFormGroup
-        :label="$t('form.timeRecord.category')"
+        :label="$t('category')"
         name="category"
         class="z-100 relative"
       >

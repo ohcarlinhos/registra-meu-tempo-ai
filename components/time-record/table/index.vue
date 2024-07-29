@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 export type DeletePayload = { id: number; page: number; perPage: number };
 
+const { t } = useI18n();
+
 const trStore = useTimeRecordStore();
 const emit = defineEmits<{
   access: [value: number];
@@ -59,12 +61,12 @@ const computedPerPageList = computed(() => {
 });
 
 const columns = [
-  { key: "timeRecordDate", label: "Data" },
-  { key: "code", label: "Código" },
-  { key: "categoryName", label: "Categoria" },
-  { key: "description", label: "Descrição" },
-  { key: "formattedTime", label: "Tempo" },
-  { key: "timePeriods", label: "Períodos" },
+  { key: "timeRecordDate", label: t("date") },
+  { key: "code", label: t("code") },
+  { key: "categoryName", label: t("category") },
+  { key: "description", label: t("description") },
+  { key: "formattedTime", label: t("time") },
+  { key: "timePeriods", label: t("periods") },
   { key: "actions" },
 ];
 
@@ -100,7 +102,7 @@ await trStore.fetchTimeRecords();
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-2xl font-bold">{{ $t("time.recordList") }}</h2>
+      <h2 class="text-2xl font-bold">{{ $t("records") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <UInput
@@ -125,8 +127,8 @@ await trStore.fetchTimeRecords();
         </UInput>
 
         <UButton
-          label="Criar"
-          icon="i-heroicons-pencil-square-20-solid"
+          :label="$t('create')"
+          icon="i-icon-park-outline-add"
           @click="emit('create')"
         />
       </div>
@@ -169,7 +171,7 @@ await trStore.fetchTimeRecords();
         />
 
         <div class="flex items-center gap-2">
-          Itens por página:
+          {{ $t("itemsPerPage") }}
           <USelect
             v-model="computedPerPage"
             :options="computedPerPageList"

@@ -101,7 +101,8 @@ watch(
 <template>
   <UCard>
     <template #header>
-      <h2>{{ $t("time.period") }}</h2>
+      <h2>{{ $t("period") }}</h2>
+
       <GCloseButton @close="closeModal" />
     </template>
 
@@ -122,7 +123,7 @@ watch(
 
       <UButton
         :loading="status.fetch"
-        :label="$t('g.send')"
+        :label="$t('send')"
         block
         type="submit"
       />
