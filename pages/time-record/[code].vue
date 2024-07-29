@@ -2,6 +2,8 @@
 import { format } from "date-fns";
 
 const route = useRoute();
+const router = useRouter();
+
 const { t } = useI18n();
 
 const trReq = ref<TimeRecordType>();
@@ -30,18 +32,24 @@ const modal = reactive({
     open: false,
     timePeriodId: 0,
   },
+  updateTimeRecord: {
+    open: false,
+  },
 });
+
+const editTimeRecordObject = ref<TimeRecordFormType>();
 
 const emit = defineEmits<{
   delete: [value: number];
 }>();
 
-const getTimeRecordData = async () => {
-  const data = await getTimeRecordById(
-    parseInt(route.params.id as string),
-    true
-  );
+const getTimeRecordData = async (code = "") => {
+  if (code && code != route.params.code) {
+    router.push(`/time-record/${code}`);
+    return;
+  }
 
+  const data = await getTimeRecordByCode(`${route.params.code}`, true);
   if (data) trReq.value = data;
 };
 
@@ -95,6 +103,30 @@ const closeConfirmDeleteTpModal = () => {
   modal.confirmDeleteTp.open = false;
 };
 
+const openTimeRecordModal = () => {
+  modal.updateTimeRecord.open = true;
+  const tr = trReq.value;
+
+  if (!tr) return;
+
+  editTimeRecordObject.value = {
+    id: tr.id,
+    title: tr.title,
+    description: tr.description,
+    category: tr.categoryName || "",
+    categoryId: tr.categoryId,
+    code: tr.code || "",
+    externalLink: tr.externalLink || "",
+    timePeriods: [],
+    callback: (code) => getTimeRecordData(code),
+  };
+};
+
+const closeTimeRecordModal = () => {
+  modal.updateTimeRecord.open = false;
+  editTimeRecordObject.value = undefined;
+};
+
 onMounted(async () => {
   await getTimeRecordData();
 });
@@ -110,22 +142,42 @@ onMounted(async () => {
     <GHeader small-title />
 
     <div v-if="trReq" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-      <div class="w-full col-span-12 mb-5">
+      <div class="w-full lg:col-span-12 mb-5">
         <h2 class="text-4xl font-bold mb-2">
-          {{ "Id: " + trReq.id }}{{ trReq.code ? " | " + trReq.code : "" }}
+          {{ trReq.title || "Sem título" }}
+
+          <UButton
+            icon="i-icon-park-outline-edit"
+            :label="$t('edit')"
+            @click="openTimeRecordModal"
+          />
         </h2>
 
-        <p v-if="trReq.categoryName" class="text-lg">
-          <b>Categoria:</b> {{ trReq.categoryName }}
-        </p>
+        <p v-if="trReq.code" class="text-lg"><b>Código:</b> {{ trReq.code }}</p>
 
         <p v-if="trReq.description" class="text-lg">
-          <b>Descrição:</b> {{ trReq.description }}
+          <b>{{ $t("description") }}:</b> {{ trReq.description }}
+        </p>
+
+        <p v-if="trReq.externalLink" class="text-lg">
+          <b>{{ $t("externalLink") }}: </b>
+
+          <a
+            :href="trReq.externalLink"
+            target="_blank"
+            class="underline hover:text-primary"
+          >
+            {{ trReq.externalLink }}
+          </a>
+        </p>
+
+        <p v-if="trReq.categoryName" class="text-lg">
+          <b>{{ $t("category") }}:</b> {{ trReq.categoryName }}
         </p>
       </div>
 
       <div class="w-full col-span-1 lg:col-span-4">
-        <TimerDefault options-modal :id="trReq.id" />
+        <TimerDefault options-modal :id="trReq.id" :code="trReq.code" />
 
         <h2 class="text-2xl mb-2 mt-6 font-bold">Cronômetro Simples</h2>
 
@@ -142,26 +194,25 @@ onMounted(async () => {
 
       <div class="w-full col-span-1 lg:col-span-4">
         <UCard>
-          <h2 class="mb-2 text-2xl font-bold">Estatísticas</h2>
+          <h2 class="mb-2 text-2xl font-bold">{{ $t("statistics") }}</h2>
 
           <section class="text-lg">
-            <p class="mb-1"><b>Períodos:</b> {{ trReq.timePeriodsCount }}</p>
-
             <p class="mb-1">
-              <b>Tempo total do registro:</b>
-              {{ trReq.formattedTime || $t("g.none") }}
+              <b>{{ $t("periods") }}:</b> {{ trReq.timePeriodsCount }}
             </p>
 
             <p class="mb-1">
-              Que equivale à
-              <b>
-                {{
-                  trReq.timeTotalMilliseconds
-                    ? (trReq.timeTotalMilliseconds / 1000 / 60 / 25).toFixed(2)
-                    : 0
-                }}
-              </b>
-              pomodoros!
+              <b>Tempo total do registro:</b>
+              {{ trReq.formattedTime || $t("none") }}
+            </p>
+
+            <p class="mb-1">
+              <b>Pomodoros: </b>
+              {{
+                trReq.timeTotalMilliseconds
+                  ? (trReq.timeTotalMilliseconds / 1000 / 60 / 25).toFixed(2)
+                  : 0
+              }}
             </p>
           </section>
         </UCard>
@@ -174,12 +225,12 @@ onMounted(async () => {
             padding: 'pb-5 px-0 lg:px-0 sm:px-0',
           }"
         >
-          <h2 class="text-2xl font-bold">{{ $t("time.periodList") }}</h2>
+          <h2 class="text-2xl font-bold">{{ $t("periods") }}</h2>
 
           <div v-if="trReq.id" class="flex gap-5 flex-row items-start mt-1">
             <UButton
-              icon="i-heroicons-pencil-square-20-solid"
-              label="Adicionar"
+              icon="i-icon-park-outline-add"
+              :label="$t('add')"
               @click="openTimePeriodModal(trReq!.id)"
             />
           </div>
@@ -216,7 +267,7 @@ onMounted(async () => {
                   <section class="flex flex-col items-center gap-2">
                     <UBadge color="gray" variant="solid">
                       {{
-                        $t("g.start") +
+                        $t("start") +
                         ": " +
                         format(period.start, "dd/MM/yyyy HH:mm:ss")
                       }}
@@ -224,7 +275,7 @@ onMounted(async () => {
 
                     <UBadge color="gray" variant="solid">
                       {{
-                        $t("g.end") +
+                        $t("end") +
                         ": " +
                         format(period.end, "dd/MM/yyyy HH:mm:ss")
                       }}
@@ -236,7 +287,7 @@ onMounted(async () => {
                       color="gray"
                       variant="ghost"
                       label="Editar"
-                      icon="i-heroicons-trash-20-solid"
+                      icon="i-icon-park-outline-edit"
                       @click="editTimePeriod(period)"
                     />
 
@@ -244,7 +295,7 @@ onMounted(async () => {
                       color="gray"
                       variant="ghost"
                       label="Apagar"
-                      icon="i-heroicons-pencil-square-20-solid"
+                      icon="i-icon-park-outline-delete-themes"
                       @click="openConfirmDeleteTpModal(period.id!)"
                     />
                   </section>
@@ -266,6 +317,14 @@ onMounted(async () => {
             :time-record-id="modal.createOrUpdateTp.timeRecordId"
             :edit-object="editTpObject"
             @close="closeTimePeriodModal"
+          />
+        </UModal>
+
+        <UModal v-model="modal.updateTimeRecord.open" prevent-close>
+          <TimeRecordFormCreateAndUpdate
+            :edit-object="editTimeRecordObject"
+            hide-time-periods
+            @close="closeTimeRecordModal"
           />
         </UModal>
       </div>
