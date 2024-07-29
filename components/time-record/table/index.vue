@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 export type DeletePayload = { id: number; page: number; perPage: number };
 
+const { t } = useI18n();
+
 const trStore = useTimeRecordStore();
+
 const emit = defineEmits<{
-  access: [value: number];
+  access: [value: string];
   delete: [value: DeletePayload];
   create: [];
 }>();
@@ -59,25 +62,25 @@ const computedPerPageList = computed(() => {
 });
 
 const columns = [
-  { key: "timeRecordDate", label: "Data" },
-  { key: "code", label: "Código" },
-  { key: "categoryName", label: "Categoria" },
-  { key: "description", label: "Descrição" },
-  { key: "formattedTime", label: "Tempo" },
-  { key: "timePeriods", label: "Períodos" },
+  { key: "timeRecordDate", label: t("date") },
+  { key: "code", label: t("code") },
+  { key: "categoryName", label: t("category") },
+  { key: "description", label: t("description") },
+  { key: "formattedTime", label: t("time") },
+  { key: "timePeriods", label: t("periods") },
   { key: "actions" },
 ];
 
 const items = (row: TimeRecordType) => [
   [
     {
-      label: "Acessar",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => emit("access", row.id!),
+      label: t("access"),
+      icon: "i-icon-park-outline-view-grid-detail",
+      click: () => emit("access", row.code!),
     },
     {
-      label: "Apagar",
-      icon: "i-heroicons-trash-20-solid",
+      label: t("delete"),
+      icon: "i-icon-park-outline-delete-themes",
       click: async () =>
         emit("delete", {
           id: row.id!,
@@ -100,14 +103,14 @@ await trStore.fetchTimeRecords();
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-2xl font-bold">{{ $t("time.recordList") }}</h2>
+      <h2 class="text-2xl font-bold">{{ $t("records") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <UInput
           v-model="computedSearch"
           name="search"
           placeholder="Pesquisar"
-          icon="i-heroicons-magnifying-glass-20-solid"
+          icon="i-icon-park-outline-search"
           autocomplete="off"
           :loading="trStore.fetching"
           :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -117,7 +120,7 @@ await trStore.fetchTimeRecords();
               v-show="computedSearch !== ''"
               color="gray"
               variant="link"
-              icon="i-heroicons-x-mark-20-solid"
+              icon="i-icon-park-outline-close-small"
               :padded="false"
               @click="computedSearch = ''"
             />
@@ -125,8 +128,8 @@ await trStore.fetchTimeRecords();
         </UInput>
 
         <UButton
-          label="Criar"
-          icon="i-heroicons-pencil-square-20-solid"
+          :label="$t('create')"
+          icon="i-icon-park-outline-add"
           @click="emit('create')"
         />
       </div>
@@ -151,7 +154,7 @@ await trStore.fetchTimeRecords();
               <UButton
                 color="gray"
                 variant="ghost"
-                icon="i-heroicons-ellipsis-horizontal-20-solid"
+                icon="i-icon-park-outline-more-one"
               />
             </UDropdown>
           </div>
@@ -169,7 +172,7 @@ await trStore.fetchTimeRecords();
         />
 
         <div class="flex items-center gap-2">
-          Itens por página:
+          {{ $t("itemsPerPage") }}
           <USelect
             v-model="computedPerPage"
             :options="computedPerPageList"

@@ -18,22 +18,23 @@ export const formatToTimerDisplay = (milliseconds: number) => {
 };
 
 export const editTimeRecordObjectFactory = (
-  timeRecord: TimeRecordType,
+  obj: Partial<TimeRecordType>,
   callback = () => {}
 ): TimeRecordFormType => {
   const categoryStore = useCategoryStore();
 
   const categoryStored =
-    timeRecord.categoryId &&
-    categoryStore.findCategoryById(timeRecord.categoryId);
+    obj.categoryId && categoryStore.findCategoryById(obj.categoryId);
 
   return {
-    id: timeRecord.id,
-    description: timeRecord.description,
-    code: timeRecord.code || "",
+    id: obj.id || undefined,
+    title: obj.title || "",
+    description: obj.description || "",
+    code: obj.code || "",
     category: categoryStored ? categoryStored.name : "",
-    categoryId: timeRecord.categoryId || undefined,
-    timePeriods: timeRecord.timePeriods,
+    categoryId: obj.categoryId || undefined,
+    externalLink: obj.externalLink || "",
+    timePeriods: obj.timePeriods || [],
     callback,
   };
 };
@@ -94,4 +95,3 @@ export const millisecondsToString = (milliseconds: number) => {
 
   return fString.trim() || "0s";
 };
-

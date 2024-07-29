@@ -1,10 +1,4 @@
-<script lang="ts" setup>
-const timerStore = useTimerStore();
-
-const page = reactive({
-  openTable: false,
-});
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <UContainer
@@ -18,24 +12,7 @@ const page = reactive({
         <GHeader center small-title disable-padding />
 
         <TimerDefault />
-
-        <UButton
-          v-if="timerStore.totalItems >= 1"
-          color="black"
-          variant="link"
-          @click="page.openTable = !page.openTable"
-        >
-          Você possui {{ timerStore.totalItems }}
-          {{
-            timerStore.totalItems > 1 ? "registros locais." : "registro local."
-          }}
-          <br />(Clique para {{ page.openTable ? "fechar" : "visualizar" }})
-        </UButton>
       </div>
-
-      <UCard v-if="page.openTable && timerStore.totalItems" class="mt-10">
-        <TimeRecordTableLocal />
-      </UCard>
     </div>
   </UContainer>
 </template>

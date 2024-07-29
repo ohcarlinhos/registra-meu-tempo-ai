@@ -27,8 +27,8 @@ const openConfirmDeleteModal = async (payload: DeletePayload) => {
   modal.confirmDelete.perPage = payload.perPage;
 };
 
-const access = (id: number) => {
-  router.push(`/time-record/${id}`);
+const access = (code: string) => {
+  router.push(`/time-record/${code}`);
 };
 
 const closeModal = () => {
@@ -71,9 +71,6 @@ const deleteTimeRecord = async () => {
   />
 
   <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
-    <TimeRecordFormCreateAndUpdate
-      :edit-object="editTimeRecordObject"
-      @close="closeModal"
-    />
+    <TimeRecordFormCreateAndUpdate refresh-time-records @close="closeModal" />
   </UModal>
 </template>

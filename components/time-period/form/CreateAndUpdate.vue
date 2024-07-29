@@ -101,17 +101,9 @@ watch(
 <template>
   <UCard>
     <template #header>
-      <div class="flex items-center justify-between">
-        <h2>{{ $t("time.period") }}</h2>
+      <h2>{{ $t("period") }}</h2>
 
-        <UButton
-          color="gray"
-          variant="ghost"
-          icon="i-heroicons-x-mark-20-solid"
-          class="-my-1"
-          @click="closeModal"
-        />
-      </div>
+      <GCloseButton @close="closeModal" />
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
@@ -131,7 +123,7 @@ watch(
 
       <UButton
         :loading="status.fetch"
-        :label="$t('g.send')"
+        :label="$t('send')"
         block
         type="submit"
       />

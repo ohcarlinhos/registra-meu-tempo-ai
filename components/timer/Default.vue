@@ -16,15 +16,29 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  code: {
+    type: String,
+    default: null,
+  },
+  refreshTimeRecords: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-timerStore.initTimerConfig(props.float);
+timerStore.initTimerConfig(props.id, props.float);
 
 const modal = reactive({
   createTimeRecord: {
     open: false,
   },
   confirmPersistMethod: {
+    open: false,
+  },
+  confirmStopTimer: {
+    open: false,
+  },
+  timeRecordsTable: {
     open: false,
   },
 });
@@ -41,26 +55,50 @@ const pauseTimer = () => {
   timerStore.pauseTimer();
 };
 
+const stopTimer = () => {
+  clickSound.play();
+  timerStore.pauseTimer();
+  modal.confirmStopTimer.open = true;
+};
+
+const stopTimerAction = () => {
+  modal.confirmStopTimer.open = false;
+  timerStore.stopTimer();
+};
+
 const endTimer = () => {
   clickSound.play();
 
   if (authStore.isAuthenticad) {
     timerStore.pauseTimer();
 
-    editTimeRecordObject.value = {
-      description: "",
-      category: "",
-      code: "",
-      timePeriods: [
-        ...timerStore._currentTimePeriodList.map((t) => ({
-          start: new Date(t.start),
-          end: new Date(t.end),
-        })),
-      ],
-      callback: () => {
-        timerStore.clearCurrentTimePeriodList();
+    const timePeriods = [
+      ...timerStore._currentTimePeriodList.map((t) => ({
+        start: new Date(t.start),
+        end: new Date(t.end),
+      })),
+    ];
+
+    if (props.id) {
+      return postTimePeriodList(timePeriods, props.id)
+        .then(() => {
+          timerStore.clearCurrentTimePeriodList();
+          OkToast("Perídos de tempo sincronizados com sucesso.");
+        })
+        .catch(() => {
+          timerStore.endTimer();
+          ErrorToast(
+            "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador)."
+          );
+        });
+    }
+
+    editTimeRecordObject.value = editTimeRecordObjectFactory(
+      {
+        timePeriods,
       },
-    };
+      () => timerStore.clearCurrentTimePeriodList()
+    );
 
     modal.confirmPersistMethod.open = true;
   } else {
@@ -114,29 +152,19 @@ const timerCardUi = computed(() => {
   };
 
   return {
-    base: `pt-3 ${
-      props.float ? "fixed top-5 right-5 max-w-60 w-full" : "relative"
-    }`,
-
+    base: `pt-3 relative w-full`,
     background: `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
-
     ring: `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
   };
 });
 </script>
 
 <template>
-  <section>
+  <section
+    class="flex flex-col gap-3 items-center"
+    :class="[props.float ? 'fixed top-5 right-5 max-w-60 w-full' : 'relative']"
+  >
     <TimerOptions v-if="timerStore.showOptions && !props.optionsModal" />
-
-    <UModal
-      v-model="timerStore._showOptions"
-      v-if="timerStore.showOptions && props.optionsModal"
-    >
-      <h3 class="text-xl text-center pt-6">Qual modo quer ativar?</h3>
-      <GCloseButton @close="timerStore.toggleOptions" />
-      <TimerOptions :float="props.optionsModal" />
-    </UModal>
 
     <UCard :ui="timerCardUi">
       <UButton
@@ -190,7 +218,7 @@ const timerCardUi = computed(() => {
           <p v-else-if="timerStore.isBreak">
             {{
               timerStore.isRunning
-                ? "para acabar o descanço..."
+                ? "para acabar o descanso..."
                 : "para descansar."
             }}
           </p>
@@ -204,10 +232,9 @@ const timerCardUi = computed(() => {
 
         <div class="flex gap-3">
           <UButton
+            v-if="!timerStore.isRunning"
             :title="
-              timerStore.timePeriodsLength
-                ? $t('timer.buttons.continue')
-                : $t('timer.buttons.start')
+              timerStore.timePeriodsLength ? $t('continue') : $t('doStart')
             "
             :disabled="timerStore.isRunning"
             color="blue"
@@ -216,8 +243,9 @@ const timerCardUi = computed(() => {
           />
 
           <UButton
+            v-if="timerStore.isRunning"
             :disabled="!timerStore.isRunning"
-            :title="$t('timer.buttons.pause')"
+            :title="$t('pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
             @click="pauseTimer"
@@ -225,19 +253,64 @@ const timerCardUi = computed(() => {
 
           <UButton
             :disabled="timerStore.dontHasMiliseconds"
-            :title="$t('timer.buttons.finish')"
+            :title="$t('finish')"
             color="green"
             icon="i-icon-park-outline-hard-disk-one"
             @click="endTimer"
           />
+
+          <UButton
+            :disabled="timerStore.dontHasMiliseconds"
+            :title="$t('stop')"
+            color="red"
+            icon="i-icon-park-outline-close-small"
+            @click="stopTimer"
+          />
         </div>
       </div>
 
-      <p v-if="props.id" class="text-center pt-5 text-sm opacity-50">
-        Sincronizado com registro: #{{ props.id }}
+      <p v-if="props.code" class="text-center pt-5 text-sm opacity-50">
+        Sincronizado com registro:
+
+        <UBadge :color="getButtonColor" variant="soft" size="md">
+          {{ props.code }}
+        </UBadge>
       </p>
     </UCard>
+
+    <UButton
+      v-if="timerStore.totalItems >= 1"
+      color="black"
+      variant="link"
+      @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
+    >
+      <template v-if="!id">
+        Há {{ timerStore.totalItems }}
+        {{
+          timerStore.totalItems > 1 ? "registros locais." : "registro local."
+        }}
+      </template>
+
+      <template v-else> Há registros não sincronizados.</template>
+    </UButton>
   </section>
+
+  <UModal
+    v-model="timerStore._showOptions"
+    v-if="timerStore.showOptions && props.optionsModal"
+  >
+    <h3 class="text-xl text-center pt-6">Qual modo deseja ativar?</h3>
+    <GCloseButton @close="timerStore.toggleOptions" />
+    <TimerOptions :float="props.optionsModal" />
+  </UModal>
+
+  <UModal v-model="modal.timeRecordsTable.open">
+    <UCard v-if="modal.timeRecordsTable.open && timerStore.totalItems">
+      <GCloseButton @close="modal.timeRecordsTable.open = false" />
+
+      <TimeRecordTableLocal :refresh-time-records="refreshTimeRecords" />
+    </UCard>
+  </UModal>
 
   <GModalConfirm
     v-model:open="modal.confirmPersistMethod.open"
@@ -249,9 +322,21 @@ const timerCardUi = computed(() => {
     @cancel="saveOnBrowser"
   />
 
+  <GModalConfirm
+    v-model:open="modal.confirmStopTimer.open"
+    custom-width="sm:w-88"
+    title="Deseja parar o cronômetro?"
+    text="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
+    :cancel-text="$t('cancel')"
+    :confirm-text="$t('confirm')"
+    @cancel="modal.confirmStopTimer.open = false"
+    @confirm="stopTimerAction"
+  />
+
   <UModal v-model="modal.createTimeRecord.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
+      :refresh-time-records="refreshTimeRecords"
       @close="closeTimeRecordModal"
     />
   </UModal>

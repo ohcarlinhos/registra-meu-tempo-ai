@@ -10,7 +10,7 @@ definePageMeta({ middleware: ["auth"] });
     }"
   >
     <GHeader small-title>
-      <TimerDefault float options-modal />
+      <TimerDefault float options-modal refresh-time-records />
     </GHeader>
 
     <TimeRecordDashboard />

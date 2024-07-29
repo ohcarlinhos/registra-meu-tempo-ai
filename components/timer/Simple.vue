@@ -3,7 +3,7 @@ const timerStore = useSimpleTimerStore();
 
 const props = defineProps<{
   id: number;
-  callback: () => Promise<void>;
+  callback: (code?: string) => Promise<void>;
 }>();
 
 const isRunning = computed(() => {

@@ -27,6 +27,23 @@ export const postTimePeriod = async (payload: PayloadPost) => {
   );
 };
 
+type PayloadPostList = {
+  start: Date;
+  end: Date;
+}[];
+
+export const postTimePeriodList = async (
+  payload: PayloadPostList,
+  timeRecordId: number
+) => {
+  return CustomHttp<PayloadPostList, TimeRecordType>(
+    `/time-period/list/${timeRecordId}`,
+    "post",
+    payload,
+    true
+  );
+};
+
 export const putTimePeriod = async (id: number, payload: PayloadPost) => {
   return CustomHttp<PayloadPost, TimeRecordType>(
     `/time-period/${id}`,

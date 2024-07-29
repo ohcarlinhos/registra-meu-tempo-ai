@@ -12,9 +12,12 @@ export const getTimeRecords = async function (
   );
 };
 
-export const getTimeRecordById = async function (id: number, mounted = false) {
+export const getTimeRecordByCode = async function (
+  code: string,
+  mounted = false
+) {
   return await CustomHttp<null, TimeRecordType>(
-    `/time-record/${id}`,
+    `/time-record/${code}`,
     "get",
     null,
     mounted
@@ -48,3 +51,22 @@ export const postTimeRecord = async (payload: PayloadPost) => {
   );
 };
 
+type PayloadPut = {
+  id: number;
+  description: string;
+  // timePeriods?: { start: Date | string; end: Date | string }[];
+  categoryId?: number | null;
+  externalLink?: string;
+  code?: string;
+};
+
+export const putTimeRecord = async (payload: PayloadPut) => {
+  if (payload.categoryId == null) delete payload.categoryId;
+
+  return CustomHttp<PayloadPut, TimeRecordType>(
+    `/time-record/${payload.id}`,
+    "put",
+    payload,
+    true
+  );
+};

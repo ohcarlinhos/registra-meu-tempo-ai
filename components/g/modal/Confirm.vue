@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   open: boolean;
+  title?: string;
   text: string;
   confirmText?: string;
   cancelText?: string;
@@ -28,20 +29,24 @@ const isOpen = computed({
     }"
   >
     <UCard>
-      {{ text }}
+      <h3 class="text-xl pb-3">{{ title }}</h3>
+
+      <p v-if="text">
+        {{ text }}
+      </p>
 
       <template #footer>
         <div class="grid grid-cols-2 gap-5">
           <UButton
             color="blue"
             block
-            :label="props.cancelText ? props.cancelText : $t('g.cancel')"
+            :label="props.cancelText ? props.cancelText : $t('cancel')"
             @click="emit('cancel')"
           />
 
           <UButton
             block
-            :label="props.confirmText ? props.confirmText : $t('g.confirm')"
+            :label="props.confirmText ? props.confirmText : $t('confirm')"
             @click="emit('confirm')"
           />
         </div>

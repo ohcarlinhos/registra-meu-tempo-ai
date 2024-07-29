@@ -75,33 +75,30 @@ await userStore.fetchMyself((data) => {
   <GPanelCol custom-class="w-full">
     <GPanelTitle :text="t('form.user.update.title')" />
 
-    <UCard :key="form">
+    <UCard>
       <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-        <UFormGroup :label="t('form.user.name')" name="name" required>
+        <UFormGroup :label="t('name')" name="name" required>
           <UInput type="text" v-model="form.name" autofocus />
         </UFormGroup>
 
-        <UFormGroup :label="t('form.user.email')" name="email" required>
+        <UFormGroup :label="t('email')" name="email" required>
           <UInput type="email" v-model="form.email" />
         </UFormGroup>
 
-        <UFormGroup :label="t('form.user.oldPassword')" name="oldPassword">
+        <UFormGroup :label="t('oldPassword')" name="oldPassword">
           <UInput type="password" v-model="form.oldPassword" />
         </UFormGroup>
 
-        <UFormGroup :label="t('form.user.newPassword')" name="password">
+        <UFormGroup :label="t('newPassword')" name="password">
           <UInput type="password" v-model="form.password" />
         </UFormGroup>
 
-        <UFormGroup
-          :label="t('form.user.confirmNewPassword')"
-          name="confirmPassword"
-        >
+        <UFormGroup :label="t('confirmNewPassword')" name="confirmPassword">
           <UInput type="password" v-model="form.confirmPassword" />
         </UFormGroup>
 
         <UButton
-          :label="t('form.user.update.button')"
+          :label="t('save')"
           :loading="pageStatus.fetching"
           type="submit"
           block
@@ -110,4 +107,3 @@ await userStore.fetchMyself((data) => {
     </UCard>
   </GPanelCol>
 </template>
-

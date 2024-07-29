@@ -4,6 +4,13 @@ import { watch } from "vue";
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 
+const props = withDefaults(
+  defineProps<{
+    refreshTimeRecords?: boolean;
+  }>(),
+  {}
+);
+
 const modal = reactive({ open: false });
 
 const confirmDelete = reactive({
@@ -59,19 +66,28 @@ const items = (row: ITimeRecordLocal) => {
   const actions = [
     [
       {
-        label: "Apagar",
-        icon: "i-heroicons-trash-20-solid",
+        label: "Apagar do Navegador",
+        icon: "i-icon-park-outline-delete-themes",
         click: () => openConfirmDeleteModal(row.localUuid),
       },
     ],
   ];
 
-  if (authStore.isAuthenticad)
-    actions[0].unshift({
-      label: "Persistir (Registros)",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: async () => openModal(row),
-    });
+  if (authStore.isAuthenticad) {
+    if (row.id) {
+      actions[0].unshift({
+        label: "Sincronizar (Registro)",
+        icon: "i-icon-park-outline-refresh-one",
+        click: async () => openModal(row),
+      });
+    } else {
+      actions[0].unshift({
+        label: "Persistir (Registros)",
+        icon: "i-icon-park-outline-save-one",
+        click: async () => openModal(row),
+      });
+    }
+  }
 
   return actions;
 };
@@ -107,7 +123,7 @@ const closeModal = () => {
           <UButton
             color="gray"
             variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
+            icon="i-icon-park-outline-more-one"
           />
         </UDropdown>
       </div>
@@ -137,6 +153,7 @@ const closeModal = () => {
   <UModal v-model="modal.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
+      :refresh-time-records="props.refreshTimeRecords"
       @close="closeModal"
     />
   </UModal>

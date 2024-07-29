@@ -61,39 +61,31 @@ const submit = async () => {
       },
     }"
   >
-    <template #header>{{ t("form.user.create.title") }}</template>
+    <template #header>{{ t("toRecord") }}</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-      <UFormGroup :label="t('form.user.name')" name="name" required>
+      <UFormGroup :label="t('name')" name="name" required>
         <UInput type="text" v-model="form.name" autofocus />
       </UFormGroup>
 
-      <UFormGroup :label="t('form.user.email')" name="email" required>
+      <UFormGroup :label="t('email')" name="email" required>
         <UInput type="email" v-model="form.email" />
       </UFormGroup>
 
-      <UFormGroup
-        :label="t('form.user.registerCode')"
-        name="registerCode"
-        required
-      >
+      <UFormGroup :label="t('registerCode')" name="registerCode" required>
         <UInput type="registerCode" v-model="form.registerCode" />
       </UFormGroup>
 
-      <UFormGroup :label="t('form.user.password')" name="password" required>
+      <UFormGroup :label="t('password')" name="password" required>
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
-      <UFormGroup
-        :label="t('form.user.confirmPassword')"
-        name="confirmPassword"
-        required
-      >
+      <UFormGroup :label="t('confirmPassword')" name="confirmPassword" required>
         <UInput type="password" v-model="form.confirmPassword" />
       </UFormGroup>
 
       <UButton
-        :label="t('form.user.create.button')"
+        :label="t('toRecord')"
         type="submit"
         :loading="pageStatus.fetching"
         block
@@ -102,7 +94,7 @@ const submit = async () => {
 
     <template #footer>
       <ULink to="/login" inactive-class="text-primary font-bold text-xs">
-        {{ t("form.register.access") }}
+        {{ t("access") }}
       </ULink>
     </template>
   </UCard>
