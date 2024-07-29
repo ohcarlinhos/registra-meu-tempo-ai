@@ -307,7 +307,7 @@ onMounted(async () => {
 
         <GModalConfirm
           v-model:open="modal.confirmDeleteTp.open"
-          text="Tem certeza que quer excluir esse registro?"
+          text="Tem certeza que quer excluir esse período de tempo?"
           @confirm="deleteTimePeriodAction"
           @cancel="closeConfirmDeleteTpModal"
         />

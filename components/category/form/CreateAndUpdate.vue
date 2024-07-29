@@ -131,6 +131,7 @@ watch(
         :disabled="submitButtonIsDisabled"
         :label="props.editObject?.id ? $t('save') : $t('create')"
         type="submit"
+        block
       />
     </UForm>
   </UCard>

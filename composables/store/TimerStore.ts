@@ -100,6 +100,7 @@ export const useTimerStore = defineStore("TimerStore", {
       if (this._currentTimePeriodList.length && !this.isBreak) {
         const timeRecord: ITimeRecordLocal = {
           localUuid: uuidv4(),
+          title: "",
           description: "",
           timeRecordDate: new Date().toISOString(),
           timePeriods: this._currentTimePeriodList.map((p) => ({
@@ -114,6 +115,10 @@ export const useTimerStore = defineStore("TimerStore", {
         this.addTimeRecordLocal(timeRecord);
       }
 
+      this._currentTimePeriodList = [];
+    },
+
+    stopTimer() {
       this._currentTimePeriodList = [];
     },
 

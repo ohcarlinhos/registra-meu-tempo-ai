@@ -35,6 +35,9 @@ const modal = reactive({
   confirmPersistMethod: {
     open: false,
   },
+  confirmStopTimer: {
+    open: false,
+  },
   timeRecordsTable: {
     open: false,
   },
@@ -50,6 +53,17 @@ const startTimer = () => {
 const pauseTimer = () => {
   clickSound.play();
   timerStore.pauseTimer();
+};
+
+const stopTimer = () => {
+  clickSound.play();
+  timerStore.pauseTimer();
+  modal.confirmStopTimer.open = true;
+};
+
+const stopTimerAction = () => {
+  modal.confirmStopTimer.open = false;
+  timerStore.stopTimer();
 };
 
 const endTimer = () => {
@@ -218,10 +232,9 @@ const timerCardUi = computed(() => {
 
         <div class="flex gap-3">
           <UButton
+            v-if="!timerStore.isRunning"
             :title="
-              timerStore.timePeriodsLength
-                ? $t('timer.buttons.continue')
-                : $t('timer.buttons.start')
+              timerStore.timePeriodsLength ? $t('continue') : $t('doStart')
             "
             :disabled="timerStore.isRunning"
             color="blue"
@@ -230,8 +243,9 @@ const timerCardUi = computed(() => {
           />
 
           <UButton
+            v-if="timerStore.isRunning"
             :disabled="!timerStore.isRunning"
-            :title="$t('timer.buttons.pause')"
+            :title="$t('pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
             @click="pauseTimer"
@@ -239,10 +253,18 @@ const timerCardUi = computed(() => {
 
           <UButton
             :disabled="timerStore.dontHasMiliseconds"
-            :title="$t('timer.buttons.finish')"
+            :title="$t('finish')"
             color="green"
             icon="i-icon-park-outline-hard-disk-one"
             @click="endTimer"
+          />
+
+          <UButton
+            :disabled="timerStore.dontHasMiliseconds"
+            :title="$t('stop')"
+            color="red"
+            icon="i-icon-park-outline-close-small"
+            @click="stopTimer"
           />
         </div>
       </div>
@@ -298,6 +320,17 @@ const timerCardUi = computed(() => {
     :confirm-text="$t('timer.persistModal.accountButton')"
     @confirm="persistOnServer"
     @cancel="saveOnBrowser"
+  />
+
+  <GModalConfirm
+    v-model:open="modal.confirmStopTimer.open"
+    custom-width="sm:w-88"
+    title="Deseja parar o cronômetro?"
+    text="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
+    :cancel-text="$t('cancel')"
+    :confirm-text="$t('confirm')"
+    @cancel="modal.confirmStopTimer.open = false"
+    @confirm="stopTimerAction"
   />
 
   <UModal v-model="modal.createTimeRecord.open" prevent-close>

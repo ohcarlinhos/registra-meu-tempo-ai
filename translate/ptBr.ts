@@ -39,6 +39,12 @@ export default {
   externalLink: "Link externo",
   statistics: "Estatísticas",
 
+  doStart: "Iniciar",
+  continue: "Continuar",
+  pause: "Pausar",
+  finish: "Finalizar",
+  stop: "Parar",
+
   v: {
     email: {
       format: "Digite um e-mail válido.",
@@ -133,12 +139,6 @@ export default {
       t1: "1, 2, 3 e...",
       t2: "Prontos?",
       t3: "Dá um start!",
-    },
-    buttons: {
-      start: "Iniciar",
-      continue: "Continuar",
-      pause: "Pausar",
-      finish: "Finalizar",
     },
     persistModal: {
       text: "Como deseja salvar o Registro de Tempo?",
