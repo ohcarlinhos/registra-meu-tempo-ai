@@ -258,6 +258,7 @@ const timerCardUi = computed(() => {
           />
 
           <UButton
+            v-if="!timerStore.isBreak"
             :disabled="timerStore.dontHasMiliseconds"
             :title="$t('finish')"
             color="green"
