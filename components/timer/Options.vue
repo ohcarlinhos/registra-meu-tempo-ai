@@ -51,20 +51,20 @@ const setBreakPeriod = (value: number) => {
       />
 
       <UButton
+        :variant="isSolidOrSoftButton(timerStore.isTimer)"
+        :disabled="timerStore.hasMiliseconds"
+        label="Cronômetro"
+        icon="i-icon-park-outline-timer"
+        @click="timerStore.setTimerType('timer')"
+      />
+
+      <UButton
         :variant="isSolidOrSoftButton(timerStore.isBreak)"
         :disabled="timerStore.hasMiliseconds"
         label="Pausa"
         color="blue"
         icon="i-icon-park-outline-sleep-two"
         @click="timerStore.setTimerType('break')"
-      />
-
-      <UButton
-        :variant="isSolidOrSoftButton(timerStore.isTimer)"
-        :disabled="timerStore.hasMiliseconds"
-        label="Cronômetro"
-        icon="i-icon-park-outline-timer"
-        @click="timerStore.setTimerType('timer')"
       />
     </section>
 
