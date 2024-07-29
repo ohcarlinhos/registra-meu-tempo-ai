@@ -1,4 +1,5 @@
 export type TimeRecordType = {
+  title: string;
   description: string;
   timeRecordDate: string | null;
   timePeriods: TimePeriodType[];
@@ -9,6 +10,7 @@ export type TimeRecordType = {
   formattedTime?: string;
   timeTotalMilliseconds?: number;
   timePeriodsCount?: number;
+  externalLink?: string;
 };
 
 export interface ITimeRecordLocal extends TimeRecordType {
@@ -21,10 +23,12 @@ export interface ITimeRecordTable extends TimeRecordType {
 
 export type TimeRecordFormType = {
   id?: number;
+  title: string;
   description: string;
   category: string;
-  categoryId?: number;
+  categoryId?: number | null;
   code: string;
+  externalLink?: string;
   timePeriods: { start: Date | string; end: Date | string }[];
-  callback?: () => void;
+  callback?: (code?: string) => void;
 };

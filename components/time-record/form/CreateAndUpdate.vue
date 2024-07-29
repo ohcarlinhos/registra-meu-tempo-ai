@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 import { addMinutes } from "date-fns";
+import { vMaska } from "maska/vue";
 
 const { t } = useI18n();
+
 const timeRecordStore = useTimeRecordStore();
 const categoryStore = useCategoryStore();
 
@@ -11,6 +13,8 @@ const emit = defineEmits(["close", "refresh"]);
 const props = withDefaults(
   defineProps<{
     editObject?: TimeRecordFormType;
+    hideTimePeriods?: boolean;
+    refreshTimeRecords?: boolean;
   }>(),
   {}
 );
@@ -25,15 +29,24 @@ const status = reactive({
 
 const form = reactive<TimeRecordFormType>({
   id: undefined,
+  title: "",
   description: "",
   category: "",
   code: "",
+  externalLink: "",
   categoryId: undefined,
   timePeriods: [],
   callback: undefined,
 });
 
 const newCategories = ref<string[]>([]);
+
+watch(
+  () => form.code,
+  (newValue) => {
+    form.code = newValue.replace(" ", "");
+  }
+);
 
 /**
  * Validations
@@ -42,12 +55,17 @@ const newCategories = ref<string[]>([]);
 // TODO: finalizar validações
 const schema = yup.object({
   description: yup.string(),
+  externalLink: yup.string(),
   code: yup.string(),
 });
 
 /**
  * Computeds
  */
+
+const isEditMode = computed(() => {
+  return Boolean(props.editObject && props.editObject.id);
+});
 
 const categories = computed(() => {
   return [
@@ -78,7 +96,7 @@ const addButtonIsDisabled = computed(() => {
 });
 
 const submitButtonIsDisabled = computed(() => {
-  return form.timePeriods.length === 0;
+  return form.timePeriods.length === 0 && !props.editObject?.id;
 });
 
 /**
@@ -130,29 +148,39 @@ const submit = async () => {
 
 const createAction = async () => {
   try {
-    await postTimeRecord({
+    const result = await postTimeRecord({
       ...form,
       categoryId: await handleCategory(),
     });
 
-    if (form.callback) form.callback();
+    if (form.callback) form.callback(result?.code);
 
-    closeModal(true);
+    closeModal(props.refreshTimeRecords);
     OkToast(t("form.timeRecord.status.success.create"));
   } catch (error) {
     ErrorToast(error);
   }
 };
 
-const editAction = async (id: number) => {
-  // TODO
-  console.log(props.editObject);
+const updateAction = async () => {
+  try {
+    const result = await putTimeRecord({
+      ...form,
+      id: form.id!,
+      categoryId: await handleCategory(),
+    });
+
+    if (form.callback) form.callback(result?.code);
+
+    closeModal(props.refreshTimeRecords);
+    OkToast(t("form.timeRecord.status.success.update"));
+  } catch (error) {
+    ErrorToast(error);
+  }
 };
 
 const submitAction = async () => {
-  return props.editObject?.id
-    ? editAction(props.editObject.id)
-    : createAction();
+  return isEditMode.value ? updateAction() : createAction();
 };
 
 /**
@@ -164,11 +192,17 @@ onMounted(async () => {
 
   if (props.editObject) {
     form.id = props.editObject.id;
+    form.title = props.editObject.title;
     form.description = props.editObject.description;
     form.category = props.editObject.category;
     form.categoryId = props.editObject.categoryId;
-    form.timePeriods = props.editObject.timePeriods;
+    form.code = props.editObject.code;
+    form.externalLink = props.editObject.externalLink;
     form.callback = props.editObject.callback;
+
+    if (!props.hideTimePeriods) {
+      form.timePeriods = props.editObject.timePeriods;
+    }
   } else if (form.timePeriods.length === 0) {
     addTimePeriodToForm();
   }
@@ -178,19 +212,16 @@ onMounted(async () => {
 <template>
   <UCard>
     <template #header>
-      <div class="flex items-center justify-between">
-        <h2>Registro de Tempo</h2>
-
-        <GCloseButton @close="closeModal" />
-      </div>
+      <h2>Registro de Tempo</h2>
+      <GCloseButton @close="closeModal" />
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <div class="flex justify-between">
-        <h3>{{ $t("time.periodList") }}</h3>
+      <div v-if="!hideTimePeriods" class="flex justify-between">
+        <h3>{{ $t("periods") }}</h3>
 
         <UButton
-          :label="$t('g.add')"
+          :label="$t('add')"
           :disabled="addButtonIsDisabled"
           size="sm"
           type="button"
@@ -199,8 +230,9 @@ onMounted(async () => {
       </div>
 
       <div
+        v-if="!hideTimePeriods"
         v-for="(_, index) in form.timePeriods"
-        class="flex gap-4 relative dark:border-gray-800 border-b-2 pb-3"
+        class="flex flex-row gap-4 relative dark:border-gray-800 border-b-2 pb-3"
       >
         <UFormGroup
           :label="$t('form.timeRecord.period.start')"
@@ -226,12 +258,35 @@ onMounted(async () => {
         </UFormGroup>
 
         <UButton
-          icon="i-heroicons-x-mark"
+          icon="i-icon-park-outline-close-small"
           color="white"
           variant="solid"
           @click="deleteTimePeriodFromForm(index)"
         />
       </div>
+
+      <UFormGroup :label="$t('form.timeRecord.title')" name="title">
+        <UInput type="text" v-model="form.title" maxlength="120" />
+      </UFormGroup>
+
+      <UFormGroup
+        :label="$t('form.timeRecord.code')"
+        :required="isEditMode"
+        name="title"
+        description='Utilize o campo para identificar sua tarefa ou atividade. Ex: "TASK-1234".'
+      >
+        <UInput
+          type="text"
+          v-model="form.code"
+          v-maska="{
+            mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+            tokens: {
+              X: { pattern: /[a-zA-Z0-9-]/, transform: (v) => v.toLowerCase() },
+            },
+          }"
+          :required="isEditMode"
+        />
+      </UFormGroup>
 
       <UFormGroup
         :label="$t('category')"
@@ -248,26 +303,32 @@ onMounted(async () => {
           creatable
         >
           <template #option-create="{ option }">
-            <span class="flex-shrink-0">{{
-              $t("form.timeRecord.selectCategoryAdd")
-            }}</span>
+            <span class="flex-shrink-0">
+              {{ $t("form.timeRecord.selectCategoryAdd") }}
+            </span>
+
             <span class="block truncate">{{ option }}</span>
           </template>
         </USelectMenu>
       </UFormGroup>
 
-      <UFormGroup :label="$t('form.timeRecord.code')" name="code">
-        <UInput type="text" v-model="form.code" />
+      <UFormGroup :label="$t('description')" name="description">
+        <UTextarea v-model="form.description" maxlength="240" />
       </UFormGroup>
 
-      <UFormGroup :label="$t('form.timeRecord.description')" name="description">
-        <UInput type="text" v-model="form.description" />
+      <UFormGroup
+        :label="$t('externalLink')"
+        name="externalLink"
+        description="Link externo para sua tarefa ou algo que queira fixar."
+        maxlength="120"
+      >
+        <UInput type="text" v-model="form.externalLink" />
       </UFormGroup>
 
       <UButton
         :loading="status.fetching"
         :disabled="submitButtonIsDisabled"
-        :label="$t('g.send')"
+        :label="$t('send')"
         block
         type="submit"
       />

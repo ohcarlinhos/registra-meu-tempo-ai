@@ -4,6 +4,13 @@ import { watch } from "vue";
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 
+const props = withDefaults(
+  defineProps<{
+    refreshTimeRecords?: boolean;
+  }>(),
+  {}
+);
+
 const modal = reactive({ open: false });
 
 const confirmDelete = reactive({
@@ -137,6 +144,7 @@ const closeModal = () => {
   <UModal v-model="modal.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
+      :refresh-time-records="props.refreshTimeRecords"
       @close="closeModal"
     />
   </UModal>

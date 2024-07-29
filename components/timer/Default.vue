@@ -16,6 +16,14 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  code: {
+    type: String,
+    default: null,
+  },
+  refreshTimeRecords: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 timerStore.initTimerConfig(props.id, props.float);
@@ -61,24 +69,22 @@ const endTimer = () => {
       return postTimePeriodList(timePeriods, props.id)
         .then(() => {
           timerStore.clearCurrentTimePeriodList();
-          // TODO: corrigir mensagem.
-          OkToast("Mensagem");
+          OkToast("Perídos de tempo sincronizados com sucesso.");
         })
         .catch(() => {
-          // TODO: adicionar mensagem que o tempo foi registrado localmente.
           timerStore.endTimer();
+          ErrorToast(
+            "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador)."
+          );
         });
     }
 
-    editTimeRecordObject.value = {
-      description: "",
-      category: "",
-      code: "",
-      timePeriods,
-      callback: () => {
-        timerStore.clearCurrentTimePeriodList();
+    editTimeRecordObject.value = editTimeRecordObjectFactory(
+      {
+        timePeriods,
       },
-    };
+      () => timerStore.clearCurrentTimePeriodList()
+    );
 
     modal.confirmPersistMethod.open = true;
   } else {
@@ -241,10 +247,11 @@ const timerCardUi = computed(() => {
         </div>
       </div>
 
-      <p v-if="props.id" class="text-center pt-5 text-sm opacity-50">
+      <p v-if="props.code" class="text-center pt-5 text-sm opacity-50">
         Sincronizado com registro:
+
         <UBadge :color="getButtonColor" variant="soft" size="md">
-          Id: {{ props.id }}
+          {{ props.code }}
         </UBadge>
       </p>
     </UCard>
@@ -278,7 +285,8 @@ const timerCardUi = computed(() => {
   <UModal v-model="modal.timeRecordsTable.open">
     <UCard v-if="modal.timeRecordsTable.open && timerStore.totalItems">
       <GCloseButton @close="modal.timeRecordsTable.open = false" />
-      <TimeRecordTableLocal />
+
+      <TimeRecordTableLocal :refresh-time-records="refreshTimeRecords" />
     </UCard>
   </UModal>
 
@@ -295,6 +303,7 @@ const timerCardUi = computed(() => {
   <UModal v-model="modal.createTimeRecord.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
+      :refresh-time-records="refreshTimeRecords"
       @close="closeTimeRecordModal"
     />
   </UModal>
