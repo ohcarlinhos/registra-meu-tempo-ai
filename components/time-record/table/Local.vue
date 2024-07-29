@@ -107,7 +107,7 @@ const closeModal = () => {
           <UButton
             color="gray"
             variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
+            icon="i-icon-park-outline-more-one"
           />
         </UDropdown>
       </div>

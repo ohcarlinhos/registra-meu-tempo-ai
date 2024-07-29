@@ -6,7 +6,7 @@ defineEmits(["close"]);
   <UButton
     color="gray"
     variant="ghost"
-    icon="i-heroicons-x-mark-20-solid"
+    icon="i-icon-park-outline-close-small"
     :ui="{ base: 'absolute top-3 right-3' }"
     @click="$emit('close')"
   />

@@ -114,7 +114,7 @@ watch(
         <UButton
           color="gray"
           variant="ghost"
-          icon="i-heroicons-x-mark-20-solid"
+          icon="i-icon-park-outline-close-small"
           class="-my-1"
           @click="closeModal"
         />

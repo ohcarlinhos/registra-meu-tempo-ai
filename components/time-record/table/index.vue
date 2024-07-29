@@ -73,13 +73,13 @@ const columns = [
 const items = (row: TimeRecordType) => [
   [
     {
-      label: "Acessar",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => emit("access", row.id!),
+      label: t("access"),
+      icon: "i-icon-park-outline-view-grid-detail",
+      click: () => emit("access", row.code!),
     },
     {
-      label: "Apagar",
-      icon: "i-heroicons-trash-20-solid",
+      label: t("delete"),
+      icon: "i-icon-park-outline-delete-themes",
       click: async () =>
         emit("delete", {
           id: row.id!,
@@ -109,7 +109,7 @@ await trStore.fetchTimeRecords();
           v-model="computedSearch"
           name="search"
           placeholder="Pesquisar"
-          icon="i-heroicons-magnifying-glass-20-solid"
+          icon="i-icon-park-outline-search"
           autocomplete="off"
           :loading="trStore.fetching"
           :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -119,7 +119,7 @@ await trStore.fetchTimeRecords();
               v-show="computedSearch !== ''"
               color="gray"
               variant="link"
-              icon="i-heroicons-x-mark-20-solid"
+              icon="i-icon-park-outline-close-small"
               :padded="false"
               @click="computedSearch = ''"
             />
@@ -153,7 +153,7 @@ await trStore.fetchTimeRecords();
               <UButton
                 color="gray"
                 variant="ghost"
-                icon="i-heroicons-ellipsis-horizontal-20-solid"
+                icon="i-icon-park-outline-more-one"
               />
             </UDropdown>
           </div>

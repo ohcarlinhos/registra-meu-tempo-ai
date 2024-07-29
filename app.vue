@@ -13,7 +13,9 @@ const toggleDark = () => {
       :ui="{
         base: 'absolute top-2 left-2 z-50',
       }"
-      :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'"
+      :icon="
+        isDark ? 'i-icon-park-outline-moon' : 'i-icon-park-outline-sun-one'
+      "
       color="gray"
       variant="ghost"
       aria-label="Theme"

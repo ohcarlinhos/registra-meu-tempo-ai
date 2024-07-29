@@ -72,12 +72,12 @@ const items = (row: CategoryType) => [
   [
     {
       label: "Editar",
-      icon: "i-heroicons-pencil-square-20-solid",
+      icon: "i-icon-park-outline-edit",
       click: () => openEditCategoryModal(row),
     },
     {
       label: "Apagar",
-      icon: "i-heroicons-trash-20-solid",
+      icon: "i-icon-park-outline-delete-themes",
       click: async () =>
         openConfirmDeleteModal({
           id: row.id,
@@ -138,7 +138,7 @@ await categoryStore.fetch();
           v-model="computedSearch"
           name="search"
           placeholder="Pesquisar"
-          icon="i-heroicons-magnifying-glass-20-solid"
+          icon="i-icon-park-outline-search"
           autocomplete="off"
           :loading="categoryStore.fetching"
           :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -148,7 +148,7 @@ await categoryStore.fetch();
               v-show="computedSearch !== ''"
               color="gray"
               variant="link"
-              icon="i-heroicons-x-mark-20-solid"
+              icon="i-icon-park-outline-close-small"
               :padded="false"
               @click="computedSearch = ''"
             />
@@ -156,7 +156,7 @@ await categoryStore.fetch();
         </UInput>
 
         <UButton
-          icon="i-heroicons-pencil-square-20-solid"
+          icon="i-icon-park-outline-add"
           @click="modal.createOrUpdateCategory = true"
         />
       </div>
@@ -174,7 +174,7 @@ await categoryStore.fetch();
               <UButton
                 color="gray"
                 variant="ghost"
-                icon="i-heroicons-ellipsis-horizontal-20-solid"
+                icon="i-icon-park-outline-more-one"
               />
             </UDropdown>
           </div>
