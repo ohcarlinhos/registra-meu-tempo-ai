@@ -58,6 +58,12 @@ const pauseTimer = () => {
 const stopTimer = () => {
   clickSound.play();
   timerStore.pauseTimer();
+
+  if (timerStore.isBreak) {
+    stopTimerAction();
+    return;
+  }
+
   modal.confirmStopTimer.open = true;
 };
 
