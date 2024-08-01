@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { format } from "date-fns";
+
 definePageMeta({
   name: "time.record.page",
 });
-import { format } from "date-fns";
 
 const route = useRoute();
 const router = useRouter();
@@ -217,7 +218,7 @@ onMounted(async () => {
       <div class="w-full col-span-1 lg:col-span-4">
         <UContainer
           :ui="{
-            base: 'flex flex-col md:flex-row justify-between gap-5',
+            base: 'flex flex-col flex-row justify-between gap-5',
             padding: 'pb-5 px-0 lg:px-0 sm:px-0',
           }"
         >

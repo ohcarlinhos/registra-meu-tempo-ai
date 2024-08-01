@@ -26,7 +26,10 @@ const activeClass = "text-primary font-bold";
 
 <template>
   <header :class="{ 'text-center': center, 'pb-12': !disablePadding }">
-    <section class="flex justify-between">
+    <section
+      class="flex justify-between"
+      :class="{ 'flex-col justify-center gap-10': center }"
+    >
       <div>
         <h1
           class="font-bold text-primary"

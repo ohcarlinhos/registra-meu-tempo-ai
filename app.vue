@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+useHead({
+  title: "Registra meu tempo aí! - Gerenciador de Tempo",
+});
+
 const colorMode = useColorMode();
 
 const toggleDark = () => {
@@ -8,6 +12,7 @@ const toggleDark = () => {
 
 <template>
   <NuxtLoadingIndicator />
+
   <NuxtLayout>
     <UButton
       :ui="{
@@ -21,8 +26,8 @@ const toggleDark = () => {
       aria-label="Theme"
       @click="toggleDark"
     />
-
     <NuxtPage />
   </NuxtLayout>
+
   <UNotifications />
 </template>
