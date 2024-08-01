@@ -98,9 +98,12 @@ const openEditCategoryModal = (category: CategoryType) => {
   modal.createOrUpdateCategory = true;
 };
 
+const deleteCategoryFetching = ref(false);
+
 const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
+  deleteCategoryFetching.value = true;
   try {
     await categoryStore.delete(
       modal.confirmDelete.id,
@@ -110,6 +113,8 @@ const deleteCategoryAction = async () => {
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    deleteCategoryFetching.value = false;
   }
 };
 
@@ -205,7 +210,8 @@ await categoryStore.fetch();
 
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
-    text="Tem certeza que quer excluir esse registro?"
+    :text="_$t('confirmDeleteCategoryMessage')"
+    :fetching="deleteCategoryFetching"
     @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"
   />
