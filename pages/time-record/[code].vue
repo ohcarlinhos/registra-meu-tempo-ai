@@ -330,6 +330,19 @@ onMounted(async () => {
         </UModal>
       </div>
     </div>
+
+    <div v-else>
+      <h2 class="text-2xl text-primary font-bold pb-3">
+        Registro não encontrado!
+      </h2>
+
+      <UButton
+        @click="router.push({ name: 'time.record.list' })"
+        variant="soft"
+      >
+        Voltar para Registros
+      </UButton>
+    </div>
   </UContainer>
 </template>
 
