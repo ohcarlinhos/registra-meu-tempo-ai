@@ -24,6 +24,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  postTimePeriodCallback: {
+    type: Function,
+    default: (code = "") => {},
+  },
 });
 
 timerStore.initTimerConfig(props.id, props.float);
@@ -72,6 +76,8 @@ const stopTimerAction = () => {
   timerStore.stopTimer();
 };
 
+const submitTimePeriodFetching = ref(false);
+
 const endTimer = () => {
   clickSound.play();
 
@@ -86,9 +92,15 @@ const endTimer = () => {
     ];
 
     if (props.id) {
+      submitTimePeriodFetching.value = true;
+
       return postTimePeriodList(timePeriods, props.id)
         .then(() => {
           timerStore.clearCurrentTimePeriodList();
+
+          if (props.postTimePeriodCallback)
+            props.postTimePeriodCallback(props.code);
+
           OkToast("Perídos de tempo sincronizados com sucesso.");
         })
         .catch(() => {
@@ -96,6 +108,9 @@ const endTimer = () => {
           ErrorToast(
             "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador)."
           );
+        })
+        .finally(() => {
+          submitTimePeriodFetching.value = false;
         });
     }
 
@@ -242,7 +257,7 @@ const timerCardUi = computed(() => {
             :title="
               timerStore.timePeriodsLength ? $t('continue') : $t('doStart')
             "
-            :disabled="timerStore.isRunning"
+            :disabled="timerStore.isRunning || submitTimePeriodFetching"
             color="blue"
             icon="i-icon-park-outline-play-one"
             @click="startTimer"
@@ -250,7 +265,7 @@ const timerCardUi = computed(() => {
 
           <UButton
             v-if="timerStore.isRunning"
-            :disabled="!timerStore.isRunning"
+            :disabled="!timerStore.isRunning || submitTimePeriodFetching"
             :title="$t('pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
@@ -259,7 +274,10 @@ const timerCardUi = computed(() => {
 
           <UButton
             v-if="!timerStore.isBreak"
-            :disabled="timerStore.dontHasMiliseconds"
+            :disabled="
+              timerStore.dontHasMiliseconds || submitTimePeriodFetching
+            "
+            :loading="submitTimePeriodFetching"
             :title="$t('finish')"
             color="green"
             icon="i-icon-park-outline-hard-disk-one"
@@ -267,7 +285,9 @@ const timerCardUi = computed(() => {
           />
 
           <UButton
-            :disabled="timerStore.dontHasMiliseconds"
+            :disabled="
+              timerStore.dontHasMiliseconds || submitTimePeriodFetching
+            "
             :title="$t('stop')"
             color="red"
             icon="i-icon-park-outline-close-small"

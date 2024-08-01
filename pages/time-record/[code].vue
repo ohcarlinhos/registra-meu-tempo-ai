@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+definePageMeta({
+  name: "time.record.page",
+});
 import { format } from "date-fns";
 
 const route = useRoute();
@@ -177,18 +180,11 @@ onMounted(async () => {
       </div>
 
       <div class="w-full col-span-1 lg:col-span-4">
-        <TimerDefault options-modal :id="trReq.id" :code="trReq.code" />
-
-        <h2 class="text-2xl mb-2 mt-6 font-bold">Cronômetro Simples</h2>
-
-        <p>
-          Aperte o botão de iniciar e de finalizar, dessa forma seu tempo será
-          salvo nesse registro.
-        </p>
-
-        <TimerSimple
-          :id="parseInt(route.params.id as string)"
-          :callback="getTimeRecordData"
+        <TimerDefault
+          options-modal
+          :id="trReq.id"
+          :code="trReq.code"
+          :postTimePeriodCallback="getTimeRecordData"
         />
       </div>
 
@@ -236,8 +232,11 @@ onMounted(async () => {
           </div>
         </UContainer>
 
-        <UCard v-if="trReq && trReq.timePeriods && trReq.timePeriods.length">
-          <section class="flex flex-row gap-2 flex-wrap">
+        <UCard>
+          <section
+            v-if="trReq && trReq.timePeriods && trReq.timePeriods.length"
+            class="flex flex-row gap-2 flex-wrap"
+          >
             <UPopover
               v-for="(period, index) in trReq.timePeriods"
               :key="period.id"
@@ -303,6 +302,8 @@ onMounted(async () => {
               </template>
             </UPopover>
           </section>
+
+          <section v-else>Nenhum período registrado.</section>
         </UCard>
 
         <GModalConfirm

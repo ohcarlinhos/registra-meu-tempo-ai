@@ -4,6 +4,7 @@ import { addMinutes } from "date-fns";
 import { vMaska } from "maska/vue";
 
 const { t } = useI18n();
+const router = useRouter();
 
 const timeRecordStore = useTimeRecordStore();
 const categoryStore = useCategoryStore();
@@ -22,10 +23,6 @@ const props = withDefaults(
 /**
  * States
  */
-
-const status = reactive({
-  fetching: false,
-});
 
 const form = reactive<TimeRecordFormType>({
   id: undefined,
@@ -95,8 +92,12 @@ const addButtonIsDisabled = computed(() => {
   return allHasValue === false;
 });
 
+const categoryIsDisabled = computed(() => {
+  return categoryStore && categoryStore.fetching;
+});
+
 const submitButtonIsDisabled = computed(() => {
-  return form.timePeriods.length === 0 && !props.editObject?.id;
+  return timeRecordStore && timeRecordStore.fetching;
 });
 
 /**
@@ -142,12 +143,15 @@ const handleCategory = async () => {
   return undefined;
 };
 
+const submitIsFetching = ref(false);
+
 const submit = async () => {
   await schema.validate(await submitAction());
 };
 
 const createAction = async () => {
   try {
+    submitIsFetching.value = true;
     const result = await postTimeRecord({
       ...form,
       categoryId: await handleCategory(),
@@ -157,13 +161,19 @@ const createAction = async () => {
 
     closeModal(props.refreshTimeRecords);
     OkToast(t("form.timeRecord.status.success.create"));
+
+    router.push({ name: "time.record.page", params: { code: result?.code } });
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    submitIsFetching.value = false;
   }
 };
 
 const updateAction = async () => {
   try {
+    submitIsFetching.value = true;
+
     const result = await putTimeRecord({
       ...form,
       id: form.id!,
@@ -176,6 +186,8 @@ const updateAction = async () => {
     OkToast(t("form.timeRecord.status.success.update"));
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    submitIsFetching.value = false;
   }
 };
 
@@ -187,8 +199,12 @@ const submitAction = async () => {
  * Lifeclycle
  */
 
+const disableInputs = computed(() => {
+  return submitIsFetching.value;
+});
+
 onMounted(async () => {
-  await categoryStore.fetchAllCategories(closeModal);
+  categoryStore.fetchAllCategories(closeModal);
 
   if (props.editObject) {
     form.id = props.editObject.id;
@@ -203,8 +219,6 @@ onMounted(async () => {
     if (!props.hideTimePeriods) {
       form.timePeriods = props.editObject.timePeriods;
     }
-  } else if (form.timePeriods.length === 0) {
-    addTimePeriodToForm();
   }
 });
 </script>
@@ -222,7 +236,7 @@ onMounted(async () => {
 
         <UButton
           :label="$t('add')"
-          :disabled="addButtonIsDisabled"
+          :disabled="addButtonIsDisabled || disableInputs"
           size="sm"
           type="button"
           @click="addTimePeriodToForm"
@@ -241,6 +255,7 @@ onMounted(async () => {
           <GDatePicker
             v-model="form.timePeriods[index].start"
             :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
+            :disabled="disableInputs"
             class="py-1"
             @change="form.timePeriods[index].end = $event"
           />
@@ -253,11 +268,13 @@ onMounted(async () => {
           <GDatePicker
             v-model="form.timePeriods[index].end"
             :min="form.timePeriods[index].start"
+            :disabled="disableInputs"
             class="py-1"
           />
         </UFormGroup>
 
         <UButton
+          :disabled="disableInputs"
           icon="i-icon-park-outline-close-small"
           color="white"
           variant="solid"
@@ -266,7 +283,12 @@ onMounted(async () => {
       </div>
 
       <UFormGroup :label="$t('form.timeRecord.title')" name="title">
-        <UInput type="text" v-model="form.title" maxlength="120" />
+        <UInput
+          v-model="form.title"
+          :disabled="disableInputs"
+          type="text"
+          maxlength="120"
+        />
       </UFormGroup>
 
       <UFormGroup
@@ -285,6 +307,7 @@ onMounted(async () => {
             },
           }"
           :required="isEditMode"
+          :disabled="disableInputs"
         />
       </UFormGroup>
 
@@ -298,6 +321,7 @@ onMounted(async () => {
           :options="categories"
           :clear-search-on-close="true"
           :ui-menu="{ height: 'max-h-40' }"
+          :disabled="categoryIsDisabled || disableInputs"
           show-create-option-when="always"
           searchable
           creatable
@@ -313,7 +337,11 @@ onMounted(async () => {
       </UFormGroup>
 
       <UFormGroup :label="$t('description')" name="description">
-        <UTextarea v-model="form.description" maxlength="240" />
+        <UTextarea
+          v-model="form.description"
+          :disabled="disableInputs"
+          maxlength="240"
+        />
       </UFormGroup>
 
       <UFormGroup
@@ -322,11 +350,15 @@ onMounted(async () => {
         description="Link externo para sua tarefa ou algo que queira fixar."
         maxlength="120"
       >
-        <UInput type="text" v-model="form.externalLink" />
+        <UInput
+          v-model="form.externalLink"
+          :disabled="disableInputs"
+          type="text"
+        />
       </UFormGroup>
 
       <UButton
-        :loading="status.fetching"
+        :loading="submitIsFetching"
         :disabled="submitButtonIsDisabled"
         :label="$t('send')"
         block
