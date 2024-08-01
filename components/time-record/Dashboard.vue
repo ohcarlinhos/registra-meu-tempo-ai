@@ -36,8 +36,12 @@ const closeModal = () => {
   editTimeRecordObject.value = undefined;
 };
 
+const deleteTimeRecordFetching = ref(false);
+
 const deleteTimeRecord = async () => {
   if (!modal.confirmDelete.id) return;
+
+  deleteTimeRecordFetching.value = true;
 
   try {
     await timeRecordStore.deleteTimeRecord(
@@ -48,6 +52,8 @@ const deleteTimeRecord = async () => {
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    deleteTimeRecordFetching.value = false;
   }
 };
 </script>
@@ -65,7 +71,8 @@ const deleteTimeRecord = async () => {
 
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
-    text="Tem certeza que quer excluir esse registro?"
+    :title="$t('confirmDeleteTimeRecordMessage')"
+    :fetching="deleteTimeRecordFetching"
     @confirm="deleteTimeRecord"
     @cancel="closeConfirmDeleteModal"
   />
