@@ -347,7 +347,7 @@ const timerCardUi = computed(() => {
   <GModalConfirm
     v-model:open="modal.confirmPersistMethod.open"
     custom-width="sm:w-88"
-    :text="$t('timer.persistModal.text')"
+    :title="$t('timer.persistModal.text')"
     :cancel-text="$t('timer.persistModal.browserButton')"
     :confirm-text="$t('timer.persistModal.accountButton')"
     @confirm="persistOnServer"

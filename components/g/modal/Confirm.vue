@@ -2,7 +2,7 @@
 const props = defineProps<{
   open: boolean;
   title?: string;
-  text: string;
+  text?: string;
   confirmText?: string;
   cancelText?: string;
   customWidth?: string;
