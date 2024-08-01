@@ -51,21 +51,21 @@ const modal = reactive({
 const editTimeRecordObject = ref<TimeRecordFormType>();
 
 const startTimer = () => {
-  clickSound.play();
   timerStore.noSleep?.enable();
   timerStore.startTimer();
+  timerStore.playClick();
 };
 
 const pauseTimer = () => {
   timerStore.noSleep?.disable();
-  clickSound.play();
   timerStore.pauseTimer();
+  timerStore.playClick();
 };
 
 const stopTimer = () => {
   timerStore.noSleep?.disable();
-  clickSound.play();
   timerStore.pauseTimer();
+  timerStore.playClick();
 
   if (timerStore.isBreak) {
     stopTimerAction();
@@ -84,7 +84,7 @@ const submitTimePeriodFetching = ref(false);
 
 const endTimer = () => {
   timerStore.noSleep?.disable();
-  clickSound.play();
+  timerStore.playClick();
 
   if (authStore.isAuthenticad) {
     timerStore.pauseTimer();

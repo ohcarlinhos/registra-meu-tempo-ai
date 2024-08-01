@@ -18,6 +18,7 @@ export const useTimerStore = defineStore("TimerStore", {
       _perPage: 4,
       _page: 1,
       noSleep: null as null | NoSleep,
+      audioObject: null as null | HTMLAudioElement,
     };
   },
 
@@ -79,11 +80,7 @@ export const useTimerStore = defineStore("TimerStore", {
     validadePomodoroOrBreakEnd() {
       if (this.regressiveMilissecondsNecessary <= this._totalMilisecondsPast) {
         this.noSleep?.disable();
-
-        alarmSound.addEventListener("canplaythrough", () => {
-          alarmSound.play();
-        });
-
+        this.playAlarm();
         this.endTimer();
       }
     },
@@ -150,6 +147,28 @@ export const useTimerStore = defineStore("TimerStore", {
 
     toggleOptions() {
       this._showOptions = !this._showOptions;
+    },
+
+    createAudioObject() {
+      this.audioObject = new Audio();
+    },
+
+    playClick() {
+      // o play cria o objeto pois é uma ação do usuário (correção de IOS)
+      this.createAudioObject();
+
+      if (this.audioObject) {
+        this.audioObject.src = clickSound.src;
+        this.audioObject.play();
+      }
+    },
+
+    playAlarm() {
+      // Toca audio anteriormente criado.
+      if (this.audioObject) {
+        this.audioObject.src = alarmSound.src;
+        this.audioObject.play();
+      }
     },
   },
 
