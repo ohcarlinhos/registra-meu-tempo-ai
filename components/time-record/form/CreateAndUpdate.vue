@@ -34,6 +34,7 @@ const form = reactive<TimeRecordFormType>({
   categoryId: undefined,
   timePeriods: [],
   callback: undefined,
+  isSync: false,
 });
 
 const newCategories = ref<string[]>([]);
@@ -62,6 +63,12 @@ const schema = yup.object({
 
 const isEditMode = computed(() => {
   return Boolean(props.editObject && props.editObject.id);
+});
+
+const isSyncMode = computed(() => {
+  return Boolean(
+    props.editObject && props.editObject.id && props.editObject.isSync
+  );
 });
 
 const categories = computed(() => {
@@ -174,11 +181,19 @@ const updateAction = async () => {
   try {
     submitIsFetching.value = true;
 
-    const result = await putTimeRecord({
-      ...form,
-      id: form.id!,
-      categoryId: await handleCategory(),
-    });
+    const result = !isSyncMode.value
+      ? await putTimeRecord({
+          ...form,
+          id: form.id!,
+          categoryId: await handleCategory(),
+        })
+      : await postTimePeriodList(
+          form.timePeriods.map((tp) => ({
+            start: new Date(tp.start),
+            end: new Date(tp.end),
+          })),
+          form.id!
+        );
 
     if (form.callback) form.callback(result?.code);
 
@@ -204,8 +219,6 @@ const disableInputs = computed(() => {
 });
 
 onMounted(async () => {
-  categoryStore.fetchAllCategories(closeModal);
-
   if (props.editObject) {
     form.id = props.editObject.id;
     form.title = props.editObject.title;
@@ -215,18 +228,30 @@ onMounted(async () => {
     form.code = props.editObject.code;
     form.externalLink = props.editObject.externalLink;
     form.callback = props.editObject.callback;
+    form.isSync = props.editObject.isSync;
 
     if (!props.hideTimePeriods) {
       form.timePeriods = props.editObject.timePeriods;
     }
   }
+
+  if (!isSyncMode.value) categoryStore.fetchAllCategories(closeModal);
 });
 </script>
 
 <template>
   <UCard>
     <template #header>
-      <h2>Registro de Tempo</h2>
+      <h2>
+        Registro de Tempo
+        <UBadge
+          v-if="(isEditMode || isSyncMode) && props.editObject?.code"
+          variant="subtle"
+          size="xs"
+        >
+          {{ props.editObject?.code }}
+        </UBadge>
+      </h2>
       <GCloseButton @close="closeModal" />
     </template>
 
@@ -282,85 +307,90 @@ onMounted(async () => {
         />
       </div>
 
-      <UFormGroup :label="$t('form.timeRecord.title')" name="title">
-        <UInput
-          v-model="form.title"
-          :disabled="disableInputs"
-          type="text"
-          maxlength="120"
-        />
-      </UFormGroup>
+      <template v-if="!isSyncMode">
+        <UFormGroup :label="$t('form.timeRecord.title')" name="title">
+          <UInput
+            v-model="form.title"
+            :disabled="disableInputs"
+            type="text"
+            maxlength="120"
+          />
+        </UFormGroup>
 
-      <UFormGroup
-        :label="$t('form.timeRecord.code')"
-        :required="isEditMode"
-        name="title"
-        description='Utilize o campo para identificar sua tarefa ou atividade. Ex: "TASK-1234".'
-      >
-        <UInput
-          type="text"
-          v-model="form.code"
-          v-maska="{
-            mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-            tokens: {
-              X: { pattern: /[a-zA-Z0-9-]/, transform: (v) => v.toLowerCase() },
-            },
-          }"
+        <UFormGroup
+          :label="$t('form.timeRecord.code')"
           :required="isEditMode"
-          :disabled="disableInputs"
-        />
-      </UFormGroup>
-
-      <UFormGroup
-        :label="$t('category')"
-        name="category"
-        class="z-100 relative"
-      >
-        <USelectMenu
-          v-model="categoryValue"
-          :options="categories"
-          :clear-search-on-close="true"
-          :ui-menu="{ height: 'max-h-40' }"
-          :disabled="categoryIsDisabled || disableInputs"
-          show-create-option-when="always"
-          searchable
-          creatable
+          name="title"
+          description='Utilize o campo para identificar sua tarefa ou atividade. Ex: "TASK-1234".'
         >
-          <template #option-create="{ option }">
-            <span class="flex-shrink-0">
-              {{ $t("form.timeRecord.selectCategoryAdd") }}
-            </span>
+          <UInput
+            type="text"
+            v-model="form.code"
+            v-maska="{
+              mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+              tokens: {
+                X: {
+                  pattern: /[a-zA-Z0-9-]/,
+                  transform: (v) => v.toLowerCase(),
+                },
+              },
+            }"
+            :required="isEditMode"
+            :disabled="disableInputs"
+          />
+        </UFormGroup>
 
-            <span class="block truncate">{{ option }}</span>
-          </template>
-        </USelectMenu>
-      </UFormGroup>
+        <UFormGroup
+          :label="$t('category')"
+          name="category"
+          class="z-100 relative"
+        >
+          <USelectMenu
+            v-model="categoryValue"
+            :options="categories"
+            :clear-search-on-close="true"
+            :ui-menu="{ height: 'max-h-40' }"
+            :disabled="categoryIsDisabled || disableInputs"
+            show-create-option-when="always"
+            searchable
+            creatable
+          >
+            <template #option-create="{ option }">
+              <span class="flex-shrink-0">
+                {{ $t("form.timeRecord.selectCategoryAdd") }}
+              </span>
 
-      <UFormGroup :label="$t('description')" name="description">
-        <UTextarea
-          v-model="form.description"
-          :disabled="disableInputs"
-          maxlength="240"
-        />
-      </UFormGroup>
+              <span class="block truncate">{{ option }}</span>
+            </template>
+          </USelectMenu>
+        </UFormGroup>
 
-      <UFormGroup
-        :label="$t('externalLink')"
-        name="externalLink"
-        description="Link externo para sua tarefa ou algo que queira fixar."
-        maxlength="120"
-      >
-        <UInput
-          v-model="form.externalLink"
-          :disabled="disableInputs"
-          type="text"
-        />
-      </UFormGroup>
+        <UFormGroup :label="$t('description')" name="description">
+          <UTextarea
+            v-model="form.description"
+            :disabled="disableInputs"
+            maxlength="240"
+          />
+        </UFormGroup>
+
+        <UFormGroup
+          :label="$t('externalLink')"
+          name="externalLink"
+          description="Link externo para sua tarefa ou algo que queira fixar."
+          maxlength="120"
+        >
+          <UInput
+            v-model="form.externalLink"
+            :disabled="disableInputs"
+            type="text"
+          />
+        </UFormGroup>
+      </template>
 
       <UButton
         :loading="submitIsFetching"
         :disabled="submitButtonIsDisabled"
-        :label="$t('send')"
+        :label="isSyncMode ? $t('sync') : $t('send')"
         block
         type="submit"
       />

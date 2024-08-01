@@ -4,6 +4,8 @@ import { watch } from "vue";
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 
+const { t } = useI18n();
+
 const props = withDefaults(
   defineProps<{
     refreshTimeRecords?: boolean;
@@ -59,6 +61,7 @@ const columns = [
   { key: "timeRecordDate", label: "Data" },
   { key: "timePeriods", label: "Períodos" },
   { key: "formattedTime", label: "Tempo" },
+  { key: "code", label: t("code") },
   { key: "actions" },
 ];
 
@@ -78,7 +81,7 @@ const items = (row: ITimeRecordLocal) => {
       actions[0].unshift({
         label: "Sincronizar (Registro)",
         icon: "i-icon-park-outline-refresh-one",
-        click: async () => openModal(row),
+        click: async () => openModal(row, true),
       });
     } else {
       actions[0].unshift({
@@ -92,12 +95,15 @@ const items = (row: ITimeRecordLocal) => {
   return actions;
 };
 
-const openModal = (timeRecord: ITimeRecordLocal) => {
+const openModal = (timeRecord: ITimeRecordLocal, isSync = false) => {
   if (!timeRecord) return;
 
-  editTimeRecordObject.value = editTimeRecordObjectFactory(timeRecord, () => {
-    timerStore.deleteTimeRecordLocal(timeRecord.localUuid);
-  });
+  editTimeRecordObject.value = editTimeRecordObjectFactory(
+    { ...timeRecord, isSync },
+    () => {
+      timerStore.deleteTimeRecordLocal(timeRecord.localUuid);
+    }
+  );
 
   modal.open = true;
 };
@@ -115,6 +121,10 @@ const closeModal = () => {
         :time-periods="(row as ITimeRecordLocal).timePeriods"
         :label="timePeriodsLabel((row as ITimeRecordLocal).timePeriods.length)"
       />
+    </template>
+
+    <template #code-data="{ row }">
+      {{ row.code || "-" }}
     </template>
 
     <template #actions-data="{ row }">

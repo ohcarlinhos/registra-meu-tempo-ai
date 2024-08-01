@@ -8,6 +8,8 @@ export const useTimerStore = defineStore("TimerStore", {
       _currentTimePeriodList: [] as TimePeriodTimerType[],
       _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimerType,
       _currentTimeRecordId: null as number | null,
+      _currentTimeRecordCode: "",
+
       _timeRecordsLocal: [] as ITimeRecordLocal[],
       _running: false,
       _interval: null as NodeJS.Timeout | null,
@@ -17,14 +19,17 @@ export const useTimerStore = defineStore("TimerStore", {
       _showOptions: false,
       _perPage: 4,
       _page: 1,
+
       noSleep: null as null | NoSleep,
       audioObject: null as null | HTMLAudioElement,
     };
   },
 
   actions: {
-    initTimerConfig(id: number | null, hideOptions = false) {
+    initTimerConfig(id: number | null, hideOptions = false, code = "") {
       this._currentTimeRecordId = id;
+      this._currentTimeRecordCode = code;
+
       this.noSleep = new NoSleep();
 
       if (hideOptions) this._showOptions = false;
@@ -117,6 +122,9 @@ export const useTimerStore = defineStore("TimerStore", {
         if (this._currentTimeRecordId)
           timeRecord.id = this._currentTimeRecordId;
 
+        if (this._currentTimeRecordCode)
+          timeRecord.code = this._currentTimeRecordCode;
+
         this.addTimeRecordLocal(timeRecord);
       }
 
@@ -178,7 +186,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     totalItems(): number {
-      return this._timeRecordsLocal.length;
+      return this.timeRecordContextFiltered.length;
     },
 
     totalPages(): number {
@@ -257,18 +265,41 @@ export const useTimerStore = defineStore("TimerStore", {
       );
     },
 
-    timeRecords: (state) => {
+    timeRecordContextFiltered(state) {
+      return state._timeRecordsLocal.filter((tr) => {
+        if (state._currentTimeRecordId) {
+          if (tr.id) return tr;
+        } else {
+          return tr;
+        }
+      });
+    },
+
+    timeRecords(state) {
       const start: number = (state._page - 1) * state._perPage;
       const end: number = start + state._perPage;
 
-      return state._timeRecordsLocal.slice(start, end).map((timeRecord) => {
-        return {
-          ...timeRecord,
-          timeRecordDate: format(timeRecord.timePeriods[0].start, "dd/MM/yyyy"),
-          timePeriods: timeRecord.timePeriods.map((e) => e),
-          formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
-        };
-      });
+      return state._timeRecordsLocal
+        .filter((tr) => {
+          if (state._currentTimeRecordId) {
+            if (tr.id) return tr;
+          } else {
+            return tr;
+          }
+        })
+        .slice(start, end)
+        .map((timeRecord) => {
+          return {
+            ...timeRecord,
+            timeRecordDate: format(
+              timeRecord.timePeriods[0].start,
+              "dd/MM/yyyy"
+            ),
+            timePeriods: timeRecord.timePeriods.map((e) => e),
+            formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
+            code: timeRecord.code,
+          };
+        });
     },
   },
 

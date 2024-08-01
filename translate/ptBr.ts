@@ -45,6 +45,8 @@ export default {
   finish: "Finalizar",
   stop: "Parar",
 
+  sync: "Sincronizar",
+
   v: {
     email: {
       format: "Digite um e-mail válido.",

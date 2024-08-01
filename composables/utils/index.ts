@@ -18,7 +18,7 @@ export const formatToTimerDisplay = (milliseconds: number) => {
 };
 
 export const editTimeRecordObjectFactory = (
-  obj: Partial<TimeRecordType>,
+  obj: Partial<TimeRecordType> & { isSync?: boolean },
   callback = () => {}
 ): TimeRecordFormType => {
   const categoryStore = useCategoryStore();
@@ -35,6 +35,7 @@ export const editTimeRecordObjectFactory = (
     categoryId: obj.categoryId || undefined,
     externalLink: obj.externalLink || "",
     timePeriods: obj.timePeriods || [],
+    isSync: Boolean(obj.isSync),
     callback,
   };
 };

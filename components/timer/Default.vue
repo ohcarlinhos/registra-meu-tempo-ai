@@ -31,7 +31,7 @@ const props = defineProps({
   },
 });
 
-timerStore.initTimerConfig(props.id, props.float);
+timerStore.initTimerConfig(props.id, props.float, props.code);
 
 const modal = reactive({
   createTimeRecord: {
@@ -120,9 +120,7 @@ const endTimer = () => {
     }
 
     editTimeRecordObject.value = editTimeRecordObjectFactory(
-      {
-        timePeriods,
-      },
+      { timePeriods },
       () => timerStore.clearCurrentTimePeriodList()
     );
 
@@ -337,10 +335,21 @@ const timerCardUi = computed(() => {
   </UModal>
 
   <UModal v-model="modal.timeRecordsTable.open">
-    <UCard v-if="modal.timeRecordsTable.open && timerStore.totalItems">
+    <UCard v-if="modal.timeRecordsTable.open">
       <GCloseButton @close="modal.timeRecordsTable.open = false" />
 
-      <TimeRecordTableLocal :refresh-time-records="refreshTimeRecords" />
+      <TimeRecordTableLocal
+        v-if="timerStore.totalItems"
+        :refresh-time-records="refreshTimeRecords"
+      />
+
+      <p v-else class="py-3">
+        {{
+          id
+            ? "Os períodos de tempo do seu registro estão sincronizados."
+            : "Não há mais nenhum registro local."
+        }}
+      </p>
     </UCard>
   </UModal>
 
