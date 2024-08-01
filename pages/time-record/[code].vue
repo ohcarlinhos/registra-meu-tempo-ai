@@ -218,7 +218,7 @@ onMounted(async () => {
       <div class="w-full col-span-1 lg:col-span-4">
         <UContainer
           :ui="{
-            base: 'flex flex-col flex-row justify-between gap-5',
+            base: 'flex flex-row justify-between gap-5',
             padding: 'pb-5 px-0 lg:px-0 sm:px-0',
           }"
         >

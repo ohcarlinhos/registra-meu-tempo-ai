@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+import NoSleep from "nosleep.js";
+
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 const { t } = useI18n();
+
+var noSleep = new NoSleep();
 
 const props = defineProps({
   float: {
@@ -51,17 +55,20 @@ const editTimeRecordObject = ref<TimeRecordFormType>();
 
 const startTimer = () => {
   clickSound.play();
+  noSleep.enable();
   timerStore.startTimer();
 };
 
 const pauseTimer = () => {
   clickSound.play();
+  noSleep.disable();
   timerStore.pauseTimer();
 };
 
 const stopTimer = () => {
   clickSound.play();
   timerStore.pauseTimer();
+  noSleep.disable();
 
   if (timerStore.isBreak) {
     stopTimerAction();
@@ -80,6 +87,7 @@ const submitTimePeriodFetching = ref(false);
 
 const endTimer = () => {
   clickSound.play();
+  noSleep.disable();
 
   if (authStore.isAuthenticad) {
     timerStore.pauseTimer();
