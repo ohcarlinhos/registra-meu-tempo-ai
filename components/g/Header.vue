@@ -31,6 +31,8 @@ const activeClass = "text-primary font-bold";
       :class="{ 'flex-col justify-center gap-10': center }"
     >
       <div>
+        <UBadge variant="subtle" size="xs">Versão Alfa</UBadge>
+
         <h1
           class="font-bold text-primary"
           :class="{ 'text-6xl': !smallTitle, 'text-5xl': smallTitle }"
