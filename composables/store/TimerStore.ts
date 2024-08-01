@@ -79,7 +79,11 @@ export const useTimerStore = defineStore("TimerStore", {
     validadePomodoroOrBreakEnd() {
       if (this.regressiveMilissecondsNecessary <= this._totalMilisecondsPast) {
         this.noSleep?.disable();
-        alarmSound.play();
+
+        alarmSound.addEventListener("canplaythrough", () => {
+          alarmSound.play();
+        });
+
         this.endTimer();
       }
     },
