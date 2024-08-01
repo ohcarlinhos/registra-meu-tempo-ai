@@ -15,8 +15,6 @@ const props = withDefaults(
  * States
  */
 
-const status = reactive({ fetching: false });
-
 const form = reactive<CategoryFormType>({
   id: undefined,
   name: "",
@@ -48,7 +46,11 @@ const submit = async () => {
   await schema.validate(await submitAction());
 };
 
+const createOrEditCategoryFetching = ref(false);
+
 const createAction = async () => {
+  createOrEditCategoryFetching.value = true;
+
   try {
     await postCategory(form);
 
@@ -57,10 +59,14 @@ const createAction = async () => {
     closeModal(true);
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    createOrEditCategoryFetching.value = false;
   }
 };
 
 const editAction = async (id: number) => {
+  createOrEditCategoryFetching.value = true;
+
   try {
     await putCategory(id, form);
 
@@ -69,6 +75,8 @@ const editAction = async (id: number) => {
     closeModal(true);
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    createOrEditCategoryFetching.value = false;
   }
 };
 
@@ -123,11 +131,16 @@ watch(
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
       <UFormGroup :label="$t('name')" name="name">
-        <UInput type="text" v-model="form.name" autofocus />
+        <UInput
+          v-model="form.name"
+          :disabled="createOrEditCategoryFetching"
+          type="text"
+          autofocus
+        />
       </UFormGroup>
 
       <UButton
-        :loading="status.fetching"
+        :loading="createOrEditCategoryFetching"
         :disabled="submitButtonIsDisabled"
         :label="props.editObject?.id ? $t('save') : $t('create')"
         type="submit"
