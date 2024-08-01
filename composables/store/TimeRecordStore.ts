@@ -10,12 +10,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
   },
 
   actions: {
-    async fetchTimeRecords(
-      page = 1,
-      perPage = 4,
-      search = "",
-      mounted = false
-    ) {
+    async fetch(page = 1, perPage = 4, search = "", mounted = false) {
       try {
         this._fetching = true;
         const data = await getTimeRecords(page, perPage, search, mounted);
@@ -27,15 +22,15 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
       }
     },
 
-    async refetchTimeRecords() {
-      await this.fetchTimeRecords(1, 4, "", true);
+    async refetch() {
+      await this.fetch(1, 4, "", true);
     },
 
     async deleteTimeRecord(id: number, page = 1, perPage = 4) {
       try {
         this._deletingTimeRecord = true;
         await deleteTimeRecord(id);
-        await this.fetchTimeRecords(page, perPage);
+        await this.fetch(page, perPage);
       } finally {
         this._deletingTimeRecord = false;
       }
@@ -82,4 +77,3 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
 
   persist: false,
 });
-

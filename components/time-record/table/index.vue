@@ -18,7 +18,7 @@ const setDebounce = async (value: string) => {
 
   search.value = value;
   debounce.value = setTimeout(async () => {
-    await trStore.fetchTimeRecords(1, computedPerPage.value, value, true);
+    await trStore.fetch(1, computedPerPage.value, value, true);
   }, 1000);
 };
 
@@ -38,12 +38,7 @@ const computedPage = computed({
     return trStore.apiRes?.page || 1;
   },
   set: async (page: number) => {
-    await trStore.fetchTimeRecords(
-      page,
-      computedPerPage.value,
-      search.value,
-      true
-    );
+    await trStore.fetch(page, computedPerPage.value, search.value, true);
   },
 });
 
@@ -52,7 +47,7 @@ const computedPerPage = computed({
     return trStore.apiRes?.perPage || 4;
   },
   set: async (perPage: number) => {
-    await trStore.fetchTimeRecords(1, perPage, search.value, true);
+    await trStore.fetch(1, perPage, search.value, true);
   },
 });
 
@@ -91,7 +86,7 @@ const items = (row: TimeRecordType) => [
   ],
 ];
 
-await trStore.fetchTimeRecords();
+await trStore.fetch();
 </script>
 
 <template>
@@ -161,25 +156,14 @@ await trStore.fetchTimeRecords();
         </template>
       </UTable>
 
-      <div class="flex justify-between items-end mt-3">
-        <UPagination
-          v-if="trStore.apiRes && trStore.apiRes.totalPages > 1"
-          class="mt-2"
-          v-model="computedPage"
-          :page-count="trStore.apiRes.perPage"
-          :total="trStore.apiRes.totalItems"
-          :disabled="trStore.fetching"
-        />
-
-        <div class="flex items-center gap-2">
-          {{ $t("itemsPerPage") }}
-          <USelect
-            v-model="computedPerPage"
-            :options="computedPerPageList"
-            :disabled="trStore.fetching"
-          />
-        </div>
-      </div>
+      <GPagination
+        :page="trStore.apiRes?.page"
+        :perPage="trStore.apiRes?.perPage"
+        :totalPages="trStore.apiRes?.totalPages"
+        :totalItems="trStore.apiRes?.totalItems"
+        :store="trStore"
+        :search
+      />
     </UCard>
   </div>
 </template>

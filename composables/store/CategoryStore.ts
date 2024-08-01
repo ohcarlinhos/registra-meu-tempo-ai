@@ -26,7 +26,7 @@ export const useCategoryStore = defineStore("CategoryStore", {
       await this.fetch(1, 4, "", true);
     },
 
-    async fetch(page = 1, perPage = 5, search = "", mounted = false) {
+    async fetch(page = 1, perPage = 4, search = "", mounted = false) {
       try {
         this._fetching = true;
         const data = await getCategories(page, perPage, search, mounted);
@@ -38,7 +38,7 @@ export const useCategoryStore = defineStore("CategoryStore", {
       }
     },
 
-    async delete(id: number, page = 1, perPage = 5) {
+    async delete(id: number, page = 1, perPage = 4) {
       try {
         this._deletingTimeRecord = true;
         await deleteCategory(id);

@@ -186,25 +186,14 @@ await categoryStore.fetch();
         </template>
       </UTable>
 
-      <div class="flex justify-between items-end mt-3">
-        <UPagination
-          v-if="categoryStore.apiRes && categoryStore.apiRes.totalPages > 1"
-          class="mt-2"
-          v-model="computedPage"
-          :page-count="categoryStore.apiRes.perPage"
-          :total="categoryStore.apiRes.totalItems"
-          :disabled="categoryStore.fetching"
-        />
-
-        <div v-if="computedPerPageList.length" class="flex items-center gap-2">
-          Itens por página:
-          <USelect
-            v-model="computedPerPage"
-            :options="computedPerPageList"
-            :disabled="categoryStore.fetching"
-          />
-        </div>
-      </div>
+      <GPagination
+        :page="categoryStore.apiRes?.page"
+        :perPage="categoryStore.apiRes?.perPage"
+        :totalPages="categoryStore.apiRes?.totalPages"
+        :totalItems="categoryStore.apiRes?.totalItems"
+        :store="categoryStore"
+        :search
+      />
     </UCard>
   </GPanelCol>
 

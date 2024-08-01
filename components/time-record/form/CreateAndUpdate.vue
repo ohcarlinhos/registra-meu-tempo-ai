@@ -113,7 +113,7 @@ const submitButtonIsDisabled = computed(() => {
 
 const closeModal = (refresh = false) => {
   emit("close");
-  if (refresh) timeRecordStore.refetchTimeRecords();
+  if (refresh) timeRecordStore.refetch();
 };
 
 const addTimePeriodToForm = () => {
