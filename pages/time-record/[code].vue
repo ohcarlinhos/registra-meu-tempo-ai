@@ -147,7 +147,7 @@ onMounted(async () => {
 
     <div v-if="trReq" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
       <div class="w-full lg:col-span-12 mb-5">
-        <h2 class="text-4xl font-bold mb-2">
+        <h2 class="text-4xl font-bold mb-1">
           {{ trReq.title || "Sem título" }}
 
           <UButton
@@ -157,27 +157,49 @@ onMounted(async () => {
           />
         </h2>
 
-        <p v-if="trReq.code" class="text-lg"><b>Código:</b> {{ trReq.code }}</p>
-
-        <p v-if="trReq.description" class="text-lg">
-          <b>{{ $t("description") }}:</b> {{ trReq.description }}
+        <p class="text-2xl pb-6 font-medium">
+          Tempo total:
+          <span class="text-primary font-bold">
+            {{ trReq.formattedTime || "Nenhum" }}
+          </span>
         </p>
 
-        <p v-if="trReq.externalLink" class="text-lg">
-          <b>{{ $t("externalLink") }}: </b>
-
-          <a
-            :href="trReq.externalLink"
-            target="_blank"
-            class="underline hover:text-primary"
-          >
-            {{ trReq.externalLink }}
-          </a>
+        <p v-if="trReq.code" class="text-lg font-medium pb-4">
+          Código: <span class="font-normal">{{ trReq.code }}</span>
         </p>
 
-        <p v-if="trReq.categoryName" class="text-lg">
-          <b>{{ $t("category") }}:</b> {{ trReq.categoryName }}
-        </p>
+        <UCard>
+          <p v-if="trReq.description" class="text-lg pb-4">
+            <span class="font-normal">{{ trReq.description }}</span>
+          </p>
+
+          <p v-else class="text-lg">
+            <span class="font-normal">
+              Nenhuma descrição fornecida para o registro.
+            </span>
+          </p>
+
+          <p v-if="trReq.categoryName" class="text-lg font-medium">
+            {{ $t("category") }}:
+            <span class="font-normal">{{ trReq.categoryName }}</span>
+          </p>
+
+          <p v-if="trReq.externalLink" class="text-lg font-medium flex gap-2">
+            {{ $t("externalLink") }}:
+
+            <span
+              class="max-w-44 overflow-hidden inline-block overflow-ellipsis whitespace-nowrap"
+            >
+              <a
+                :href="trReq.externalLink"
+                target="_blank"
+                class="underline hover:text-primary font-normal"
+              >
+                {{ trReq.externalLink }}
+              </a>
+            </span>
+          </p>
+        </UCard>
       </div>
 
       <div class="w-full col-span-1 lg:col-span-4">
@@ -194,22 +216,20 @@ onMounted(async () => {
           <h2 class="mb-2 text-2xl font-bold">{{ $t("statistics") }}</h2>
 
           <section class="text-lg">
-            <p class="mb-1">
-              <b>{{ $t("periods") }}:</b> {{ trReq.timePeriodsCount }}
+            <p class="font-medium">
+              {{ "Pomodoros: " }}
+              <span class="font-normal">
+                {{
+                  trReq.timeTotalMilliseconds
+                    ? (trReq.timeTotalMilliseconds / 1000 / 60 / 25).toFixed(2)
+                    : 0
+                }}
+              </span>
             </p>
 
-            <p class="mb-1">
-              <b>Tempo total do registro:</b>
-              {{ trReq.formattedTime || $t("none") }}
-            </p>
-
-            <p class="mb-1">
-              <b>Pomodoros: </b>
-              {{
-                trReq.timeTotalMilliseconds
-                  ? (trReq.timeTotalMilliseconds / 1000 / 60 / 25).toFixed(2)
-                  : 0
-              }}
+            <p class="font-medium">
+              {{ $t("periods") }}:
+              <span class="font-normal">{{ trReq.timePeriodsCount }}</span>
             </p>
           </section>
         </UCard>
