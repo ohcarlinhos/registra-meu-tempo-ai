@@ -10,11 +10,13 @@ definePageMeta({ middleware: ["auth"], name: "time.record.list" });
     }"
   >
     <GHeader small-title :center="$viewport.isLessThan('tablet')">
-      <TimerDefault
-        :float="$viewport.isGreaterThan('tablet')"
-        options-modal
-        refresh-time-records
-      />
+      <template #right>
+        <TimerDefault
+          :float="$viewport.isGreaterThan('tablet')"
+          options-modal
+          refresh-time-records
+        />
+      </template>
     </GHeader>
 
     <TimeRecordDashboard />

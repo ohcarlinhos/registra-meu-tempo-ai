@@ -47,8 +47,8 @@ const activeClass = "text-primary font-bold";
           <span class="font-bold text-primary">gerenciamento de tempo.</span>
         </p>
       </div>
-      <div>
-        <slot> </slot>
+      <div v-if="$slots.right">
+        <slot name="right"> </slot>
       </div>
     </section>
 
