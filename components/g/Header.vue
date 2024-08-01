@@ -34,7 +34,7 @@ const activeClass = "text-primary font-bold";
         <UBadge variant="subtle" size="xs">Versão Alfa</UBadge>
 
         <h1
-          class="font-bold text-primary"
+          class="font-bold text-primary pt-1"
           :class="{ 'text-6xl': !smallTitle, 'text-5xl': smallTitle }"
         >
           Registra meu <br />
