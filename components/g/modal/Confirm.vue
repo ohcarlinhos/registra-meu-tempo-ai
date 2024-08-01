@@ -6,6 +6,7 @@ const props = defineProps<{
   confirmText?: string;
   cancelText?: string;
   customWidth?: string;
+  fetching?: boolean;
 }>();
 
 const emit = defineEmits(["update:open", "confirm", "cancel"]);
@@ -40,12 +41,14 @@ const isOpen = computed({
           <UButton
             color="blue"
             block
+            :disabled="fetching"
             :label="props.cancelText ? props.cancelText : $t('cancel')"
             @click="emit('cancel')"
           />
 
           <UButton
             block
+            :loading="fetching"
             :label="props.confirmText ? props.confirmText : $t('confirm')"
             @click="emit('confirm')"
           />
