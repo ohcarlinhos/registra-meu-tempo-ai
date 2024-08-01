@@ -1,4 +1,5 @@
 import { format, getDayOfYear, intervalToDuration } from "date-fns";
+import type { i18nT } from "~/translate/ptBr";
 
 export const timePeriodsLabel = (count: number) => {
   const countText = count === 1 ? " período" : " períodos";
@@ -95,4 +96,9 @@ export const millisecondsToString = (milliseconds: number) => {
   if (seconds != undefined) fString += seconds + "s ";
 
   return fString.trim() || "0s";
+};
+
+export const _$t = (key: i18nT) => {
+  const { t } = useI18n();
+  return t(key);
 };

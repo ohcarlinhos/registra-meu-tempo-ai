@@ -1,4 +1,4 @@
-export default {
+const i18nObj = {
   infos: "Informações",
   add: "Adicionar",
   send: "Enviar",
@@ -46,6 +46,9 @@ export default {
   stop: "Parar",
 
   sync: "Sincronizar",
+
+  confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
+  confirmDeleteTimeRecordMessage: "Tem certeza deseja excluir esse registro?",
 
   v: {
     email: {
@@ -155,4 +158,7 @@ export default {
         "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
     },
   },
-};
+} as const;
+
+export type i18nT = keyof typeof i18nObj;
+export default i18nObj;

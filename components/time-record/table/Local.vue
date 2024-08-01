@@ -170,7 +170,7 @@ const closeModal = () => {
 
   <GModalConfirm
     v-model:open="confirmDelete.open"
-    text="Tem certeza que quer excluir esse registro?"
+    :title="_$t('confirmDeleteTimeRecordMessage')"
     @confirm="deleteAction"
     @cancel="closeConfirmDeleteModal"
   />
