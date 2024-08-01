@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
+import NoSleep from "nosleep.js";
 
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
@@ -16,12 +17,14 @@ export const useTimerStore = defineStore("TimerStore", {
       _showOptions: false,
       _perPage: 4,
       _page: 1,
+      noSleep: null as null | NoSleep,
     };
   },
 
   actions: {
     initTimerConfig(id: number | null, hideOptions = false) {
       this._currentTimeRecordId = id;
+      this.noSleep = new NoSleep();
 
       if (hideOptions) this._showOptions = false;
 
@@ -75,6 +78,7 @@ export const useTimerStore = defineStore("TimerStore", {
 
     validadePomodoroOrBreakEnd() {
       if (this.regressiveMilissecondsNecessary <= this._totalMilisecondsPast) {
+        this.noSleep?.disable();
         this.playAlarmSound();
         this.endTimer();
       }
