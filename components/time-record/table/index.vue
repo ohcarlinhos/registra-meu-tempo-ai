@@ -51,18 +51,13 @@ const computedPerPage = computed({
   },
 });
 
-const computedPerPageList = computed(() => {
-  const list = [4, 8, 12];
-  return list.filter((i) => (trStore.apiRes?.totalItems || 0) >= i);
-});
-
 const columns = [
-  { key: "timeRecordDate", label: t("date") },
-  { key: "code", label: t("code") },
-  { key: "categoryName", label: t("category") },
-  { key: "description", label: t("description") },
-  { key: "formattedTime", label: t("time") },
-  { key: "timePeriods", label: t("periods") },
+  { key: "timeRecordDate", label: _$t("date") },
+  { key: "code", label: _$t("code") },
+  { key: "title", label: _$t("title") },
+  { key: "categoryName", label: _$t("category") },
+  { key: "formattedTime", label: _$t("time") },
+  { key: "timePeriods", label: _$t("periods") },
   { key: "actions" },
 ];
 
@@ -98,7 +93,7 @@ await trStore.fetch();
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-2xl font-bold">{{ $t("records") }}</h2>
+      <h2 class="text-2xl font-bold">{{ _$t("records") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <UInput
@@ -123,7 +118,7 @@ await trStore.fetch();
         </UInput>
 
         <UButton
-          :label="$t('create')"
+          :label="_$t('create')"
           icon="i-icon-park-outline-add"
           @click="emit('create')"
         />

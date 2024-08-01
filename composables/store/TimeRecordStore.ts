@@ -61,6 +61,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
               "-",
             description: timeRecord.description || "-",
             code: timeRecord.code || "-",
+            title: timeRecord.title || "-",
             categoryName: timeRecord.categoryName || "-",
             formattedTime: timeRecord.formattedTime || "Nenhum",
             timePeriodsCountText: timePeriodsLabel(

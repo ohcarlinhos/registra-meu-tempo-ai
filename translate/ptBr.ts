@@ -46,6 +46,7 @@ const i18nObj = {
   stop: "Parar",
 
   sync: "Sincronizar",
+  title: "Título",
 
   confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
   confirmDeleteTimeRecordMessage: "Tem certeza deseja excluir esse registro?",
