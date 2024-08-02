@@ -151,10 +151,10 @@ onMounted(async () => {
   >
     <GHeader small-title />
 
-    <div v-if="trReq" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-      <div class="w-full lg:col-span-12 mb-5">
+    <div v-if="trReq" class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
+      <div class="w-full md:col-span-12 md:mb-5">
         <h2 class="text-4xl font-bold mb-1">
-          {{ trReq.title || "Sem título" }}
+          {{ trReq.title || _$t("noTitle") }}
 
           <UButton
             icon="i-icon-park-outline-edit"
@@ -166,7 +166,7 @@ onMounted(async () => {
         <p class="text-2xl pb-6 font-medium">
           Tempo total:
           <span class="text-primary font-bold">
-            {{ trReq.formattedTime || "Nenhum" }}
+            {{ trReq.formattedTime || $t("none") }}
           </span>
         </p>
 
@@ -208,7 +208,7 @@ onMounted(async () => {
         </UCard>
       </div>
 
-      <div class="w-full col-span-1 lg:col-span-4">
+      <div class="w-full col-span-1 md:col-span-6 lg:col-span-4">
         <TimerDefault
           options-modal
           :id="trReq.id"
@@ -217,7 +217,7 @@ onMounted(async () => {
         />
       </div>
 
-      <div class="w-full col-span-1 lg:col-span-4">
+      <div class="w-full col-span-1 md:col-span-6 lg:col-span-4">
         <UCard>
           <h2 class="mb-2 text-2xl font-bold">{{ $t("statistics") }}</h2>
 
@@ -241,7 +241,7 @@ onMounted(async () => {
         </UCard>
       </div>
 
-      <div class="w-full col-span-1 lg:col-span-4">
+      <div class="w-full col-span-1 md:col-span-12 lg:col-span-4">
         <UContainer
           :ui="{
             base: 'flex flex-row justify-between gap-5',
