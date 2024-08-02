@@ -2,7 +2,6 @@
 export type DeletePayload = { id: number; page: number; perPage: number };
 
 const { t } = useI18n();
-
 const trStore = useTimeRecordStore();
 
 const emit = defineEmits<{
@@ -10,46 +9,6 @@ const emit = defineEmits<{
   delete: [value: DeletePayload];
   create: [];
 }>();
-
-const debounce = ref();
-
-const setDebounce = async (value: string) => {
-  clearInterval(debounce.value);
-
-  search.value = value;
-  debounce.value = setTimeout(async () => {
-    await trStore.fetch(1, computedPerPage.value, value, true);
-  }, 1000);
-};
-
-const search = ref("");
-
-const computedSearch = computed({
-  get: () => {
-    return search.value;
-  },
-  set: async (value: string) => {
-    setDebounce(value);
-  },
-});
-
-const computedPage = computed({
-  get: () => {
-    return trStore.apiRes?.page || 1;
-  },
-  set: async (page: number) => {
-    await trStore.fetch(page, computedPerPage.value, search.value, true);
-  },
-});
-
-const computedPerPage = computed({
-  get: () => {
-    return trStore.apiRes?.perPage || 4;
-  },
-  set: async (perPage: number) => {
-    await trStore.fetch(1, perPage, search.value, true);
-  },
-});
 
 const columns = [
   { key: "timeRecordDate", label: _$t("date") },
@@ -74,8 +33,8 @@ const items = (row: TimeRecordType) => [
       click: async () =>
         emit("delete", {
           id: row.id!,
-          page: computedPage.value,
-          perPage: computedPerPage.value,
+          page: trStore.apiRes!.page,
+          perPage: trStore.apiRes!.perPage,
         }),
     },
   ],
@@ -96,26 +55,7 @@ await trStore.fetch();
       <h2 class="text-2xl font-bold">{{ _$t("records") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
-        <UInput
-          v-model="computedSearch"
-          name="search"
-          placeholder="Pesquisar"
-          icon="i-icon-park-outline-search"
-          autocomplete="off"
-          :loading="trStore.fetching"
-          :ui="{ icon: { trailing: { pointer: '' } } }"
-        >
-          <template #trailing>
-            <UButton
-              v-show="computedSearch !== ''"
-              color="gray"
-              variant="link"
-              icon="i-icon-park-outline-close-small"
-              :padded="false"
-              @click="computedSearch = ''"
-            />
-          </template>
-        </UInput>
+        <GSearch :perPage="trStore.apiRes?.perPage" :store="trStore" />
 
         <UButton
           :label="_$t('create')"
@@ -156,8 +96,8 @@ await trStore.fetch();
         :perPage="trStore.apiRes?.perPage"
         :totalPages="trStore.apiRes?.totalPages"
         :totalItems="trStore.apiRes?.totalItems"
+        :search="trStore.apiRes?.search"
         :store="trStore"
-        :search
       />
     </UCard>
   </div>

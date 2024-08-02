@@ -9,8 +9,6 @@ const emit = defineEmits<{
   create: [];
 }>();
 
-const debounce = ref();
-
 const modal = reactive({
   createOrUpdateCategory: false,
   confirmDelete: {
@@ -21,50 +19,7 @@ const modal = reactive({
   },
 });
 
-const editCategoryObject = ref<CategoryFormType | undefined>(undefined);
-
-const setDebounce = async (value: string) => {
-  clearInterval(debounce.value);
-
-  search.value = value;
-  debounce.value = setTimeout(async () => {
-    await categoryStore.fetch(1, computedPerPage.value, value, true);
-  }, 1000);
-};
-
-const search = ref("");
-
-const computedSearch = computed({
-  get: () => {
-    return search.value;
-  },
-  set: async (value: string) => {
-    setDebounce(value);
-  },
-});
-
-const computedPage = computed({
-  get: () => {
-    return categoryStore.apiRes?.page || 1;
-  },
-  set: async (page: number) => {
-    categoryStore.fetch(page, computedPerPage.value, search.value);
-  },
-});
-
-const computedPerPage = computed({
-  get: () => {
-    return categoryStore.apiRes?.perPage || 5;
-  },
-  set: async (perPage: number) => {
-    categoryStore.fetch(1, perPage, search.value);
-  },
-});
-
-const computedPerPageList = computed(() => {
-  const list = [5, 10, 15];
-  return list.filter((i) => (categoryStore.apiRes?.totalItems || 0) >= i);
-});
+const editCategoryObject = ref<CategoryFormType>();
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 
@@ -81,8 +36,8 @@ const items = (row: CategoryType) => [
       click: async () =>
         openConfirmDeleteModal({
           id: row.id,
-          page: computedPage.value,
-          perPage: computedPerPage.value,
+          page: categoryStore.apiRes!.page,
+          perPage: categoryStore.apiRes!.perPage,
         }),
     },
   ],
@@ -139,26 +94,10 @@ await categoryStore.fetch();
       <GPanelTitle text="Categorias" />
 
       <div class="flex gap-5">
-        <UInput
-          v-model="computedSearch"
-          name="search"
-          placeholder="Pesquisar"
-          icon="i-icon-park-outline-search"
-          autocomplete="off"
-          :loading="categoryStore.fetching"
-          :ui="{ icon: { trailing: { pointer: '' } } }"
-        >
-          <template #trailing>
-            <UButton
-              v-show="computedSearch !== ''"
-              color="gray"
-              variant="link"
-              icon="i-icon-park-outline-close-small"
-              :padded="false"
-              @click="computedSearch = ''"
-            />
-          </template>
-        </UInput>
+        <GSearch
+          :perPage="categoryStore.apiRes?.perPage"
+          :store="categoryStore"
+        />
 
         <UButton
           icon="i-icon-park-outline-add"
@@ -187,12 +126,13 @@ await categoryStore.fetch();
       </UTable>
 
       <GPagination
+        ref="paginatorRef"
         :page="categoryStore.apiRes?.page"
         :perPage="categoryStore.apiRes?.perPage"
         :totalPages="categoryStore.apiRes?.totalPages"
         :totalItems="categoryStore.apiRes?.totalItems"
+        :search="categoryStore.apiRes?.search"
         :store="categoryStore"
-        :search
       />
     </UCard>
   </GPanelCol>
