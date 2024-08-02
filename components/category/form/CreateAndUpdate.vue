@@ -134,6 +134,7 @@ watch(
         <UInput
           v-model="form.name"
           :disabled="createOrEditCategoryFetching"
+          maxlength="20"
           type="text"
           autofocus
         />
