@@ -140,25 +140,14 @@ const closeModal = () => {
     </template>
   </UTable>
 
-  <div class="flex justify-between items-end mt-3">
-    <UPagination
-      v-if="timerStore.totalPages > 1"
-      class="mt-2"
-      :modelValue="timerStore._page"
-      :page-count="timerStore._perPage"
-      :total="timerStore.totalItems"
-      @update:modelValue="setPage"
-    />
-
-    <div class="flex items-center gap-2">
-      Itens por página:
-      <USelect
-        :modelValue="timerStore._perPage"
-        :options="computedPerPageList"
-        @update:modelValue="setPerPage"
-      />
-    </div>
-  </div>
+  <GPagination
+    :page="timerStore._page"
+    :perPage="timerStore._perPage"
+    :totalPages="timerStore.totalPages"
+    :totalItems="timerStore.totalItems"
+    @update:page="(value) => (timerStore._page = value)"
+    @update:perPage="(value) => (timerStore._perPage = value)"
+  />
 
   <UModal v-model="modal.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
