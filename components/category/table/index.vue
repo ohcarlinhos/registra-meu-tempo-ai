@@ -126,7 +126,6 @@ await categoryStore.fetch();
       </UTable>
 
       <GPagination
-        ref="paginatorRef"
         :page="categoryStore.apiRes?.page"
         :perPage="categoryStore.apiRes?.perPage"
         :totalPages="categoryStore.apiRes?.totalPages"
