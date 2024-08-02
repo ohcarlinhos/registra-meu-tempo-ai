@@ -28,7 +28,12 @@ const openConfirmDeleteModal = async (payload: DeletePayload) => {
 };
 
 const access = (code: string) => {
-  router.push(`/time-record/${code}`);
+  router.push({
+    name: "time.record.page",
+    params: {
+      code,
+    },
+  });
 };
 
 const closeModal = () => {

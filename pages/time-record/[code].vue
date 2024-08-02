@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { format } from "date-fns";
 
-definePageMeta({
-  name: "time.record.page",
-});
+definePageMeta({ name: "time.record.page" });
 
 const route = useRoute();
 const router = useRouter();
@@ -49,7 +47,12 @@ const emit = defineEmits<{
 
 const getTimeRecordData = async (code = "") => {
   if (code && code != route.params.code) {
-    router.push(`/time-record/${code}`);
+    router.push({
+      name: "time.record.page",
+      params: {
+        code,
+      },
+    });
     return;
   }
 

@@ -13,7 +13,8 @@ const clearSession = () => {
   const userStore = useAuthStore();
   const router = useRouter();
   userStore.clearUserToken();
-  router.push("/login");
+
+  router.push({ name: "login" });
 };
 
 const emitGenericError = () => {
