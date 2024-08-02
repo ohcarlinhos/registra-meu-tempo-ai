@@ -57,14 +57,14 @@ const activeClass = "text-primary font-bold";
       class="pt-6 flex gap-4"
       :class="{ 'justify-center': center }"
     >
-      <ULink to="/" :active-class="activeClass">Início</ULink>
+      <ULink to="/" :active-class="activeClass">{{ _$t("timers") }}</ULink>
 
       <ULink
         v-if="authStore.isAuthenticad"
         to="/time-record"
         :active-class="activeClass"
       >
-        Registros
+        {{ _$t("records") }}
       </ULink>
 
       <ULink
@@ -72,7 +72,7 @@ const activeClass = "text-primary font-bold";
         to="/options"
         :active-class="activeClass"
       >
-        Opções
+        {{ _$t("options") }}
       </ULink>
 
       <ULink
@@ -80,7 +80,7 @@ const activeClass = "text-primary font-bold";
         to="/login"
         :active-class="activeClass"
       >
-        Acesso
+        {{ _$t("access") }}
       </ULink>
 
       <ULink
@@ -88,16 +88,16 @@ const activeClass = "text-primary font-bold";
         to="/register"
         :active-class="activeClass"
       >
-        Registrar
+        {{ _$t("register") }}
       </ULink>
 
       <UButton
         v-if="authStore.isAuthenticad"
         :padded="false"
+        :label="_$t('exit')"
         color="black"
         variant="link"
         size="xl"
-        label="Sair"
         @click="exit"
       />
     </nav>
