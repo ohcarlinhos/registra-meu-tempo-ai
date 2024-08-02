@@ -9,13 +9,15 @@ type StoreWithFetch = {
   fetching: boolean;
 };
 
+const emit = defineEmits(["update:page", "update:perPage"]);
+
 const props = defineProps<{
   totalItems?: number;
   totalPages?: number;
   page?: number;
   perPage?: number;
   search?: string;
-  store: StoreWithFetch;
+  store?: StoreWithFetch;
   perPageList?: number[];
 }>();
 
@@ -24,22 +26,52 @@ const computedPage = computed({
     return props.page || 1;
   },
   set: (page: number) => {
-    props.store.fetch(page, computedPerPage.value, props.search, true);
+    if (props.store)
+      props.store.fetch(
+        parseInt(`${page}`),
+        computedPerPage.value,
+        props.search,
+        true
+      );
+    else emit("update:page", parseInt(`${page}`));
   },
 });
+
+watch(
+  () => props.totalPages,
+  (newTotalPages) => {
+    if (newTotalPages && computedPage.value > newTotalPages) {
+      computedPage.value = newTotalPages;
+    }
+  }
+);
 
 const computedPerPage = computed({
   get: () => {
     return props.perPage || computedList.value[0];
   },
   set: (perPage: number) => {
-    props.store.fetch(1, perPage, props.search, true);
+    if (props.store)
+      props.store.fetch(1, parseInt(`${perPage}`), props.search, true);
+    else emit("update:perPage", parseInt(`${perPage}`));
   },
 });
+
+watch(
+  () => props.totalItems,
+  (newTotalItems) => {
+    if (newTotalItems && computedPerPage.value > newTotalItems) {
+      computedPerPage.value =
+        computedPerPageList.value.reverse().find((i) => i <= newTotalItems) ||
+        4;
+    }
+  }
+);
 
 const computedList = computed(() => {
   return props.perPageList || [4, 8, 10];
 });
+
 const computedPerPageList = computed(() => {
   return computedList.value.filter((i) => (props.totalItems || 0) >= i);
 });
@@ -52,12 +84,12 @@ const computedPerPageList = computed(() => {
         props &&
         props.totalPages &&
         props.totalItems &&
-        props.totalItems >= computedList[0]
+        props.totalItems > computedList[0]
       "
       v-model="computedPage"
       :page-count="props.perPage"
       :total="props.totalItems"
-      :disabled="store.fetching"
+      :disabled="store?.fetching"
       class="mt-2"
     />
 
@@ -67,7 +99,7 @@ const computedPerPageList = computed(() => {
       <USelect
         v-model="computedPerPage"
         :options="computedPerPageList"
-        :disabled="store.fetching"
+        :disabled="store?.fetching"
       />
     </section>
   </div>
