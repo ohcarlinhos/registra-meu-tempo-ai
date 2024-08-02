@@ -44,11 +44,7 @@ const deleteTimeRecord = async () => {
   deleteTimeRecordFetching.value = true;
 
   try {
-    await timeRecordStore.deleteTimeRecord(
-      modal.confirmDelete.id,
-      modal.confirmDelete.page,
-      modal.confirmDelete.perPage
-    );
+    await timeRecordStore.deleteTimeRecord(modal.confirmDelete.id);
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);

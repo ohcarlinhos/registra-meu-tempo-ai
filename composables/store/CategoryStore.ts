@@ -23,7 +23,12 @@ export const useCategoryStore = defineStore("CategoryStore", {
     },
 
     async refetch() {
-      await this.fetch(1, 4, "", true);
+      await this.fetch(
+        this._apiRes.page,
+        this._apiRes.perPage,
+        this._apiRes.search,
+        true
+      );
     },
 
     async fetch(page = 1, perPage = 4, search = "", mounted = false) {
@@ -38,11 +43,11 @@ export const useCategoryStore = defineStore("CategoryStore", {
       }
     },
 
-    async delete(id: number, page = 1, perPage = 4) {
+    async delete(id: number) {
       try {
         this._deletingTimeRecord = true;
         await deleteCategory(id);
-        await this.fetch(page, perPage);
+        await this.refetch();
       } finally {
         this._deletingTimeRecord = false;
       }

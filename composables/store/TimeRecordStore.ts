@@ -23,14 +23,19 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
     },
 
     async refetch() {
-      await this.fetch(1, 4, "", true);
+      await this.fetch(
+        this._apiRes.page,
+        this._apiRes.perPage,
+        this._apiRes.search,
+        true
+      );
     },
 
-    async deleteTimeRecord(id: number, page = 1, perPage = 4) {
+    async deleteTimeRecord(id: number) {
       try {
         this._deletingTimeRecord = true;
         await deleteTimeRecord(id);
-        await this.fetch(page, perPage);
+        await this.refetch();
       } finally {
         this._deletingTimeRecord = false;
       }

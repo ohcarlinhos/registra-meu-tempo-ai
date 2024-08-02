@@ -30,7 +30,7 @@ const i18nObj = {
   password: "Senha",
   oldPassword: "Senha antiga",
   goToHome: "Ir para Página Inicial",
-  itemsPerPage: "Itens por página",
+  itemsPerPage: "Por página",
 
   registerCode: "Código de registro",
   newPassword: "Nova senha",

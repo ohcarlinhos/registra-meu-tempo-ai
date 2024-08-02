@@ -33,12 +33,7 @@ const items = (row: CategoryType) => [
     {
       label: "Apagar",
       icon: "i-icon-park-outline-delete-themes",
-      click: async () =>
-        openConfirmDeleteModal({
-          id: row.id,
-          page: categoryStore.apiRes!.page,
-          perPage: categoryStore.apiRes!.perPage,
-        }),
+      click: async () => openConfirmDeleteModal({ id: row.id }),
     },
   ],
 ];
@@ -60,11 +55,8 @@ const deleteCategoryAction = async () => {
 
   deleteCategoryFetching.value = true;
   try {
-    await categoryStore.delete(
-      modal.confirmDelete.id,
-      modal.confirmDelete.page,
-      modal.confirmDelete.perPage
-    );
+    await categoryStore.delete(modal.confirmDelete.id);
+
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
@@ -81,8 +73,6 @@ const closeConfirmDeleteModal = () => {
 const openConfirmDeleteModal = async (payload: DeletePayload) => {
   modal.confirmDelete.open = true;
   modal.confirmDelete.id = payload.id;
-  modal.confirmDelete.page = payload.page;
-  modal.confirmDelete.perPage = payload.perPage;
 };
 
 await categoryStore.fetch();
