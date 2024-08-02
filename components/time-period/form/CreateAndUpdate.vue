@@ -12,8 +12,6 @@ const props = withDefaults(
   {}
 );
 
-const status = reactive({ fetch: false });
-
 const form = reactive<TimePeriodFormType>({
   timeRecordId: 0,
   id: undefined,
@@ -37,7 +35,10 @@ const submit = async () => {
   });
 };
 
+const createOrEditFetching = ref(false);
+
 const createAction = async () => {
+  createOrEditFetching.value = true;
   try {
     await postTimePeriod({
       timeRecordId: form.timeRecordId ? form.timeRecordId : props.timeRecordId,
@@ -51,10 +52,13 @@ const createAction = async () => {
     OkToast(t("form.timePeriod.status.success.create"));
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    createOrEditFetching.value = false;
   }
 };
 
 const editAction = async (id: number) => {
+  createOrEditFetching.value = true;
   try {
     await putTimePeriod(id, {
       timeRecordId: form.timeRecordId ? form.timeRecordId : props.timeRecordId,
@@ -68,6 +72,8 @@ const editAction = async (id: number) => {
     OkToast(t("form.timePeriod.status.success.update"));
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    createOrEditFetching.value = false;
   }
 };
 
@@ -108,21 +114,27 @@ watch(
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
       <div class="flex gap-4 relative">
-        <UFormGroup :label="$t('form.timeRecord.period.start')" name="start">
+        <UFormGroup :label="_$t('startOfPeriod')" name="start">
           <GDatePicker
             v-model="form.start"
+            :disabled="createOrEditFetching"
             class="py-1"
             @change="form.end = $event"
           />
         </UFormGroup>
 
-        <UFormGroup :label="$t('form.timeRecord.period.end')" name="end">
-          <GDatePicker v-model="form.end" :min="form.start" class="py-1" />
+        <UFormGroup :label="_$t('endOfPeriod')" name="end">
+          <GDatePicker
+            v-model="form.end"
+            :min="form.start"
+            :disabled="createOrEditFetching"
+            class="py-1"
+          />
         </UFormGroup>
       </div>
 
       <UButton
-        :loading="status.fetch"
+        :loading="createOrEditFetching"
         :label="$t('send')"
         block
         type="submit"

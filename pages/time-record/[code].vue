@@ -68,7 +68,11 @@ const editTimePeriod = async (tp: TimePeriodType) => {
   editTpObject.callback = () => {};
 };
 
+const deleteTimePeriodFetching = ref(false);
+
 const deleteTimePeriodAction = async () => {
+  deleteTimePeriodFetching.value = true;
+
   try {
     await deleteTimePeriod(modal.confirmDeleteTp.timePeriodId);
     OkToast(t("form.timePeriod.status.success.delete"));
@@ -78,6 +82,8 @@ const deleteTimePeriodAction = async () => {
     modal.confirmDeleteTp.open = false;
   } catch (err) {
     ErrorToast(err);
+  } finally {
+    deleteTimePeriodFetching.value = false;
   }
 };
 
@@ -165,7 +171,7 @@ onMounted(async () => {
         </p>
 
         <p v-if="trReq.code" class="text-lg font-medium pb-4">
-          Código: <span class="font-normal">{{ trReq.code }}</span>
+          {{ _$t("code") }}: <span class="font-normal">{{ trReq.code }}</span>
         </p>
 
         <UCard>
@@ -175,7 +181,7 @@ onMounted(async () => {
 
           <p v-else class="text-lg">
             <span class="font-normal">
-              Nenhuma descrição fornecida para o registro.
+              {{ _$t("emptyRecordDescription") }}
             </span>
           </p>
 
@@ -217,7 +223,7 @@ onMounted(async () => {
 
           <section class="text-lg">
             <p class="font-medium">
-              {{ "Pomodoros: " }}
+              {{ _$t("pomodoros") }}:
               <span class="font-normal">
                 {{
                   trReq.timeTotalMilliseconds
@@ -304,17 +310,17 @@ onMounted(async () => {
 
                   <section>
                     <UButton
+                      :label="_$t('edit')"
                       color="gray"
                       variant="ghost"
-                      label="Editar"
                       icon="i-icon-park-outline-edit"
                       @click="editTimePeriod(period)"
                     />
 
                     <UButton
+                      :label="_$t('delete')"
                       color="gray"
                       variant="ghost"
-                      label="Apagar"
                       icon="i-icon-park-outline-delete-themes"
                       @click="openConfirmDeleteTpModal(period.id!)"
                     />
@@ -324,12 +330,13 @@ onMounted(async () => {
             </UPopover>
           </section>
 
-          <section v-else>Nenhum período registrado.</section>
+          <section v-else>{{ _$t("noPeriodRecorded") }}</section>
         </UCard>
 
         <GModalConfirm
           v-model:open="modal.confirmDeleteTp.open"
-          text="Tem certeza que quer excluir esse período de tempo?"
+          :fetching="deleteTimePeriodFetching"
+          :title="_$t('confirmDeleteTimePeriodMessage')"
           @confirm="deleteTimePeriodAction"
           @cancel="closeConfirmDeleteTpModal"
         />
@@ -354,14 +361,14 @@ onMounted(async () => {
 
     <div v-else>
       <h2 class="text-2xl text-primary font-bold pb-3">
-        Registro não encontrado!
+        {{ _$t("recordNotFound") }}
       </h2>
 
       <UButton
         @click="router.push({ name: 'time.record.list' })"
         variant="soft"
       >
-        Voltar para Registros
+        {{ _$t("backToRecords") }}
       </UButton>
     </div>
   </UContainer>

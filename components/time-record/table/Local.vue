@@ -22,23 +22,10 @@ const confirmDelete = reactive({
 
 const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
 
-const computedPerPageList = computed(() => {
-  const list = [4, 8, 12];
-  return list.filter((i) => timerStore.totalItems >= i);
-});
-
-const setPage = (p: string) => {
-  timerStore._page = parseInt(p);
-};
-
-const setPerPage = (p: string) => {
-  timerStore._perPage = parseInt(p);
-};
-
 watch(
   () => timerStore.totalPages,
-  (newTp) => {
-    if (timerStore._page > newTp) timerStore._page = newTp;
+  (newTotalPages) => {
+    if (timerStore._page > newTotalPages) timerStore._page = newTotalPages;
   }
 );
 

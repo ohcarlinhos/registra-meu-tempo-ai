@@ -50,6 +50,17 @@ const i18nObj = {
 
   confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
   confirmDeleteTimeRecordMessage: "Tem certeza deseja excluir esse registro?",
+  confirmDeleteTimePeriodMessage: "Tem certeza que quer excluir esse período?",
+
+  noPeriodRecorded: "Nenhum período registrado.",
+  recordNotFound: "Registro não encontrado.",
+  backToRecords: "Voltar para Registros",
+  emptyRecordDescription: "Nenhuma descrição fornecida para o registro.",
+  pomodoro: "Pomodoro",
+  pomodoros: "Pomodoros",
+
+  startOfPeriod: "Início do período",
+  endOfPeriod: "Fim do período",
 
   v: {
     email: {
@@ -117,10 +128,6 @@ const i18nObj = {
       date: "Data",
       category: "Categoria",
       selectCategoryAdd: "Criar:",
-      period: {
-        start: "Início do período",
-        end: "Fim do período",
-      },
       status: {
         success: {
           create: "Registro de tempo criado com sucesso.",

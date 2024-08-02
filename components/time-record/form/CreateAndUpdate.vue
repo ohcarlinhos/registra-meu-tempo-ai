@@ -273,10 +273,7 @@ onMounted(async () => {
         v-for="(_, index) in form.timePeriods"
         class="flex flex-row gap-4 relative dark:border-gray-800 border-b-2 pb-3"
       >
-        <UFormGroup
-          :label="$t('form.timeRecord.period.start')"
-          :name="'start-' + index"
-        >
+        <UFormGroup :label="_$t('startOfPeriod')" :name="'start-' + index">
           <GDatePicker
             v-model="form.timePeriods[index].start"
             :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
@@ -286,10 +283,7 @@ onMounted(async () => {
           />
         </UFormGroup>
 
-        <UFormGroup
-          :label="$t('form.timeRecord.period.end')"
-          :name="'end-' + index"
-        >
+        <UFormGroup :label="_$t('endOfPeriod')" :name="'end-' + index">
           <GDatePicker
             v-model="form.timePeriods[index].end"
             :min="form.timePeriods[index].start"
