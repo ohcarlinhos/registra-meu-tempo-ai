@@ -13,6 +13,7 @@ const i18nObj = {
   remove: "Remover",
   edit: "Editar",
   access: "Acessar",
+  register: "Registrar",
   none: "Nenhum",
   date: "Data",
   code: "Código",
@@ -31,6 +32,8 @@ const i18nObj = {
   oldPassword: "Senha antiga",
   goToHome: "Ir para Página Inicial",
   itemsPerPage: "Por página",
+  options: "Opções",
+  exit: "Sair",
 
   registerCode: "Código de registro",
   newPassword: "Nova senha",
@@ -61,6 +64,10 @@ const i18nObj = {
 
   startOfPeriod: "Início do período",
   endOfPeriod: "Fim do período",
+
+  noTitle: "Sem título",
+
+  timers: "Cronômetros",
 
   v: {
     email: {
