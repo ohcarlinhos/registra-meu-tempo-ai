@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["guest"] });
+definePageMeta({ middleware: ["guest"], name: "login" });
 const { t } = useI18n();
 </script>
 
