@@ -78,6 +78,6 @@ const deleteTimeRecord = async () => {
   />
 
   <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
-    <TimeRecordFormCreateAndUpdate refresh-time-records @close="closeModal" />
+    <TimeRecordFormCreateAndUpdate @close="closeModal" />
   </UModal>
 </template>
