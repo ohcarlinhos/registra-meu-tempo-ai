@@ -6,3 +6,13 @@ export type Pagination<T> = {
   search: string;
   data: T[];
 };
+
+export type BasicStoreToPaginate = {
+  fetch(
+    page?: number,
+    perPage?: number,
+    search?: string,
+    mounted?: boolean
+  ): Promise<void>;
+  fetching: boolean;
+};

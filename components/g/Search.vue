@@ -1,17 +1,7 @@
 <script lang="ts" setup>
-type StoreWithFetch = {
-  fetch(
-    page?: number,
-    perPage?: number,
-    search?: string,
-    mounted?: boolean
-  ): Promise<void>;
-  fetching: boolean;
-};
-
 const props = defineProps<{
   perPage?: number;
-  store: StoreWithFetch;
+  store: BasicStoreToPaginate;
 }>();
 
 const debounce = ref();

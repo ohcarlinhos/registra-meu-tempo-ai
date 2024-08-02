@@ -1,14 +1,4 @@
 <script lang="ts" setup>
-type StoreWithFetch = {
-  fetch(
-    page?: number,
-    perPage?: number,
-    search?: string,
-    mounted?: boolean
-  ): Promise<void>;
-  fetching: boolean;
-};
-
 const emit = defineEmits(["update:page", "update:perPage"]);
 
 const props = defineProps<{
@@ -17,7 +7,7 @@ const props = defineProps<{
   page?: number;
   perPage?: number;
   search?: string;
-  store?: StoreWithFetch;
+  store?: BasicStoreToPaginate;
   perPageList?: number[];
 }>();
 
