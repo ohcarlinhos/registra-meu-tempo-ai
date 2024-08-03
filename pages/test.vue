@@ -8,6 +8,8 @@ const askToAuthorizateNotification = () => {
           body: "Corpo da notificação",
         });
       }, 3000);
+    } else {
+      OkToast("Ative as notificações do seu navegador.");
     }
   });
 };
