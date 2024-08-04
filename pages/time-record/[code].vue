@@ -45,7 +45,9 @@ const emit = defineEmits<{
   delete: [value: number];
 }>();
 
-const getTimeRecordData = async (code = "") => {
+const getTimeRecordDataFetching = ref(false);
+
+const getTimeRecordData = async (code = "", isCallback = false) => {
   if (code && code != route.params.code) {
     router.push({
       name: "time.record.page",
@@ -56,7 +58,14 @@ const getTimeRecordData = async (code = "") => {
     return;
   }
 
-  const data = await getTimeRecordByCode(`${route.params.code}`, true);
+  if (!isCallback) getTimeRecordDataFetching.value = true;
+
+  const data = await getTimeRecordByCode(`${route.params.code}`, true).finally(
+    () => {
+      if (!isCallback) getTimeRecordDataFetching.value = false;
+    }
+  );
+
   if (data) trReq.value = data;
 };
 
@@ -140,6 +149,16 @@ const closeTimeRecordModal = () => {
   editTimeRecordObject.value = undefined;
 };
 
+const postTimePeriodsCallbackFetching = ref(false);
+
+const postTimePeriodsCallback = () => {
+  postTimePeriodsCallbackFetching.value = true;
+
+  return getTimeRecordData("", true).finally(() => {
+    postTimePeriodsCallbackFetching.value = false;
+  });
+};
+
 onMounted(async () => {
   await getTimeRecordData();
 });
@@ -154,7 +173,24 @@ onMounted(async () => {
   >
     <GHeader small-title />
 
-    <div v-if="trReq" class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
+    <section
+      v-if="getTimeRecordDataFetching"
+      class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5"
+    >
+      <div class="w-full md:col-span-12 md:mb-5 flex flex-col gap-3 mt-2">
+        <div class="flex flex-row w-full gap-3">
+          <USkeleton class="h-9 w-[220px]" /> <USkeleton class="h-9 w-[90px]" />
+        </div>
+        <USkeleton class="h-7 w-[180px]" />
+        <USkeleton class="mt-4 h-7 w-full max-w-[400px]" />
+        <USkeleton class="mt-4 h-20 w-full" />
+      </div>
+    </section>
+
+    <section
+      v-else-if="trReq"
+      class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5"
+    >
       <div class="w-full md:col-span-12 md:mb-5">
         <h2 class="text-4xl font-bold mb-1">
           {{ trReq.title || _$t("noTitle") }}
@@ -216,7 +252,7 @@ onMounted(async () => {
           options-modal
           :id="trReq.id"
           :code="trReq.code"
-          :postTimePeriodCallback="getTimeRecordData"
+          :post-time-period-callback="postTimePeriodsCallback"
         />
       </div>
 
@@ -263,8 +299,13 @@ onMounted(async () => {
         </UContainer>
 
         <UCard>
+          <section v-if="postTimePeriodsCallbackFetching">
+            <USkeleton class="h-7 w-full" />
+            <USkeleton class="mt-2 h-7 w-2/5" />
+          </section>
+
           <section
-            v-if="trReq && trReq.timePeriods && trReq.timePeriods.length"
+            v-else-if="trReq && trReq.timePeriods && trReq.timePeriods.length"
             class="flex flex-row gap-2 flex-wrap"
           >
             <UPopover
@@ -360,9 +401,9 @@ onMounted(async () => {
           />
         </UModal>
       </div>
-    </div>
+    </section>
 
-    <div v-else>
+    <section v-else>
       <h2 class="text-2xl text-primary font-bold pb-3">
         {{ _$t("recordNotFound") }}
       </h2>
@@ -373,7 +414,7 @@ onMounted(async () => {
       >
         {{ _$t("backToRecords") }}
       </UButton>
-    </div>
+    </section>
   </UContainer>
 </template>
 

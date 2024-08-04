@@ -2,6 +2,8 @@ import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import NoSleep from "nosleep.js";
 
+export type PostTimePeriodCallback = (code: string) => Promise<void>;
+
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
@@ -20,6 +22,9 @@ export const useTimerStore = defineStore("TimerStore", {
       _perPage: 4,
       _page: 1,
 
+      _postTimePeriodListFetching: false,
+      _postTimePeriodCallback: null as null | PostTimePeriodCallback,
+
       noSleep: null as null | NoSleep,
       audioObject: null as null | HTMLAudioElement,
     };
@@ -29,6 +34,7 @@ export const useTimerStore = defineStore("TimerStore", {
     initTimerConfig(id: number | null, hideOptions = false, code = "") {
       this._currentTimeRecordId = id;
       this._currentTimeRecordCode = code;
+      this._postTimePeriodListFetching = false;
 
       this.noSleep = new NoSleep();
 
@@ -83,7 +89,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     validadePomodoroOrBreakEnd() {
-      if (this.regressiveMilissecondsNecessary <= this._totalMilisecondsPast) {
+      if (this._totalMilisecondsPast >= this.regressiveMilissecondsNecessary) {
         this.noSleep?.disable();
         this.playAlarm();
         this.endTimer();
@@ -125,7 +131,22 @@ export const useTimerStore = defineStore("TimerStore", {
         if (this._currentTimeRecordCode)
           timeRecord.code = this._currentTimeRecordCode;
 
-        this.addTimeRecordLocal(timeRecord);
+        if (this._currentTimeRecordId) {
+          this._postTimePeriodListFetching = true;
+          postTimePeriodList(timeRecord.timePeriods, this._currentTimeRecordId)
+            .then(() => {
+              if (this._postTimePeriodCallback && this._currentTimeRecordCode)
+                this._postTimePeriodCallback(this._currentTimeRecordCode);
+            })
+            .catch(() => {
+              this.addTimeRecordLocal(timeRecord);
+            })
+            .finally(() => {
+              this._postTimePeriodListFetching = false;
+            });
+        } else {
+          this.addTimeRecordLocal(timeRecord);
+        }
       }
 
       this._currentTimePeriodList = [];
@@ -151,6 +172,10 @@ export const useTimerStore = defineStore("TimerStore", {
 
     setBreakPeiod(value: number) {
       this._breakPeriod = value;
+    },
+
+    setPostTimePeriodCallback(callback: PostTimePeriodCallback) {
+      this._postTimePeriodCallback = callback;
     },
 
     toggleOptions() {
@@ -181,6 +206,10 @@ export const useTimerStore = defineStore("TimerStore", {
   },
 
   getters: {
+    fetching(state) {
+      return state._postTimePeriodListFetching;
+    },
+
     showOptions(): boolean {
       return this._showOptions;
     },
