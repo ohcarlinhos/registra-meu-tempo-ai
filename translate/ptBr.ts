@@ -69,6 +69,10 @@ const i18nObj = {
 
   timers: "Cronômetros",
 
+  successPeriodSync: "Períodos de tempo sincronizados com sucesso.",
+  errorPeriodSync:
+    "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador).",
+
   v: {
     email: {
       format: "Digite um e-mail válido.",
