@@ -314,7 +314,7 @@ onMounted(async () => {
         <UFormGroup
           :label="$t('form.timeRecord.code')"
           :required="isEditMode"
-          name="title"
+          name="code"
           description='Utilize o campo para identificar sua tarefa ou atividade. Ex: "TASK-1234".'
         >
           <UInput
