@@ -59,11 +59,15 @@ watch(
 );
 
 const computedList = computed(() => {
-  return props.perPageList || [4, 8, 10];
+  return props.perPageList || [4, 8, 12];
 });
 
 const computedPerPageList = computed(() => {
-  return computedList.value.filter((i) => (props.totalItems || 0) >= i);
+  return computedList.value.filter(
+    (item, index) =>
+      (props.totalItems || 0) >= item ||
+      (props.totalItems || 0) > computedList.value[index - 1]
+  );
 });
 </script>
 
