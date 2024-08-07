@@ -4,8 +4,11 @@ export const getTimeRecords = async function (
   search = "",
   mounted = false
 ) {
+  let uri = `/time-record?page=${page}&perPage=${perPage}`;
+  if (search) uri += `&search=${search}`;
+
   return await CustomHttp<null, Pagination<TimeRecordType>>(
-    `/time-record?page=${page}&perPage=${perPage}&search=${search}`,
+    uri,
     "get",
     null,
     mounted
