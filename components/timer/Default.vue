@@ -1,8 +1,23 @@
 <script lang="ts" setup>
+import { useTitle } from "@vueuse/core";
+
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 
+const oldPageTitle = ref();
+
 const { t } = useI18n();
+
+watch(
+  () => timerStore.formated,
+  (newValue) => {
+    if (!oldPageTitle.value) oldPageTitle.value = document.title;
+
+    if (timerStore.isRunning) {
+      useTitle(`${newValue} | ${oldPageTitle.value}`);
+    }
+  }
+);
 
 const props = defineProps({
   float: {
@@ -63,6 +78,8 @@ const startTimer = () => {
 };
 
 const pauseTimer = () => {
+  useTitle(oldPageTitle.value);
+
   timerStore.noSleep?.disable();
   timerStore.pauseTimer();
   timerStore.playClick();
@@ -82,6 +99,8 @@ const stopTimer = () => {
 };
 
 const stopTimerAction = () => {
+  useTitle(oldPageTitle.value);
+
   modal.confirmStopTimer.open = false;
   timerStore.stopTimer();
 };
@@ -89,6 +108,8 @@ const stopTimerAction = () => {
 const submitTimePeriodFetching = ref(false);
 
 const endTimer = () => {
+  useTitle(oldPageTitle.value);
+
   timerStore.noSleep?.disable();
   timerStore.playClick();
 
