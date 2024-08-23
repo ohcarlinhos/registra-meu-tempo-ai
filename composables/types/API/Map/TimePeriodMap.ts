@@ -1,8 +1,8 @@
 export type TimePeriodMap = {
   id: number;
   timeRecordId: number;
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
   time: {
     seconds: string;
     minutes: string;
