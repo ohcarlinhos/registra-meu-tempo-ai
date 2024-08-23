@@ -13,7 +13,7 @@ export const getTimePeriods = async function (
 };
 
 export const postTimePeriod = async (payload: TimePeriodDto) => {
-  return CustomHttp<TimePeriodDto, TimeRecordType>(
+  return CustomHttp<TimePeriodDto, TimeRecordMap>(
     "/time-period",
     "post",
     payload,
@@ -25,7 +25,7 @@ export const postTimePeriodList = async (
   payload: TimePeriodListDto,
   timeRecordId: number
 ) => {
-  return CustomHttp<TimePeriodListDto, TimeRecordType>(
+  return CustomHttp<TimePeriodListDto, TimeRecordMap>(
     `/time-period/list/${timeRecordId}`,
     "post",
     payload,
@@ -34,7 +34,7 @@ export const postTimePeriodList = async (
 };
 
 export const putTimePeriod = async (id: number, payload: TimePeriodDto) => {
-  return CustomHttp<TimePeriodDto, TimeRecordType>(
+  return CustomHttp<TimePeriodDto, TimeRecordMap>(
     `/time-period/${id}`,
     "put",
     payload,

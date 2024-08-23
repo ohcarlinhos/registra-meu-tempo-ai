@@ -20,7 +20,7 @@ const columns = [
   { key: "actions" },
 ];
 
-const items = (row: TimeRecordType) => [
+const items = (row: TimeRecordMap) => [
   [
     {
       label: t("access"),

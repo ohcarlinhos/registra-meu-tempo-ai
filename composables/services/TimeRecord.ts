@@ -2,7 +2,7 @@ export const getTimeRecords = async function (
   pagQuery: IPaginationQuery,
   mounted = false
 ) {
-  return await CustomHttp<null, Pagination<TimeRecordType>>(
+  return await CustomHttp<null, Pagination<TimeRecordMap>>(
     `/time-record?page=${pagQuery.page}&perPage=${pagQuery.perPage}&search=${pagQuery.search}`,
     "get",
     null,
@@ -14,7 +14,7 @@ export const getTimeRecordByCode = async function (
   code: string,
   mounted = false
 ) {
-  return await CustomHttp<null, TimeRecordType>(
+  return await CustomHttp<null, TimeRecordMap>(
     `/time-record/${code}`,
     "get",
     null,
@@ -34,7 +34,7 @@ export const deleteTimeRecord = async (id: number) => {
 export const postTimeRecord = async (payload: CreateTimeRecordDto) => {
   if (payload.categoryId == null) delete payload.categoryId;
 
-  return CustomHttp<CreateTimeRecordDto, TimeRecordType>(
+  return CustomHttp<CreateTimeRecordDto, TimeRecordMap>(
     "/time-record",
     "post",
     payload,
@@ -45,7 +45,7 @@ export const postTimeRecord = async (payload: CreateTimeRecordDto) => {
 export const putTimeRecord = async (payload: UpdateTimeRecordDto) => {
   if (payload.categoryId == null) delete payload.categoryId;
 
-  return CustomHttp<UpdateTimeRecordDto, TimeRecordType>(
+  return CustomHttp<UpdateTimeRecordDto, TimeRecordMap>(
     `/time-record/${payload.id}`,
     "put",
     payload,
