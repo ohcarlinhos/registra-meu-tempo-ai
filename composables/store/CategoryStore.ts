@@ -3,8 +3,8 @@ export const useCategoryStore = defineStore("CategoryStore", {
     return {
       _categories: [] as CategoryType[],
       _apiRes: {} as Pagination<CategoryType>,
-      _fetching: false,
-      _deletingTimeRecord: false,
+      _fetch: false,
+      _deleteFetch: false,
     };
   },
 
@@ -23,33 +23,35 @@ export const useCategoryStore = defineStore("CategoryStore", {
     },
 
     async refetch() {
-      await this.fetch(
-        this._apiRes.page,
-        this._apiRes.perPage,
-        this._apiRes.search,
-        true
-      );
+      const pagQuery = new PaginationQuery();
+      pagQuery.page = this._apiRes.page;
+      pagQuery.perPage = this._apiRes.perPage;
+      pagQuery.search = this._apiRes.search;
+
+      await this.fetch(pagQuery);
     },
 
-    async fetch(page = 1, perPage = 4, search = "", mounted = false) {
+    async fetch(pagQuery: IPaginationQuery | null = null, mounted = false) {
+      if (pagQuery == null) pagQuery = new PaginationQuery();
+
       try {
-        this._fetching = true;
-        const data = await getCategories(page, perPage, search, mounted);
+        this._fetch = true;
+        const data = await getCategories(pagQuery, mounted);
         if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);
       } finally {
-        this._fetching = false;
+        this._fetch = false;
       }
     },
 
     async delete(id: number) {
       try {
-        this._deletingTimeRecord = true;
+        this._deleteFetch = true;
         await deleteCategory(id);
         await this.refetch();
       } finally {
-        this._deletingTimeRecord = false;
+        this._deleteFetch = false;
       }
     },
   },
@@ -60,7 +62,8 @@ export const useCategoryStore = defineStore("CategoryStore", {
     },
 
     apiRes: (state) => (state._apiRes!.data ? state._apiRes : null),
-    fetching: (state) => state._fetching || state._deletingTimeRecord,
+
+    isFetch: (state) => state._fetch || state._deleteFetch,
 
     categoryTableData: (state) => {
       const categoryTable: CategoryType[] = [];

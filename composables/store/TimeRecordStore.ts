@@ -4,40 +4,42 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
   state: () => {
     return {
       _apiRes: {} as Pagination<TimeRecordType>,
-      _fetching: false,
-      _deletingTimeRecord: false,
+      _fetch: false,
+      _deleteFetch: false,
     };
   },
 
   actions: {
-    async fetch(page = 1, perPage = 4, search = "", mounted = false) {
+    async fetch(pagQuery: IPaginationQuery | null = null, mounted = false) {
+      if (pagQuery == null) pagQuery = new PaginationQuery();
+
       try {
-        this._fetching = true;
-        const data = await getTimeRecords(page, perPage, search, mounted);
+        this._fetch = true;
+        const data = await getTimeRecords(pagQuery, mounted);
         if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);
       } finally {
-        this._fetching = false;
+        this._fetch = false;
       }
     },
 
     async refetch() {
-      await this.fetch(
-        this._apiRes.page,
-        this._apiRes.perPage,
-        this._apiRes.search,
-        true
-      );
+      const pagQuery = new PaginationQuery();
+      pagQuery.page = this._apiRes.page;
+      pagQuery.perPage = this._apiRes.perPage;
+      pagQuery.search = this._apiRes.search;
+
+      await this.fetch(pagQuery, true);
     },
 
     async deleteTimeRecord(id: number) {
       try {
-        this._deletingTimeRecord = true;
+        this._deleteFetch = true;
         await deleteTimeRecord(id);
         await this.refetch();
       } finally {
-        this._deletingTimeRecord = false;
+        this._deleteFetch = false;
       }
     },
 
@@ -78,7 +80,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
       return timeRecordsTable;
     },
 
-    fetching: (state) => state._fetching || state._deletingTimeRecord,
+    isFetch: (state) => state._fetch || state._deleteFetch,
   },
 
   persist: false,

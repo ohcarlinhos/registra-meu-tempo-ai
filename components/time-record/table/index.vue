@@ -69,7 +69,7 @@ await trStore.fetch();
       <UTable
         :columns="columns"
         :rows="trStore.timeRecordsTableData"
-        :loading="trStore.fetching"
+        :loading="trStore.isFetch"
       >
         <template #timePeriods-data="{ row }">
           <TimeRecordTableColTimePeriod

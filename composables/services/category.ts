@@ -1,17 +1,13 @@
-import type { Pagination } from "../types/Pagination";
-
 export const getAllCategories = async function () {
   return CustomHttp<null, CategoryType[]>("/category/all", "get", null, true);
 };
 
 export const getCategories = async function (
-  page = 1,
-  perPage = 5,
-  search = "",
+  pagQuery: IPaginationQuery,
   mounted = false
 ) {
   return CustomHttp<null, Pagination<CategoryType>>(
-    `/category?page=${page}&perPage=${perPage}&search=${search}`,
+    `/category?page=${pagQuery.page}&perPage=${pagQuery.perPage}&search=${pagQuery.search}`,
     "get",
     null,
     mounted
