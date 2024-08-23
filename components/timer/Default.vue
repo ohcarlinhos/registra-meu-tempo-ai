@@ -113,7 +113,7 @@ const endTimer = () => {
   timerStore.noSleep?.disable();
   timerStore.playClick();
 
-  if (authStore.isAuthenticad) {
+  if (authStore.isAuth) {
     timerStore.pauseTimer();
 
     const timePeriods = [

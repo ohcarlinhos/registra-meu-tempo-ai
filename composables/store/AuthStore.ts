@@ -15,10 +15,9 @@ export const useAuthStore = defineStore("AuthStore", {
   getters: {
     getUserToken: (state) => state._userToken,
 
-    isAuthenticad: (state) => {
+    isAuth: (state) => {
       return state._userToken != "";
     },
   },
   persist: true,
 });
-

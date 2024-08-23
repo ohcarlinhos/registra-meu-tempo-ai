@@ -63,7 +63,7 @@ const items = (row: ITimeRecordLocal) => {
     ],
   ];
 
-  if (authStore.isAuthenticad) {
+  if (authStore.isAuth) {
     if (row.id) {
       actions[0].unshift({
         label: "Sincronizar (Registro)",
