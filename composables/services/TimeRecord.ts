@@ -23,7 +23,7 @@ export const getTimeRecordByCode = async function (
 };
 
 export const deleteTimeRecord = async (id: number) => {
-  return await CustomHttp<null, TimeRecordType>(
+  return await CustomHttp<null, boolean>(
     `/time-record/${id}`,
     "delete",
     null,
@@ -31,17 +31,10 @@ export const deleteTimeRecord = async (id: number) => {
   );
 };
 
-type PayloadPost = {
-  description: string;
-  timePeriods: { start: Date | string; end: Date | string }[];
-  categoryId?: number | null;
-  code?: string;
-};
-
-export const postTimeRecord = async (payload: PayloadPost) => {
+export const postTimeRecord = async (payload: CreateTimeRecordDto) => {
   if (payload.categoryId == null) delete payload.categoryId;
 
-  return CustomHttp<PayloadPost, TimeRecordType>(
+  return CustomHttp<CreateTimeRecordDto, TimeRecordType>(
     "/time-record",
     "post",
     payload,
@@ -49,19 +42,10 @@ export const postTimeRecord = async (payload: PayloadPost) => {
   );
 };
 
-type PayloadPut = {
-  id: number;
-  description: string;
-  // timePeriods?: { start: Date | string; end: Date | string }[];
-  categoryId?: number | null;
-  externalLink?: string;
-  code?: string;
-};
-
-export const putTimeRecord = async (payload: PayloadPut) => {
+export const putTimeRecord = async (payload: UpdateTimeRecordDto) => {
   if (payload.categoryId == null) delete payload.categoryId;
 
-  return CustomHttp<PayloadPut, TimeRecordType>(
+  return CustomHttp<UpdateTimeRecordDto, TimeRecordType>(
     `/time-record/${payload.id}`,
     "put",
     payload,
