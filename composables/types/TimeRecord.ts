@@ -1,23 +1,8 @@
-export type TimeRecordType = {
-  title: string;
-  description: string;
-  timeRecordDate: string | null;
-  timePeriods: TimePeriodMap[];
-  id?: number;
-  categoryId?: number | null;
-  categoryName?: string;
-  code?: string;
-  formattedTime?: string;
-  timeTotalMilliseconds?: number;
-  timePeriodsCount?: number;
-  externalLink?: string;
-};
-
-export interface ITimeRecordLocal extends TimeRecordType {
+export interface ITimeRecordLocal extends TimeRecordMap {
   localUuid: string;
 }
 
-export interface ITimeRecordTable extends TimeRecordType {
+export interface ITimeRecordTable extends TimeRecordMap {
   timePeriodsCountText?: string;
 }
 

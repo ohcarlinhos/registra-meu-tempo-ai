@@ -3,7 +3,7 @@ import { format } from "date-fns";
 export const useTimeRecordStore = defineStore("TimeRecordStore", {
   state: () => {
     return {
-      _apiRes: {} as Pagination<TimeRecordType>,
+      _apiRes: {} as Pagination<TimeRecordMap>,
       _fetch: false,
       _deleteFetch: false,
     };

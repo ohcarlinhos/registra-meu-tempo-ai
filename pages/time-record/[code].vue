@@ -8,7 +8,7 @@ const router = useRouter();
 
 const { t } = useI18n();
 
-const trReq = ref<TimeRecordType>();
+const trReq = ref<TimeRecordMap>();
 
 const editTpObject = reactive<TimePeriodFormType>({
   id: 0,
