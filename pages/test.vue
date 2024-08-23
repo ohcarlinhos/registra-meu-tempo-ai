@@ -3,7 +3,8 @@ const askToAuthorizateNotification = () => {
   Notification.requestPermission((permission) => {
     if (permission === "granted") {
       setTimeout(() => {
-        clickSound.play();
+        // clickSound.play();
+
         new Notification("Esse é apenas um teste, sabia?", {
           body: "Corpo da notificação",
         });

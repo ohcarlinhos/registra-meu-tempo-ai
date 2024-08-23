@@ -1,14 +1,9 @@
 export const getTimeRecords = async function (
-  page = 1,
-  perPage = 8,
-  search = "",
+  pagQuery: IPaginationQuery,
   mounted = false
 ) {
-  let uri = `/time-record?page=${page}&perPage=${perPage}`;
-  if (search) uri += `&search=${search}`;
-
   return await CustomHttp<null, Pagination<TimeRecordType>>(
-    uri,
+    `/time-record?page=${pagQuery.page}&perPage=${pagQuery.perPage}&search=${pagQuery.search}`,
     "get",
     null,
     mounted
