@@ -45,7 +45,7 @@ const emit = defineEmits<{
   delete: [value: number];
 }>();
 
-const getTimeRecordDataFetching = ref(false);
+const getFetch = ref(false);
 
 const getTimeRecordData = async (code = "", isCallback = false) => {
   if (code && code != route.params.code) {
@@ -58,11 +58,11 @@ const getTimeRecordData = async (code = "", isCallback = false) => {
     return;
   }
 
-  if (!isCallback) getTimeRecordDataFetching.value = true;
+  if (!isCallback) getFetch.value = true;
 
   const data = await getTimeRecordByCode(`${route.params.code}`, true).finally(
     () => {
-      if (!isCallback) getTimeRecordDataFetching.value = false;
+      if (!isCallback) getFetch.value = false;
     }
   );
 
@@ -80,10 +80,10 @@ const editTimePeriod = async (tp: TimePeriodMap) => {
   editTpObject.callback = () => {};
 };
 
-const deleteTimePeriodFetching = ref(false);
+const deleteFetch = ref(false);
 
 const deleteTimePeriodAction = async () => {
-  deleteTimePeriodFetching.value = true;
+  deleteFetch.value = true;
 
   try {
     await deleteTimePeriod(modal.confirmDeleteTp.timePeriodId);
@@ -95,7 +95,7 @@ const deleteTimePeriodAction = async () => {
   } catch (err) {
     ErrorToast(err);
   } finally {
-    deleteTimePeriodFetching.value = false;
+    deleteFetch.value = false;
   }
 };
 
@@ -174,7 +174,7 @@ onMounted(async () => {
     <GHeader small-title />
 
     <section
-      v-if="getTimeRecordDataFetching"
+      v-if="getFetch"
       class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5"
     >
       <div class="w-full md:col-span-12 md:mb-5 flex flex-col gap-3 mt-2">
@@ -379,7 +379,7 @@ onMounted(async () => {
 
         <GModalConfirm
           v-model:open="modal.confirmDeleteTp.open"
-          :fetching="deleteTimePeriodFetching"
+          :fetching="deleteFetch"
           :title="_$t('confirmDeleteTimePeriodMessage')"
           @confirm="deleteTimePeriodAction"
           @cancel="closeConfirmDeleteTpModal"
