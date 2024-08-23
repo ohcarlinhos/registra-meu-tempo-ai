@@ -1,4 +1,4 @@
-type UserMap = {
+export type UserMap = {
   id: number;
   name: string;
   email: string;
