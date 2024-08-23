@@ -2,7 +2,7 @@ export type TimeRecordType = {
   title: string;
   description: string;
   timeRecordDate: string | null;
-  timePeriods: TimePeriodType[];
+  timePeriods: TimePeriodMap[];
   id?: number;
   categoryId?: number | null;
   categoryName?: string;

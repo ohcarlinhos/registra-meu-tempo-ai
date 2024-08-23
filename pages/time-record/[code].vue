@@ -69,7 +69,7 @@ const getTimeRecordData = async (code = "", isCallback = false) => {
   if (data) trReq.value = data;
 };
 
-const editTimePeriod = async (tp: TimePeriodType) => {
+const editTimePeriod = async (tp: TimePeriodMap) => {
   modal.createOrUpdateTp.open = true;
   modal.createOrUpdateTp.timeRecordId = tp.timeRecordId!;
 
