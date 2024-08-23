@@ -1,8 +1,8 @@
 export const useCategoryStore = defineStore("CategoryStore", {
   state: () => {
     return {
-      _categories: [] as CategoryType[],
-      _apiRes: {} as Pagination<CategoryType>,
+      _categories: [] as CategoryMap[],
+      _apiRes: {} as Pagination<CategoryMap>,
       _fetch: false,
       _deleteFetch: false,
     };
@@ -66,7 +66,7 @@ export const useCategoryStore = defineStore("CategoryStore", {
     isFetch: (state) => state._fetch || state._deleteFetch,
 
     categoryTableData: (state) => {
-      const categoryTable: CategoryType[] = [];
+      const categoryTable: CategoryMap[] = [];
 
       if (state._apiRes!.data)
         state._apiRes.data.forEach((category) => {
