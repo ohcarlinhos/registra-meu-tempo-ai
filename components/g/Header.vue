@@ -60,31 +60,23 @@ const activeClass = "text-primary font-bold";
       <ULink to="/" :active-class="activeClass">{{ _$t("timers") }}</ULink>
 
       <ULink
-        v-if="authStore.isAuthenticad"
+        v-if="authStore.isAuth"
         to="/time-record"
         :active-class="activeClass"
       >
         {{ _$t("records") }}
       </ULink>
 
-      <ULink
-        v-if="authStore.isAuthenticad"
-        to="/options"
-        :active-class="activeClass"
-      >
+      <ULink v-if="authStore.isAuth" to="/options" :active-class="activeClass">
         {{ _$t("options") }}
       </ULink>
 
-      <ULink
-        v-if="!authStore.isAuthenticad"
-        to="/login"
-        :active-class="activeClass"
-      >
+      <ULink v-if="!authStore.isAuth" to="/login" :active-class="activeClass">
         {{ _$t("access") }}
       </ULink>
 
       <ULink
-        v-if="!authStore.isAuthenticad"
+        v-if="!authStore.isAuth"
         to="/register"
         :active-class="activeClass"
       >
@@ -92,7 +84,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <UButton
-        v-if="authStore.isAuthenticad"
+        v-if="authStore.isAuth"
         :padded="false"
         :label="_$t('exit')"
         color="black"
