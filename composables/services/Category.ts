@@ -14,10 +14,8 @@ export const getCategories = async function (
   );
 };
 
-type PayloadPost = { name: string };
-
-export const postCategory = async (payload: PayloadPost) => {
-  return CustomHttp<PayloadPost, CategoryType>(
+export const postCategory = async (payload: CategoryDto) => {
+  return CustomHttp<CategoryDto, CategoryType>(
     "/category",
     "post",
     payload,
@@ -25,8 +23,8 @@ export const postCategory = async (payload: PayloadPost) => {
   );
 };
 
-export const putCategory = async (id: number, payload: PayloadPost) => {
-  return CustomHttp<PayloadPost, CategoryType>(
+export const putCategory = async (id: number, payload: CategoryDto) => {
+  return CustomHttp<CategoryDto, CategoryType>(
     `/category/${id}`,
     "put",
     payload,
@@ -35,10 +33,5 @@ export const putCategory = async (id: number, payload: PayloadPost) => {
 };
 
 export const deleteCategory = async (id: number) => {
-  return CustomHttp<null, TimeRecordType>(
-    `/category/${id}`,
-    "delete",
-    null,
-    true
-  );
+  return CustomHttp<null, boolean>(`/category/${id}`, "delete", null, true);
 };

@@ -12,14 +12,8 @@ export const getTimePeriods = async function (
   );
 };
 
-type PayloadPost = {
-  timeRecordId: number;
-  start: Date;
-  end: Date;
-};
-
-export const postTimePeriod = async (payload: PayloadPost) => {
-  return CustomHttp<PayloadPost, TimeRecordType>(
+export const postTimePeriod = async (payload: TimePeriodDto) => {
+  return CustomHttp<TimePeriodDto, TimeRecordType>(
     "/time-period",
     "post",
     payload,
@@ -27,16 +21,11 @@ export const postTimePeriod = async (payload: PayloadPost) => {
   );
 };
 
-type PayloadPostList = {
-  start: Date;
-  end: Date;
-}[];
-
 export const postTimePeriodList = async (
-  payload: PayloadPostList,
+  payload: TimePeriodListDto,
   timeRecordId: number
 ) => {
-  return CustomHttp<PayloadPostList, TimeRecordType>(
+  return CustomHttp<TimePeriodListDto, TimeRecordType>(
     `/time-period/list/${timeRecordId}`,
     "post",
     payload,
@@ -44,8 +33,8 @@ export const postTimePeriodList = async (
   );
 };
 
-export const putTimePeriod = async (id: number, payload: PayloadPost) => {
-  return CustomHttp<PayloadPost, TimeRecordType>(
+export const putTimePeriod = async (id: number, payload: TimePeriodDto) => {
+  return CustomHttp<TimePeriodDto, TimeRecordType>(
     `/time-period/${id}`,
     "put",
     payload,
@@ -54,10 +43,5 @@ export const putTimePeriod = async (id: number, payload: PayloadPost) => {
 };
 
 export const deleteTimePeriod = async (id: number) => {
-  return CustomHttp<PayloadPost, TimeRecordType>(
-    `/time-period/${id}`,
-    "delete",
-    null,
-    true
-  );
+  return CustomHttp<null, boolean>(`/time-period/${id}`, "delete", null, true);
 };

@@ -1,18 +1,5 @@
-type PayloadPost = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export const postUser = async (payload: PayloadPost) => {
-  return CustomHttp<PayloadPost, unknown>("user", "post", payload, true);
-};
-
-export type PayloadUpdate = {
-  name: string;
-  email: string;
-  password?: string;
-  oldPassword?: string;
+export const postUser = async (payload: CreateUserDto) => {
+  return CustomHttp<CreateUserDto, unknown>("user", "post", payload, true);
 };
 
 type UpdateUserResponse = {
@@ -22,8 +9,8 @@ type UpdateUserResponse = {
   oldPassword?: string;
 };
 
-export const updateUser = async (id: number, payload: PayloadUpdate) => {
-  return CustomHttp<PayloadUpdate, UpdateUserResponse>(
+export const updateUser = async (id: number, payload: UpdateUserDto) => {
+  return CustomHttp<UpdateUserDto, UpdateUserResponse>(
     `user/${id}`,
     "put",
     payload,
@@ -34,4 +21,3 @@ export const updateUser = async (id: number, payload: PayloadUpdate) => {
 export const getMyself = async (mounted = false) => {
   return CustomHttp<null, UserType>("user/myself", "get", null, mounted);
 };
-
