@@ -7,7 +7,7 @@ const props = defineProps<{
   page?: number;
   perPage?: number;
   search?: string;
-  store?: BasicStoreToPaginate;
+  store?: BasicStoreToPagination;
   perPageList?: number[];
 }>();
 
@@ -16,14 +16,18 @@ const computedPage = computed({
     return props.page || 1;
   },
   set: (page: number) => {
-    if (props.store)
-      props.store.fetch(
-        parseInt(`${page}`),
-        computedPerPage.value,
-        props.search,
-        true
-      );
-    else emit("update:page", parseInt(`${page}`));
+    if (page == props.page) return;
+
+    const pagQuery = new PaginationQuery();
+    pagQuery.page = page;
+    pagQuery.perPage = computedPerPage.value;
+    pagQuery.search = props.search;
+
+    if (props.store) {
+      props.store.fetch(pagQuery, true);
+    } else {
+      emit("update:page", pagQuery.page);
+    }
   },
 });
 
@@ -41,9 +45,17 @@ const computedPerPage = computed({
     return props.perPage || computedList.value[0];
   },
   set: (perPage: number) => {
-    if (props.store)
-      props.store.fetch(1, parseInt(`${perPage}`), props.search, true);
-    else emit("update:perPage", parseInt(`${perPage}`));
+    if (perPage == props.perPage) return;
+
+    const pagQuery = new PaginationQuery();
+    pagQuery.perPage = perPage;
+    pagQuery.search = props.search;
+
+    if (props.store) {
+      props.store.fetch(pagQuery, true);
+    } else {
+      emit("update:perPage", pagQuery.page);
+    }
   },
 });
 
@@ -59,7 +71,7 @@ watch(
 );
 
 const computedList = computed(() => {
-  return props.perPageList || [4, 8, 12];
+  return props.perPageList || [10, 20, 30];
 });
 
 const computedPerPageList = computed(() => {
@@ -83,7 +95,7 @@ const computedPerPageList = computed(() => {
       v-model="computedPage"
       :page-count="props.perPage"
       :total="props.totalItems"
-      :disabled="store?.fetching"
+      :disabled="store?.isFetch"
       class="mt-2"
     />
 
@@ -93,7 +105,7 @@ const computedPerPageList = computed(() => {
       <USelect
         v-model="computedPerPage"
         :options="computedPerPageList"
-        :disabled="store?.fetching"
+        :disabled="store?.isFetch"
       />
     </section>
   </div>
