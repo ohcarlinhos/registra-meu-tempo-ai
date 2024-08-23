@@ -1,12 +1,12 @@
 export const getAllCategories = async function () {
-  return CustomHttp<null, CategoryType[]>("/category/all", "get", null, true);
+  return CustomHttp<null, CategoryMap[]>("/category/all", "get", null, true);
 };
 
 export const getCategories = async function (
   pagQuery: IPaginationQuery,
   mounted = false
 ) {
-  return CustomHttp<null, Pagination<CategoryType>>(
+  return CustomHttp<null, Pagination<CategoryMap>>(
     `/category?page=${pagQuery.page}&perPage=${pagQuery.perPage}&search=${pagQuery.search}`,
     "get",
     null,
@@ -15,7 +15,7 @@ export const getCategories = async function (
 };
 
 export const postCategory = async (payload: CategoryDto) => {
-  return CustomHttp<CategoryDto, CategoryType>(
+  return CustomHttp<CategoryDto, CategoryMap>(
     "/category",
     "post",
     payload,
@@ -24,7 +24,7 @@ export const postCategory = async (payload: CategoryDto) => {
 };
 
 export const putCategory = async (id: number, payload: CategoryDto) => {
-  return CustomHttp<CategoryDto, CategoryType>(
+  return CustomHttp<CategoryDto, CategoryMap>(
     `/category/${id}`,
     "put",
     payload,

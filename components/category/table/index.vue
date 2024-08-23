@@ -23,7 +23,7 @@ const editCategoryObject = ref<CategoryFormType>();
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 
-const items = (row: CategoryType) => [
+const items = (row: CategoryMap) => [
   [
     {
       label: "Editar",
@@ -43,7 +43,7 @@ const closeModal = () => {
   editCategoryObject.value = undefined;
 };
 
-const openEditCategoryModal = (category: CategoryType) => {
+const openEditCategoryModal = (category: CategoryMap) => {
   editCategoryObject.value = category;
   modal.createOrUpdateCategory = true;
 };
