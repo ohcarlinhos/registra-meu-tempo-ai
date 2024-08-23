@@ -2,13 +2,13 @@ import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("UserStore", {
   state: () => ({
-    _myself: {} as UserType,
+    _myself: {} as UserMap,
     _fetching: false,
   }),
 
   actions: {
     async fetchMyself(
-      callback: (data: UserType) => void = () => {},
+      callback: (data: UserMap) => void = () => {},
       mounted = false
     ) {
       try {
