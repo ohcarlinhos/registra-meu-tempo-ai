@@ -4,7 +4,7 @@ export const getTimePeriods = async function (
   perPage = 4,
   mounted = false
 ) {
-  return await CustomHttp<null, Pagination<TimePeriodType>>(
+  return await CustomHttp<null, Pagination<TimePeriodMap>>(
     `/time-period/${timeRecordId}?page=${page}&perPage=${perPage}`,
     "get",
     null,

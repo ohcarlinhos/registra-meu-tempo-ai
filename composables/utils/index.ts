@@ -42,7 +42,7 @@ export const editTimeRecordObjectFactory = (
 };
 
 export const formatTimePeriodPopper = (
-  timePeriod: TimePeriodType
+  timePeriod: TimePeriodMap
 ): { formatted: string; date: string } => {
   const fullFormat = "dd/MM/yyyy HH:mm::ss";
   const onlyTime = "HH:mm:ss";
@@ -70,7 +70,7 @@ export const formatTimePeriodPopper = (
   };
 };
 
-export const formatTimePeriodListToString = (timePeriods: TimePeriodType[]) => {
+export const formatTimePeriodListToString = (timePeriods: TimePeriodMap[]) => {
   let totalMilliseconds = 0;
 
   for (let i = 0; timePeriods.length > i; i++) {
