@@ -1,6 +1,17 @@
-export interface ITimeRecordLocal extends TimeRecordMap {
+export interface TimeRecordTimer {
+  id?: number;
+  code?: string;
   localUuid: string;
+  title: string;
+  description: string;
+  timeRecordDate: string;
+  timePeriods: TimePeriodTimer[];
 }
+
+export type TimePeriodTimer = {
+  start: Date;
+  end: Date;
+};
 
 export interface ITimeRecordTable extends TimeRecordMap {
   timePeriodsCountText?: string;

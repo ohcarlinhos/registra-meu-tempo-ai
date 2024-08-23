@@ -70,7 +70,9 @@ export const formatTimePeriodPopper = (
   };
 };
 
-export const formatTimePeriodListToString = (timePeriods: TimePeriodMap[]) => {
+export const formatTimePeriodListToString = (
+  timePeriods: TimePeriodTimer[]
+) => {
   let totalMilliseconds = 0;
 
   for (let i = 0; timePeriods.length > i; i++) {
