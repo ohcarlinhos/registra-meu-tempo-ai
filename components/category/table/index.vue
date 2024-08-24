@@ -19,7 +19,7 @@ const modal = reactive({
   },
 });
 
-const editCategoryObject = ref<CategoryFormType>();
+const editCategoryObject = ref<CategoryForm>();
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 
