@@ -35,10 +35,11 @@ const submit = async () => {
   });
 };
 
-const createOrEditFetching = ref(false);
+const isFetch = ref(false);
 
 const createAction = async () => {
-  createOrEditFetching.value = true;
+  isFetch.value = true;
+
   try {
     await postTimePeriod({
       timeRecordId: form.timeRecordId ? form.timeRecordId : props.timeRecordId,
@@ -48,17 +49,18 @@ const createAction = async () => {
 
     if (form.callback) form.callback();
 
-    closeModal(true);
     OkToast(t("form.timePeriod.status.success.create"));
+    closeModal(true);
   } catch (error) {
     ErrorToast(error);
   } finally {
-    createOrEditFetching.value = false;
+    isFetch.value = false;
   }
 };
 
 const editAction = async (id: number) => {
-  createOrEditFetching.value = true;
+  isFetch.value = true;
+
   try {
     await putTimePeriod(id, {
       timeRecordId: form.timeRecordId ? form.timeRecordId : props.timeRecordId,
@@ -68,12 +70,12 @@ const editAction = async (id: number) => {
 
     if (form.callback) form.callback();
 
-    closeModal(true);
     OkToast(t("form.timePeriod.status.success.update"));
+    closeModal(true);
   } catch (error) {
     ErrorToast(error);
   } finally {
-    createOrEditFetching.value = false;
+    isFetch.value = false;
   }
 };
 
@@ -117,7 +119,7 @@ watch(
         <UFormGroup :label="_$t('startOfPeriod')" name="start">
           <GDatePicker
             v-model="form.start"
-            :disabled="createOrEditFetching"
+            :disabled="isFetch"
             class="py-1"
             @change="form.end = $event"
           />
@@ -127,18 +129,13 @@ watch(
           <GDatePicker
             v-model="form.end"
             :min="form.start"
-            :disabled="createOrEditFetching"
+            :disabled="isFetch"
             class="py-1"
           />
         </UFormGroup>
       </div>
 
-      <UButton
-        :loading="createOrEditFetching"
-        :label="$t('send')"
-        block
-        type="submit"
-      />
+      <UButton :loading="isFetch" :label="$t('send')" block type="submit" />
     </UForm>
   </UCard>
 </template>

@@ -103,7 +103,7 @@ const categoryIsDisabled = computed(() => {
   return categoryStore && categoryStore.isFetch;
 });
 
-const submitButtonIsDisabled = computed(() => {
+const submitIsDisabled = computed(() => {
   return trStore && trStore.isFetch;
 });
 
@@ -150,7 +150,7 @@ const handleCategory = async () => {
   return undefined;
 };
 
-const submitIsFetching = ref(false);
+const isFetch = ref(false);
 
 const submit = async () => {
   await schema.validate(await submitAction());
@@ -158,7 +158,7 @@ const submit = async () => {
 
 const createAction = async () => {
   try {
-    submitIsFetching.value = true;
+    isFetch.value = true;
     const result = await postTimeRecord({
       ...form,
       categoryId: await handleCategory(),
@@ -173,13 +173,13 @@ const createAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    submitIsFetching.value = false;
+    isFetch.value = false;
   }
 };
 
 const updateAction = async () => {
   try {
-    submitIsFetching.value = true;
+    isFetch.value = true;
 
     if (isSyncMode.value) {
       await postTimePeriodList(
@@ -206,7 +206,7 @@ const updateAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    submitIsFetching.value = false;
+    isFetch.value = false;
   }
 };
 
@@ -219,7 +219,7 @@ const submitAction = async () => {
  */
 
 const disableInputs = computed(() => {
-  return submitIsFetching.value;
+  return isFetch.value;
 });
 
 onMounted(async () => {
@@ -386,8 +386,8 @@ onMounted(async () => {
       </template>
 
       <UButton
-        :loading="submitIsFetching"
-        :disabled="submitButtonIsDisabled"
+        :loading="isFetch"
+        :disabled="submitIsDisabled"
         :label="isSyncMode ? $t('sync') : $t('send')"
         block
         type="submit"
