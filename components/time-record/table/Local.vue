@@ -52,7 +52,7 @@ const columns = [
   { key: "actions" },
 ];
 
-const items = (row: TimeRecordTimer) => {
+const items = (row: TimeRecordLocal) => {
   const actions = [
     [
       {
@@ -82,7 +82,7 @@ const items = (row: TimeRecordTimer) => {
   return actions;
 };
 
-const openModal = (timeRecord: TimeRecordTimer, isSync = false) => {
+const openModal = (timeRecord: TimeRecordLocal, isSync = false) => {
   if (!timeRecord) return;
 
   editTimeRecordObject.value = timeRecordTimerToFormType(
@@ -105,8 +105,8 @@ const closeModal = () => {
   <UTable :columns="columns" :rows="timerStore.timeRecords">
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
-        :time-periods="(row as TimeRecordTimer).timePeriods"
-        :label="timePeriodsLabel((row as TimeRecordTimer).timePeriods.length)"
+        :time-periods="(row as TimeRecordLocal).timePeriods"
+        :label="timePeriodsLabel((row as TimeRecordLocal).timePeriods.length)"
       />
     </template>
 

@@ -1,14 +1,14 @@
-export interface TimeRecordTimer {
+export interface TimeRecordLocal {
   id?: number;
   code?: string;
   localUuid: string;
   title: string;
   description: string;
   timeRecordDate: string;
-  timePeriods: TimePeriodTimer[];
+  timePeriods: TimePeriodLocal[];
 }
 
-export type TimePeriodTimer = {
+export type TimePeriodLocal = {
   start: Date;
   end: Date;
 };

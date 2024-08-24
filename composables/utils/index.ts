@@ -19,7 +19,7 @@ export const formatToTimerDisplay = (milliseconds: number) => {
 };
 
 export const timeRecordTimerToFormType = (
-  obj: Partial<TimeRecordTimer> & { isSync?: boolean },
+  obj: Partial<TimeRecordLocal> & { isSync?: boolean },
   callback = () => {}
 ): TimeRecordFormType => {
   return {
@@ -35,7 +35,7 @@ export const timeRecordTimerToFormType = (
 };
 
 export const formatTimePeriodPopper = (
-  timePeriod: TimePeriodTimer
+  timePeriod: TimePeriodLocal
 ): { formatted: string; date: string } => {
   const fullFormat = "dd/MM/yyyy HH:mm::ss";
   const onlyTime = "HH:mm:ss";
@@ -64,7 +64,7 @@ export const formatTimePeriodPopper = (
 };
 
 export const formatTimePeriodListToString = (
-  timePeriods: TimePeriodTimer[]
+  timePeriods: TimePeriodLocal[]
 ) => {
   let totalMilliseconds = 0;
 

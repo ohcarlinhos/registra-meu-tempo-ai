@@ -12,7 +12,7 @@ export const useTimerStore = defineStore("TimerStore", {
       _currentTimeRecordId: null as number | null,
       _currentTimeRecordCode: "",
 
-      _timeRecordsLocal: [] as TimeRecordTimer[],
+      _timeRecordsLocal: [] as TimeRecordLocal[],
       _running: false,
       _interval: null as NodeJS.Timeout | null,
       _type: "timer" as TimerType,
@@ -51,7 +51,7 @@ export const useTimerStore = defineStore("TimerStore", {
       clearInterval(this._interval as NodeJS.Timeout);
     },
 
-    addTimeRecordLocal(timeRecord: TimeRecordTimer) {
+    addTimeRecordLocal(timeRecord: TimeRecordLocal) {
       this._timeRecordsLocal.unshift(timeRecord);
     },
 
@@ -114,7 +114,7 @@ export const useTimerStore = defineStore("TimerStore", {
       if (this._running) this.pauseTimer();
 
       if (this._currentTimePeriodList.length && !this.isBreak) {
-        const timeRecord: TimeRecordTimer = {
+        const timeRecord: TimeRecordLocal = {
           localUuid: uuidv4(),
           title: "",
           description: "",
