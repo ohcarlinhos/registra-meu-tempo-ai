@@ -124,7 +124,7 @@ await categoryStore.fetch();
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     :text="_$t('confirmDeleteCategoryMessage')"
-    :fetching="categoryStore.isFetch"
+    :isFetch="categoryStore.isFetch"
     @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"
   />
