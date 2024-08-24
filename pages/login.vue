@@ -13,7 +13,7 @@ const { t } = useI18n();
     <AuthFormLogin />
 
     <ULink to="/" inactive-class="text-primary font-bold text-xs">
-      {{ t("goToHome") }}
+      {{ _$t("goToHome") }}
     </ULink>
   </UContainer>
 </template>

@@ -23,12 +23,12 @@ const columns = [
 const items = (row: TimeRecordMap) => [
   [
     {
-      label: t("access"),
+      label: _$t("access"),
       icon: "i-icon-park-outline-view-grid-detail",
       click: () => emit("access", row.code!),
     },
     {
-      label: t("delete"),
+      label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
       click: async () =>
         emit("delete", {

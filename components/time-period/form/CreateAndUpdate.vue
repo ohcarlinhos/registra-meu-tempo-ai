@@ -107,7 +107,7 @@ watch(
 <template>
   <UCard>
     <template #header>
-      <h2>{{ $t("period") }}</h2>
+      <h2>{{ _$t("period") }}</h2>
 
       <GCloseButton @close="closeModal" />
     </template>
