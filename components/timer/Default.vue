@@ -126,7 +126,7 @@ const endTimer = () => {
     if (props.id) {
       submitTimePeriodFetching.value = true;
 
-      return postTimePeriodList(timePeriods, props.id)
+      return postTimePeriodList(props.id, timePeriods)
         .then(() => {
           timerStore.clearCurrentTimePeriodList();
 

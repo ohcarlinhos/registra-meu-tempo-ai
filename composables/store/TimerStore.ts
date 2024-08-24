@@ -133,7 +133,7 @@ export const useTimerStore = defineStore("TimerStore", {
 
         if (this._currentTimeRecordId) {
           this._postTimePeriodListFetching = true;
-          postTimePeriodList(timeRecord.timePeriods, this._currentTimeRecordId)
+          postTimePeriodList(this._currentTimeRecordId, timeRecord.timePeriods)
             .then(() => {
               if (this._postTimePeriodCallback && this._currentTimeRecordCode)
                 this._postTimePeriodCallback(this._currentTimeRecordCode);

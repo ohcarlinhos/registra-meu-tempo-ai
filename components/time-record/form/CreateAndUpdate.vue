@@ -181,21 +181,25 @@ const updateAction = async () => {
   try {
     submitIsFetching.value = true;
 
-    const result = !isSyncMode.value
-      ? await putTimeRecord({
-          ...form,
-          id: form.id!,
-          categoryId: await handleCategory(),
-        })
-      : await postTimePeriodList(
-          form.timePeriods.map((tp) => ({
-            start: new Date(tp.start),
-            end: new Date(tp.end),
-          })),
-          form.id!
-        );
+    if (isSyncMode.value) {
+      await postTimePeriodList(
+        form.id!,
+        form.timePeriods.map((tp) => ({
+          start: new Date(tp.start),
+          end: new Date(tp.end),
+        }))
+      );
 
-    if (form.callback) form.callback(result?.code);
+      if (form.callback) form.callback();
+    } else {
+      const result = await putTimeRecord({
+        ...form,
+        id: form.id!,
+        categoryId: await handleCategory(),
+      });
+
+      if (form.callback) form.callback(result?.code);
+    }
 
     closeModal(props.refreshTimeRecords);
     OkToast(t("form.timeRecord.status.success.update"));

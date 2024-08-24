@@ -1,11 +1,10 @@
 export const getTimePeriods = async function (
   timeRecordId: number,
-  page = 1,
-  perPage = 4,
+  pagQuery: IPaginationQuery,
   mounted = false
 ) {
   return await CustomHttp<null, Pagination<TimePeriodMap>>(
-    `/time-period/${timeRecordId}?page=${page}&perPage=${perPage}`,
+    `/time-period/${timeRecordId}?page=${pagQuery.page}&perPage=${pagQuery.perPage}`,
     "get",
     null,
     mounted
@@ -13,7 +12,7 @@ export const getTimePeriods = async function (
 };
 
 export const postTimePeriod = async (payload: TimePeriodDto) => {
-  return CustomHttp<TimePeriodDto, TimeRecordMap>(
+  return CustomHttp<TimePeriodDto, TimePeriodMap>(
     "/time-period",
     "post",
     payload,
@@ -22,10 +21,10 @@ export const postTimePeriod = async (payload: TimePeriodDto) => {
 };
 
 export const postTimePeriodList = async (
-  payload: TimePeriodListDto,
-  timeRecordId: number
+  timeRecordId: number,
+  payload: TimePeriodListDto
 ) => {
-  return CustomHttp<TimePeriodListDto, TimeRecordMap>(
+  return CustomHttp<TimePeriodListDto, TimePeriodDto[]>(
     `/time-period/list/${timeRecordId}`,
     "post",
     payload,
@@ -34,7 +33,7 @@ export const postTimePeriodList = async (
 };
 
 export const putTimePeriod = async (id: number, payload: TimePeriodDto) => {
-  return CustomHttp<TimePeriodDto, TimeRecordMap>(
+  return CustomHttp<TimePeriodDto, TimePeriodDto>(
     `/time-period/${id}`,
     "put",
     payload,
