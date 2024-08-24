@@ -10,7 +10,7 @@ const { t } = useI18n();
 
 const trReq = ref<TimeRecordMap>();
 
-const editTpObject = reactive<TimePeriodFormType>({
+const editTpObject = reactive<TimePeriodForm>({
   id: 0,
   timeRecordId: 0,
   end: "",

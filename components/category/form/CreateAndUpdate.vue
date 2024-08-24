@@ -6,7 +6,7 @@ const emit = defineEmits(["close", "refresh"]);
 
 const props = withDefaults(
   defineProps<{
-    editObject?: CategoryFormType;
+    editObject?: CategoryForm;
   }>(),
   {}
 );
@@ -15,7 +15,7 @@ const props = withDefaults(
  * States
  */
 
-const form = reactive<CategoryFormType>({
+const form = reactive<CategoryForm>({
   id: undefined,
   name: "",
   callback: undefined,

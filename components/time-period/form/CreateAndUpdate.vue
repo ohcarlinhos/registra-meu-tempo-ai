@@ -6,13 +6,13 @@ const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
-    editObject?: TimePeriodFormType;
+    editObject?: TimePeriodForm;
     timeRecordId: number;
   }>(),
   {}
 );
 
-const form = reactive<TimePeriodFormType>({
+const form = reactive<TimePeriodForm>({
   timeRecordId: 0,
   id: undefined,
   start: "",
