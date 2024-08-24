@@ -94,6 +94,6 @@ export const millisecondsToString = (milliseconds: number) => {
 };
 
 export const _$t = (key: i18nT) => {
-  const { t } = useI18n();
-  return t(key);
+  const { $i18n } = useNuxtApp();
+  return $i18n.t(key);
 };
