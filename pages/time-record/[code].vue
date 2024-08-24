@@ -379,7 +379,7 @@ onMounted(async () => {
 
         <GModalConfirm
           v-model:open="modal.confirmDeleteTp.open"
-          :fetching="deleteFetch"
+          :isFetch="deleteFetch"
           :title="_$t('confirmDeleteTimePeriodMessage')"
           @confirm="deleteTimePeriodAction"
           @cancel="closeConfirmDeleteTpModal"
