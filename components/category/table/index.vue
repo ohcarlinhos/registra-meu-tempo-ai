@@ -19,11 +19,11 @@ const modal = reactive({
   },
 });
 
-const editCategoryObject = ref<CategoryFormType>();
+const editCategoryObject = ref<CategoryForm>();
 
 const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 
-const items = (row: CategoryType) => [
+const items = (row: CategoryMap) => [
   [
     {
       label: "Editar",
@@ -43,25 +43,20 @@ const closeModal = () => {
   editCategoryObject.value = undefined;
 };
 
-const openEditCategoryModal = (category: CategoryType) => {
+const openEditCategoryModal = (category: CategoryMap) => {
   editCategoryObject.value = category;
   modal.createOrUpdateCategory = true;
 };
 
-const deleteCategoryFetching = ref(false);
-
 const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
-  deleteCategoryFetching.value = true;
   try {
     await categoryStore.delete(modal.confirmDelete.id);
 
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
-  } finally {
-    deleteCategoryFetching.value = false;
   }
 };
 
@@ -100,7 +95,7 @@ await categoryStore.fetch();
       <UTable
         :columns="columns"
         :rows="categoryStore.categoryTableData"
-        :loading="categoryStore.fetching"
+        :loading="categoryStore.isFetch"
       >
         <template #actions-data="{ row }">
           <div class="flex justify-end">
@@ -129,7 +124,7 @@ await categoryStore.fetch();
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     :text="_$t('confirmDeleteCategoryMessage')"
-    :fetching="deleteCategoryFetching"
+    :isFetch="categoryStore.isFetch"
     @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"
   />

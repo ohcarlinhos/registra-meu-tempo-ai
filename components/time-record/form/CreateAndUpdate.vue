@@ -6,14 +6,14 @@ import { vMaska } from "maska/vue";
 const { t } = useI18n();
 const router = useRouter();
 
-const timeRecordStore = useTimeRecordStore();
+const trStore = useTimeRecordStore();
 const categoryStore = useCategoryStore();
 
 const emit = defineEmits(["close", "refresh"]);
 
 const props = withDefaults(
   defineProps<{
-    editObject?: TimeRecordFormType;
+    editObject?: TimeRecordForm;
     hideTimePeriods?: boolean;
     refreshTimeRecords?: boolean;
   }>(),
@@ -24,7 +24,7 @@ const props = withDefaults(
  * States
  */
 
-const form = reactive<TimeRecordFormType>({
+const form = reactive<TimeRecordForm>({
   id: undefined,
   title: "",
   description: "",
@@ -100,11 +100,11 @@ const addButtonIsDisabled = computed(() => {
 });
 
 const categoryIsDisabled = computed(() => {
-  return categoryStore && categoryStore.fetching;
+  return categoryStore && categoryStore.isFetch;
 });
 
 const submitButtonIsDisabled = computed(() => {
-  return timeRecordStore && timeRecordStore.fetching;
+  return trStore && trStore.isFetch;
 });
 
 /**
@@ -113,7 +113,7 @@ const submitButtonIsDisabled = computed(() => {
 
 const closeModal = (refresh = false) => {
   emit("close");
-  if (refresh) timeRecordStore.refetch();
+  if (refresh) trStore.refetch();
 };
 
 const addTimePeriodToForm = () => {

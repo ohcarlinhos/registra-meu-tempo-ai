@@ -20,7 +20,7 @@ const confirmDelete = reactive({
   uuid: "",
 });
 
-const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
+const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 
 watch(
   () => timerStore.totalPages,
@@ -48,11 +48,11 @@ const columns = [
   { key: "timeRecordDate", label: "Data" },
   { key: "timePeriods", label: "Períodos" },
   { key: "formattedTime", label: "Tempo" },
-  { key: "code", label: t("code") },
+  { key: "code", label: _$t("code") },
   { key: "actions" },
 ];
 
-const items = (row: ITimeRecordLocal) => {
+const items = (row: TimeRecordLocal) => {
   const actions = [
     [
       {
@@ -63,7 +63,7 @@ const items = (row: ITimeRecordLocal) => {
     ],
   ];
 
-  if (authStore.isAuthenticad) {
+  if (authStore.isAuth) {
     if (row.id) {
       actions[0].unshift({
         label: "Sincronizar (Registro)",
@@ -82,10 +82,10 @@ const items = (row: ITimeRecordLocal) => {
   return actions;
 };
 
-const openModal = (timeRecord: ITimeRecordLocal, isSync = false) => {
+const openModal = (timeRecord: TimeRecordLocal, isSync = false) => {
   if (!timeRecord) return;
 
-  editTimeRecordObject.value = editTimeRecordObjectFactory(
+  editTimeRecordObject.value = timeRecordLocalToForm(
     { ...timeRecord, isSync },
     () => {
       timerStore.deleteTimeRecordLocal(timeRecord.localUuid);
@@ -105,8 +105,8 @@ const closeModal = () => {
   <UTable :columns="columns" :rows="timerStore.timeRecords">
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
-        :time-periods="(row as ITimeRecordLocal).timePeriods"
-        :label="timePeriodsLabel((row as ITimeRecordLocal).timePeriods.length)"
+        :period-list="(row as TimeRecordLocal).timePeriods"
+        :label="timePeriodsLabel((row as TimeRecordLocal).timePeriods.length)"
       />
     </template>
 

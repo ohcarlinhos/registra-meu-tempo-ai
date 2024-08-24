@@ -18,23 +18,16 @@ export const formatToTimerDisplay = (milliseconds: number) => {
   return formated;
 };
 
-export const editTimeRecordObjectFactory = (
-  obj: Partial<TimeRecordType> & { isSync?: boolean },
+export const timeRecordLocalToForm = (
+  obj: Partial<TimeRecordLocal> & { isSync?: boolean },
   callback = () => {}
-): TimeRecordFormType => {
-  const categoryStore = useCategoryStore();
-
-  const categoryStored =
-    obj.categoryId && categoryStore.findCategoryById(obj.categoryId);
-
+): TimeRecordForm => {
   return {
     id: obj.id || undefined,
     title: obj.title || "",
     description: obj.description || "",
     code: obj.code || "",
-    category: categoryStored ? categoryStored.name : "",
-    categoryId: obj.categoryId || undefined,
-    externalLink: obj.externalLink || "",
+    category: "",
     timePeriods: obj.timePeriods || [],
     isSync: Boolean(obj.isSync),
     callback,
@@ -42,7 +35,7 @@ export const editTimeRecordObjectFactory = (
 };
 
 export const formatTimePeriodPopper = (
-  timePeriod: TimePeriodType
+  timePeriod: TimePeriodMap | TimePeriodLocal
 ): { formatted: string; date: string } => {
   const fullFormat = "dd/MM/yyyy HH:mm::ss";
   const onlyTime = "HH:mm:ss";
@@ -70,7 +63,9 @@ export const formatTimePeriodPopper = (
   };
 };
 
-export const formatTimePeriodListToString = (timePeriods: TimePeriodType[]) => {
+export const formatTimePeriodListToString = (
+  timePeriods: TimePeriodLocal[]
+) => {
   let totalMilliseconds = 0;
 
   for (let i = 0; timePeriods.length > i; i++) {
@@ -99,6 +94,6 @@ export const millisecondsToString = (milliseconds: number) => {
 };
 
 export const _$t = (key: i18nT) => {
-  const { t } = useI18n();
-  return t(key);
+  const { $i18n } = useNuxtApp();
+  return $i18n.t(key);
 };

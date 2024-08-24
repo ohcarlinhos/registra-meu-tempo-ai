@@ -12,7 +12,7 @@ const modal = reactive({
 });
 
 const timeRecordStore = useTimeRecordStore();
-const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
+const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 const router = useRouter();
 
 const closeConfirmDeleteModal = () => {
@@ -41,12 +41,12 @@ const closeModal = () => {
   editTimeRecordObject.value = undefined;
 };
 
-const deleteTimeRecordFetching = ref(false);
+const deleteFetch = ref(false);
 
 const deleteTimeRecord = async () => {
   if (!modal.confirmDelete.id) return;
 
-  deleteTimeRecordFetching.value = true;
+  deleteFetch.value = true;
 
   try {
     await timeRecordStore.deleteTimeRecord(modal.confirmDelete.id);
@@ -54,7 +54,7 @@ const deleteTimeRecord = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    deleteTimeRecordFetching.value = false;
+    deleteFetch.value = false;
   }
 };
 </script>
@@ -73,7 +73,7 @@ const deleteTimeRecord = async () => {
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     :title="$t('confirmDeleteTimeRecordMessage')"
-    :fetching="deleteTimeRecordFetching"
+    :isFetch="deleteFetch"
     @confirm="deleteTimeRecord"
     @cancel="closeConfirmDeleteModal"
   />

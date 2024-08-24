@@ -6,13 +6,13 @@ const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
-    editObject?: TimePeriodFormType;
+    editObject?: TimePeriodForm;
     timeRecordId: number;
   }>(),
   {}
 );
 
-const form = reactive<TimePeriodFormType>({
+const form = reactive<TimePeriodForm>({
   timeRecordId: 0,
   id: undefined,
   start: "",
@@ -107,7 +107,7 @@ watch(
 <template>
   <UCard>
     <template #header>
-      <h2>{{ $t("period") }}</h2>
+      <h2>{{ _$t("period") }}</h2>
 
       <GCloseButton @close="closeModal" />
     </template>

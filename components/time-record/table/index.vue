@@ -20,15 +20,15 @@ const columns = [
   { key: "actions" },
 ];
 
-const items = (row: TimeRecordType) => [
+const items = (row: TimeRecordMap) => [
   [
     {
-      label: t("access"),
+      label: _$t("access"),
       icon: "i-icon-park-outline-view-grid-detail",
       click: () => emit("access", row.code!),
     },
     {
-      label: t("delete"),
+      label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
       click: async () =>
         emit("delete", {
@@ -69,12 +69,12 @@ await trStore.fetch();
       <UTable
         :columns="columns"
         :rows="trStore.timeRecordsTableData"
-        :loading="trStore.fetching"
+        :loading="trStore.isFetch"
       >
         <template #timePeriods-data="{ row }">
           <TimeRecordTableColTimePeriod
-            :timePeriods="(row as ITimeRecordTable).timePeriods"
-            :label="(row as ITimeRecordTable).timePeriodsCountText || '0'"
+            :period-list="(row as TimeRecordTable).timePeriods"
+            :label="(row as TimeRecordTable).timePeriodsCountText || '0'"
           />
         </template>
 

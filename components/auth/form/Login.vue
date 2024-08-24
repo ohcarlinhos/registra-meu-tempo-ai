@@ -50,7 +50,7 @@ const submit = async () => {
       footer: { base: 'text-center' },
     }"
   >
-    <template #header>{{ t("access") }}</template>
+    <template #header>{{ _$t("access") }}</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
       <UFormGroup :label="t('email')" name="email" required>

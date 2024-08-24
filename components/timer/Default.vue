@@ -69,7 +69,7 @@ const modal = reactive({
   },
 });
 
-const editTimeRecordObject = ref<TimeRecordFormType>();
+const editTimeRecordObject = ref<TimeRecordForm>();
 
 const startTimer = () => {
   timerStore.noSleep?.enable();
@@ -113,7 +113,7 @@ const endTimer = () => {
   timerStore.noSleep?.disable();
   timerStore.playClick();
 
-  if (authStore.isAuthenticad) {
+  if (authStore.isAuth) {
     timerStore.pauseTimer();
 
     const timePeriods = [
@@ -145,9 +145,8 @@ const endTimer = () => {
         });
     }
 
-    editTimeRecordObject.value = editTimeRecordObjectFactory(
-      { timePeriods },
-      () => timerStore.clearCurrentTimePeriodList()
+    editTimeRecordObject.value = timeRecordLocalToForm({ timePeriods }, () =>
+      timerStore.clearCurrentTimePeriodList()
     );
 
     modal.confirmPersistMethod.open = true;

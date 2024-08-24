@@ -8,9 +8,9 @@ const router = useRouter();
 
 const { t } = useI18n();
 
-const trReq = ref<TimeRecordType>();
+const trReq = ref<TimeRecordMap>();
 
-const editTpObject = reactive<TimePeriodFormType>({
+const editTpObject = reactive<TimePeriodForm>({
   id: 0,
   timeRecordId: 0,
   end: "",
@@ -39,13 +39,13 @@ const modal = reactive({
   },
 });
 
-const editTimeRecordObject = ref<TimeRecordFormType>();
+const editTimeRecordObject = ref<TimeRecordForm>();
 
 const emit = defineEmits<{
   delete: [value: number];
 }>();
 
-const getTimeRecordDataFetching = ref(false);
+const getFetch = ref(false);
 
 const getTimeRecordData = async (code = "", isCallback = false) => {
   if (code && code != route.params.code) {
@@ -58,18 +58,18 @@ const getTimeRecordData = async (code = "", isCallback = false) => {
     return;
   }
 
-  if (!isCallback) getTimeRecordDataFetching.value = true;
+  if (!isCallback) getFetch.value = true;
 
   const data = await getTimeRecordByCode(`${route.params.code}`, true).finally(
     () => {
-      if (!isCallback) getTimeRecordDataFetching.value = false;
+      if (!isCallback) getFetch.value = false;
     }
   );
 
   if (data) trReq.value = data;
 };
 
-const editTimePeriod = async (tp: TimePeriodType) => {
+const editTimePeriod = async (tp: TimePeriodMap) => {
   modal.createOrUpdateTp.open = true;
   modal.createOrUpdateTp.timeRecordId = tp.timeRecordId!;
 
@@ -80,10 +80,10 @@ const editTimePeriod = async (tp: TimePeriodType) => {
   editTpObject.callback = () => {};
 };
 
-const deleteTimePeriodFetching = ref(false);
+const deleteFetch = ref(false);
 
 const deleteTimePeriodAction = async () => {
-  deleteTimePeriodFetching.value = true;
+  deleteFetch.value = true;
 
   try {
     await deleteTimePeriod(modal.confirmDeleteTp.timePeriodId);
@@ -95,7 +95,7 @@ const deleteTimePeriodAction = async () => {
   } catch (err) {
     ErrorToast(err);
   } finally {
-    deleteTimePeriodFetching.value = false;
+    deleteFetch.value = false;
   }
 };
 
@@ -174,7 +174,7 @@ onMounted(async () => {
     <GHeader small-title />
 
     <section
-      v-if="getTimeRecordDataFetching"
+      v-if="getFetch"
       class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5"
     >
       <div class="w-full md:col-span-12 md:mb-5 flex flex-col gap-3 mt-2">
@@ -197,7 +197,7 @@ onMounted(async () => {
 
           <UButton
             icon="i-icon-park-outline-edit"
-            :label="$t('edit')"
+            :label="_$t('edit')"
             @click="openTimeRecordModal"
           />
         </h2>
@@ -205,7 +205,7 @@ onMounted(async () => {
         <p class="text-2xl pb-6 font-medium">
           Tempo total:
           <span class="text-primary font-bold">
-            {{ trReq.formattedTime || $t("none") }}
+            {{ trReq.formattedTime || _$t("none") }}
           </span>
         </p>
 
@@ -225,12 +225,12 @@ onMounted(async () => {
           </p>
 
           <p v-if="trReq.categoryName" class="text-lg font-medium">
-            {{ $t("category") }}:
+            {{ _$t("category") }}:
             <span class="font-normal">{{ trReq.categoryName }}</span>
           </p>
 
           <p v-if="trReq.externalLink" class="text-lg font-medium flex gap-2">
-            {{ $t("externalLink") }}:
+            {{ _$t("externalLink") }}:
 
             <span
               class="max-w-44 overflow-hidden inline-block overflow-ellipsis whitespace-nowrap"
@@ -258,7 +258,7 @@ onMounted(async () => {
 
       <div class="w-full col-span-1 md:col-span-6 lg:col-span-4">
         <UCard>
-          <h2 class="mb-2 text-2xl font-bold">{{ $t("statistics") }}</h2>
+          <h2 class="mb-2 text-2xl font-bold">{{ _$t("statistics") }}</h2>
 
           <section class="text-lg">
             <p class="font-medium">
@@ -273,7 +273,7 @@ onMounted(async () => {
             </p>
 
             <p class="font-medium">
-              {{ $t("periods") }}:
+              {{ _$t("periods") }}:
               <span class="font-normal">{{ trReq.timePeriodsCount }}</span>
             </p>
           </section>
@@ -287,7 +287,7 @@ onMounted(async () => {
             padding: 'pb-5 px-0 lg:px-0 sm:px-0',
           }"
         >
-          <h2 class="text-2xl font-bold">{{ $t("periods") }}</h2>
+          <h2 class="text-2xl font-bold">{{ _$t("periods") }}</h2>
 
           <div v-if="trReq.id" class="flex gap-5 flex-row items-start mt-1">
             <UButton
@@ -337,7 +337,7 @@ onMounted(async () => {
                   <section class="flex flex-col items-center gap-2">
                     <UBadge color="gray" variant="solid">
                       {{
-                        $t("start") +
+                        _$t("start") +
                         ": " +
                         format(period.start, "dd/MM/yyyy HH:mm:ss")
                       }}
@@ -345,7 +345,7 @@ onMounted(async () => {
 
                     <UBadge color="gray" variant="solid">
                       {{
-                        $t("end") +
+                        _$t("end") +
                         ": " +
                         format(period.end, "dd/MM/yyyy HH:mm:ss")
                       }}
@@ -379,7 +379,7 @@ onMounted(async () => {
 
         <GModalConfirm
           v-model:open="modal.confirmDeleteTp.open"
-          :fetching="deleteTimePeriodFetching"
+          :isFetch="deleteFetch"
           :title="_$t('confirmDeleteTimePeriodMessage')"
           @confirm="deleteTimePeriodAction"
           @cancel="closeConfirmDeleteTpModal"

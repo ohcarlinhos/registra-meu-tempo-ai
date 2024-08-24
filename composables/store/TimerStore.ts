@@ -7,15 +7,15 @@ export type PostTimePeriodCallback = (code: string) => Promise<void>;
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
-      _currentTimePeriodList: [] as TimePeriodTimerType[],
-      _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimerType,
+      _currentTimePeriodList: [] as TimePeriodTimer[],
+      _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimer,
       _currentTimeRecordId: null as number | null,
       _currentTimeRecordCode: "",
 
-      _timeRecordsLocal: [] as ITimeRecordLocal[],
+      _timeRecordsLocal: [] as TimeRecordLocal[],
       _running: false,
       _interval: null as NodeJS.Timeout | null,
-      _type: "timer" as TimerType,
+      _type: "timer" as TimerTypes,
       _pomodoroPeiod: 25,
       _breakPeriod: 5,
       _showOptions: false,
@@ -51,7 +51,7 @@ export const useTimerStore = defineStore("TimerStore", {
       clearInterval(this._interval as NodeJS.Timeout);
     },
 
-    addTimeRecordLocal(timeRecord: ITimeRecordLocal) {
+    addTimeRecordLocal(timeRecord: TimeRecordLocal) {
       this._timeRecordsLocal.unshift(timeRecord);
     },
 
@@ -114,7 +114,7 @@ export const useTimerStore = defineStore("TimerStore", {
       if (this._running) this.pauseTimer();
 
       if (this._currentTimePeriodList.length && !this.isBreak) {
-        const timeRecord: ITimeRecordLocal = {
+        const timeRecord: TimeRecordLocal = {
           localUuid: uuidv4(),
           title: "",
           description: "",
@@ -162,7 +162,7 @@ export const useTimerStore = defineStore("TimerStore", {
       this._currentTimePeriod.end = timeNow;
     },
 
-    setTimerType(type: TimerType) {
+    setTimerType(type: TimerTypes) {
       this._type = type;
     },
 

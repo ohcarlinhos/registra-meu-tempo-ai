@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 defineProps<{
-  timePeriods: TimePeriodType[];
+  periodList: TimePeriodMap[] | TimePeriodLocal[];
   label: string;
 }>();
 </script>
 
 <template>
-  <div v-if="timePeriods.length === 0">
+  <div v-if="periodList.length === 0">
     <span>{{ label }}</span>
   </div>
 
@@ -17,10 +17,10 @@ defineProps<{
       <template #panel>
         <div class="p-2 flex justify-center gap-2 max-w-40 flex-wrap">
           <UBadge
-            v-for="timePeriod in timePeriods"
+            v-for="timePeriod in periodList"
+            :title="formatTimePeriodPopper(timePeriod).date"
             color="gray"
             variant="solid"
-            :title="formatTimePeriodPopper(timePeriod).date"
           >
             {{ formatTimePeriodPopper(timePeriod).formatted }}
           </UBadge>

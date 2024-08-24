@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   perPage?: number;
-  store: BasicStoreToPaginate;
+  store: BasicStoreToPagination;
 }>();
 
 const debounce = ref();
@@ -10,8 +10,13 @@ const setDebounce = async (value: string) => {
   clearInterval(debounce.value);
 
   search.value = value;
+
+  const pagQuery = new PaginationQuery();
+  pagQuery.search = value;
+  pagQuery.perPage = props.perPage;
+
   debounce.value = setTimeout(async () => {
-    await props.store.fetch(1, props.perPage, value, true);
+    await props.store.fetch(pagQuery, true);
   }, 1000);
 };
 
@@ -34,7 +39,7 @@ const search = ref("");
     placeholder="Pesquisar"
     icon="i-icon-park-outline-search"
     autocomplete="off"
-    :loading="props.store.fetching"
+    :loading="props.store.isFetch"
     :ui="{ icon: { trailing: { pointer: '' } } }"
   >
     <template #trailing>
