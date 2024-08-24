@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 type TimePeriodSimpleTimerType = {
   timeRecordId: number;
-  current: TimePeriodTimerType;
+  current: TimePeriodTimer;
   fetching: boolean;
   timerDisplay: string;
 };
@@ -74,4 +74,3 @@ export const useSimpleTimerStore = defineStore("SimpleTimerStore", {
     },
   },
 });
-

@@ -7,15 +7,15 @@ export type PostTimePeriodCallback = (code: string) => Promise<void>;
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
-      _currentTimePeriodList: [] as TimePeriodTimerType[],
-      _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimerType,
+      _currentTimePeriodList: [] as TimePeriodTimer[],
+      _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimer,
       _currentTimeRecordId: null as number | null,
       _currentTimeRecordCode: "",
 
       _timeRecordsLocal: [] as TimeRecordLocal[],
       _running: false,
       _interval: null as NodeJS.Timeout | null,
-      _type: "timer" as TimerType,
+      _type: "timer" as TimerTypes,
       _pomodoroPeiod: 25,
       _breakPeriod: 5,
       _showOptions: false,
@@ -162,7 +162,7 @@ export const useTimerStore = defineStore("TimerStore", {
       this._currentTimePeriod.end = timeNow;
     },
 
-    setTimerType(type: TimerType) {
+    setTimerType(type: TimerTypes) {
       this._type = type;
     },
 
