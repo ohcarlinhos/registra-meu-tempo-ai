@@ -56,7 +56,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
     apiRes: (state) => (state._apiRes!.data ? state._apiRes : null),
 
     timeRecordsTableData: (state) => {
-      const timeRecordsTable: ITimeRecordTable[] = [];
+      const timeRecordsTable: TimeRecordTable[] = [];
 
       if (state._apiRes!.data)
         state._apiRes.data.forEach((timeRecord) => {

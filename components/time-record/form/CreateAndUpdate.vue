@@ -13,7 +13,7 @@ const emit = defineEmits(["close", "refresh"]);
 
 const props = withDefaults(
   defineProps<{
-    editObject?: TimeRecordFormType;
+    editObject?: TimeRecordForm;
     hideTimePeriods?: boolean;
     refreshTimeRecords?: boolean;
   }>(),
@@ -24,7 +24,7 @@ const props = withDefaults(
  * States
  */
 
-const form = reactive<TimeRecordFormType>({
+const form = reactive<TimeRecordForm>({
   id: undefined,
   title: "",
   description: "",

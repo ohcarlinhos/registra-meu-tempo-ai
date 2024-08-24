@@ -21,7 +21,7 @@ export const formatToTimerDisplay = (milliseconds: number) => {
 export const timeRecordLocalToForm = (
   obj: Partial<TimeRecordLocal> & { isSync?: boolean },
   callback = () => {}
-): TimeRecordFormType => {
+): TimeRecordForm => {
   return {
     id: obj.id || undefined,
     title: obj.title || "",
