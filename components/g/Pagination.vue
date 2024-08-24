@@ -99,6 +99,8 @@ const computedPerPageList = computed(() => {
       class="mt-2"
     />
 
+    <section v-if="$props.totalItems">Total: {{ $props.totalItems }}</section>
+
     <section v-if="computedPerPageList.length" class="flex items-center gap-2">
       {{ $t("itemsPerPage") }}
 
