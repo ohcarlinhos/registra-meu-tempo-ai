@@ -65,7 +65,7 @@ watch(
     if (newTotalItems && computedPerPage.value > newTotalItems) {
       computedPerPage.value =
         computedPerPageList.value.reverse().find((i) => i <= newTotalItems) ||
-        4;
+        10;
     }
   }
 );

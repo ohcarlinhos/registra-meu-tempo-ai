@@ -14,8 +14,6 @@ const modal = reactive({
   confirmDelete: {
     open: false,
     id: null as null | number,
-    page: 1,
-    perPage: 4,
   },
 });
 

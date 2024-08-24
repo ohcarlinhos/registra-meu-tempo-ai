@@ -6,8 +6,6 @@ const modal = reactive({
   confirmDelete: {
     open: false,
     id: null as null | number,
-    page: 1,
-    perPage: 4,
   },
 });
 
@@ -23,16 +21,12 @@ const closeConfirmDeleteModal = () => {
 const openConfirmDeleteModal = async (payload: DeletePayload) => {
   modal.confirmDelete.open = true;
   modal.confirmDelete.id = payload.id;
-  modal.confirmDelete.page = payload.page;
-  modal.confirmDelete.perPage = payload.perPage;
 };
 
 const access = (code: string) => {
   router.push({
     name: "time.record.page",
-    params: {
-      code,
-    },
+    params: { code },
   });
 };
 

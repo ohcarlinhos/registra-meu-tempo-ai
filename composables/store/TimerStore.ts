@@ -19,7 +19,7 @@ export const useTimerStore = defineStore("TimerStore", {
       _pomodoroPeiod: 25,
       _breakPeriod: 5,
       _showOptions: false,
-      _perPage: 4,
+      _perPage: 10,
       _page: 1,
 
       _postTimePeriodListFetching: false,
