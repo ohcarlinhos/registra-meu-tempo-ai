@@ -73,7 +73,7 @@ await trStore.fetch();
       >
         <template #timePeriods-data="{ row }">
           <TimeRecordTableColTimePeriod
-            :timePeriods="(row as TimeRecordTable).timePeriods"
+            :period-list="(row as TimeRecordTable).timePeriods"
             :label="(row as TimeRecordTable).timePeriodsCountText || '0'"
           />
         </template>

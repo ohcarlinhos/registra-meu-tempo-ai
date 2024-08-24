@@ -35,7 +35,7 @@ export const timeRecordLocalToForm = (
 };
 
 export const formatTimePeriodPopper = (
-  timePeriod: TimePeriodLocal
+  timePeriod: TimePeriodMap | TimePeriodLocal
 ): { formatted: string; date: string } => {
   const fullFormat = "dd/MM/yyyy HH:mm::ss";
   const onlyTime = "HH:mm:ss";

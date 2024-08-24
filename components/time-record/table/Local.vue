@@ -105,7 +105,7 @@ const closeModal = () => {
   <UTable :columns="columns" :rows="timerStore.timeRecords">
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
-        :time-periods="(row as TimeRecordLocal).timePeriods"
+        :period-list="(row as TimeRecordLocal).timePeriods"
         :label="timePeriodsLabel((row as TimeRecordLocal).timePeriods.length)"
       />
     </template>
