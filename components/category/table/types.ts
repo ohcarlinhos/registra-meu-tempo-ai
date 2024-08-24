@@ -1,3 +1,3 @@
-export type DeletePayload = {
+export type DeletePayloadEvent = {
   id: number;
 };

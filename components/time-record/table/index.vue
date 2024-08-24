@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-export type DeletePayload = { id: number; page: number; perPage: number };
+export type DeletePayloadEvent = { id: number; page: number; perPage: number };
 
 const { t } = useI18n();
 const trStore = useTimeRecordStore();
 
 const emit = defineEmits<{
   access: [value: string];
-  delete: [value: DeletePayload];
+  delete: [value: DeletePayloadEvent];
   create: [];
 }>();
 

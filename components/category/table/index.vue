@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { DeletePayload } from "./types";
+import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
 
 const emit = defineEmits<{
   edit: [value: number];
-  delete: [value: DeletePayload];
+  delete: [value: DeletePayloadEvent];
   create: [];
 }>();
 
 const modal = reactive({
-  createOrUpdateCategory: false,
+  category: false,
   confirmDelete: {
     open: false,
     id: null as null | number,
@@ -24,12 +24,12 @@ const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
 const items = (row: CategoryMap) => [
   [
     {
-      label: "Editar",
+      label: _$t("edit"),
       icon: "i-icon-park-outline-edit",
       click: () => openEditCategoryModal(row),
     },
     {
-      label: "Apagar",
+      label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
       click: async () => openConfirmDeleteModal({ id: row.id }),
     },
@@ -37,13 +37,13 @@ const items = (row: CategoryMap) => [
 ];
 
 const closeModal = () => {
-  modal.createOrUpdateCategory = false;
+  modal.category = false;
   editCategoryObject.value = undefined;
 };
 
 const openEditCategoryModal = (category: CategoryMap) => {
   editCategoryObject.value = category;
-  modal.createOrUpdateCategory = true;
+  modal.category = true;
 };
 
 const deleteCategoryAction = async () => {
@@ -63,7 +63,7 @@ const closeConfirmDeleteModal = () => {
   modal.confirmDelete.id = null;
 };
 
-const openConfirmDeleteModal = async (payload: DeletePayload) => {
+const openConfirmDeleteModal = async (payload: DeletePayloadEvent) => {
   modal.confirmDelete.open = true;
   modal.confirmDelete.id = payload.id;
 };
@@ -84,7 +84,7 @@ await categoryStore.fetch();
 
         <UButton
           icon="i-icon-park-outline-add"
-          @click="modal.createOrUpdateCategory = true"
+          @click="modal.category = true"
         />
       </div>
     </div>
@@ -127,7 +127,7 @@ await categoryStore.fetch();
     @cancel="closeConfirmDeleteModal"
   />
 
-  <UModal v-model="modal.createOrUpdateCategory" prevent-close>
+  <UModal v-model="modal.category" prevent-close>
     <CategoryFormCreateAndUpdate
       :edit-object="editCategoryObject"
       @close="closeModal"
