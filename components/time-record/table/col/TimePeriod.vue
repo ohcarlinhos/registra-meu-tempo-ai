@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps<{
-  timePeriods: TimePeriodMap[];
+  timePeriods: TimePeriodTimer[];
   label: string;
 }>();
 </script>
@@ -18,9 +18,9 @@ defineProps<{
         <div class="p-2 flex justify-center gap-2 max-w-40 flex-wrap">
           <UBadge
             v-for="timePeriod in timePeriods"
+            :title="formatTimePeriodPopper(timePeriod).date"
             color="gray"
             variant="solid"
-            :title="formatTimePeriodPopper(timePeriod).date"
           >
             {{ formatTimePeriodPopper(timePeriod).formatted }}
           </UBadge>

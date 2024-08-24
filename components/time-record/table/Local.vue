@@ -85,7 +85,7 @@ const items = (row: TimeRecordTimer) => {
 const openModal = (timeRecord: TimeRecordTimer, isSync = false) => {
   if (!timeRecord) return;
 
-  editTimeRecordObject.value = editTimeRecordObjectFactory(
+  editTimeRecordObject.value = timeRecordTimerToFormType(
     { ...timeRecord, isSync },
     () => {
       timerStore.deleteTimeRecordLocal(timeRecord.localUuid);
