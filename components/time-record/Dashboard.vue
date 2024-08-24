@@ -12,7 +12,7 @@ const modal = reactive({
 });
 
 const timeRecordStore = useTimeRecordStore();
-const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
+const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 const router = useRouter();
 
 const closeConfirmDeleteModal = () => {

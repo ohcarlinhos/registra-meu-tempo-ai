@@ -39,7 +39,7 @@ const modal = reactive({
   },
 });
 
-const editTimeRecordObject = ref<TimeRecordFormType>();
+const editTimeRecordObject = ref<TimeRecordForm>();
 
 const emit = defineEmits<{
   delete: [value: number];

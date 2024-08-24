@@ -69,7 +69,7 @@ const modal = reactive({
   },
 });
 
-const editTimeRecordObject = ref<TimeRecordFormType>();
+const editTimeRecordObject = ref<TimeRecordForm>();
 
 const startTimer = () => {
   timerStore.noSleep?.enable();

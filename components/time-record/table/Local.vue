@@ -20,7 +20,7 @@ const confirmDelete = reactive({
   uuid: "",
 });
 
-const editTimeRecordObject = ref<TimeRecordFormType | undefined>(undefined);
+const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 
 watch(
   () => timerStore.totalPages,
