@@ -145,9 +145,8 @@ const endTimer = () => {
         });
     }
 
-    editTimeRecordObject.value = timeRecordTimerToFormType(
-      { timePeriods },
-      () => timerStore.clearCurrentTimePeriodList()
+    editTimeRecordObject.value = timeRecordLocalToForm({ timePeriods }, () =>
+      timerStore.clearCurrentTimePeriodList()
     );
 
     modal.confirmPersistMethod.open = true;

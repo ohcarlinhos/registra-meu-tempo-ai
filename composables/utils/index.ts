@@ -18,7 +18,7 @@ export const formatToTimerDisplay = (milliseconds: number) => {
   return formated;
 };
 
-export const timeRecordTimerToFormType = (
+export const timeRecordLocalToForm = (
   obj: Partial<TimeRecordLocal> & { isSync?: boolean },
   callback = () => {}
 ): TimeRecordFormType => {
