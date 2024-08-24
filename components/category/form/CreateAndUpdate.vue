@@ -21,7 +21,7 @@ const form = reactive<CategoryForm>({
   callback: undefined,
 });
 
-const submitButtonIsDisabled = computed(() => {
+const submitIsDisabled = computed(() => {
   return form.name.length === 0 || form.name === props.editObject?.name;
 });
 
@@ -46,10 +46,10 @@ const submit = async () => {
   await schema.validate(await submitAction());
 };
 
-const createOrEditCategoryFetching = ref(false);
+const isFetch = ref(false);
 
 const createAction = async () => {
-  createOrEditCategoryFetching.value = true;
+  isFetch.value = true;
 
   try {
     await postCategory(form);
@@ -60,12 +60,12 @@ const createAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    createOrEditCategoryFetching.value = false;
+    isFetch.value = false;
   }
 };
 
 const editAction = async (id: number) => {
-  createOrEditCategoryFetching.value = true;
+  isFetch.value = true;
 
   try {
     await putCategory(id, form);
@@ -76,7 +76,7 @@ const editAction = async (id: number) => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    createOrEditCategoryFetching.value = false;
+    isFetch.value = false;
   }
 };
 
@@ -133,7 +133,7 @@ watch(
       <UFormGroup :label="$t('name')" name="name">
         <UInput
           v-model="form.name"
-          :disabled="createOrEditCategoryFetching"
+          :disabled="isFetch"
           maxlength="20"
           type="text"
           autofocus
@@ -141,8 +141,8 @@ watch(
       </UFormGroup>
 
       <UButton
-        :loading="createOrEditCategoryFetching"
-        :disabled="submitButtonIsDisabled"
+        :loading="isFetch"
+        :disabled="submitIsDisabled"
         :label="props.editObject?.id ? $t('save') : $t('create')"
         type="submit"
         block
