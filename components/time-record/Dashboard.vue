@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { DeletePayloadEvent } from "./table/index.vue";
-
 const modal = reactive({
   createOrUpdateTimeRecord: false,
   confirmDelete: {
@@ -18,9 +16,9 @@ const closeConfirmDeleteModal = () => {
   modal.confirmDelete.id = null;
 };
 
-const openConfirmDeleteModal = async (payload: DeletePayloadEvent) => {
+const openConfirmDeleteModal = async (id: number) => {
   modal.confirmDelete.open = true;
-  modal.confirmDelete.id = payload.id;
+  modal.confirmDelete.id = id;
 };
 
 const access = (code: string) => {

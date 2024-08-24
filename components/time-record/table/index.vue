@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-export type DeletePayloadEvent = { id: number; page: number; perPage: number };
-
-const { t } = useI18n();
 const trStore = useTimeRecordStore();
 
 const emit = defineEmits<{
   access: [value: string];
-  delete: [value: DeletePayloadEvent];
+  delete: [value: number];
   create: [];
 }>();
 
@@ -30,12 +27,7 @@ const items = (row: TimeRecordMap) => [
     {
       label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
-      click: async () =>
-        emit("delete", {
-          id: row.id!,
-          page: trStore.apiRes!.page,
-          perPage: trStore.apiRes!.perPage,
-        }),
+      click: async () => emit("delete", row.id!),
     },
   ],
 ];
