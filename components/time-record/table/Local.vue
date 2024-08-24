@@ -48,7 +48,7 @@ const columns = [
   { key: "timeRecordDate", label: "Data" },
   { key: "timePeriods", label: "Períodos" },
   { key: "formattedTime", label: "Tempo" },
-  { key: "code", label: t("code") },
+  { key: "code", label: _$t("code") },
   { key: "actions" },
 ];
 

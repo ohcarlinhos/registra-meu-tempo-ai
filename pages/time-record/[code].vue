@@ -197,7 +197,7 @@ onMounted(async () => {
 
           <UButton
             icon="i-icon-park-outline-edit"
-            :label="$t('edit')"
+            :label="_$t('edit')"
             @click="openTimeRecordModal"
           />
         </h2>
@@ -205,7 +205,7 @@ onMounted(async () => {
         <p class="text-2xl pb-6 font-medium">
           Tempo total:
           <span class="text-primary font-bold">
-            {{ trReq.formattedTime || $t("none") }}
+            {{ trReq.formattedTime || _$t("none") }}
           </span>
         </p>
 
@@ -225,12 +225,12 @@ onMounted(async () => {
           </p>
 
           <p v-if="trReq.categoryName" class="text-lg font-medium">
-            {{ $t("category") }}:
+            {{ _$t("category") }}:
             <span class="font-normal">{{ trReq.categoryName }}</span>
           </p>
 
           <p v-if="trReq.externalLink" class="text-lg font-medium flex gap-2">
-            {{ $t("externalLink") }}:
+            {{ _$t("externalLink") }}:
 
             <span
               class="max-w-44 overflow-hidden inline-block overflow-ellipsis whitespace-nowrap"
@@ -258,7 +258,7 @@ onMounted(async () => {
 
       <div class="w-full col-span-1 md:col-span-6 lg:col-span-4">
         <UCard>
-          <h2 class="mb-2 text-2xl font-bold">{{ $t("statistics") }}</h2>
+          <h2 class="mb-2 text-2xl font-bold">{{ _$t("statistics") }}</h2>
 
           <section class="text-lg">
             <p class="font-medium">
@@ -273,7 +273,7 @@ onMounted(async () => {
             </p>
 
             <p class="font-medium">
-              {{ $t("periods") }}:
+              {{ _$t("periods") }}:
               <span class="font-normal">{{ trReq.timePeriodsCount }}</span>
             </p>
           </section>
@@ -287,7 +287,7 @@ onMounted(async () => {
             padding: 'pb-5 px-0 lg:px-0 sm:px-0',
           }"
         >
-          <h2 class="text-2xl font-bold">{{ $t("periods") }}</h2>
+          <h2 class="text-2xl font-bold">{{ _$t("periods") }}</h2>
 
           <div v-if="trReq.id" class="flex gap-5 flex-row items-start mt-1">
             <UButton
@@ -337,7 +337,7 @@ onMounted(async () => {
                   <section class="flex flex-col items-center gap-2">
                     <UBadge color="gray" variant="solid">
                       {{
-                        $t("start") +
+                        _$t("start") +
                         ": " +
                         format(period.start, "dd/MM/yyyy HH:mm:ss")
                       }}
@@ -345,7 +345,7 @@ onMounted(async () => {
 
                     <UBadge color="gray" variant="solid">
                       {{
-                        $t("end") +
+                        _$t("end") +
                         ": " +
                         format(period.end, "dd/MM/yyyy HH:mm:ss")
                       }}
