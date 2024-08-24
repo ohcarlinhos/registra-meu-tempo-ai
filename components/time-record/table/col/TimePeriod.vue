@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps<{
-  timePeriods: TimePeriodTimer[];
+  timePeriods: TimePeriodLocal[];
   label: string;
 }>();
 </script>
