@@ -18,23 +18,16 @@ export const formatToTimerDisplay = (milliseconds: number) => {
   return formated;
 };
 
-export const editTimeRecordObjectFactory = (
-  obj: Partial<TimeRecordMap> & { isSync?: boolean },
+export const timeRecordTimerToFormType = (
+  obj: Partial<TimeRecordTimer> & { isSync?: boolean },
   callback = () => {}
 ): TimeRecordFormType => {
-  const categoryStore = useCategoryStore();
-
-  const categoryStored =
-    obj.categoryId && categoryStore.findCategoryById(obj.categoryId);
-
   return {
     id: obj.id || undefined,
     title: obj.title || "",
     description: obj.description || "",
     code: obj.code || "",
-    category: categoryStored ? categoryStored.name : "",
-    categoryId: obj.categoryId || undefined,
-    externalLink: obj.externalLink || "",
+    category: "",
     timePeriods: obj.timePeriods || [],
     isSync: Boolean(obj.isSync),
     callback,
@@ -42,7 +35,7 @@ export const editTimeRecordObjectFactory = (
 };
 
 export const formatTimePeriodPopper = (
-  timePeriod: TimePeriodMap
+  timePeriod: TimePeriodTimer
 ): { formatted: string; date: string } => {
   const fullFormat = "dd/MM/yyyy HH:mm::ss";
   const onlyTime = "HH:mm:ss";

@@ -145,7 +145,7 @@ const endTimer = () => {
         });
     }
 
-    editTimeRecordObject.value = editTimeRecordObjectFactory(
+    editTimeRecordObject.value = timeRecordTimerToFormType(
       { timePeriods },
       () => timerStore.clearCurrentTimePeriodList()
     );
