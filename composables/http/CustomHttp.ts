@@ -46,9 +46,7 @@ export const CustomHttp = async <P, R>(
     });
 
     if (error.value) {
-      if (error.value.statusCode === 401) {
-        return clearSession();
-      }
+      if (error.value.statusCode === 401) return clearSession();
 
       const err = error.value.data as { message?: string; title?: string };
       if (err && err.message) throw new Error(err.message);
@@ -58,7 +56,6 @@ export const CustomHttp = async <P, R>(
 
     return data.value;
   } else {
-    // TODO: remover duplicação
     try {
       const data = await $fetch<R>(route, {
         retry: false,
@@ -77,9 +74,7 @@ export const CustomHttp = async <P, R>(
         status: number;
       };
 
-      if (error === 401) {
-        return clearSession();
-      }
+      if (err.status === 401) return clearSession();
 
       if (err && err.data && err.data.message)
         throw new Error(err.data.message);
