@@ -34,7 +34,14 @@ const submit = async () => {
     OkToast(t("form.login.success"));
 
     useAuthStore().setUserToken(data!.token);
-    useRouter().push("/time-record");
+    const route = useRoute();
+    const router = useRouter();
+
+    if (route.query.backToAfter) {
+      return router.push(`${route.query.backToAfter}`);
+    }
+
+    return router.push("/time-record");
   } catch (error) {
     ErrorToast(error);
   } finally {

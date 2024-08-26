@@ -177,6 +177,8 @@ const i18nObj = {
         "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
     },
   },
+
+  sessionExpiredError: "Sessão expirada, efetue um novo login.",
 } as const;
 
 export type i18nT = keyof typeof i18nObj;

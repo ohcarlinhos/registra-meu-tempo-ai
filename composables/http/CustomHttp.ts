@@ -12,9 +12,19 @@ type MethodType =
 const clearSession = () => {
   const userStore = useAuthStore();
   const router = useRouter();
+  const route = useRoute();
+
   userStore.clearUserToken();
 
-  router.push({ name: "login" });
+  router.push({
+    name: "login",
+    query: {
+      backToAfter: route.fullPath,
+    },
+  });
+
+  const { $i18n } = useNuxtApp();
+  throw new Error($i18n.t("sessionExpiredError"));
 };
 
 const emitGenericError = () => {
