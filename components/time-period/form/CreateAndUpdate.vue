@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { addMinutes, isBefore } from "date-fns";
 import * as yup from "yup";
 
 const emit = defineEmits(["close", "refresh"]);
@@ -79,6 +80,10 @@ const editAction = async (id: number) => {
   }
 };
 
+const changeStart = (start: string) => {
+  if (!form.end || isBefore(form.end, start)) form.end = addMinutes(start, 10);
+};
+
 const submitAction = async () => {
   return props.editObject?.id
     ? editAction(props.editObject.id)
@@ -121,7 +126,7 @@ watch(
             v-model="form.start"
             :disabled="isFetch"
             class="py-1"
-            @change="form.end = $event"
+            @change="changeStart"
           />
         </UFormGroup>
 
