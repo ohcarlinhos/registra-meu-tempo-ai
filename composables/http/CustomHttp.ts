@@ -16,15 +16,17 @@ const clearSession = () => {
 
   userStore.clearUserToken();
 
-  router.push({
-    name: "login",
-    query: {
-      backToAfter: route.fullPath,
-    },
-  });
+  if (route.name != "login") {
+    router.push({
+      name: "login",
+      query: {
+        backToAfter: route.fullPath,
+      },
+    });
 
-  const { $i18n } = useNuxtApp();
-  throw new Error($i18n.t("sessionExpiredError"));
+    const { $i18n } = useNuxtApp();
+    throw new Error($i18n.t("sessionExpiredError"));
+  }
 };
 
 const emitGenericError = () => {
