@@ -11,6 +11,19 @@ export const getTimePeriods = async function (
   );
 };
 
+export const getDatedTimePeriod = async function (
+  timeRecordId: number,
+  pagQuery: IPaginationQuery,
+  mounted = false
+) {
+  return await CustomHttp<null, Pagination<DatedTimePeriodMap>>(
+    `/time-period/dated/${timeRecordId}?page=${pagQuery.page}&perPage=${pagQuery.perPage}`,
+    "get",
+    null,
+    mounted
+  );
+};
+
 export const postTimePeriod = async (payload: TimePeriodDto) => {
   return CustomHttp<TimePeriodDto, TimePeriodMap>(
     "/time-period",
