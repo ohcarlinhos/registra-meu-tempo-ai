@@ -4,19 +4,17 @@ export const getFetch = ref(false);
 
 export const getDatedTimePeriodData = async (
   timeRecordId: number,
-  isCallback = false
+  disableUpdateFetch = false
 ) => {
-  if (!isCallback) getFetch.value = true;
+  if (!disableUpdateFetch) getFetch.value = true;
 
-  const data = await getDatedTimePeriod(
-    timeRecordId,
-    new PaginationQuery(),
-    true
-  ).finally(() => {
-    if (!isCallback) getFetch.value = false;
-  });
-
-  if (data) tpReq.value = data;
+  getDatedTimePeriod(timeRecordId, new PaginationQuery(), true)
+    .then((data) => {
+      if (data) tpReq.value = data;
+    })
+    .finally(() => {
+      if (!disableUpdateFetch) getFetch.value = false;
+    });
 };
 
 export const deleteIsFetch = ref(false);

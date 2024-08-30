@@ -13,6 +13,7 @@ import {
 
 import {
   tpReq,
+  getFetch,
   getDatedTimePeriodData,
   deleteTimePeriodAction,
   deleteIsFetch,
@@ -39,7 +40,7 @@ const closeTimePeriodCallback = async (refresh = false) => {
 };
 
 const formatTitleDate = (date: string) => {
-  return format(addHours(date, 3), "dd/MM/yyyy");
+  return format(date, "dd/MM/yyyy");
 };
 
 const getData = () => {
@@ -77,7 +78,17 @@ defineExpose({
       </UContainer>
     </section>
 
+    <section
+      v-if="getFetch"
+      class="w-full col-span-12 grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
+    >
+      <USkeleton class="h-44 w-full col-span-1 md:col-span-6 lg:col-span-4" />
+      <USkeleton class="h-48 w-full col-span-1 md:col-span-6 lg:col-span-4" />
+      <USkeleton class="h-32 w-full col-span-1 md:col-span-6 lg:col-span-4" />
+    </section>
+
     <UCard
+      v-else
       v-for="datedTp in tpReq?.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
@@ -104,11 +115,19 @@ defineExpose({
           <template #panel>
             <div class="p-2 pt-4 flex flex-col items-center gap-2">
               <section class="flex items-center gap-2">
-                <UBadge color="gray" variant="solid">
+                <UBadge
+                  color="gray"
+                  variant="solid"
+                  :title="format(period.start, 'HH:mm:ss dd/MM/yyyy')"
+                >
                   {{ format(period.start, "HH:mm:ss") }}
                 </UBadge>
                 até
-                <UBadge color="gray" variant="solid">
+                <UBadge
+                  color="gray"
+                  variant="solid"
+                  :title="format(period.end, 'HH:mm:ss dd/MM/yyyy')"
+                >
                   {{ format(period.end, "HH:mm:ss") }}
                 </UBadge>
               </section>

@@ -18,6 +18,10 @@ const refreshTimePeriodCallback = async (refreshTp = false) => {
 onMounted(async () => {
   await getTimeRecordData();
 });
+
+onBeforeRouteLeave(() => {
+  trReq.value = undefined;
+});
 </script>
 
 <template>
