@@ -2,17 +2,18 @@
 import * as yup from "yup";
 
 const { t } = useI18n();
+const authStore = useAuthStore();
 
 const form = reactive({
   email: "",
   password: "",
 });
 
-const env = useRuntimeConfig().public;
+const mockStore = useMockStore();
 
-if (env.registerFormMockEnable === "1") {
-  form.email = env.registerFormMockEmail;
-  form.password = env.registerFormMockPassword;
+if (mockStore.registerFormEnable) {
+  form.email = mockStore.registerForm.email;
+  form.password = mockStore.registerForm.password;
 }
 
 const page = reactive({ fetch: false });
@@ -23,6 +24,12 @@ const schema = yup.object({
 });
 
 const submit = async () => {
+  schema.validate(form).then(async () => {
+    await submitAction();
+  });
+};
+
+const submitAction = async () => {
   try {
     page.fetch = true;
 
@@ -33,7 +40,8 @@ const submit = async () => {
 
     OkToast(t("form.login.success"));
 
-    useAuthStore().setUserToken(data!.token);
+    authStore.setUserToken(data!.token);
+
     const route = useRoute();
     const router = useRouter();
 
@@ -41,13 +49,22 @@ const submit = async () => {
       return router.push(`${route.query.backToAfter}`);
     }
 
-    return router.push("/time-record");
+    if (authStore._openModal) {
+      authStore.closeModal();
+      return;
+    }
+
+    return router.push({ name: "time.record.list" });
   } catch (error) {
     ErrorToast(error);
   } finally {
     page.fetch = false;
   }
 };
+
+const submitIsDisabled = computed(() => {
+  return !form.email || !form.password;
+});
 </script>
 
 <template>
@@ -59,7 +76,7 @@ const submit = async () => {
   >
     <template #header>{{ _$t("access") }}</template>
 
-    <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
+    <UForm :schema="schema" :state="form" class="space-y-4">
       <UFormGroup :label="t('email')" name="email" required>
         <UInput type="email" v-model="form.email" autofocus />
       </UFormGroup>
@@ -68,10 +85,16 @@ const submit = async () => {
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
-      <UButton :loading="page.fetch" :label="t('access')" block type="submit" />
+      <UButton
+        :loading="page.fetch"
+        :disabled="submitIsDisabled"
+        :label="t('access')"
+        block
+        @click="submit"
+      />
     </UForm>
 
-    <template #footer>
+    <template v-if="!authStore._openModal" #footer>
       <ULink to="/register" inactive-class="text-primary font-bold text-xs">
         {{ t("form.login.create") }}
       </ULink>
