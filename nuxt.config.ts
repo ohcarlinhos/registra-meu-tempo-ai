@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/i18n",
-    "nuxt-viewport"
+    "nuxt-viewport",
   ],
   colorMode: {
     preference: "system",
@@ -34,6 +34,8 @@ export default defineNuxtConfig({
       registerFormMockEmail: process.env.REGISTER_FORM_MOCK_EMAIL,
       registerFormMockCode: process.env.REGISTER_FORM_MOCK_CODE,
       registerFormMockPassword: process.env.REGISTER_FORM_MOCK_PASSWORD,
+      enableWarTools: process.env.ENABLE_WAR_TOOLS,
+      oldUserToken: process.env.OLD_USER_TOKEN,
     },
   },
 });
