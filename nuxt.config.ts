@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     preference: "system",
   },
   ui: {
-    global: true,
     icons: ["icon-park-outline"],
   },
   i18n: {
