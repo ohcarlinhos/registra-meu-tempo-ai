@@ -178,6 +178,7 @@ const i18nObj = {
     },
   },
 
+  apiBaseDoNotSet: "Variável API_BASE não definida.",
   sessionExpiredError: "Sessão expirada, efetue um novo login.",
 } as const;
 

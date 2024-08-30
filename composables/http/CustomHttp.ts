@@ -9,50 +9,48 @@ type MethodType =
   | "options"
   | "trace";
 
-const clearSession = () => {
-  const userStore = useAuthStore();
-  const router = useRouter();
-  const route = useRoute();
+const clearSession = (is$Fetch = false) => {
+  useAuthStore().clearUserToken();
+  useAuthStore().openModal(!is$Fetch);
 
-  userStore.clearUserToken();
-
-  if (route.name != "login") {
-    router.push({
-      name: "login",
-      query: {
-        backToAfter: route.fullPath,
-      },
-    });
-
-    const { $i18n } = useNuxtApp();
-    throw new Error($i18n.t("sessionExpiredError"));
+  if (is$Fetch) {
+    throw new Error(useNuxtApp().$i18n.t("sessionExpiredError"));
   }
 };
 
 const emitGenericError = () => {
-  const { $i18n } = useNuxtApp();
-  throw new Error($i18n.t("api.error.generic"));
+  throw new Error(useNuxtApp().$i18n.t("api.error.generic"));
 };
 
 export const CustomHttp = async <P, R>(
   route: string,
   method: MethodType = "get",
   payload: P | null = null,
-  is$fetch = false
+  is$Fetch = false,
+  stopIfNotAuth = true
 ) => {
-  if (!useRuntimeConfig().public.apiBase) throw new Error("API_BASE_DONT_SET");
+  const cs = useConfigStore();
+  const authorization = `Bearer ${useAuthStore().getUserToken}`;
 
-  if (!is$fetch) {
+  if (!cs.apiBase) {
+    throw new Error(useNuxtApp().$i18n.t("sessionExpiredError"));
+  }
+
+  if (stopIfNotAuth && !useAuthStore().isAuth) {
+    return clearSession(is$Fetch);
+  }
+
+  if (!is$Fetch) {
     const { data, error } = await useFetch<R>(route, {
       key: `request:${route}`,
       retry: false,
       immediate: true,
-      baseURL: useRuntimeConfig().public.apiBase,
+      baseURL: cs.apiBase,
       onRequest({ options }) {
         options.method = method;
       },
       headers: {
-        Authorization: `Bearer ${useAuthStore().getUserToken}`,
+        Authorization: authorization,
       },
       body: payload || undefined,
     });
@@ -71,10 +69,10 @@ export const CustomHttp = async <P, R>(
     try {
       const data = await $fetch<R>(route, {
         retry: false,
-        baseURL: useRuntimeConfig().public.apiBase,
+        baseURL: cs.apiBase,
         method: method,
         headers: {
-          Authorization: `Bearer ${useAuthStore().getUserToken}`,
+          Authorization: authorization,
         },
         body: payload || undefined,
       });
@@ -86,7 +84,7 @@ export const CustomHttp = async <P, R>(
         status: number;
       };
 
-      if (err.status === 401) return clearSession();
+      if (err.status === 401) return clearSession(is$Fetch);
 
       if (err && err.data && err.data.message)
         throw new Error(err.data.message);
