@@ -8,7 +8,7 @@ const { t } = useI18n();
 const props = withDefaults(
   defineProps<{
     editObject?: TimePeriodForm;
-    timeRecordId: number;
+    timeRecordId?: number;
   }>(),
   {}
 );
@@ -40,21 +40,22 @@ const isFetch = ref(false);
 
 const createAction = async () => {
   isFetch.value = true;
+  let submitIsOk = true;
 
   try {
     await postTimePeriod({
-      timeRecordId: form.timeRecordId ? form.timeRecordId : props.timeRecordId,
+      timeRecordId: props.timeRecordId!,
       start: new Date(form.start),
       end: new Date(form.end),
     });
 
-    if (form.callback) form.callback();
-
     OkToast(t("form.timePeriod.status.success.create"));
     closeModal(true);
   } catch (error) {
+    submitIsOk = false;
     ErrorToast(error);
   } finally {
+    if (submitIsOk && form.callback) form.callback();
     isFetch.value = false;
   }
 };
@@ -64,7 +65,7 @@ const editAction = async (id: number) => {
 
   try {
     await putTimePeriod(id, {
-      timeRecordId: form.timeRecordId ? form.timeRecordId : props.timeRecordId,
+      timeRecordId: form.timeRecordId!,
       start: new Date(form.start),
       end: new Date(form.end),
     });
@@ -109,6 +110,8 @@ watch(
     immediate: true,
   }
 );
+
+var dateNow = ref(addMinutes(Date.now(), 10));
 </script>
 
 <template>
@@ -125,6 +128,7 @@ watch(
           <GDatePicker
             v-model="form.start"
             :disabled="isFetch"
+            :max="dateNow"
             class="py-1"
             @change="changeStart"
           />
@@ -134,6 +138,7 @@ watch(
           <GDatePicker
             v-model="form.end"
             :min="form.start"
+            :max="dateNow"
             :disabled="isFetch"
             class="py-1"
           />
