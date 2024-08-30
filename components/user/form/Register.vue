@@ -13,14 +13,14 @@ const form = reactive({
   confirmPassword: "",
 });
 
-const env = useRuntimeConfig().public;
+const mockStore = useMockStore();
 
-if (env.registerFormMockEnable === "1") {
-  form.name = env.registerFormMockName;
-  form.email = env.registerFormMockEmail;
-  form.registerCode = env.registerFormMockCode;
-  form.password = env.registerFormMockPassword;
-  form.confirmPassword = env.registerFormMockPassword;
+if (mockStore.registerFormEnable) {
+  form.name = mockStore.registerForm.name;
+  form.email = mockStore.registerForm.email;
+  form.registerCode = mockStore.registerForm.registerCode;
+  form.password = mockStore.registerForm.password;
+  form.confirmPassword = mockStore.registerForm.confirmPassword;
 }
 
 const schema = yup.object({
