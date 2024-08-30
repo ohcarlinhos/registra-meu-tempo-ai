@@ -105,53 +105,59 @@ const stopTimerAction = () => {
   timerStore.stopTimer();
 };
 
-const submitTimePeriodFetching = ref(false);
+const submitIsFetch = ref(false);
 
-const endTimer = () => {
+const endTimer = async () => {
   useTitle(oldPageTitle.value);
 
   timerStore.noSleep?.disable();
   timerStore.playClick();
 
-  if (authStore.isAuth) {
-    timerStore.pauseTimer();
+  if (!authStore.isAuth) {
+    timerStore.endTimer();
+    return;
+  }
 
-    const timePeriods = [
-      ...timerStore._currentTimePeriodList.map((t) => ({
-        start: new Date(t.start),
-        end: new Date(t.end),
-      })),
-    ];
+  timerStore.pauseTimer();
 
-    if (props.id) {
-      submitTimePeriodFetching.value = true;
+  const timePeriods = [
+    ...timerStore._currentTimePeriodList.map((t) => ({
+      start: new Date(t.start),
+      end: new Date(t.end),
+    })),
+  ];
 
-      return postTimePeriodList(props.id, timePeriods)
-        .then(() => {
-          timerStore.clearCurrentTimePeriodList();
-
-          if (props.postTimePeriodCallback)
-            props.postTimePeriodCallback(props.code);
-
-          OkToast(_$t("successPeriodSync"));
-        })
-        .catch(() => {
-          timerStore.endTimer();
-
-          ErrorToast(_$t("errorPeriodSync"));
-        })
-        .finally(() => {
-          submitTimePeriodFetching.value = false;
-        });
-    }
-
+  if (!props.id) {
     editTimeRecordObject.value = timeRecordLocalToForm({ timePeriods }, () =>
       timerStore.clearCurrentTimePeriodList()
     );
 
     modal.confirmPersistMethod.open = true;
-  } else {
+    return;
+  }
+
+  let submitIsOk = true;
+
+  try {
+    submitIsFetch.value = true;
+    await postTimePeriodList(props.id, timePeriods);
+
+    timerStore.clearCurrentTimePeriodList();
+
+    OkToast(_$t("successPeriodSync"));
+  } catch (error) {
+    submitIsOk = false;
+
     timerStore.endTimer();
+
+    if (error) ErrorToast(error);
+    ErrorToast(_$t("errorPeriodSync"));
+  } finally {
+    submitIsFetch.value = false;
+
+    if (submitIsOk && props.postTimePeriodCallback) {
+      props.postTimePeriodCallback(props.code);
+    }
   }
 };
 
@@ -208,7 +214,7 @@ const timerCardUi = computed(() => {
 });
 
 const isFetching = computed(() => {
-  return submitTimePeriodFetching.value || timerStore.fetching;
+  return submitIsFetch.value || timerStore.fetching;
 });
 </script>
 
