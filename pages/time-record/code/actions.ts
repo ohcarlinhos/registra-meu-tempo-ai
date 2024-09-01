@@ -18,11 +18,12 @@ export const getTimeRecordData = async (code = "", disableFetch = false) => {
 
   if (!disableFetch) getIsFetch.value = true;
 
-  const data = await getTimeRecordByCode(`${route.params.code}`, true).finally(
-    () => {
-      if (!disableFetch) getIsFetch.value = false;
-    }
-  );
-
-  if (data) trReq.value = data;
+  try {
+    const data = await getTimeRecordByCode(`${route.params.code}`, true);
+    if (data) trReq.value = data;
+  } catch (error) {
+    ErrorToast(error);
+  } finally {
+    if (!disableFetch) getIsFetch.value = false;
+  }
 };

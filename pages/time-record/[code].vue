@@ -15,9 +15,15 @@ const refreshTimePeriodCallback = async (refreshTp = false) => {
   await getTimeRecordData("", true);
 };
 
+watch(
+  () => historyTp.value,
+  () => {
+    historyTp.value.getData();
+  }
+);
+
 onMounted(async () => {
   await getTimeRecordData();
-  await historyTp.value.getData();
 });
 </script>
 
