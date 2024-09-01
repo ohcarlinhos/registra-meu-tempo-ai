@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps<{
-  timeRecord: TimeRecordMap;
+  timeRecord?: TimeRecordMap;
   isFetch: boolean;
 }>();
 </script>
@@ -16,7 +16,7 @@ defineProps<{
     <USkeleton class="mt-4 h-20 w-full" />
   </div>
 
-  <div v-else class="w-full">
+  <div v-else-if="timeRecord" class="w-full">
     <h2 class="text-4xl font-bold mb-1">
       {{ timeRecord.title || _$t("noTitle") }}
 

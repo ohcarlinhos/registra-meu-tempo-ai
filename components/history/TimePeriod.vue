@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { addHours, format } from "date-fns";
+import { format } from "date-fns";
 
 import {
   tpModal,
@@ -12,22 +12,23 @@ import {
 } from "./time-period/modal";
 
 import {
-  tpReq,
-  getFetch,
+  dtpReq,
+  getIsFetch,
   getDatedTimePeriodData,
   deleteTimePeriodAction,
   deleteIsFetch,
 } from "./time-period/actions";
 
 const props = defineProps<{
-  timeRecordId: number;
+  timeRecordId?: number;
+  isFetch?: boolean;
   callback?: () => Promise<void>;
 }>();
 
 const deleteTpAction = () => {
   return deleteTimePeriodAction(
     deleteTpModal.id,
-    props.timeRecordId,
+    props.timeRecordId!,
     closeDeleteTpModal,
     props.callback
   );
@@ -40,11 +41,11 @@ const closeTimePeriodCallback = async (refresh = false) => {
 };
 
 const getData = () => {
-  return getDatedTimePeriodData(props.timeRecordId);
+  return getDatedTimePeriodData(props.timeRecordId!);
 };
 
-onMounted(async () => {
-  await getData();
+const isFetchNow = computed(() => {
+  return getIsFetch.value || props.isFetch;
 });
 
 defineExpose({
@@ -68,6 +69,7 @@ defineExpose({
         <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
           <TimePeriodButtonAdd
             :time-record-id="timeRecordId"
+            :disabled="isFetchNow"
             @open="createTimePeriod"
           />
         </div>
@@ -75,7 +77,7 @@ defineExpose({
     </section>
 
     <section
-      v-if="getFetch"
+      v-if="isFetchNow"
       class="w-full col-span-12 grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
     >
       <USkeleton class="h-44 w-full col-span-1 md:col-span-6 lg:col-span-4" />
@@ -85,18 +87,18 @@ defineExpose({
 
     <UCard
       v-else
-      v-for="datedTp in tpReq?.data"
+      v-for="dtp in dtpReq?.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
       <h3 class="text-xl">
-        {{ format(datedTp.date, "dd/MM/yyyy") }}
+        {{ format(dtp.date, "dd/MM/yyyy") }}
       </h3>
 
-      <p>Tempo: {{ datedTp.formattedTime }}</p>
+      <p>Tempo: {{ dtp.formattedTime }}</p>
 
       <section class="flex flex-row gap-2 flex-wrap py-2">
         <UPopover
-          v-for="(period, index) in datedTp.timePeriods"
+          v-for="(period, index) in dtp.timePeriods"
           :key="period.id"
           mode="hover"
         >
@@ -147,7 +149,7 @@ defineExpose({
         </UPopover>
       </section>
 
-      <p class="text-sm">Total de Períodos: {{ datedTp.count }}</p>
+      <p class="text-sm">Total de Períodos: {{ dtp.count }}</p>
     </UCard>
   </section>
 

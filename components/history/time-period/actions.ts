@@ -1,19 +1,19 @@
-export const tpReq = ref<Pagination<DatedTimePeriodMap>>();
+export const dtpReq = ref<Pagination<DatedTimePeriodMap>>();
 
-export const getFetch = ref(false);
+export const getIsFetch = ref(false);
 
 export const getDatedTimePeriodData = async (
   timeRecordId: number,
   disableUpdateFetch = false
 ) => {
-  if (!disableUpdateFetch) getFetch.value = true;
+  if (!disableUpdateFetch) getIsFetch.value = true;
 
   getDatedTimePeriod(timeRecordId, new PaginationQuery(), true)
     .then((data) => {
-      if (data) tpReq.value = data;
+      if (data) dtpReq.value = data;
     })
     .finally(() => {
-      if (!disableUpdateFetch) getFetch.value = false;
+      if (!disableUpdateFetch) getIsFetch.value = false;
     });
 };
 

@@ -17,10 +17,7 @@ const refreshTimePeriodCallback = async (refreshTp = false) => {
 
 onMounted(async () => {
   await getTimeRecordData();
-});
-
-onBeforeRouteLeave(() => {
-  trReq.value = undefined;
+  await historyTp.value.getData();
 });
 </script>
 
@@ -33,14 +30,12 @@ onBeforeRouteLeave(() => {
   >
     <GHeader small-title />
 
-    <section
-      v-if="trReq"
-      class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5"
-    >
+    <section class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
       <section class="w-full md:col-span-8 md:mb-5">
         <TimeRecordPageHeader :time-record="trReq" :is-fetch="getIsFetch">
           <template #button>
             <TimeRecordButtonEdit
+              v-if="trReq"
               :time-record="trReq"
               :callback="getTimeRecordData"
             />
@@ -69,13 +64,14 @@ onBeforeRouteLeave(() => {
         <HistoryTimePeriod
           ref="historyTp"
           v-if="trReq.id"
+          :is-fetch="getIsFetch"
           :time-record-id="trReq.id"
           :callback="refreshTimePeriodCallback"
         />
       </section>
     </section>
 
-    <section v-else>
+    <section v-if="!trReq && !getIsFetch">
       <h2 class="text-2xl text-primary font-bold pb-3">
         {{ _$t("recordNotFound") }}
       </h2>
