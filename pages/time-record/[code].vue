@@ -55,6 +55,7 @@ onBeforeRouteLeave(() => {
         <TimerDefault
           :id="trReq.id"
           :code="trReq.code"
+          :title="trReq.title"
           :post-time-period-callback="() => refreshTimePeriodCallback(true)"
           options-modal
         />

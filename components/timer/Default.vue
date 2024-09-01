@@ -14,7 +14,11 @@ watch(
     if (!oldPageTitle.value) oldPageTitle.value = document.title;
 
     if (timerStore.isRunning) {
-      useTitle(`${newValue} | ${oldPageTitle.value}`);
+      useTitle(
+        `${newValue} ${props.title ? "- " + props.title + " " : ""}| ${
+          oldPageTitle.value
+        }`
+      );
     }
   }
 );
@@ -33,6 +37,10 @@ const props = defineProps({
     default: null,
   },
   code: {
+    type: String,
+    default: null,
+  },
+  title: {
     type: String,
     default: null,
   },
