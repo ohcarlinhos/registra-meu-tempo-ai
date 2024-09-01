@@ -6,10 +6,6 @@ export type TimeRecordMap = {
   categoryName: string | null;
   categoryId: number | null;
   code: string;
-  timePeriods: TimePeriodMap[];
-  timeRecordDate: string | null;
-  formattedTime: string;
-  timeTotalMilliseconds: number;
-  timePeriodsCount: number;
   externalLink: string;
+  meta: TimeRecordMeta | null;
 };

@@ -39,10 +39,6 @@ const closeTimePeriodCallback = async (refresh = false) => {
   await closeTimePeriodModal(() => getData(), refresh);
 };
 
-const formatTitleDate = (date: string) => {
-  return format(date, "dd/MM/yyyy");
-};
-
 const getData = () => {
   return getDatedTimePeriodData(props.timeRecordId);
 };
@@ -93,7 +89,7 @@ defineExpose({
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
       <h3 class="text-xl">
-        {{ formatTitleDate(datedTp.date) }}
+        {{ format(datedTp.date, "dd/MM/yyyy") }}
       </h3>
 
       <p>Tempo: {{ datedTp.formattedTime }}</p>

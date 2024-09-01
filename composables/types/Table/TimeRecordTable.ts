@@ -1,3 +1,5 @@
 export interface TimeRecordTable extends TimeRecordMap {
-  timePeriodsCountText?: string;
+  timePeriodCountText: string;
+  lastTimePeriodDate: string;
+  formattedTime: string;
 }

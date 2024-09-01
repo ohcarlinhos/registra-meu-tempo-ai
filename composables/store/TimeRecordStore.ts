@@ -62,17 +62,17 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
         state._apiRes.data.forEach((timeRecord) => {
           timeRecordsTable.push({
             ...timeRecord,
-            timeRecordDate:
-              (timeRecord.timeRecordDate &&
-                format(timeRecord.timeRecordDate, "dd/MM/yyyy")) ||
+            lastTimePeriodDate:
+              (timeRecord.meta?.lastTimePeriodDate &&
+                format(timeRecord.meta.lastTimePeriodDate, "dd/MM/yyyy")) ||
               "-",
             description: timeRecord.description || "-",
             code: timeRecord.code || "-",
             title: timeRecord.title || "-",
             categoryName: timeRecord.categoryName || "-",
-            formattedTime: timeRecord.formattedTime || "Nenhum",
-            timePeriodsCountText: timePeriodsLabel(
-              timeRecord.timePeriodsCount!
+            formattedTime: timeRecord.meta?.formattedTime || "Nenhum",
+            timePeriodCountText: timePeriodLabel(
+              timeRecord.meta?.timePeriodCount!
             ),
           });
         });

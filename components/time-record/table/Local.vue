@@ -106,7 +106,7 @@ const closeModal = () => {
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
         :period-list="(row as TimeRecordLocal).timePeriods"
-        :label="timePeriodsLabel((row as TimeRecordLocal).timePeriods.length)"
+        :label="timePeriodLabel((row as TimeRecordLocal).timePeriods.length)"
       />
     </template>
 

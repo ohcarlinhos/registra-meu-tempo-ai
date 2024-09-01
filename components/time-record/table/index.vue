@@ -8,12 +8,12 @@ const emit = defineEmits<{
 }>();
 
 const columns = [
-  { key: "timeRecordDate", label: _$t("date") },
+  { key: "lastTimePeriodDate", label: "Último Progresso" },
   { key: "code", label: _$t("code") },
   { key: "title", label: _$t("title") },
   { key: "categoryName", label: _$t("category") },
   { key: "formattedTime", label: _$t("time") },
-  { key: "timePeriods", label: _$t("periods") },
+  { key: "timePeriodCountText", label: _$t("periods") },
   { key: "actions" },
 ];
 
@@ -40,11 +40,11 @@ await trStore.fetch();
     <UContainer
       :ui="{
         base: 'flex flex-col md:flex-row justify-between gap-5',
-        padding: 'pb-5 px-0 lg:px-0 sm:px-0',
+        padding: 'pb-6 px-0 lg:px-0 sm:px-0',
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-2xl font-bold">{{ _$t("records") }}</h2>
+      <h2 class="text-4xl font-bold">{{ $t("records") }} de Tempo</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <GSearch :perPage="trStore.apiRes?.perPage" :store="trStore" />
@@ -63,13 +63,6 @@ await trStore.fetch();
         :rows="trStore.timeRecordsTableData"
         :loading="trStore.isFetch"
       >
-        <template #timePeriods-data="{ row }">
-          <TimeRecordTableColTimePeriod
-            :period-list="(row as TimeRecordTable).timePeriods"
-            :label="(row as TimeRecordTable).timePeriodsCountText || '0'"
-          />
-        </template>
-
         <template #actions-data="{ row }">
           <div class="flex justify-end">
             <UDropdown :items="items(row)">

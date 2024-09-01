@@ -8,7 +8,8 @@ defineProps<{
 <template>
   <div v-if="isFetch" class="w-full flex flex-col gap-3 mt-2">
     <div class="flex flex-row w-full gap-3">
-      <USkeleton class="h-9 w-[220px]" /> <USkeleton class="h-9 w-[90px]" />
+      <USkeleton class="h-9 w-[220px]" />
+      <USkeleton class="h-9 w-[90px]" />
     </div>
     <USkeleton class="h-7 w-[180px]" />
     <USkeleton class="mt-4 h-7 w-full max-w-[400px]" />
@@ -25,7 +26,7 @@ defineProps<{
     <p class="text-2xl pb-6 font-medium">
       Tempo total:
       <span class="text-primary font-bold">
-        {{ timeRecord.formattedTime || _$t("none") }}
+        {{ timeRecord.meta?.formattedTime || _$t("none") }}
       </span>
     </p>
 
