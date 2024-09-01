@@ -8,22 +8,24 @@ const emit = defineEmits<{
   delete: [value: number];
 }>();
 
-import { trReq, getTimeRecordData, getIsFetch } from "./code/actions";
+import {
+  trReq,
+  actualTimeRecordId,
+  getTimeRecordData,
+  getIsFetch,
+} from "./code/actions";
 
 const refreshTimePeriodCallback = async (refreshTp = false) => {
   if (refreshTp && historyTp.value) await historyTp.value.getData();
   await getTimeRecordData("", true);
 };
 
-watch(
-  () => historyTp.value,
-  () => {
-    historyTp.value.getData();
-  }
-);
-
 onMounted(async () => {
   await getTimeRecordData();
+});
+
+onBeforeRouteLeave(() => {
+  actualTimeRecordId.value = undefined;
 });
 </script>
 
@@ -69,9 +71,9 @@ onMounted(async () => {
       <section v-if="trReq" class="w-full md:col-span-12 md:mb-5">
         <HistoryTimePeriod
           ref="historyTp"
-          v-if="trReq.id"
+          v-if="actualTimeRecordId"
           :is-fetch="getIsFetch"
-          :time-record-id="trReq.id"
+          :time-record-id="actualTimeRecordId"
           :callback="refreshTimePeriodCallback"
         />
       </section>

@@ -1,6 +1,7 @@
 export const trReq = ref<TimeRecordMap>();
 
 export const getIsFetch = ref(false);
+export const actualTimeRecordId = ref<number>();
 
 export const getTimeRecordData = async (code = "", disableFetch = false) => {
   const route = useRoute();
@@ -20,7 +21,10 @@ export const getTimeRecordData = async (code = "", disableFetch = false) => {
 
   try {
     const data = await getTimeRecordByCode(`${route.params.code}`, true);
-    if (data) trReq.value = data;
+    if (data) {
+      trReq.value = data;
+      actualTimeRecordId.value = data.id;
+    }
   } catch (error) {
     ErrorToast(error);
   } finally {

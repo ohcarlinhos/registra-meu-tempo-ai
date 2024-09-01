@@ -48,6 +48,10 @@ const isFetchNow = computed(() => {
   return getIsFetch.value || props.isFetch;
 });
 
+onMounted(async () => {
+  await getData();
+});
+
 defineExpose({
   getData,
 });
