@@ -5,6 +5,7 @@ export type TimePeriodDto = {
 };
 
 export type TimePeriodListDto = {
-  start: Date;
-  end: Date;
-}[];
+  type: string;
+  from: string;
+  timePeriods: { start: Date; end: Date }[];
+};

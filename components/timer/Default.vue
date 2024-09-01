@@ -136,8 +136,13 @@ const endTimer = async () => {
   ];
 
   if (!props.id) {
-    editTimeRecordObject.value = timeRecordLocalToForm({ timePeriods }, () =>
-      timerStore.clearCurrentTimePeriodList()
+    editTimeRecordObject.value = timeRecordLocalToForm(
+      {
+        timePeriods,
+        timerSessionType: timerStore._type,
+        timerSessionFrom: "browser",
+      },
+      () => timerStore.clearCurrentTimePeriodList()
     );
 
     modal.confirmPersistMethod.open = true;
@@ -148,7 +153,11 @@ const endTimer = async () => {
 
   try {
     submitIsFetch.value = true;
-    await postTimePeriodList(props.id, timePeriods);
+    await postTimePeriodList(props.id, {
+      timePeriods,
+      type: timerStore._type,
+      from: "browser",
+    });
 
     timerStore.clearCurrentTimePeriodList();
 

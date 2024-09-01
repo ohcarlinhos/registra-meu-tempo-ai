@@ -3,6 +3,8 @@ export type CreateTimeRecordDto = {
   timePeriods: { start: Date | string; end: Date | string }[];
   categoryId?: number | null;
   code?: string;
+  timerSessionType?: string;
+  timerSessionFrom?: string;
 };
 
 export type UpdateTimeRecordDto = {

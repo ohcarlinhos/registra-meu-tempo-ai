@@ -35,6 +35,8 @@ const form = reactive<TimeRecordForm>({
   timePeriods: [],
   callback: undefined,
   isSync: false,
+  timerSessionType: "manual",
+  timerSessionFrom: "browser",
 });
 
 const newCategories = ref<string[]>([]);
@@ -182,13 +184,14 @@ const updateAction = async () => {
     isFetch.value = true;
 
     if (isSyncMode.value) {
-      await postTimePeriodList(
-        form.id!,
-        form.timePeriods.map((tp) => ({
+      await postTimePeriodList(form.id!, {
+        timePeriods: form.timePeriods.map((tp) => ({
           start: new Date(tp.start),
           end: new Date(tp.end),
-        }))
-      );
+        })),
+        type: form.timerSessionType!,
+        from: form.timerSessionFrom!,
+      });
 
       if (form.callback) form.callback();
     } else {
@@ -236,6 +239,11 @@ onMounted(async () => {
 
     if (!props.hideTimePeriods) {
       form.timePeriods = props.editObject.timePeriods;
+    }
+
+    if (isSyncMode) {
+      form.timerSessionType = props.editObject?.timerSessionType;
+      form.timerSessionFrom = props.editObject?.timerSessionFrom;
     }
   }
 

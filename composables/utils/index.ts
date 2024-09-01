@@ -30,6 +30,8 @@ export const timeRecordLocalToForm = (
     category: "",
     timePeriods: obj.timePeriods || [],
     isSync: Boolean(obj.isSync),
+    timerSessionType: obj.timerSessionType || "",
+    timerSessionFrom: obj.timerSessionFrom || "",
     callback,
   };
 };

@@ -16,7 +16,7 @@ export const useTimerStore = defineStore("TimerStore", {
       _running: false,
       _interval: null as NodeJS.Timeout | null,
       _type: "timer" as TimerTypes,
-      _pomodoroPeiod: 25,
+      _pomodoroPeriod: 25,
       _breakPeriod: 5,
       _showOptions: false,
       _perPage: 10,
@@ -123,6 +123,8 @@ export const useTimerStore = defineStore("TimerStore", {
             start: new Date(p.start),
             end: new Date(p.end),
           })),
+          timerSessionType: this._type,
+          timerSessionFrom: "browser",
         };
 
         if (this._currentTimeRecordId)
@@ -133,7 +135,12 @@ export const useTimerStore = defineStore("TimerStore", {
 
         if (this._currentTimeRecordId) {
           this._postTimePeriodListFetching = true;
-          postTimePeriodList(this._currentTimeRecordId, timeRecord.timePeriods)
+
+          postTimePeriodList(this._currentTimeRecordId, {
+            timePeriods: timeRecord.timePeriods,
+            type: this._type,
+            from: "browser",
+          })
             .then(() => {
               if (this._postTimePeriodCallback && this._currentTimeRecordCode)
                 this._postTimePeriodCallback(this._currentTimeRecordCode);
@@ -167,7 +174,7 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     setPomodoroPeiod(value: number) {
-      this._pomodoroPeiod = value;
+      this._pomodoroPeriod = value;
     },
 
     setBreakPeiod(value: number) {
@@ -224,12 +231,12 @@ export const useTimerStore = defineStore("TimerStore", {
 
     regressiveMilissecondsNecessary(): number {
       const mult = 60000;
-      if (this.isPomodoro) return mult * this._pomodoroPeiod;
+      if (this.isPomodoro) return mult * this._pomodoroPeriod;
       return mult * this._breakPeriod;
     },
 
     pomodoroPeiod(): number {
-      return this._pomodoroPeiod;
+      return this._pomodoroPeriod;
     },
 
     breakPeiod(): number {

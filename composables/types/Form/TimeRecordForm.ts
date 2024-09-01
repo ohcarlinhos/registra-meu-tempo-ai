@@ -8,5 +8,7 @@ export type TimeRecordForm = {
   externalLink?: string;
   timePeriods: { start: Date | string; end: Date | string }[];
   isSync?: boolean;
+  timerSessionType?: string;
+  timerSessionFrom?: string;
   callback?: (code?: string) => void;
 };
