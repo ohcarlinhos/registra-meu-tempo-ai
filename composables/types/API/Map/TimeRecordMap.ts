@@ -3,6 +3,7 @@ export type TimeRecordMap = {
   title: string;
   description: string;
   userId: number;
+  category: CategoryMap;
   categoryName: string | null;
   categoryId: number | null;
   code: string;
