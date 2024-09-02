@@ -26,6 +26,7 @@ onMounted(async () => {
 
 onBeforeRouteLeave(() => {
   actualTimeRecordId.value = undefined;
+  getIsFetch.value = true;
 });
 </script>
 
@@ -56,7 +57,8 @@ onBeforeRouteLeave(() => {
         class="w-full col-span-1 md:col-span-6 lg:col-span-4"
       >
         <TimerDefault
-          :id="trReq.id"
+          v-if="actualTimeRecordId"
+          :id="actualTimeRecordId"
           :code="trReq.code"
           :title="trReq.title"
           :post-time-period-callback="() => refreshTimePeriodCallback(true)"
