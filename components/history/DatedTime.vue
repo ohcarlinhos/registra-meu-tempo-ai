@@ -9,7 +9,7 @@ import {
   deleteTpModal,
   openDeleteTpModal,
   closeDeleteTpModal,
-} from "./time-period/modal";
+} from "./dated-time/modal";
 
 import {
   dtpReq,
@@ -17,7 +17,7 @@ import {
   getDatedTimeData,
   deleteTimePeriodAction,
   deleteIsFetch,
-} from "./time-period/actions";
+} from "./dated-time/actions";
 
 const props = defineProps<{
   timeRecordId?: number;
