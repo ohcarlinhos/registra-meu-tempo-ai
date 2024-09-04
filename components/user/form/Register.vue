@@ -74,6 +74,16 @@ const submit = async () => {
 
       <UFormGroup :label="t('registerCode')" name="registerCode" required>
         <UInput type="registerCode" v-model="form.registerCode" />
+        <p class="text-xs pt-1">
+          Envie uma mensagem para receber o código de registro
+          <a
+            class="font-bold text-primary"
+            href="https://www.linkedin.com/in/carlos-roberto/"
+            target="_blank"
+          >
+            clicando aqui.
+          </a>
+        </p>
       </UFormGroup>
 
       <UFormGroup :label="t('password')" name="password" required>
