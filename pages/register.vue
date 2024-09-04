@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["guest"], name: "register" });
-const { t } = useI18n();
+
+onMounted(() => {
+  useAuthStore().closeModal();
+});
 </script>
 
 <template>
@@ -13,7 +16,7 @@ const { t } = useI18n();
     <UserFormRegister />
 
     <ULink to="/" inactive-class="text-primary font-bold text-xs">
-      {{ t("goToHome") }}
+      {{ _$t("goToHome") }}
     </ULink>
   </UContainer>
 </template>
