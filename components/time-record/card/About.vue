@@ -6,12 +6,11 @@ defineProps<{
 
 <template>
   <UCard>
-    <p v-if="timeRecord.description" class="text-lg pb-4">
-      <span class="font-normal">{{ timeRecord.description }}</span>
-    </p>
-
-    <p v-else class="text-lg">
-      <span class="font-normal">
+    <p class="text-lg pb-2">
+      <span v-if="timeRecord.description" class="font-normal">
+        {{ timeRecord.description }}
+      </span>
+      <span v-else class="font-normal">
         {{ _$t("emptyRecordDescription") }}
       </span>
     </p>

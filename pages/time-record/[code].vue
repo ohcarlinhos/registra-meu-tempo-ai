@@ -31,15 +31,10 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <UContainer
-    :ui="{
-      padding: 'py-16',
-      constrained: 'min-h-svh w-full lg:max-w-7xl',
-    }"
-  >
-    <GHeader small-title />
-
-    <section class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
+  <NuxtLayout name="panel">
+    <section
+      class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 w-full min-h-svh"
+    >
       <section class="w-full md:col-span-8 md:mb-5">
         <TimeRecordPageHeader :time-record="trReq" :is-fetch="getIsFetch">
           <template #button>
@@ -81,7 +76,7 @@ onBeforeRouteLeave(() => {
       </section>
     </section>
 
-    <section v-if="!trReq && !getIsFetch">
+    <section class="w-full" v-if="!trReq && !getIsFetch">
       <h2 class="text-2xl text-primary font-bold pb-3">
         {{ _$t("recordNotFound") }}
       </h2>
@@ -93,7 +88,7 @@ onBeforeRouteLeave(() => {
         {{ _$t("backToRecords") }}
       </UButton>
     </section>
-  </UContainer>
+  </NuxtLayout>
 </template>
 
 <style></style>

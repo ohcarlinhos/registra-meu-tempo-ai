@@ -1,5 +1,11 @@
 export const postUser = async (payload: CreateUserDto) => {
-  return CustomHttp<CreateUserDto, UserMap>("user", "post", payload, true);
+  return CustomHttp<CreateUserDto, UserMap>(
+    "user",
+    "post",
+    payload,
+    true,
+    false
+  );
 };
 
 export const updateUser = async (id: number, payload: UpdateUserDto) => {
