@@ -11,13 +11,12 @@ export const getTimePeriods = async function (
   );
 };
 
-export const getDatedTimePeriod = async function (
+export const getDatedTime = async function (
   timeRecordId: number,
-  pagQuery: IPaginationQuery,
   mounted = false
 ) {
-  return await CustomHttp<null, Pagination<DatedTimePeriodMap>>(
-    `/time-period/dated/${timeRecordId}?page=${pagQuery.page}&perPage=${pagQuery.perPage}`,
+  return await CustomHttp<null, DatedTimeMap[]>(
+    `/time-period/dated/${timeRecordId}`,
     "get",
     null,
     mounted

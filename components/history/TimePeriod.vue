@@ -14,7 +14,7 @@ import {
 import {
   dtpReq,
   getIsFetch,
-  getDatedTimePeriodData,
+  getDatedTimeData,
   deleteTimePeriodAction,
   deleteIsFetch,
 } from "./time-period/actions";
@@ -41,7 +41,7 @@ const closeTimePeriodCallback = async (refresh = false) => {
 };
 
 const getData = () => {
-  return getDatedTimePeriodData(props.timeRecordId!);
+  return getDatedTimeData(props.timeRecordId!);
 };
 
 const isFetchNow = computed(() => {
@@ -91,7 +91,7 @@ defineExpose({
 
     <UCard
       v-else
-      v-for="dtp in dtpReq?.data"
+      v-for="dtp in dtpReq"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
       <h3 class="text-xl inline-flex gap-2 items-center">

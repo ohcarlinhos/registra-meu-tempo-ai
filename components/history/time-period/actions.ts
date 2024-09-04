@@ -1,14 +1,14 @@
-export const dtpReq = ref<Pagination<DatedTimePeriodMap>>();
+export const dtpReq = ref<DatedTimeMap[]>();
 
 export const getIsFetch = ref(false);
 
-export const getDatedTimePeriodData = async (
+export const getDatedTimeData = async (
   timeRecordId: number,
   disableUpdateFetch = false
 ) => {
   if (!disableUpdateFetch) getIsFetch.value = true;
 
-  getDatedTimePeriod(timeRecordId, new PaginationQuery(), true)
+  getDatedTime(timeRecordId, true)
     .then((data) => {
       if (data) dtpReq.value = data;
     })
@@ -33,7 +33,7 @@ export const deleteTimePeriodAction = async (
     const { $i18n } = useNuxtApp();
     OkToast($i18n.t("form.timePeriod.status.success.delete"));
 
-    await getDatedTimePeriodData(timeRecordId);
+    await getDatedTimeData(timeRecordId);
     if (callback) await callback();
 
     closeModalMethod();

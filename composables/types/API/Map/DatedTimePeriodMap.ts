@@ -1,16 +1,9 @@
-export type DatedTimePeriodMap = {
+export type DatedTimeMap = {
   date: string;
   count: number;
   timePeriods: TimePeriodMap[];
   timePeriodsFormattedTime: string;
-  timerSessions: TimerSessionsMap[];
+  timerSessions: TimerSessionMap[];
   timerSessionsFormattedTime: string;
-  formattedTime: string;
-};
-
-export type TimerSessionsMap = {
-  id: number;
-  type: string;
-  timePeriods: TimePeriodMap[];
   formattedTime: string;
 };
