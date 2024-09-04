@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const authStore = useAuthStore();
+const colorMode = useColorMode();
 
 withDefaults(
   defineProps<{
@@ -15,6 +16,10 @@ withDefaults(
     disablePadding: false,
   }
 );
+
+const imgUrl = computed(() => {
+  return `/img/rmta_${colorMode.value === "dark" ? "dark" : "light"}.svg`;
+});
 
 const exit = () => {
   authStore.clearUserToken();
@@ -33,13 +38,13 @@ const activeClass = "text-primary font-bold";
       <div>
         <UBadge variant="subtle" size="xs">Versão Alfa</UBadge>
 
-        <h1
-          class="font-bold text-primary pt-1"
-          :class="{ 'text-6xl': !smallTitle, 'text-5xl': smallTitle }"
-        >
-          Registra meu <br />
-          tempo aí!
-        </h1>
+        <img
+          :src="imgUrl"
+          class="pt-6"
+          label="Registra meu tempo aí!"
+          title="Registra meu tempo aí!"
+        />
+        <h1 class="title-hide">Registra meu tempo aí!</h1>
 
         <p v-if="!hideDescription" class="pt-4">
           Sua ferramenta de
@@ -95,3 +100,9 @@ const activeClass = "text-primary font-bold";
     </nav>
   </header>
 </template>
+
+<style scoped>
+.title-hide {
+  font-size: 0;
+}
+</style>
