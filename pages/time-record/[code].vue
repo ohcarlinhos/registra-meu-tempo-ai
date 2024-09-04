@@ -39,7 +39,7 @@ onBeforeRouteLeave(() => {
         <TimeRecordPageHeader :time-record="trReq" :is-fetch="getIsFetch">
           <template #button>
             <TimeRecordButtonEdit
-              v-if="trReq"
+              v-if="actualTimeRecordId && trReq"
               :time-record="trReq"
               :callback="getTimeRecordData"
             />
@@ -52,7 +52,7 @@ onBeforeRouteLeave(() => {
         class="w-full col-span-1 md:col-span-6 lg:col-span-4"
       >
         <TimerDefault
-          v-if="actualTimeRecordId"
+          v-if="actualTimeRecordId && trReq"
           :id="actualTimeRecordId"
           :code="trReq.code"
           :title="trReq.title"
