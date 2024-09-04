@@ -23,7 +23,7 @@ const setOldToken = () => {
   <NuxtLayout>
     <UButton
       :ui="{
-        base: 'absolute top-2 left-2 z-50',
+        base: 'fixed top-2 left-2 z-50',
       }"
       :icon="
         isDark ? 'i-icon-park-outline-moon' : 'i-icon-park-outline-sun-one'
@@ -43,6 +43,16 @@ const setOldToken = () => {
     </UModal>
 
     <NuxtPage />
+    <footer class="text-center pb-10">
+      Ferramenta desenvolvida por
+      <a
+        href="https://www.linkedin.com/in/carlos-roberto/"
+        target="_blank"
+        class="text-primary font-medium hover:underline"
+      >
+        Carlos Roberto.
+      </a>
+    </footer>
   </NuxtLayout>
 
   <UNotifications />
