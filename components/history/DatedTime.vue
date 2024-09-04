@@ -119,7 +119,7 @@ defineExpose({
           <UPopover
             v-for="(timerSession, index) in dtp.timerSessions"
             :key="timerSession.id"
-            mode="click"
+            mode="hover"
           >
             <UBadge
               :color="timerSession.type === 'timer' ? 'primary' : 'red'"
@@ -185,7 +185,7 @@ defineExpose({
           <UPopover
             v-for="(period, index) in dtp.timePeriods"
             :key="period.id"
-            mode="click"
+            mode="hover"
           >
             <UBadge
               color="yellow"
