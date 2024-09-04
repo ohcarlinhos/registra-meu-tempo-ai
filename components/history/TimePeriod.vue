@@ -94,66 +94,146 @@ defineExpose({
       v-for="dtp in dtpReq?.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
-      <h3 class="text-xl">
+      <h3 class="text-xl inline-flex gap-2 items-center">
         {{ format(dtp.date, "dd/MM/yyyy") }}
       </h3>
 
-      <p>Tempo: {{ dtp.formattedTime }}</p>
+      <p class="text-md pb-1">
+        <span>Total: {{ dtp.formattedTime }}</span>
+      </p>
 
-      <section class="flex flex-row gap-2 flex-wrap py-2">
-        <UPopover
-          v-for="(period, index) in dtp.timePeriods"
-          :key="period.id"
-          mode="hover"
+      <template v-if="dtp.timerSessions.length">
+        <UDivider class="py-2" />
+
+        <p class="text-lg">Sessões</p>
+
+        <p class="text-sm">
+          {{ dtp.timerSessionsFormattedTime }}, {{ dtp.timerSessions.length }}
+          {{ dtp.timerSessions.length > 1 ? "sessões" : "sessão" }}
+        </p>
+
+        <section
+          v-if="dtp.timerSessions.length"
+          class="flex flex-row gap-2 flex-wrap py-2"
         >
-          <UBadge
-            color="primary"
-            :variant="index % 2 == 0 ? 'subtle' : 'soft'"
-            size="md"
+          <UPopover
+            v-for="(timerSession, index) in dtp.timerSessions"
+            :key="timerSession.id"
+            mode="click"
           >
-            {{ period.formattedTime || "0s" }}
-          </UBadge>
+            <UBadge
+              :color="timerSession.type === 'timer' ? 'primary' : 'red'"
+              :variant="index % 2 == 0 ? 'subtle' : 'soft'"
+              size="md"
+            >
+              {{ timerSession.formattedTime || "0s" }}
+            </UBadge>
 
-          <template #panel>
-            <div class="p-2 pt-4 flex flex-col items-center gap-2">
-              <section class="flex items-center gap-2">
-                <UBadge
-                  color="gray"
-                  variant="solid"
-                  :title="format(period.start, 'HH:mm:ss dd/MM/yyyy')"
+            <template #panel>
+              <div class="p-2 pt-1 flex flex-col items-center gap-2">
+                <p class="text-sm">
+                  {{
+                    timerSession.type === "pomodoro" ? "Pomodoro" : "Cronômetro"
+                  }}
+                </p>
+
+                <UDivider />
+
+                <section
+                  v-for="tp in timerSession.timePeriods"
+                  :key="tp.id"
+                  class="flex w-full justify-around gap-2"
                 >
-                  {{ format(period.start, "HH:mm:ss") }}
-                </UBadge>
-                até
-                <UBadge
-                  color="gray"
-                  variant="solid"
-                  :title="format(period.end, 'HH:mm:ss dd/MM/yyyy')"
-                >
-                  {{ format(period.end, "HH:mm:ss") }}
-                </UBadge>
-              </section>
+                  <UBadge
+                    color="gray"
+                    variant="solid"
+                    :title="
+                      format(tp.start, 'HH:mm:ss dd/MM/yyyy') +
+                      ' até ' +
+                      format(tp.end, 'HH:mm:ss dd/MM/yyyy')
+                    "
+                  >
+                    {{ format(tp.start, "HH:mm:ss") }} até
+                    {{ format(tp.end, "HH:mm:ss") }}
+                  </UBadge>
 
-              <section>
-                <TimePeriodButtonEdit
-                  :time-period="period"
-                  @open="editTimePeriod"
-                />
+                  <UBadge
+                    color="yellow"
+                    variant="subtle"
+                    :title="tp.formattedTime"
+                  >
+                    {{ tp.formattedTime }}
+                  </UBadge>
+                </section>
+              </div>
+            </template>
+          </UPopover>
+        </section>
+      </template>
 
-                <UButton
-                  :label="_$t('delete')"
-                  color="gray"
-                  variant="ghost"
-                  icon="i-icon-park-outline-delete-themes"
-                  @click="openDeleteTpModal(period.id!)"
-                />
-              </section>
-            </div>
-          </template>
-        </UPopover>
-      </section>
+      <template v-if="dtp.timePeriods.length">
+        <UDivider class="py-2" />
 
-      <p class="text-sm">Total de Períodos: {{ dtp.count }}</p>
+        <p class="text-lg">Períodos</p>
+
+        <p class="text-sm">
+          {{ dtp.timePeriodsFormattedTime }}, {{ dtp.timePeriods.length }}
+          {{ dtp.timePeriods.length > 1 ? "períodos" : "período" }}
+        </p>
+
+        <section class="flex flex-row gap-2 flex-wrap py-2">
+          <UPopover
+            v-for="(period, index) in dtp.timePeriods"
+            :key="period.id"
+            mode="click"
+          >
+            <UBadge
+              color="yellow"
+              :variant="index % 2 == 0 ? 'subtle' : 'soft'"
+              size="md"
+            >
+              {{ period.formattedTime || "0s" }}
+            </UBadge>
+
+            <template #panel>
+              <div class="p-2 pt-4 flex flex-col items-center gap-2">
+                <section class="flex items-center gap-2">
+                  <UBadge
+                    color="gray"
+                    variant="solid"
+                    :title="format(period.start, 'HH:mm:ss dd/MM/yyyy')"
+                  >
+                    {{ format(period.start, "HH:mm:ss") }}
+                  </UBadge>
+                  até
+                  <UBadge
+                    color="gray"
+                    variant="solid"
+                    :title="format(period.end, 'HH:mm:ss dd/MM/yyyy')"
+                  >
+                    {{ format(period.end, "HH:mm:ss") }}
+                  </UBadge>
+                </section>
+
+                <section>
+                  <TimePeriodButtonEdit
+                    :time-period="period"
+                    @open="editTimePeriod"
+                  />
+
+                  <UButton
+                    :label="_$t('delete')"
+                    color="gray"
+                    variant="ghost"
+                    icon="i-icon-park-outline-delete-themes"
+                    @click="openDeleteTpModal(period.id!)"
+                  />
+                </section>
+              </div>
+            </template>
+          </UPopover>
+        </section>
+      </template>
     </UCard>
   </section>
 
