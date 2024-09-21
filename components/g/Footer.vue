@@ -2,7 +2,7 @@
 
 <template>
   <footer class="text-center">
-    Ferramenta desenvolvida por
+    Desenvolvido por
     <a
       href="https://www.linkedin.com/in/carlos-roberto/"
       target="_blank"
