@@ -255,7 +255,7 @@ onMounted(async () => {
   <UCard>
     <template #header>
       <h2>
-        Registro de Tempo
+        Registro
         <UBadge
           v-if="(isEditMode || isSyncMode) && props.editObject?.code"
           variant="subtle"

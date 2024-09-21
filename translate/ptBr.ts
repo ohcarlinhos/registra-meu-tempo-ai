@@ -141,8 +141,8 @@ const i18nObj = {
       selectCategoryAdd: "Criar:",
       status: {
         success: {
-          create: "Registro de tempo criado com sucesso.",
-          update: "Registro de atualizado com sucesso.",
+          create: "Registro criado com sucesso.",
+          update: "Registro atualizado com sucesso.",
         },
       },
     },
@@ -165,7 +165,7 @@ const i18nObj = {
       t3: "Dá um start!",
     },
     persistModal: {
-      text: "Como deseja salvar o Registro de Tempo?",
+      text: "Como deseja salvar o Registro?",
       browserButton: "Salvar no Navegador",
       accountButton: "Salvar em Minha Conta",
     },

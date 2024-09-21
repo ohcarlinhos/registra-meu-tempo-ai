@@ -44,7 +44,7 @@ await trStore.fetch();
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-4xl font-bold">{{ $t("records") }} de Tempo</h2>
+      <h2 class="text-4xl font-bold">{{ $t("records") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
         <GSearch :perPage="trStore.apiRes?.perPage" :store="trStore" />
