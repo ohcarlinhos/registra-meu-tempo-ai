@@ -69,9 +69,19 @@ const i18nObj = {
 
   timers: "Cronômetros",
 
+  checkYourEmailInbox: "Verifique sua caixa de entrada.",
+
+  recoveryPasswordSuccess:
+    "E-mail de recuperação enviado, verifique a caixa de SPAM caso não esteja nas caixas principais.",
+
   successPeriodSync: "Períodos de tempo sincronizados com sucesso.",
   errorPeriodSync:
     "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador).",
+
+  createAccount: "Criar conta",
+  recoveryPassword: "Recuperar senha",
+
+  userNotFound: "Usuário não encontrado.",
 
   v: {
     email: {
@@ -171,15 +181,13 @@ const i18nObj = {
     },
   },
 
-  api: {
-    error: {
-      generic:
-        "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
-    },
-  },
+  wrongEmailOrPassword: "E-mail ou senha incorretos.",
 
+  apiGenericError:
+    "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
   apiBaseDoNotSet: "Variável API_BASE não definida.",
   sessionExpiredError: "Sessão expirada, efetue um novo login.",
+  genericError: "Não foi possível executar essa ação.",
 } as const;
 
 export type i18nT = keyof typeof i18nObj;
