@@ -1,0 +1,96 @@
+<script lang="ts" setup>
+import * as yup from "yup";
+
+const { t } = useI18n();
+const authStore = useAuthStore();
+
+const form = reactive({
+  email: "",
+});
+
+const mockStore = useMockStore();
+
+if (mockStore.registerFormEnable) {
+  form.email = mockStore.registerForm.email;
+}
+
+const successEmailSend = ref(false);
+
+const page = reactive({ fetch: false });
+
+const schema = yup.object({
+  email: vUser.email(),
+});
+
+const submit = async () => {
+  schema.validate(form).then(async () => {
+    await submitAction();
+  });
+};
+
+const submitAction = async () => {
+  try {
+    page.fetch = true;
+
+    const data = await postRecovery({
+      email: form.email,
+    });
+
+    if (!!data && typeof data == "boolean") {
+      successEmailSend.value = data;
+    }
+
+    OkToast(_$t("recoveryPasswordSuccess"));
+  } catch (error) {
+    ErrorToast(error);
+  } finally {
+    page.fetch = false;
+  }
+};
+
+const submitIsDisabled = computed(() => {
+  return !form.email;
+});
+</script>
+
+<template>
+  <UCard v-if="successEmailSend" :ui="{ base: 'w-full' }">
+    <p>{{ _$t("recoveryPasswordSuccess") }}</p>
+  </UCard>
+
+  <UCard
+    v-else
+    :ui="{
+      base: 'w-full',
+      footer: { base: 'text-center' },
+    }"
+  >
+    <template #header>{{ "Recuperar senha" }}</template>
+
+    <UForm :schema="schema" :state="form" class="space-y-4">
+      <UFormGroup :label="t('email')" name="email" required>
+        <UInput type="email" v-model="form.email" autofocus />
+      </UFormGroup>
+
+      <UButton
+        :loading="page.fetch"
+        :disabled="submitIsDisabled"
+        :label="t('access')"
+        block
+        @click="submit"
+      />
+    </UForm>
+
+    <template v-if="!authStore._openModal" #footer>
+      <section class="flex gap-5 justify-center">
+        <ULink to="/login" inactive-class="text-primary font-bold text-xs">
+          {{ _$t("access") }}
+        </ULink>
+
+        <ULink to="/register" inactive-class="text-primary font-bold text-xs">
+          {{ _$t("createAccount") }}
+        </ULink>
+      </section>
+    </template>
+  </UCard>
+</template>
