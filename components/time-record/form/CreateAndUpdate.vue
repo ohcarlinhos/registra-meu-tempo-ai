@@ -170,7 +170,7 @@ const createAction = async () => {
     closeModal(props.refreshTimeRecords);
     OkToast(_$t("createTimeRecordSuccess"));
 
-    router.push({ name: "time.record.page", params: { code: result?.code } });
+    router.push({ name: "record", params: { code: result?.code } });
   } catch (error) {
     ErrorToast(error);
   } finally {

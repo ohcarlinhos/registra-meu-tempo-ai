@@ -9,7 +9,7 @@ export const getTimeRecordData = async (code = "", disableFetch = false) => {
 
   if (code && code != route.params.code) {
     router.push({
-      name: "time.record.page",
+      name: "record",
       params: {
         code,
       },

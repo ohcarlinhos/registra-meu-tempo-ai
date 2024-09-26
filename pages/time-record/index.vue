@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["auth"], name: "time.record.list" });
+definePageMeta({
+  middleware: ["auth"],
+  name: "time.record.list",
+  redirect: "records",
+});
 </script>
-
-<template>
-  <NuxtLayout name="panel">
-    <TimeRecordDashboard />
-  </NuxtLayout>
-</template>

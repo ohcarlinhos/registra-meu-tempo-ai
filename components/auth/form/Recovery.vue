@@ -83,11 +83,17 @@ const submitIsDisabled = computed(() => {
 
     <template v-if="!authStore._openModal" #footer>
       <section class="flex gap-5 justify-center">
-        <ULink to="/login" inactive-class="text-primary font-bold text-xs">
+        <ULink
+          :to="{ name: 'login' }"
+          inactive-class="text-primary font-bold text-xs"
+        >
           {{ _$t("access") }}
         </ULink>
 
-        <ULink to="/register" inactive-class="text-primary font-bold text-xs">
+        <ULink
+          :to="{ name: 'register' }"
+          inactive-class="text-primary font-bold text-xs"
+        >
           {{ _$t("createAccount") }}
         </ULink>
       </section>

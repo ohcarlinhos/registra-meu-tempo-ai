@@ -54,7 +54,7 @@ const submitAction = async () => {
       return;
     }
 
-    return router.push({ name: "time.record.list" });
+    return router.push({ name: "records" });
   } catch (error) {
     ErrorToast(error);
   } finally {
@@ -96,11 +96,17 @@ const submitIsDisabled = computed(() => {
 
     <template v-if="!authStore._openModal" #footer>
       <section class="flex gap-5 justify-center">
-        <ULink to="/register" inactive-class="text-primary font-bold text-xs">
+        <ULink
+          :to="{ name: 'register' }"
+          inactive-class="text-primary font-bold text-xs"
+        >
           {{ _$t("createAccount") }}
         </ULink>
 
-        <ULink to="/recovery" inactive-class="text-primary font-bold text-xs">
+        <ULink
+          :to="{ name: 'recovery' }"
+          inactive-class="text-primary font-bold text-xs"
+        >
           {{ _$t("recoveryPassword") }}
         </ULink>
       </section>

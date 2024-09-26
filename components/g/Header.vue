@@ -62,27 +62,37 @@ const activeClass = "text-primary font-bold";
       class="pt-6 flex gap-4"
       :class="{ 'justify-center': center }"
     >
-      <ULink to="/" :active-class="activeClass">{{ _$t("timers") }}</ULink>
+      <ULink :to="{ name: 'home' }" :active-class="activeClass">{{
+        _$t("timers")
+      }}</ULink>
 
       <ULink
         v-if="authStore.isAuth"
-        to="/time-record"
+        :to="{ name: 'records' }"
         :active-class="activeClass"
       >
         {{ _$t("records") }}
       </ULink>
 
-      <ULink v-if="authStore.isAuth" to="/options" :active-class="activeClass">
+      <ULink
+        v-if="authStore.isAuth"
+        :to="{ name: 'options' }"
+        :active-class="activeClass"
+      >
         {{ _$t("options") }}
       </ULink>
 
-      <ULink v-if="!authStore.isAuth" to="/login" :active-class="activeClass">
+      <ULink
+        v-if="!authStore.isAuth"
+        :to="{ name: 'login' }"
+        :active-class="activeClass"
+      >
         {{ _$t("access") }}
       </ULink>
 
       <ULink
         v-if="!authStore.isAuth"
-        to="/register"
+        :to="{ name: 'register' }"
         :active-class="activeClass"
       >
         {{ _$t("register") }}

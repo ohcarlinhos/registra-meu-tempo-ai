@@ -23,7 +23,7 @@ const openConfirmDeleteModal = async (id: number) => {
 
 const access = (code: string) => {
   router.push({
-    name: "time.record.page",
+    name: "record",
     params: { code },
   });
 };
