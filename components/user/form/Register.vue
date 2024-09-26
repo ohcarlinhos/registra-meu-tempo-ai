@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
-const { t } = useI18n();
-
 const isFetch = ref(false);
 
 const form = reactive({
@@ -40,7 +38,7 @@ const submit = async () => {
     const loginData = await postLogin(form);
 
     if (loginData) {
-      OkToast(t("form.user.create.success"));
+      OkToast(_$t("createUserSuccess"));
       useAuthStore().setUserToken(loginData.token);
       useRouter().push("/time-record");
     }
@@ -61,18 +59,18 @@ const submit = async () => {
       },
     }"
   >
-    <template #header>{{ t("toRecord") }}</template>
+    <template #header>{{ _$t("toRecord") }}</template>
 
     <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-      <UFormGroup :label="t('name')" name="name" required>
+      <UFormGroup :label="_$t('name')" name="name" required>
         <UInput type="text" v-model="form.name" autofocus />
       </UFormGroup>
 
-      <UFormGroup :label="t('email')" name="email" required>
+      <UFormGroup :label="_$t('email')" name="email" required>
         <UInput type="email" v-model="form.email" />
       </UFormGroup>
 
-      <UFormGroup :label="t('registerCode')" name="registerCode" required>
+      <UFormGroup :label="_$t('registerCode')" name="registerCode" required>
         <UInput type="registerCode" v-model="form.registerCode" />
         <p class="text-xs pt-1">
           Envie uma mensagem para receber um código de registro
@@ -86,21 +84,30 @@ const submit = async () => {
         </p>
       </UFormGroup>
 
-      <UFormGroup :label="t('password')" name="password" required>
+      <UFormGroup :label="_$t('password')" name="password" required>
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
 
-      <UFormGroup :label="t('confirmPassword')" name="confirmPassword" required>
+      <UFormGroup
+        :label="_$t('confirmPassword')"
+        name="confirmPassword"
+        required
+      >
         <UInput type="password" v-model="form.confirmPassword" />
       </UFormGroup>
 
-      <UButton :label="t('toRecord')" type="submit" :loading="isFetch" block />
+      <UButton
+        :label="_$t('toRecord')"
+        type="submit"
+        :loading="isFetch"
+        block
+      />
     </UForm>
 
     <template #footer>
       <section class="flex gap-5 justify-center">
         <ULink to="/login" inactive-class="text-primary font-bold text-xs">
-          {{ t("access") }}
+          {{ _$t("access") }}
         </ULink>
       </section>
     </template>

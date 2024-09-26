@@ -3,6 +3,7 @@ const i18nObj = {
   add: "Adicionar",
   send: "Enviar",
   save: "Salvar",
+  update: "Atualizar",
   cancel: "Cancelar",
   confirm: "Confirmar",
   start: "Início",
@@ -17,6 +18,8 @@ const i18nObj = {
   none: "Nenhum",
   date: "Data",
   code: "Código",
+  codeFormDescription:
+    'Utilize o campo para identificar sua tarefa ou atividade. Ex: "TASK-1234".',
   category: "Categoria",
   categories: "Categorias",
   description: "Descrição",
@@ -113,50 +116,15 @@ const i18nObj = {
     },
   },
 
+  userDate: "Dados do Usuário",
+  updateUserSuccess: "Usuário atualizado com sucesso.",
+  createUserSuccess: "Usuário criado com sucesso.",
+  loginSuccess: "Autenticação feita com sucesso.",
+
+  createTimeRecordSuccess: "Registro criado com sucesso.",
+  updateTimeRecordSuccess: "Registro atualizado com sucesso.",
+
   form: {
-    user: {
-      create: {
-        success: "Usuário criado com sucesso.",
-      },
-
-      update: {
-        title: "Dados do Usuário",
-        success: "Usuário atualizado com sucesso.",
-        button: "Salvar",
-      },
-    },
-
-    category: {
-      create: {
-        title: "Categoria",
-        submit: "Criar",
-      },
-      update: {
-        title: "Atualizar Categoria",
-        submit: "Salvar",
-      },
-    },
-
-    login: {
-      success: "Autenticação feita com sucesso.",
-      create: "Criar conta",
-    },
-
-    timeRecord: {
-      code: "Código",
-      title: "Título",
-      description: "Descrição",
-      date: "Data",
-      category: "Categoria",
-      selectCategoryAdd: "Criar:",
-      status: {
-        success: {
-          create: "Registro criado com sucesso.",
-          update: "Registro atualizado com sucesso.",
-        },
-      },
-    },
-
     timePeriod: {
       status: {
         success: {

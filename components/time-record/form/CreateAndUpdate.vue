@@ -3,7 +3,6 @@ import * as yup from "yup";
 import { addMinutes } from "date-fns";
 import { vMaska } from "maska/vue";
 
-const { t } = useI18n();
 const router = useRouter();
 
 const trStore = useTimeRecordStore();
@@ -169,7 +168,7 @@ const createAction = async () => {
     if (form.callback) form.callback(result?.code);
 
     closeModal(props.refreshTimeRecords);
-    OkToast(t("form.timeRecord.status.success.create"));
+    OkToast(_$t("createTimeRecordSuccess"));
 
     router.push({ name: "time.record.page", params: { code: result?.code } });
   } catch (error) {
@@ -205,7 +204,8 @@ const updateAction = async () => {
     }
 
     closeModal(props.refreshTimeRecords);
-    OkToast(t("form.timeRecord.status.success.update"));
+
+    OkToast(_$t("updateTimeRecordSuccess"));
   } catch (error) {
     ErrorToast(error);
   } finally {
@@ -255,7 +255,7 @@ onMounted(async () => {
   <UCard>
     <template #header>
       <h2>
-        Registro
+        {{ _$t("record") }}
         <UBadge
           v-if="(isEditMode || isSyncMode) && props.editObject?.code"
           variant="subtle"
@@ -269,10 +269,10 @@ onMounted(async () => {
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
       <div v-if="!hideTimePeriods" class="flex justify-between">
-        <h3>{{ $t("periods") }}</h3>
+        <h3>{{ _$t("periods") }}</h3>
 
         <UButton
-          :label="$t('add')"
+          :label="_$t('add')"
           :disabled="addButtonIsDisabled || disableInputs"
           size="sm"
           type="button"
@@ -314,7 +314,7 @@ onMounted(async () => {
       </div>
 
       <template v-if="!isSyncMode">
-        <UFormGroup :label="$t('form.timeRecord.title')" name="title">
+        <UFormGroup :label="_$t('title')" name="title">
           <UInput
             v-model="form.title"
             :disabled="disableInputs"
@@ -324,10 +324,10 @@ onMounted(async () => {
         </UFormGroup>
 
         <UFormGroup
-          :label="$t('form.timeRecord.code')"
+          :label="_$t('code')"
           :required="isEditMode"
+          :description="_$t('codeFormDescription')"
           name="code"
-          description='Utilize o campo para identificar sua tarefa ou atividade. Ex: "TASK-1234".'
         >
           <UInput
             type="text"
@@ -363,7 +363,7 @@ onMounted(async () => {
           >
             <template #option-create="{ option }">
               <span class="flex-shrink-0">
-                {{ $t("form.timeRecord.selectCategoryAdd") }}
+                {{ _$t("create") }}
               </span>
 
               <span class="block truncate">{{ option }}</span>
@@ -371,7 +371,7 @@ onMounted(async () => {
           </USelectMenu>
         </UFormGroup>
 
-        <UFormGroup :label="$t('description')" name="description">
+        <UFormGroup :label="_$t('description')" name="description">
           <UTextarea
             v-model="form.description"
             :disabled="disableInputs"
@@ -380,7 +380,7 @@ onMounted(async () => {
         </UFormGroup>
 
         <UFormGroup
-          :label="$t('externalLink')"
+          :label="_$t('externalLink')"
           name="externalLink"
           description="Link externo para sua tarefa ou algo que queira fixar."
           maxlength="120"
@@ -396,9 +396,9 @@ onMounted(async () => {
       <UButton
         :loading="isFetch"
         :disabled="submitIsDisabled"
-        :label="isSyncMode ? $t('sync') : $t('send')"
-        block
+        :label="isSyncMode ? _$t('sync') : _$t('send')"
         type="submit"
+        block
       />
     </UForm>
   </UCard>

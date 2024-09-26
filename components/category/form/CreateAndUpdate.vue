@@ -117,7 +117,7 @@ watch(
   <UCard>
     <template #header>
       <div class="flex items-center justify-between">
-        <h2>{{ $t("form.category.create.title") }}</h2>
+        <h2>{{ _$t("category") }}</h2>
 
         <UButton
           color="gray"

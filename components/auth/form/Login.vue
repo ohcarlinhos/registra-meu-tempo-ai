@@ -38,7 +38,7 @@ const submitAction = async () => {
       password: form.password,
     });
 
-    OkToast(t("form.login.success"));
+    OkToast(_$t("loginSuccess"));
 
     authStore.setUserToken(data!.token);
 

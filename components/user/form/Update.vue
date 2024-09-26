@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
-const { t } = useI18n();
-
 const userStore = useUserStore();
 const pageStatus = reactive({ fetching: false });
 
-const form = reactive(<PayloadUpdate & { confirmPassword: string }>{
+const form = reactive(<UpdateUserDto & { confirmPassword: string }>{
   name: "",
   email: "",
   password: "",
@@ -51,7 +49,7 @@ const submit = async () => {
 
     await updateUser(userStore.myself.id, form);
 
-    OkToast(t("form.user.update.success"));
+    OkToast(_$t("updateUserSuccess"));
 
     form.oldPassword = "";
     form.confirmPassword = "";
@@ -73,32 +71,32 @@ await userStore.fetchMyself((data) => {
 
 <template>
   <GPanelCol custom-class="w-full">
-    <GPanelTitle :text="t('form.user.update.title')" />
+    <GPanelTitle :text="_$t('userDate')" />
 
     <UCard>
       <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-        <UFormGroup :label="t('name')" name="name" required>
+        <UFormGroup :label="_$t('name')" name="name" required>
           <UInput type="text" v-model="form.name" autofocus />
         </UFormGroup>
 
-        <UFormGroup :label="t('email')" name="email" required>
+        <UFormGroup :label="_$t('email')" name="email" required>
           <UInput type="email" v-model="form.email" />
         </UFormGroup>
 
-        <UFormGroup :label="t('oldPassword')" name="oldPassword">
+        <UFormGroup :label="_$t('oldPassword')" name="oldPassword">
           <UInput type="password" v-model="form.oldPassword" />
         </UFormGroup>
 
-        <UFormGroup :label="t('newPassword')" name="password">
+        <UFormGroup :label="_$t('newPassword')" name="password">
           <UInput type="password" v-model="form.password" />
         </UFormGroup>
 
-        <UFormGroup :label="t('confirmNewPassword')" name="confirmPassword">
+        <UFormGroup :label="_$t('confirmNewPassword')" name="confirmPassword">
           <UInput type="password" v-model="form.confirmPassword" />
         </UFormGroup>
 
         <UButton
-          :label="t('save')"
+          :label="_$t('save')"
           :loading="pageStatus.fetching"
           type="submit"
           block
