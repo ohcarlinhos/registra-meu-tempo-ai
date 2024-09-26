@@ -28,6 +28,7 @@ const i18nObj = {
   required: "Obrigatório",
   record: "Registro",
   records: "Registros",
+  toRecovery: "Recuperar",
   toRecord: "Registrar",
   name: "Nome",
   email: "Email",
@@ -149,7 +150,11 @@ const i18nObj = {
     },
   },
 
+  updatePasswordSuccess: "Senha atualizada com sucesso",
+
   wrongEmailOrPassword: "E-mail ou senha incorretos.",
+
+  invalidRecoveryCode: "Código de recuperação inválido ou expirado.",
 
   apiGenericError:
     "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
