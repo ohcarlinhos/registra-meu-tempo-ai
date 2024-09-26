@@ -3,7 +3,7 @@ import * as yup from "yup";
 
 const { t } = useI18n();
 
-const pageStatus = reactive({ fetching: false });
+const isFetch = ref(false);
 
 const form = reactive({
   name: "",
@@ -33,7 +33,7 @@ const schema = yup.object({
 
 const submit = async () => {
   try {
-    pageStatus.fetching = true;
+    isFetch.value = true;
 
     await postUser(form);
 
@@ -47,7 +47,7 @@ const submit = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    pageStatus.fetching = false;
+    isFetch.value = false;
   }
 };
 </script>
@@ -94,18 +94,15 @@ const submit = async () => {
         <UInput type="password" v-model="form.confirmPassword" />
       </UFormGroup>
 
-      <UButton
-        :label="t('toRecord')"
-        type="submit"
-        :loading="pageStatus.fetching"
-        block
-      />
+      <UButton :label="t('toRecord')" type="submit" :loading="isFetch" block />
     </UForm>
 
     <template #footer>
-      <ULink to="/login" inactive-class="text-primary font-bold text-xs">
-        {{ t("access") }}
-      </ULink>
+      <section class="flex gap-5 justify-center">
+        <ULink to="/login" inactive-class="text-primary font-bold text-xs">
+          {{ t("access") }}
+        </ULink>
+      </section>
     </template>
   </UCard>
 </template>
