@@ -75,7 +75,7 @@ const submitIsDisabled = computed(() => {
       <UButton
         :loading="page.fetch"
         :disabled="submitIsDisabled"
-        :label="t('access')"
+        :label="t('toRecovery')"
         block
         @click="submit"
       />
