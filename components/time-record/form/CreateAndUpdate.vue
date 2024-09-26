@@ -337,7 +337,7 @@ onMounted(async () => {
               tokens: {
                 X: {
                   pattern: /[a-zA-Z0-9-]/,
-                  transform: (v) => v.toLowerCase(),
+                  transform: (v: string) => v.toLowerCase(),
                 },
               },
             }"
