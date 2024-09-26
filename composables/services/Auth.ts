@@ -17,3 +17,13 @@ export const postRecovery = async (payload: RecoveryDto) => {
     false
   );
 };
+
+export const postRecoveryPassword = async (payload: RecoveryPasswordDto) => {
+  return CustomHttp<RecoveryPasswordDto, boolean>(
+    "/auth/recovery/password",
+    "post",
+    payload,
+    true,
+    false
+  );
+};
