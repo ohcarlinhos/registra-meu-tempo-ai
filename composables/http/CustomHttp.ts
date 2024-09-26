@@ -16,10 +16,12 @@ const clearSession = (is$Fetch = false) => {
   if (is$Fetch) {
     throw new Error(useNuxtApp().$i18n.t("sessionExpiredError"));
   }
+
+  return null;
 };
 
 const emitGenericError = () => {
-  throw new Error(useNuxtApp().$i18n.t("api.error.generic"));
+  throw new Error(useNuxtApp().$i18n.t("apiGenericError"));
 };
 
 export const CustomHttp = async <P, R>(
@@ -64,7 +66,7 @@ export const CustomHttp = async <P, R>(
       emitGenericError();
     }
 
-    return data.value;
+    return data.value as R;
   } else {
     try {
       const data = await $fetch<R>(route, {
@@ -77,7 +79,7 @@ export const CustomHttp = async <P, R>(
         body: payload || undefined,
       });
 
-      return data;
+      return data as R;
     } catch (error) {
       const err = error as {
         data: { message?: string; title?: string };
