@@ -4,7 +4,7 @@ export const getTimePeriods = async function (
   mounted = false
 ) {
   return await CustomHttp<null, Pagination<TimePeriodMap>>(
-    `/time-period/${timeRecordId}?page=${pagQuery.page}&perPage=${pagQuery.perPage}`,
+    `/period/${timeRecordId}?page=${pagQuery.page}&perPage=${pagQuery.perPage}`,
     "get",
     null,
     mounted
@@ -16,7 +16,7 @@ export const getDatedTime = async function (
   mounted = false
 ) {
   return await CustomHttp<null, DatedTimeMap[]>(
-    `/time-period/dated/${timeRecordId}`,
+    `/period/dated/${timeRecordId}`,
     "get",
     null,
     mounted
@@ -25,7 +25,7 @@ export const getDatedTime = async function (
 
 export const postTimePeriod = async (payload: TimePeriodDto) => {
   return CustomHttp<TimePeriodDto, TimePeriodMap>(
-    "/time-period",
+    "/period",
     "post",
     payload,
     true
@@ -37,7 +37,7 @@ export const postTimePeriodList = async (
   payload: TimePeriodListDto
 ) => {
   return CustomHttp<TimePeriodListDto, TimePeriodDto[]>(
-    `/time-period/list/${timeRecordId}`,
+    `/period/list/${timeRecordId}`,
     "post",
     payload,
     true
@@ -46,7 +46,7 @@ export const postTimePeriodList = async (
 
 export const putTimePeriod = async (id: number, payload: TimePeriodDto) => {
   return CustomHttp<TimePeriodDto, TimePeriodDto>(
-    `/time-period/${id}`,
+    `/period/${id}`,
     "put",
     payload,
     true
@@ -54,5 +54,5 @@ export const putTimePeriod = async (id: number, payload: TimePeriodDto) => {
 };
 
 export const deleteTimePeriod = async (id: number) => {
-  return CustomHttp<null, boolean>(`/time-period/${id}`, "delete", null, true);
+  return CustomHttp<null, boolean>(`/period/${id}`, "delete", null, true);
 };

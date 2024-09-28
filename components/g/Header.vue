@@ -68,7 +68,7 @@ const activeClass = "text-primary font-bold";
 
       <ULink
         v-if="authStore.isAuth"
-        :to="{ name: 'records' }"
+        :to="{ name: 'record.panel' }"
         :active-class="activeClass"
       >
         {{ _$t("records") }}

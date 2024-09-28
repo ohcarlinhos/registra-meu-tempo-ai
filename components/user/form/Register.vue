@@ -40,7 +40,7 @@ const submit = async () => {
     if (loginData) {
       OkToast(_$t("createUserSuccess"));
       useAuthStore().setUserToken(loginData.token);
-      useRouter().push({ name: "records" });
+      useRouter().push({ name: "record.panel" });
     }
   } catch (error) {
     ErrorToast(error);

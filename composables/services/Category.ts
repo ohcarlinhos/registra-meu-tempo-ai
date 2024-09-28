@@ -1,5 +1,5 @@
-export const getAllCategories = async function () {
-  return CustomHttp<null, CategoryMap[]>("/category/all", "get", null, true);
+export const getAllCategories = async function (onlyWithData = false) {
+  return CustomHttp<null, CategoryMap[]>(`/category/all${onlyWithData ? '?=onlyWithData=true' : '' }`, "get", null, true);
 };
 
 export const getCategories = async function (

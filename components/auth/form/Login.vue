@@ -54,7 +54,7 @@ const submitAction = async () => {
 			return;
 		}
 
-		return router.push({ name: "records" });
+		return router.push({ name: "record.panel" });
 	} catch (error) {
 		ErrorToast(error);
 	} finally {
