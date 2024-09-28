@@ -6,9 +6,9 @@ const props = defineProps<{
   totalPages?: number;
   page?: number;
   perPage?: number;
-  search?: string;
   store?: BasicStoreToPagination;
   perPageList?: number[];
+  isFetch?: boolean;
 }>();
 
 const computedPage = computed({
@@ -88,7 +88,7 @@ const computedPerPageList = computed(() => {
       v-model="computedPage"
       :page-count="props.perPage"
       :total="props.totalItems"
-      :disabled="store?.isFetch"
+      :disabled="store?.isFetch || props.isFetch"
       class="mt-2"
     />
 
@@ -100,7 +100,7 @@ const computedPerPageList = computed(() => {
       <USelect
         v-model="computedPerPage"
         :options="computedPerPageList"
-        :disabled="store?.isFetch"
+        :disabled="store?.isFetch || props.isFetch"
       />
     </section>
   </div>

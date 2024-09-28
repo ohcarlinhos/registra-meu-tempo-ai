@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  perPage?: number;
   store: BasicStoreToPagination;
+  isFetch?: boolean;
 }>();
 
 const debounce = ref();
@@ -36,7 +36,8 @@ const search = ref("");
     placeholder="Pesquisar"
     icon="i-icon-park-outline-search"
     autocomplete="off"
-    :loading="props.store.isFetch"
+    :disabled="props.store.isFetch || isFetch"
+    :loading="props.store.isFetch || isFetch"
     :ui="{ icon: { trailing: { pointer: '' } } }"
   >
     <template #trailing>

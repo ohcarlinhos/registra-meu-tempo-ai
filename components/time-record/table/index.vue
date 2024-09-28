@@ -33,6 +33,7 @@ const items = (row: TimeRecordMap) => [
 ];
 
 const categories = ref<CategoryMap[]>([]);
+const categoriesIsFetch = ref(false);
 const categoryFilter = ref<string>();
 
 const computedCategory = computed({
@@ -46,11 +47,20 @@ const computedCategory = computed({
   },
 });
 
+const isFetch = computed(() => {
+  return categoriesIsFetch.value || trStore.isFetch;
+});
+
 onMounted(() => {
-  getAllCategories(true).then((result) => {
-    if (result) categories.value = result;
-    return trStore.fetch();
-  });
+  categoriesIsFetch.value = true;
+  getAllCategories(true)
+    .then((result) => {
+      if (result) categories.value = result;
+      return trStore.fetch();
+    })
+    .finally(() => {
+      categoriesIsFetch.value = false;
+    });
 });
 </script>
 
@@ -63,13 +73,22 @@ onMounted(() => {
         constrained: 'max-w-8xl',
       }"
     >
-      <h2 class="text-4xl font-bold">{{ $t("records") }}</h2>
+      <section class="flex items-center gap-5">
+        <h2 class="text-4xl font-bold">{{ $t("records") }}</h2>
 
-      <div class="flex gap-5 flex-row items-start mt-1 mr-1">
+        <UButton
+          :label="_$t('create')"
+          icon="i-icon-park-outline-add"
+          @click="emit('create')"
+        />
+      </section>
+
+      <div class="flex flex-col gap-5 md:flex-row items-start mt-1 mr-1">
         <section class="flex gap-2">
           <USelectMenu
             v-model="computedCategory"
             :options="categories"
+            :disabled="isFetch"
             value-attribute="id"
             option-attribute="name"
             :placeholder="_$t('category')"
@@ -77,20 +96,14 @@ onMounted(() => {
 
           <UButton
             :label="_$t('clear')"
-            :disabled="!computedCategory"
+            :disabled="!computedCategory || isFetch"
             variant="outline"
             :color="!computedCategory ? 'white' : 'red'"
             @click="computedCategory = ''"
           />
         </section>
 
-        <GSearch :perPage="trStore.apiRes?.perPage" :store="trStore" />
-
-        <UButton
-          :label="_$t('create')"
-          icon="i-icon-park-outline-add"
-          @click="emit('create')"
-        />
+        <GSearch :store="trStore" :is-fetch="isFetch" />
       </div>
     </UContainer>
 
@@ -98,7 +111,7 @@ onMounted(() => {
       <UTable
         :columns="columns"
         :rows="trStore.timeRecordsTableData"
-        :loading="trStore.isFetch"
+        :loading="isFetch"
       >
         <template #actions-data="{ row }">
           <div class="flex justify-end">
@@ -118,8 +131,8 @@ onMounted(() => {
         :perPage="trStore.apiRes?.perPage"
         :totalPages="trStore.apiRes?.totalPages"
         :totalItems="trStore.apiRes?.totalItems"
-        :search="trStore.apiRes?.search"
         :store="trStore"
+        :is-fetch="isFetch"
       />
     </UCard>
   </div>

@@ -68,7 +68,9 @@ const openConfirmDeleteModal = async (payload: DeletePayloadEvent) => {
   modal.confirmDelete.id = payload.id;
 };
 
-await categoryStore.fetch();
+onMounted(() => {
+  categoryStore.fetch();
+});
 </script>
 
 <template>
@@ -77,10 +79,7 @@ await categoryStore.fetch();
       <GPanelTitle text="Categorias" />
 
       <div class="flex gap-5">
-        <GSearch
-          :perPage="categoryStore.apiRes?.perPage"
-          :store="categoryStore"
-        />
+        <GSearch :store="categoryStore" />
 
         <UButton
           icon="i-icon-park-outline-add"
@@ -113,7 +112,6 @@ await categoryStore.fetch();
         :perPage="categoryStore.apiRes?.perPage"
         :totalPages="categoryStore.apiRes?.totalPages"
         :totalItems="categoryStore.apiRes?.totalItems"
-        :search="categoryStore.apiRes?.search"
         :store="categoryStore"
       />
     </UCard>
