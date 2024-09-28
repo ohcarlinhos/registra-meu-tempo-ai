@@ -1,7 +1,7 @@
 <template>
   <UContainer
     :ui="{
-      padding: 'pt-16 px-0',
+      padding: 'pt-16',
       constrained: 'w-full flex flex-col',
     }"
   >
