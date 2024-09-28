@@ -23,8 +23,8 @@ const refreshTimePeriodCallback = async (refreshTp = false) => {
   await getTimeRecordData("", true);
 };
 
-onMounted(async () => {
-  await getTimeRecordData();
+onMounted(() => {
+  getTimeRecordData();
 });
 
 onBeforeRouteLeave(() => {
@@ -84,8 +84,8 @@ onBeforeRouteLeave(() => {
         </h2>
 
         <UButton @click="router.push({ name: 'record.panel' })" variant="soft">
-					{{ _$t("backToRecordList") }}
-				</UButton>
+          {{ _$t("backToRecordList") }}
+        </UButton>
       </section>
     </section>
   </NuxtLayout>
