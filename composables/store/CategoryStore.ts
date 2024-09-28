@@ -1,6 +1,7 @@
 export const useCategoryStore = defineStore("CategoryStore", {
   state: () => {
     return {
+      paginationQuery: new PaginationQuery(),
       _categories: [] as CategoryMap[],
       _apiRes: {} as Pagination<CategoryMap>,
       _fetch: false,
@@ -23,20 +24,15 @@ export const useCategoryStore = defineStore("CategoryStore", {
     },
 
     async refetch() {
-      const pagQuery = new PaginationQuery();
-      pagQuery.page = this._apiRes.page;
-      pagQuery.perPage = this._apiRes.perPage;
-      pagQuery.search = this._apiRes.search;
-
-      await this.fetch(pagQuery);
+      await this.fetch(true);
     },
 
-    async fetch(pagQuery: IPaginationQuery | null = null, mounted = false) {
-      if (pagQuery == null) pagQuery = new PaginationQuery();
+    async fetch(mounted = false) {
+      if (!this.paginationQuery) this.paginationQuery = new PaginationQuery();
 
       try {
         this._fetch = true;
-        const data = await getCategories(pagQuery, mounted);
+        const data = await getCategories(this.paginationQuery, mounted);
         if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);

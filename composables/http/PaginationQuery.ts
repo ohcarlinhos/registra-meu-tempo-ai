@@ -1,13 +1,8 @@
-export interface IPaginationQuery {
-  page: number;
-  perPage: number;
-  search: string;
-}
-
 export class PaginationQuery implements IPaginationQuery {
   private _page: number = 1;
   private _perPage: number = 10;
   private _search: string = "";
+  private _filters: PaginationQueryFilter[] = [];
 
   public get page(): number {
     return this._page;
@@ -36,5 +31,18 @@ export class PaginationQuery implements IPaginationQuery {
   public set search(value: string | null | undefined) {
     if (!value) this._search = "";
     else this._search = value;
+  }
+
+  public get filters(): PaginationQueryFilter[] {
+    return this._filters;
+  }
+
+  public addFilter(filter: PaginationQueryFilter) {
+    this._filters = this._filters.filter((e) => e.tag != filter.tag);
+    if (filter.value) this._filters.push(filter);
+  }
+
+  public removeFilter(tag: string) {
+    this._filters = this._filters.filter((e) => e.tag != tag);
   }
 }

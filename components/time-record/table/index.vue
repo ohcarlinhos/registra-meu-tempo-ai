@@ -32,6 +32,24 @@ const items = (row: TimeRecordMap) => [
   ],
 ];
 
+const categories = ref<CategoryMap[]>([]);
+const categoryFilter = ref<string>();
+
+const result = await getAllCategories(true);
+
+if (result) categories.value = result;
+
+const computedCategory = computed({
+  get: () => {
+    return categoryFilter.value || "";
+  },
+  set: (category: string) => {
+    categoryFilter.value = category;
+    trStore.paginationQuery.addFilter({ tag: "category", value: category });
+    trStore.fetch(true);
+  },
+});
+
 await trStore.fetch();
 </script>
 
@@ -47,6 +65,24 @@ await trStore.fetch();
       <h2 class="text-4xl font-bold">{{ $t("records") }}</h2>
 
       <div class="flex gap-5 flex-row items-start mt-1 mr-1">
+        <section class="flex gap-2">
+          <USelectMenu
+            v-model="computedCategory"
+            :options="categories"
+            value-attribute="id"
+            option-attribute="name"
+            :placeholder="_$t('category')"
+          />
+
+          <UButton
+            :label="_$t('clear')"
+            :disabled="!computedCategory"
+            variant="outline"
+            :color="!computedCategory ? 'white' : 'red'"
+            @click="computedCategory = ''"
+          />
+        </section>
+
         <GSearch :perPage="trStore.apiRes?.perPage" :store="trStore" />
 
         <UButton

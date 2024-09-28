@@ -1,5 +1,10 @@
 export const getAllCategories = async function (onlyWithData = false) {
-  return CustomHttp<null, CategoryMap[]>(`/category/all${onlyWithData ? '?=onlyWithData=true' : '' }`, "get", null, true);
+  return CustomHttp<null, CategoryMap[]>(
+    `/category/all${onlyWithData ? "?onlyWithData=true" : ""}`,
+    "get",
+    null,
+    true
+  );
 };
 
 export const getCategories = async function (
@@ -7,7 +12,7 @@ export const getCategories = async function (
   mounted = false
 ) {
   return CustomHttp<null, Pagination<CategoryMap>>(
-    `/category?page=${pagQuery.page}&perPage=${pagQuery.perPage}&search=${pagQuery.search}`,
+    `/category${paginationQueryHandle(pagQuery)}`,
     "get",
     null,
     mounted

@@ -6,6 +6,7 @@ const i18nObj = {
   update: "Atualizar",
   cancel: "Cancelar",
   confirm: "Confirmar",
+  clear: "Limpar",
   start: "Início",
   end: "Fim",
   time: "Tempo",

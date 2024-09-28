@@ -3,6 +3,7 @@ import { format } from "date-fns";
 export const useTimeRecordStore = defineStore("TimeRecordStore", {
   state: () => {
     return {
+      paginationQuery: new PaginationQuery(),
       _apiRes: {} as Pagination<TimeRecordMap>,
       _fetch: false,
       _deleteFetch: false,
@@ -10,12 +11,12 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
   },
 
   actions: {
-    async fetch(pagQuery: IPaginationQuery | null = null, mounted = false) {
-      if (pagQuery == null) pagQuery = new PaginationQuery();
+    async fetch(mounted = false) {
+      if (!this.paginationQuery) this.paginationQuery = new PaginationQuery();
 
       try {
         this._fetch = true;
-        const data = await getTimeRecords(pagQuery, mounted);
+        const data = await getTimeRecords(this.paginationQuery, mounted);
         if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);
@@ -25,12 +26,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
     },
 
     async refetch() {
-      const pagQuery = new PaginationQuery();
-      pagQuery.page = this._apiRes.page;
-      pagQuery.perPage = this._apiRes.perPage;
-      pagQuery.search = this._apiRes.search;
-
-      await this.fetch(pagQuery, true);
+      await this.fetch(true);
     },
 
     async deleteTimeRecord(id: number) {

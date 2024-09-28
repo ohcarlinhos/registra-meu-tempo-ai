@@ -1,4 +1,5 @@
 export type BasicStoreToPagination = {
-  fetch(paginationQuery: IPaginationQuery, mounted?: boolean): Promise<void>;
+  fetch(mounted?: boolean): Promise<void>;
+  paginationQuery: IPaginationQuery;
   isFetch: boolean;
 };

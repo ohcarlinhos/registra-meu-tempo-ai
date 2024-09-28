@@ -18,15 +18,11 @@ const computedPage = computed({
   set: (page: number) => {
     if (page == props.page) return;
 
-    const pagQuery = new PaginationQuery();
-    pagQuery.page = page;
-    pagQuery.perPage = computedPerPage.value;
-    pagQuery.search = props.search;
-
     if (props.store) {
-      props.store.fetch(pagQuery, true);
+      props.store.paginationQuery.page = page;
+      props.store.fetch(true);
     } else {
-      emit("update:page", pagQuery.page);
+      emit("update:page", page);
     }
   },
 });
@@ -47,14 +43,11 @@ const computedPerPage = computed({
   set: (perPage: number) => {
     if (perPage == props.perPage) return;
 
-    const pagQuery = new PaginationQuery();
-    pagQuery.perPage = perPage;
-    pagQuery.search = props.search;
-
     if (props.store) {
-      props.store.fetch(pagQuery, true);
+      props.store.paginationQuery.perPage = perPage;
+      props.store.fetch(true);
     } else {
-      emit("update:perPage", pagQuery.page);
+      emit("update:perPage", perPage);
     }
   },
 });

@@ -3,7 +3,7 @@ export const getTimeRecords = async function (
   mounted = false
 ) {
   return await CustomHttp<null, Pagination<TimeRecordMap>>(
-    `/record?page=${pagQuery.page}&perPage=${pagQuery.perPage}&search=${pagQuery.search}`,
+    `/record${paginationQueryHandle(pagQuery)}`,
     "get",
     null,
     mounted
@@ -23,12 +23,7 @@ export const getTimeRecordByCode = async function (
 };
 
 export const deleteTimeRecord = async (id: number) => {
-  return await CustomHttp<null, boolean>(
-    `/record/${id}`,
-    "delete",
-    null,
-    true
-  );
+  return await CustomHttp<null, boolean>(`/record/${id}`, "delete", null, true);
 };
 
 export const postTimeRecord = async (payload: CreateTimeRecordDto) => {

@@ -10,13 +10,10 @@ const setDebounce = async (value: string) => {
   clearInterval(debounce.value);
 
   search.value = value;
-
-  const pagQuery = new PaginationQuery();
-  pagQuery.search = value;
-  pagQuery.perPage = props.perPage;
+  props.store.paginationQuery.search = value;
 
   debounce.value = setTimeout(async () => {
-    await props.store.fetch(pagQuery, true);
+    await props.store.fetch(true);
   }, 1000);
 };
 
