@@ -4,6 +4,6 @@ definePageMeta({ middleware: ["auth"], name: "records" });
 
 <template>
   <NuxtLayout name="panel">
-    <TimeRecordDashboard />
+    <TimeRecordPanel />
   </NuxtLayout>
 </template>
