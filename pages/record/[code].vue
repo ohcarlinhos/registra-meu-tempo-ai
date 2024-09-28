@@ -83,9 +83,9 @@ onBeforeRouteLeave(() => {
           {{ _$t("recordNotFound") }}
         </h2>
 
-        <UButton @click="router.push({ name: 'records' })" variant="soft">
-          {{ _$t("backToRecords") }}
-        </UButton>
+        <UButton @click="router.push({ name: 'record.panel' })" variant="soft">
+					{{ _$t("backToRecordList") }}
+				</UButton>
       </section>
     </section>
   </NuxtLayout>

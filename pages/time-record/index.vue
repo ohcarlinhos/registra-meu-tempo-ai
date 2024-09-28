@@ -2,6 +2,6 @@
 definePageMeta({
   middleware: ["auth"],
   name: "time.record.list",
-  redirect: "records",
+  redirect: "record.panel",
 });
 </script>

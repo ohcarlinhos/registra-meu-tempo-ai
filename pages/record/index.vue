@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["auth"], name: "records" });
+definePageMeta({ middleware: ["auth"], name: "record.panel" });
 </script>
 
 <template>

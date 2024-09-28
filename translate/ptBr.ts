@@ -61,7 +61,7 @@ const i18nObj = {
 
   noPeriodRecorded: "Nenhum período registrado.",
   recordNotFound: "Registro não encontrado.",
-  backToRecords: "Voltar para Registros",
+  backToRecordList: "Voltar para Registros",
   emptyRecordDescription: "Nenhuma descrição fornecida para o registro.",
   pomodoro: "Pomodoro",
   pomodoros: "Pomodoros",
