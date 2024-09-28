@@ -35,10 +35,6 @@ const items = (row: TimeRecordMap) => [
 const categories = ref<CategoryMap[]>([]);
 const categoryFilter = ref<string>();
 
-const result = await getAllCategories(true);
-
-if (result) categories.value = result;
-
 const computedCategory = computed({
   get: () => {
     return categoryFilter.value || "";
@@ -50,7 +46,12 @@ const computedCategory = computed({
   },
 });
 
-await trStore.fetch();
+onMounted(() => {
+  getAllCategories(true).then((result) => {
+    if (result) categories.value = result;
+    return trStore.fetch();
+  });
+});
 </script>
 
 <template>
