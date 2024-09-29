@@ -27,6 +27,10 @@ const computedSearch = computed({
 });
 
 const search = ref("");
+
+if (props.store) {
+  search.value = props.store.paginationQuery.search;
+}
 </script>
 
 <template>
