@@ -77,7 +77,11 @@ const computedPerPageList = computed(() => {
 </script>
 
 <template>
-  <div class="flex justify-between items-end mt-3">
+  <div class="flex justify-between items-center mt-3">
+    <UBadge v-if="$props.totalItems" size="lg" color="white" variant="solid">
+      Total: {{ $props.totalItems }}
+    </UBadge>
+
     <UPagination
       v-if="
         props &&
@@ -89,14 +93,9 @@ const computedPerPageList = computed(() => {
       :page-count="props.perPage"
       :total="props.totalItems"
       :disabled="store?.isFetch || props.isFetch"
-      class="mt-2"
     />
 
-    <section v-if="$props.totalItems">Total: {{ $props.totalItems }}</section>
-
     <section v-if="computedPerPageList.length" class="flex items-center gap-2">
-      {{ $t("itemsPerPage") }}
-
       <USelect
         v-model="computedPerPage"
         :options="computedPerPageList"
