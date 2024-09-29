@@ -36,12 +36,21 @@ const categories = ref<CategoryMap[]>([]);
 const categoriesIsFetch = ref(false);
 const categoryFilter = ref<string>();
 
+const hasFilter = trStore.paginationQuery.filters.find(
+  (e) => e.tag === "category"
+);
+if (hasFilter) categoryFilter.value = hasFilter.value;
+
 const computedCategory = computed({
   get: () => {
     return categoryFilter.value || "";
   },
   set: (category: string) => {
+    const oldCategory = categoryFilter.value;
     categoryFilter.value = category;
+
+    if (category === oldCategory) return;
+
     trStore.paginationQuery.addFilter({ tag: "category", value: category });
     trStore.fetch(true);
   },
