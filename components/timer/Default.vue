@@ -22,10 +22,6 @@ const props = defineProps({
     type: String,
     default: null,
   },
-  refreshTimeRecords: {
-    type: Boolean,
-    default: false,
-  },
   postTimePeriodCallback: {
     type: Function,
     default: (code = "") => {},
@@ -412,7 +408,7 @@ onBeforeUnmount(() => {
       <TimeRecordTableLocal
         v-if="timer.localRecords.length"
         :id="props.id"
-        :refresh-time-records="props.refreshTimeRecords"
+        :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
       />
 
       <p v-else class="py-3">
@@ -449,7 +445,6 @@ onBeforeUnmount(() => {
   <UModal v-model="modal.createTimeRecord.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
-      :refresh-time-records="props.refreshTimeRecords"
       @close="closeTimeRecordModal"
     />
   </UModal>

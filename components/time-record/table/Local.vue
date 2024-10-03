@@ -6,12 +6,12 @@ const authStore = useAuthStore();
 
 const props = withDefaults(
   defineProps<{
-    refreshTimeRecords: boolean;
     id: number | null;
+    postTimePeriodCallback: (code: string) => void;
   }>(),
   {
-    refreshTimeRecords: false,
     id: null,
+    postTimePeriodCallback: (code = "") => {},
   }
 );
 
@@ -59,7 +59,7 @@ const openConfirmDeleteModal = (uuid: string, id: number | null) => {
 };
 
 const deleteAction = () => {
-  timerStore.deleteTimeRecordLocal(confirmDelete.uuid);
+  timerStore.deleteTimeRecordLocal(confirmDelete.uuid, props.id);
   closeConfirmDeleteModal();
 };
 
@@ -107,7 +107,8 @@ const openModal = (timeRecord: TimeRecordLocal, isSync = false) => {
   editTimeRecordObject.value = timeRecordLocalToForm(
     { ...timeRecord, isSync },
     () => {
-      timerStore.deleteTimeRecordLocal(timeRecord.localUuid);
+      timerStore.deleteTimeRecordLocal(timeRecord.localUuid, props.id);
+      props.postTimePeriodCallback(timeRecord.code || "");
     }
   );
 
@@ -158,7 +159,6 @@ const closeModal = () => {
   <UModal v-model="modal.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
-      :refresh-time-records="props.refreshTimeRecords"
       @close="closeModal"
     />
   </UModal>
