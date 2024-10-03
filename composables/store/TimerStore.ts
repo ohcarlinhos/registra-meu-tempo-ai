@@ -4,26 +4,33 @@ import NoSleep from "nosleep.js";
 
 export type PostTimePeriodCallback = (code: string) => Promise<void>;
 
+export type TimerStoreItem = {
+  id: number | null;
+  code?: string;
+
+  currentPeriodList: TimePeriodTimer[];
+  currentPeriod: TimePeriodTimer;
+
+  isRun: boolean;
+  isFetch: boolean;
+  interval: NodeJS.Timeout | null;
+  type: TimerTypes;
+
+  showOptions: boolean;
+  pomodoroPeriod: number;
+  breakPeriod: number;
+
+  page: number;
+
+  localRecords: TimeRecordLocal[];
+};
+
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
-      _currentTimePeriodList: [] as TimePeriodTimer[],
-      _currentTimePeriod: { start: 0, end: 0 } as TimePeriodTimer,
-      _currentTimeRecordId: null as number | null,
-      _currentTimeRecordCode: "",
-
-      _timeRecordsLocal: [] as TimeRecordLocal[],
-      _running: false,
-      _interval: null as NodeJS.Timeout | null,
-      _type: "timer" as TimerTypes,
-      _pomodoroPeriod: 25,
-      _breakPeriod: 5,
-      _showOptions: false,
+      _timerList: [] as TimerStoreItem[],
       _perPage: 10,
-      _page: 1,
-
-      _postTimePeriodListFetching: false,
-      _postTimePeriodCallback: null as null | PostTimePeriodCallback,
+      _postTPCallback: null as null | PostTimePeriodCallback,
 
       noSleep: null as null | NoSleep,
       audioObject: null as null | HTMLAudioElement,
@@ -31,170 +38,273 @@ export const useTimerStore = defineStore("TimerStore", {
   },
 
   actions: {
-    initTimerConfig(id: number | null, hideOptions = false, code = "") {
-      this._currentTimeRecordId = id;
-      this._currentTimeRecordCode = code;
-      this._postTimePeriodListFetching = false;
-
+    initTimerConfig(hideOptions = false, id: number | null = null, code = "") {
       this.noSleep = new NoSleep();
 
-      if (hideOptions) this._showOptions = false;
+      const timer = this.getTimer(id);
+      timer.code = code;
+      timer.isFetch = false;
 
-      this.pauseTimer();
+      if (hideOptions) timer.showOptions = false;
+
+      this.pauseTimer(id);
     },
 
-    clearCurrentTimePeriodList() {
-      this._currentTimePeriodList = [];
+    // getters
+
+    getTimer(id: number | null = null): TimerStoreItem {
+      let index = this._timerList.findIndex((t) => t.id === id);
+
+      if (index != -1) {
+        return this._timerList[index];
+      }
+
+      this._timerList.push({
+        id: id,
+        code: "",
+        currentPeriodList: [],
+        currentPeriod: { start: 0, end: 0 },
+        isRun: false,
+        isFetch: false,
+        interval: null,
+        type: "timer",
+        showOptions: false,
+        pomodoroPeriod: 25,
+        breakPeriod: 5,
+        page: 1,
+        localRecords: [],
+      });
+
+      index = this._timerList.findIndex((t) => t.id === id);
+      return this._timerList[index];
     },
 
-    clearInterval() {
-      clearInterval(this._interval as NodeJS.Timeout);
+    getRegressiveMilissecondsNecessary(id: number | null = null): number {
+      const timer = this.getTimer(id);
+
+      const mult = 60000;
+      if (timer.type === "pomodoro") return mult * timer.pomodoroPeriod;
+      return mult * timer.breakPeriod;
     },
 
-    addTimeRecordLocal(timeRecord: TimeRecordLocal) {
-      this._timeRecordsLocal.unshift(timeRecord);
+    getPeriodListTotalMiliseconds(id: number | null = null) {
+      const timer = this.getTimer(id);
+
+      return timer.currentPeriodList.reduce(
+        (acc, current) => acc + (current.end - current.start),
+        0
+      );
     },
 
-    deleteTimeRecordLocal(uuid: string) {
-      const index = this._timeRecordsLocal.findIndex(
+    getCurrentMilisecondsPast(id: number | null = null) {
+      const timer = this.getTimer(id);
+      return timer.currentPeriod.end - timer.currentPeriod.start;
+    },
+
+    getTotalMilisecondsPast(id: number | null = null): number {
+      const timer = this.getTimer(id);
+      return (
+        this.getPeriodListTotalMiliseconds(id) +
+        (timer.isRun ? this.getCurrentMilisecondsPast(id) : 0)
+      );
+    },
+
+    getTimeRecords(id: number | null = null) {
+      const timer = this.getTimer(id);
+      const start: number = (timer.page - 1) * this._perPage;
+      const end: number = start + this._perPage;
+
+      return timer.localRecords.slice(start, end).map((timeRecord) => {
+        return {
+          ...timeRecord,
+          timeRecordDate: format(timeRecord.timePeriods[0].start, "dd/MM/yyyy"),
+          timePeriods: timeRecord.timePeriods.map((e) => e),
+          formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
+          code: timeRecord.code,
+        };
+      });
+    },
+
+    // actions
+
+    addTimeRecordLocal(timeRecord: TimeRecordLocal, id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.localRecords.unshift(timeRecord);
+    },
+
+    deleteTimeRecordLocal(uuid: string, id: number | null = null) {
+      const timer = this.getTimer(id);
+      const indexTimer = timer.localRecords.findIndex(
         (r) => r.localUuid === uuid
       );
 
-      if (index != -1) {
-        this._timeRecordsLocal.splice(index, 1);
+      if (indexTimer != -1) {
+        timer.localRecords.splice(indexTimer, 1);
       }
     },
 
-    startTimer() {
-      if (this._running === true) this.pauseTimer();
-
-      this.defineIntervalTimer();
-      this.resetTimer();
-
-      this._running = true;
+    clearCurrentPeriodList(id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.currentPeriodList = [];
     },
 
-    defineIntervalTimer() {
-      this._interval = setInterval(() => {
-        if (this._running) {
-          this._currentTimePeriod.end = Date.now();
+    // Interval
 
-          if (this.isBreak || this.isPomodoro) {
-            this.validadePomodoroOrBreakEnd();
+    defineIntervalTimer(id: number | null = null) {
+      const timer = this.getTimer(id);
+
+      timer.interval = setInterval(() => {
+        if (timer.isRun) {
+          timer.currentPeriod.end = Date.now();
+
+          if (timer.type == "break" || timer.type == "pomodoro") {
+            this.handleWithPomoOrBreakEnd(id);
           }
         } else {
-          this.clearInterval();
+          this.clearInterval(id);
         }
       }, 200);
     },
 
-    validadePomodoroOrBreakEnd() {
-      if (this._totalMilisecondsPast >= this.regressiveMilissecondsNecessary) {
+    clearInterval(id: number | null = null) {
+      const timer = this.getTimer(id);
+      clearInterval(timer.interval as NodeJS.Timeout);
+    },
+
+    // handlers
+
+    handleWithPomoOrBreakEnd(id: number | null = null) {
+      if (
+        this.getTotalMilisecondsPast(id) >=
+        this.getRegressiveMilissecondsNecessary(id)
+      ) {
         this.noSleep?.disable();
         this.playAlarm();
-        this.endTimer();
+        this.endTimer(id);
       }
     },
 
-    pauseTimer() {
-      this.clearInterval();
+    // Timer
 
-      if (this._running && this._totalMilisecondsPast !== 0) {
-        this._currentTimePeriodList.push({
-          start: this._currentTimePeriod.start,
-          end: this._currentTimePeriod.end,
+    startTimer(id: number | null = null) {
+      const timer = this.getTimer(id);
+      if (timer.isRun === true) this.pauseTimer(id);
+
+      this.defineIntervalTimer(id);
+      this.resetTimer(id);
+
+      timer.isRun = true;
+    },
+
+    pauseTimer(id: number | null = null) {
+      this.clearInterval(id);
+
+      const timer = this.getTimer(id);
+
+      if (timer.isRun && this.getTotalMilisecondsPast(id) !== 0) {
+        timer.currentPeriodList.push({
+          start: timer.currentPeriod.start,
+          end: timer.currentPeriod.end,
         });
       }
 
-      this.resetTimer();
-      this._running = false;
+      this.resetTimer(id);
+      timer.isRun = false;
     },
 
-    endTimer() {
-      if (this._running) this.pauseTimer();
+    endTimer(id: number | null = null) {
+      const timer = this.getTimer(id);
+      if (timer.isRun) this.pauseTimer(id);
 
-      if (this._currentTimePeriodList.length && !this.isBreak) {
+      if (timer.currentPeriodList.length && !timer.isRun) {
         const timeRecord: TimeRecordLocal = {
+          id: null,
           localUuid: uuidv4(),
           title: "",
           description: "",
           timeRecordDate: new Date().toISOString(),
-          timePeriods: this._currentTimePeriodList.map((p) => ({
+          timePeriods: timer.currentPeriodList.map((p) => ({
             start: new Date(p.start),
             end: new Date(p.end),
           })),
-          timerSessionType: this._type,
+          timerSessionType: timer.type,
           timerSessionFrom: "browser",
         };
 
-        if (this._currentTimeRecordId)
-          timeRecord.id = this._currentTimeRecordId;
+        if (timer.id) timeRecord.id = timer.id;
+        if (timer.code) timeRecord.code = timer.code;
 
-        if (this._currentTimeRecordCode)
-          timeRecord.code = this._currentTimeRecordCode;
+        if (timer.id) {
+          timer.isFetch = true;
 
-        if (this._currentTimeRecordId) {
-          this._postTimePeriodListFetching = true;
-
-          postTimePeriodList(this._currentTimeRecordId, {
+          postTimePeriodList(timer.id, {
             timePeriods: timeRecord.timePeriods,
-            type: this._type,
+            type: timer.type,
             from: "browser",
           })
             .then(() => {
-              if (this._postTimePeriodCallback && this._currentTimeRecordCode)
-                this._postTimePeriodCallback(this._currentTimeRecordCode);
+              if (this._postTPCallback && timer.code)
+                this._postTPCallback(timer.code);
             })
             .catch(() => {
-              this.addTimeRecordLocal(timeRecord);
+              this.addTimeRecordLocal(timeRecord, timer.id);
             })
             .finally(() => {
-              this._postTimePeriodListFetching = false;
+              timer.isFetch = false;
             });
         } else {
           this.addTimeRecordLocal(timeRecord);
         }
       }
 
-      this._currentTimePeriodList = [];
+      timer.currentPeriodList = [];
     },
 
-    stopTimer() {
-      this._currentTimePeriodList = [];
+    stopTimer(id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.currentPeriodList = [];
     },
 
-    resetTimer() {
+    resetTimer(id: number | null = null) {
       const timeNow = Date.now();
-      this._currentTimePeriod.start = timeNow;
-      this._currentTimePeriod.end = timeNow;
+      const timer = this.getTimer(id);
+      timer.currentPeriod.start = timeNow;
+      timer.currentPeriod.end = timeNow;
     },
 
-    setTimerType(type: TimerTypes) {
-      this._type = type;
+    // Seters
+
+    setTimerType(type: TimerTypes, id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.type = type;
     },
 
-    setPomodoroPeiod(value: number) {
-      this._pomodoroPeriod = value;
+    setPomoPeriod(value: number, id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.pomodoroPeriod = value;
     },
 
-    setBreakPeiod(value: number) {
-      this._breakPeriod = value;
+    setBreakPeiod(value: number, id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.breakPeriod = value;
     },
 
-    setPostTimePeriodCallback(callback: PostTimePeriodCallback) {
-      this._postTimePeriodCallback = callback;
+    setPostTPCallback(callback: PostTimePeriodCallback) {
+      this._postTPCallback = callback;
     },
 
-    toggleOptions() {
-      this._showOptions = !this._showOptions;
+    toggleOptions(id: number | null = null) {
+      const timer = this.getTimer(id);
+      timer.showOptions = !timer.showOptions;
     },
+
+    // Audio
 
     createAudioObject() {
       this.audioObject = new Audio();
     },
 
     playClick() {
-      // o play cria o objeto pois é uma ação do usuário (correção de IOS)
       this.createAudioObject();
 
       if (this.audioObject) {
@@ -204,138 +314,10 @@ export const useTimerStore = defineStore("TimerStore", {
     },
 
     playAlarm() {
-      // Toca audio anteriormente criado.
       if (this.audioObject) {
         this.audioObject.src = alarmSound.src;
         this.audioObject.play();
       }
-    },
-  },
-
-  getters: {
-    fetching(state) {
-      return state._postTimePeriodListFetching;
-    },
-
-    showOptions(): boolean {
-      return this._showOptions;
-    },
-
-    totalItems(): number {
-      return this.timeRecordContextFiltered.length;
-    },
-
-    totalPages(): number {
-      return Math.ceil(this.totalItems / this._perPage);
-    },
-
-    regressiveMilissecondsNecessary(): number {
-      const mult = 60000;
-      if (this.isPomodoro) return mult * this._pomodoroPeriod;
-      return mult * this._breakPeriod;
-    },
-
-    pomodoroPeiod(): number {
-      return this._pomodoroPeriod;
-    },
-
-    breakPeiod(): number {
-      return this._breakPeriod;
-    },
-
-    timerType(state) {
-      return state._type;
-    },
-
-    isRunning(state) {
-      return state._running;
-    },
-
-    isPomodoro(state) {
-      return state._type === "pomodoro";
-    },
-
-    isTimer(state) {
-      return state._type === "timer";
-    },
-
-    isBreak(state) {
-      return state._type === "break";
-    },
-
-    timePeriodsLength(state) {
-      return state._currentTimePeriodList.length;
-    },
-
-    _timePeriodsTotalSeconds(state) {
-      return state._currentTimePeriodList.reduce(
-        (accumulator, current) => accumulator + (current.end - current.start),
-        0
-      );
-    },
-
-    _currentMilisecondsPast(state) {
-      return state._currentTimePeriod.end - state._currentTimePeriod.start;
-    },
-
-    _totalMilisecondsPast(): number {
-      return (
-        this._timePeriodsTotalSeconds +
-        (this._running ? this._currentMilisecondsPast : 0)
-      );
-    },
-
-    hasMiliseconds(): boolean {
-      return this._totalMilisecondsPast > 0;
-    },
-
-    dontHasMiliseconds(): boolean {
-      return this._totalMilisecondsPast <= 0;
-    },
-
-    formated(): string {
-      return millisecondsToString(
-        this.isPomodoro || this.isBreak
-          ? this.regressiveMilissecondsNecessary - this._totalMilisecondsPast
-          : this._totalMilisecondsPast
-      );
-    },
-
-    timeRecordContextFiltered(state) {
-      return state._timeRecordsLocal.filter((tr) => {
-        if (state._currentTimeRecordId) {
-          if (tr.id) return tr;
-        } else {
-          return tr;
-        }
-      });
-    },
-
-    timeRecords(state) {
-      const start: number = (state._page - 1) * state._perPage;
-      const end: number = start + state._perPage;
-
-      return state._timeRecordsLocal
-        .filter((tr) => {
-          if (state._currentTimeRecordId) {
-            if (tr.id) return tr;
-          } else {
-            return tr;
-          }
-        })
-        .slice(start, end)
-        .map((timeRecord) => {
-          return {
-            ...timeRecord,
-            timeRecordDate: format(
-              timeRecord.timePeriods[0].start,
-              "dd/MM/yyyy"
-            ),
-            timePeriods: timeRecord.timePeriods.map((e) => e),
-            formattedTime: formatTimePeriodListToString(timeRecord.timePeriods),
-            code: timeRecord.code,
-          };
-        });
     },
   },
 

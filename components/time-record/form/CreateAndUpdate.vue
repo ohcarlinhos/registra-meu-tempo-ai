@@ -272,6 +272,7 @@ onMounted(async () => {
         <h3>{{ _$t("periods") }}</h3>
 
         <UButton
+          v-if="!isSyncMode"
           :label="_$t('add')"
           :disabled="addButtonIsDisabled || disableInputs"
           size="sm"
@@ -289,7 +290,7 @@ onMounted(async () => {
           <GDatePicker
             v-model="form.timePeriods[index].start"
             :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
-            :disabled="disableInputs"
+            :disabled="disableInputs || isSyncMode"
             class="py-1"
             @change="form.timePeriods[index].end = $event"
           />
@@ -299,12 +300,13 @@ onMounted(async () => {
           <GDatePicker
             v-model="form.timePeriods[index].end"
             :min="form.timePeriods[index].start"
-            :disabled="disableInputs"
+            :disabled="disableInputs || isSyncMode"
             class="py-1"
           />
         </UFormGroup>
 
         <UButton
+          v-if="!isSyncMode"
           :disabled="disableInputs"
           icon="i-icon-park-outline-close-small"
           color="white"

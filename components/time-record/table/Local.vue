@@ -4,39 +4,58 @@ import { watch } from "vue";
 const timerStore = useTimerStore();
 const authStore = useAuthStore();
 
-const { t } = useI18n();
-
 const props = withDefaults(
   defineProps<{
-    refreshTimeRecords?: boolean;
+    refreshTimeRecords: boolean;
+    id: number | null;
   }>(),
-  {}
+  {
+    refreshTimeRecords: false,
+    id: null,
+  }
+);
+
+const timer = computed(() => timerStore.getTimer(props.id));
+
+const timeRecords = computed(() => timerStore.getTimeRecords(props.id));
+
+const totalPages = computed(() =>
+  Math.ceil(timer.value.localRecords.length / timerStore._perPage)
 );
 
 const modal = reactive({ open: false });
 
-const confirmDelete = reactive({
+const confirmDelete = <
+  {
+    open: boolean;
+    uuid: string;
+    id: number | null;
+  }
+>reactive({
   open: false,
   uuid: "",
+  id: null,
 });
 
 const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 
 watch(
-  () => timerStore.totalPages,
+  () => timer.value.localRecords.length,
   (newTotalPages) => {
-    if (timerStore._page > newTotalPages) timerStore._page = newTotalPages;
+    if (timer.value.page > newTotalPages) timer.value.page = newTotalPages;
   }
 );
 
 const closeConfirmDeleteModal = () => {
   confirmDelete.open = false;
   confirmDelete.uuid = "";
+  confirmDelete.id = null;
 };
 
-const openConfirmDeleteModal = (uuid: string) => {
+const openConfirmDeleteModal = (uuid: string, id: number | null) => {
   confirmDelete.open = true;
   confirmDelete.uuid = uuid;
+  confirmDelete.id = id;
 };
 
 const deleteAction = () => {
@@ -58,7 +77,7 @@ const items = (row: TimeRecordLocal) => {
       {
         label: "Apagar do Navegador",
         icon: "i-icon-park-outline-delete-themes",
-        click: () => openConfirmDeleteModal(row.localUuid),
+        click: () => openConfirmDeleteModal(row.localUuid, row.id),
       },
     ],
   ];
@@ -102,7 +121,7 @@ const closeModal = () => {
 </script>
 
 <template>
-  <UTable :columns="columns" :rows="timerStore.timeRecords">
+  <UTable :columns="columns" :rows="timeRecords">
     <template #timePeriods-data="{ row }">
       <TimeRecordTableColTimePeriod
         :time-periods="(row as TimeRecordLocal).timePeriods"
@@ -128,11 +147,11 @@ const closeModal = () => {
   </UTable>
 
   <GPagination
-    :page="timerStore._page"
+    :page="timer.page"
     :perPage="timerStore._perPage"
-    :totalPages="timerStore.totalPages"
-    :totalItems="timerStore.totalItems"
-    @update:page="(value) => (timerStore._page = value)"
+    :totalItems="timer.localRecords.length"
+    :totalPages="totalPages"
+    @update:page="(value) => (timer.page = value)"
     @update:perPage="(value) => (timerStore._perPage = value)"
   />
 

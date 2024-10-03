@@ -1,5 +1,5 @@
 export interface TimeRecordLocal {
-  id?: number;
+  id: number | null;
   code?: string;
   localUuid: string;
   title: string;

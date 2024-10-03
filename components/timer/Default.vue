@@ -1,28 +1,6 @@
 <script lang="ts" setup>
 import { useTitle } from "@vueuse/core";
 
-const timerStore = useTimerStore();
-const authStore = useAuthStore();
-
-const oldPageTitle = ref();
-
-const { t } = useI18n();
-
-watch(
-  () => timerStore.formated,
-  (newValue) => {
-    if (!oldPageTitle.value) oldPageTitle.value = document.title;
-
-    if (timerStore.isRunning) {
-      useTitle(
-        `${newValue} ${props.title ? "- " + props.title + " " : ""}| ${
-          oldPageTitle.value
-        }`
-      );
-    }
-  }
-);
-
 const props = defineProps({
   float: {
     type: Boolean,
@@ -54,10 +32,55 @@ const props = defineProps({
   },
 });
 
-timerStore.initTimerConfig(props.id, props.float, props.code);
+const oldPageTitle = ref();
+const { t } = useI18n();
+
+const authStore = useAuthStore();
+const timerStore = useTimerStore();
+
+const timer = computed(() => timerStore.getTimer(props.id));
+
+const timerHasMiliseconds = computed(
+  () => timerStore.getTotalMilisecondsPast(props.id) > 0
+);
+
+const timerDontHasMiliseconds = computed(
+  () => timerStore.getTotalMilisecondsPast(props.id) === 0
+);
+
+const timerFormated = ref("");
+
+watch(
+  () => timer.value.currentPeriod.end,
+  (newValue) => {
+    timerFormated.value = millisecondsToString(
+      timer.value.type == "pomodoro" || timer.value.type == "break"
+        ? timerStore.getRegressiveMilissecondsNecessary(props.id) -
+            timerStore.getTotalMilisecondsPast(props.id)
+        : timerStore.getTotalMilisecondsPast(props.id)
+    );
+  }
+);
+
+watch(
+  () => timerFormated,
+  (newValue) => {
+    if (!oldPageTitle.value) oldPageTitle.value = document.title;
+
+    if (timer.value.isRun) {
+      useTitle(
+        `${newValue} ${props.title ? "- " + props.title + " " : ""}| ${
+          oldPageTitle.value
+        }`
+      );
+    }
+  }
+);
+
+timerStore.initTimerConfig(props.float, props.id, props.code);
 
 if (props.postTimePeriodCallback) {
-  timerStore.setPostTimePeriodCallback(
+  timerStore.setPostTPCallback(
     props.postTimePeriodCallback as PostTimePeriodCallback
   );
 }
@@ -81,7 +104,7 @@ const editTimeRecordObject = ref<TimeRecordForm>();
 
 const startTimer = () => {
   timerStore.noSleep?.enable();
-  timerStore.startTimer();
+  timerStore.startTimer(props.id);
   timerStore.playClick();
 };
 
@@ -89,16 +112,16 @@ const pauseTimer = () => {
   useTitle(oldPageTitle.value);
 
   timerStore.noSleep?.disable();
-  timerStore.pauseTimer();
+  timerStore.pauseTimer(props.id);
   timerStore.playClick();
 };
 
 const stopTimer = () => {
   timerStore.noSleep?.disable();
-  timerStore.pauseTimer();
+  timerStore.pauseTimer(props.id);
   timerStore.playClick();
 
-  if (timerStore.isBreak) {
+  if (timer.value.type === "break") {
     stopTimerAction();
     return;
   }
@@ -110,7 +133,7 @@ const stopTimerAction = () => {
   useTitle(oldPageTitle.value);
 
   modal.confirmStopTimer.open = false;
-  timerStore.stopTimer();
+  timerStore.stopTimer(props.id);
 };
 
 const submitIsFetch = ref(false);
@@ -122,14 +145,14 @@ const endTimer = async () => {
   timerStore.playClick();
 
   if (!authStore.isAuth) {
-    timerStore.endTimer();
+    timerStore.endTimer(props.id);
     return;
   }
 
-  timerStore.pauseTimer();
+  timerStore.pauseTimer(props.id);
 
   const timePeriods = [
-    ...timerStore._currentTimePeriodList.map((t) => ({
+    ...timer.value.currentPeriodList.map((t) => ({
       start: new Date(t.start),
       end: new Date(t.end),
     })),
@@ -139,10 +162,10 @@ const endTimer = async () => {
     editTimeRecordObject.value = timeRecordLocalToForm(
       {
         timePeriods,
-        timerSessionType: timerStore._type,
+        timerSessionType: timer.value.type,
         timerSessionFrom: "browser",
       },
-      () => timerStore.clearCurrentTimePeriodList()
+      () => timerStore.clearCurrentPeriodList(props.id)
     );
 
     modal.confirmPersistMethod.open = true;
@@ -153,19 +176,20 @@ const endTimer = async () => {
 
   try {
     submitIsFetch.value = true;
+
     await postTimePeriodList(props.id, {
       timePeriods,
-      type: timerStore._type,
+      type: timer.value.type,
       from: "browser",
     });
 
-    timerStore.clearCurrentTimePeriodList();
+    timerStore.clearCurrentPeriodList(props.id);
 
     OkToast(_$t("successPeriodSync"));
   } catch (error) {
     submitIsOk = false;
 
-    timerStore.endTimer();
+    timerStore.endTimer(props.id);
 
     if (error) ErrorToast(error);
     ErrorToast(_$t("errorPeriodSync"));
@@ -184,7 +208,7 @@ const persistOnServer = () => {
 };
 
 const saveOnBrowser = () => {
-  timerStore.endTimer();
+  timerStore.endTimer(props.id);
   modal.confirmPersistMethod.open = false;
 };
 
@@ -207,8 +231,8 @@ const title = computed(() => {
 });
 
 const getButtonColor = computed(() => {
-  if (timerStore.isPomodoro) return "red";
-  if (timerStore.isBreak) return "blue";
+  if (timer.value.type === "pomodoro") return "red";
+  if (timer.value.type == "break") return "blue";
   return "green";
 });
 
@@ -218,8 +242,8 @@ const showOptionsButtonUi = reactive({
 
 const timerCardUi = computed(() => {
   const getColor = () => {
-    if (timerStore.isPomodoro) return "red";
-    if (timerStore.isBreak) return "blue";
+    if (timer.value.type === "pomodoro") return "red";
+    if (timer.value.type === "break") return "blue";
     return "green";
   };
 
@@ -231,7 +255,11 @@ const timerCardUi = computed(() => {
 });
 
 const isFetching = computed(() => {
-  return submitIsFetch.value || timerStore.fetching;
+  return submitIsFetch.value || timer.value.isFetch;
+});
+
+onBeforeUnmount(() => {
+  timerStore.pauseTimer(props.id);
 });
 </script>
 
@@ -240,17 +268,17 @@ const isFetching = computed(() => {
     class="flex flex-col gap-3 items-center"
     :class="[props.float ? 'fixed top-5 right-5 max-w-60 w-full' : 'relative']"
   >
-    <TimerOptions v-if="timerStore.showOptions && !props.optionsModal" />
+    <TimerOptions v-if="timer.showOptions && !props.optionsModal" />
 
     <UCard :ui="timerCardUi">
       <UButton
-        v-if="timerStore.showOptions"
+        v-if="timer.showOptions"
         :ui="showOptionsButtonUi"
         title="Abrir"
         color="white"
         variant="ghost"
         icon="i-icon-park-outline-preview-open"
-        @click="timerStore.toggleOptions"
+        @click="timerStore.toggleOptions(props.id)"
       />
 
       <UButton
@@ -260,67 +288,57 @@ const isFetching = computed(() => {
         color="white"
         variant="ghost"
         icon="i-icon-park-outline-preview-close"
-        @click="timerStore.toggleOptions"
+        @click="timerStore.toggleOptions(props.id)"
       />
 
       <div class="flex flex-col gap-5 justify-center items-center">
         <section class="text-center">
-          <h3 v-if="timerStore.dontHasMiliseconds" class="text-4xl font-bold">
+          <h3 v-if="timerDontHasMiliseconds" class="text-4xl font-bold">
             {{
-              timerStore.isPomodoro || timerStore.isBreak
-                ? timerStore.isPomodoro
-                  ? timerStore.pomodoroPeiod + "m de foco"
-                  : timerStore.breakPeiod + "m"
+              timer.type == "pomodoro" || timer.type == "break"
+                ? timer.type == "pomodoro"
+                  ? timer.pomodoroPeriod + "m de foco"
+                  : timer.breakPeriod + "m"
                 : title
             }}
           </h3>
 
           <h3 v-else class="text-4xl font-bold">
-            {{ timerStore.formated }}
+            {{ timerFormated }}
           </h3>
 
-          <p v-if="!timerStore.isRunning && timerStore.hasMiliseconds">
-            Continuar?
-          </p>
+          <p v-if="!timer.isRun && timerHasMiliseconds">Continuar?</p>
 
-          <p v-else-if="timerStore.isPomodoro">
+          <p v-else-if="timer.type == 'pomodoro'">
             {{
-              timerStore.isRunning
-                ? "até finalizar o Pomodoro."
-                : "com seu Pomodoro?"
+              timer.isRun ? "até finalizar o Pomodoro." : "com seu Pomodoro?"
             }}
           </p>
 
-          <p v-else-if="timerStore.isBreak">
-            {{
-              timerStore.isRunning
-                ? "para acabar o descanso..."
-                : "para descansar."
-            }}
+          <p v-else-if="timer.type == 'break'">
+            {{ timer.isRun ? "para acabar o descanso..." : "para descansar." }}
           </p>
 
-          <p v-else-if="timerStore.isTimer">
-            {{
-              timerStore.isRunning ? "até o momento." : "Pronto para começar?"
-            }}
+          <p v-else-if="timer.type === 'timer'">
+            {{ timer.isRun ? "até o momento." : "Pronto para começar?" }}
           </p>
         </section>
 
         <div class="flex gap-3">
           <UButton
-            v-if="!timerStore.isRunning"
+            v-if="!timer.isRun"
             :title="
-              timerStore.timePeriodsLength ? $t('continue') : $t('doStart')
+              timer.currentPeriodList.length ? $t('continue') : $t('doStart')
             "
-            :disabled="timerStore.isRunning || isFetching"
+            :disabled="timer.isRun || isFetching"
             color="blue"
             icon="i-icon-park-outline-play-one"
             @click="startTimer"
           />
 
           <UButton
-            v-if="timerStore.isRunning"
-            :disabled="!timerStore.isRunning || isFetching"
+            v-if="timer.isRun"
+            :disabled="!timer.isRun || isFetching"
             :title="$t('pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
@@ -328,8 +346,8 @@ const isFetching = computed(() => {
           />
 
           <UButton
-            v-if="!timerStore.isBreak"
-            :disabled="timerStore.dontHasMiliseconds || isFetching"
+            v-if="timer.type !== 'break'"
+            :disabled="timerDontHasMiliseconds || isFetching"
             :loading="isFetching"
             :title="$t('finish')"
             color="green"
@@ -338,7 +356,7 @@ const isFetching = computed(() => {
           />
 
           <UButton
-            :disabled="timerStore.dontHasMiliseconds || isFetching"
+            :disabled="timerDontHasMiliseconds || isFetching"
             :title="$t('stop')"
             color="red"
             icon="i-icon-park-outline-close-small"
@@ -357,15 +375,17 @@ const isFetching = computed(() => {
     </UCard>
 
     <UButton
-      v-if="timerStore.totalItems >= 1"
+      v-if="timer.localRecords.length >= 1"
       color="black"
       variant="link"
       @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
     >
-      <template v-if="!id">
-        Há {{ timerStore.totalItems }}
+      <template v-if="!props.id">
+        Há {{ timer.localRecords.length }}
         {{
-          timerStore.totalItems > 1 ? "registros locais." : "registro local."
+          timer.localRecords.length > 1
+            ? "registros locais."
+            : "registro local."
         }}
       </template>
 
@@ -374,12 +394,15 @@ const isFetching = computed(() => {
   </section>
 
   <UModal
-    v-model="timerStore._showOptions"
-    v-if="timerStore.showOptions && props.optionsModal"
+    :modelValue="timer.showOptions"
+    v-if="timer.showOptions && props.optionsModal"
+    @update:modelValue="(e) => (timer.showOptions = e)"
   >
     <h3 class="text-xl text-center pt-6">Qual modo deseja ativar?</h3>
+
     <GCloseButton @close="timerStore.toggleOptions" />
-    <TimerOptions :float="props.optionsModal" />
+
+    <TimerOptions :float="props.optionsModal" :id="props.id" />
   </UModal>
 
   <UModal v-model="modal.timeRecordsTable.open">
@@ -387,13 +410,14 @@ const isFetching = computed(() => {
       <GCloseButton @close="modal.timeRecordsTable.open = false" />
 
       <TimeRecordTableLocal
-        v-if="timerStore.totalItems"
-        :refresh-time-records="refreshTimeRecords"
+        v-if="timer.localRecords.length"
+        :id="props.id"
+        :refresh-time-records="props.refreshTimeRecords"
       />
 
       <p v-else class="py-3">
         {{
-          id
+          props.id
             ? "Os períodos de tempo do seu registro estão sincronizados."
             : "Não há mais nenhum registro local."
         }}
@@ -425,7 +449,7 @@ const isFetching = computed(() => {
   <UModal v-model="modal.createTimeRecord.open" prevent-close>
     <TimeRecordFormCreateAndUpdate
       :edit-object="editTimeRecordObject"
-      :refresh-time-records="refreshTimeRecords"
+      :refresh-time-records="props.refreshTimeRecords"
       @close="closeTimeRecordModal"
     />
   </UModal>
