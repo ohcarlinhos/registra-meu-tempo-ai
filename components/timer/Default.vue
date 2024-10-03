@@ -59,7 +59,7 @@ watch(
 );
 
 watch(
-  () => timerFormated,
+  () => timerFormated.value,
   (newValue) => {
     if (!oldPageTitle.value) oldPageTitle.value = document.title;
 
