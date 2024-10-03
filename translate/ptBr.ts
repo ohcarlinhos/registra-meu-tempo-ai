@@ -57,8 +57,14 @@ const i18nObj = {
   title: "Título",
 
   confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
-  confirmDeleteTimeRecordMessage: "Tem certeza deseja excluir esse registro?",
+  confirmDeleteTimeRecordMessage:
+    'Tem certeza deseja excluir o registro "{title}"?',
   confirmDeleteTimePeriodMessage: "Tem certeza que quer excluir esse período?",
+
+  codeIsWrong: "O código digitado é diferente do esperado.",
+  codeIsRequired: "É obrigatório digitar o código.",
+
+  confirmCodeToDeleteRecord: "Confirme o código para apagar o registro:",
 
   noPeriodRecorded: "Nenhum período registrado.",
   recordNotFound: "Registro não encontrado.",

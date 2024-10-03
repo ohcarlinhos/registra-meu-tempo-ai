@@ -7,6 +7,7 @@ const props = defineProps<{
   cancelText?: string;
   customWidth?: string;
   isFetch?: boolean;
+  disableConfirm?: boolean;
 }>();
 
 const emit = defineEmits(["update:open", "confirm", "cancel"]);
@@ -36,6 +37,8 @@ const isOpen = computed({
         {{ text }}
       </p>
 
+      <slot></slot>
+
       <template #footer>
         <div class="grid grid-cols-2 gap-5">
           <UButton
@@ -49,6 +52,7 @@ const isOpen = computed({
           <UButton
             block
             :loading="isFetch"
+            :disabled="disableConfirm"
             :label="props.confirmText ? props.confirmText : $t('confirm')"
             @click="emit('confirm')"
           />

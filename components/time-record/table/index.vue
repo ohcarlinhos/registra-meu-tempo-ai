@@ -3,7 +3,7 @@ const trStore = useTimeRecordStore();
 
 const emit = defineEmits<{
   access: [value: string];
-  delete: [value: number];
+  delete: [value: TimeRecordMap];
   create: [];
 }>();
 
@@ -27,7 +27,7 @@ const items = (row: TimeRecordMap) => [
     {
       label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
-      click: async () => emit("delete", row.id!),
+      click: async () => emit("delete", row),
     },
   ],
 ];
