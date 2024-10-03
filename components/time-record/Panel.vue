@@ -31,6 +31,9 @@ const formConfirmSchema = yup.object({
 const closeConfirmDeleteModal = () => {
   modal.confirmDelete.id = null;
   modal.confirmDelete.open = false;
+
+  formConfirm.originalCode = "";
+  formConfirm.code = "";
 };
 
 const openConfirmDeleteModal = async (tr: TimeRecordMap) => {
