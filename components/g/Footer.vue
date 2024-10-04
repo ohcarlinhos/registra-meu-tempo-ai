@@ -8,7 +8,7 @@
       target="_blank"
       class="text-primary font-medium hover:underline"
     >
-      Carlos Roberto.
+      Carlos Júnior.
     </a>
   </footer>
 </template>
