@@ -2,14 +2,6 @@
 import { useTitle } from "@vueuse/core";
 
 const props = defineProps({
-  float: {
-    type: Boolean,
-    default: false,
-  },
-  optionsModal: {
-    type: Boolean,
-    default: false,
-  },
   id: {
     type: Number,
     default: null,
@@ -73,7 +65,7 @@ watch(
   }
 );
 
-timerStore.initTimerConfig(props.float, props.id, props.code);
+timerStore.initTimerConfig(props.id, props.code);
 
 if (props.postTimePeriodCallback) {
   timerStore.setPostTPCallback(
@@ -232,10 +224,6 @@ const getButtonColor = computed(() => {
   return "green";
 });
 
-const showOptionsButtonUi = reactive({
-  base: "absolute top-1 right-1",
-});
-
 const timerCardUi = computed(() => {
   const getColor = () => {
     if (timer.value.type === "pomodoro") return "red";
@@ -250,8 +238,12 @@ const timerCardUi = computed(() => {
   };
 });
 
-const isFetching = computed(() => {
+const isFetch = computed(() => {
   return submitIsFetch.value || timer.value.isFetch;
+});
+
+onMounted(() => {
+  console.log(timer.value);
 });
 
 onBeforeUnmount(() => {
@@ -260,34 +252,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section
-    class="flex flex-col gap-3 items-center"
-    :class="[props.float ? 'fixed top-5 right-5 max-w-60 w-full' : 'relative']"
-  >
-    <TimerOptions v-if="timer.showOptions && !props.optionsModal" />
-
+  <section class="flex flex-col gap-3 items-center min-w-72">
     <UCard :ui="timerCardUi">
-      <UButton
-        v-if="timer.showOptions"
-        :ui="showOptionsButtonUi"
-        title="Abrir"
-        color="white"
-        variant="ghost"
-        icon="i-icon-park-outline-preview-open"
-        @click="timerStore.toggleOptions(props.id)"
-      />
+      <section class="flex -mt-4 mb-2 justify-center">
+        <UButton
+          title="Selecione entre Cronômetro, Pomodoro ou Pausa."
+          color="white"
+          variant="ghost"
+          icon="i-icon-park-outline-timer"
+          @click="timerStore.toggleOptions(props.id)"
+        >
+          Exibir Modos
+        </UButton>
+      </section>
 
-      <UButton
-        v-else
-        :ui="showOptionsButtonUi"
-        title="Fechar"
-        color="white"
-        variant="ghost"
-        icon="i-icon-park-outline-preview-close"
-        @click="timerStore.toggleOptions(props.id)"
-      />
-
-      <div class="flex flex-col gap-5 justify-center items-center">
+      <section class="flex flex-col gap-5 justify-center items-center">
         <section class="text-center">
           <h3 v-if="timerDontHasMiliseconds" class="text-4xl font-bold">
             {{
@@ -315,7 +294,7 @@ onBeforeUnmount(() => {
             {{ timer.isRun ? "para acabar o descanso..." : "para descansar." }}
           </p>
 
-          <p v-else-if="timer.type === 'timer'">
+          <p v-else-if="timer.type == 'timer'">
             {{ timer.isRun ? "até o momento." : "Pronto para começar?" }}
           </p>
         </section>
@@ -326,7 +305,7 @@ onBeforeUnmount(() => {
             :title="
               timer.currentPeriodList.length ? $t('continue') : $t('doStart')
             "
-            :disabled="timer.isRun || isFetching"
+            :disabled="timer.isRun || isFetch"
             color="blue"
             icon="i-icon-park-outline-play-one"
             @click="startTimer"
@@ -334,7 +313,7 @@ onBeforeUnmount(() => {
 
           <UButton
             v-if="timer.isRun"
-            :disabled="!timer.isRun || isFetching"
+            :disabled="!timer.isRun || isFetch"
             :title="$t('pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
@@ -343,8 +322,8 @@ onBeforeUnmount(() => {
 
           <UButton
             v-if="timer.type !== 'break'"
-            :disabled="timerDontHasMiliseconds || isFetching"
-            :loading="isFetching"
+            :disabled="timerDontHasMiliseconds || isFetch"
+            :loading="isFetch"
             :title="$t('finish')"
             color="green"
             icon="i-icon-park-outline-hard-disk-one"
@@ -352,14 +331,14 @@ onBeforeUnmount(() => {
           />
 
           <UButton
-            :disabled="timerDontHasMiliseconds || isFetching"
+            :disabled="timerDontHasMiliseconds || isFetch"
             :title="$t('stop')"
             color="red"
             icon="i-icon-park-outline-close-small"
             @click="stopTimer"
           />
         </div>
-      </div>
+      </section>
 
       <p v-if="props.code" class="text-center pt-5 text-sm opacity-50">
         Sincronizado com registro:
@@ -390,15 +369,15 @@ onBeforeUnmount(() => {
   </section>
 
   <UModal
+    v-if="timer.showOptions"
     :modelValue="timer.showOptions"
-    v-if="timer.showOptions && props.optionsModal"
     @update:modelValue="(e) => (timer.showOptions = e)"
   >
     <h3 class="text-xl text-center pt-6">Qual modo deseja ativar?</h3>
 
     <GCloseButton @close="timerStore.toggleOptions(props.id)" />
 
-    <TimerOptions :float="props.optionsModal" :id="props.id" />
+    <TimerOptions :id="props.id" />
   </UModal>
 
   <UModal v-model="modal.timeRecordsTable.open">

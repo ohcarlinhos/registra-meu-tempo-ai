@@ -59,7 +59,6 @@ onBeforeRouteLeave(() => {
             :code="trReq.code"
             :title="trReq.title"
             :post-time-period-callback="() => refreshTimePeriodCallback(true)"
-            options-modal
           />
         </section>
 

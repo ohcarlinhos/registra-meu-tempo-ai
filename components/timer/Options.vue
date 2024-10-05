@@ -2,10 +2,6 @@
 const timerStore = useTimerStore();
 
 const props = defineProps({
-  float: {
-    type: Boolean,
-    default: false,
-  },
   id: {
     type: Number,
     default: null,
@@ -33,7 +29,7 @@ const setPomodoroPeriod = (value: number | string, clear = true) => {
 };
 
 const setBreakPeriod = (value: number) => {
-  return timerStore.setBreakPeiod(value, props.id);
+  return timerStore.setBreakPeriod(value, props.id);
 };
 
 const timer = computed(() => timerStore.getTimer(props.id));
@@ -43,16 +39,22 @@ const timerHasMiliseconds = computed(
 );
 
 onMounted(() => {
-  customPomodoroPeriod.value = timer.value.pomodoroPeriod.toString();
+  const timer = timerStore.getTimer(props.id);
+  customPomodoroPeriod.value = timer.pomodoroPeriod.toString();
 });
 </script>
 
 <template>
-  <section
-    class="mb-5"
-    :class="{ 'flex flex-col items-center pt-6': props.float }"
-  >
+  <section class="flex flex-col items-center mb-5 pt-6">
     <section class="flex gap-3 mb-3 justify-center">
+      <UButton
+        :variant="isSolidOrSoftButton(timer.type == 'timer')"
+        :disabled="timerHasMiliseconds"
+        label="Cronômetro"
+        icon="i-icon-park-outline-timer"
+        @click="timerStore.setTimerType('timer', id)"
+      />
+
       <UButton
         label="Pomodoro"
         :variant="isSolidOrSoftButton(timer.type == 'pomodoro')"
@@ -60,14 +62,6 @@ onMounted(() => {
         color="red"
         icon="i-icon-park-outline-tomato"
         @click="timerStore.setTimerType('pomodoro', id)"
-      />
-
-      <UButton
-        :variant="isSolidOrSoftButton(timer.type == 'timer')"
-        :disabled="timerHasMiliseconds"
-        label="Cronômetro"
-        icon="i-icon-park-outline-timer"
-        @click="timerStore.setTimerType('timer', id)"
       />
 
       <UButton

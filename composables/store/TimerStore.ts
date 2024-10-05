@@ -38,14 +38,14 @@ export const useTimerStore = defineStore("TimerStore", {
   },
 
   actions: {
-    initTimerConfig(hideOptions = false, id: number | null = null, code = "") {
+    initTimerConfig(id: number | null = null, code = "") {
       this.noSleep = new NoSleep();
 
       const timer = this.getTimer(id);
       timer.code = code;
       timer.isFetch = false;
 
-      if (hideOptions) timer.showOptions = false;
+      timer.showOptions = false;
 
       this.pauseTimer(id);
     },
@@ -257,6 +257,10 @@ export const useTimerStore = defineStore("TimerStore", {
         }
       }
 
+      if (["pomodoro", "break"].includes(timer.type)) {
+        timer.type = timer.type === "pomodoro" ? "break" : "pomodoro";
+      }
+
       timer.currentPeriodList = [];
     },
 
@@ -284,7 +288,7 @@ export const useTimerStore = defineStore("TimerStore", {
       timer.pomodoroPeriod = value;
     },
 
-    setBreakPeiod(value: number, id: number | null = null) {
+    setBreakPeriod(value: number, id: number | null = null) {
       const timer = this.getTimer(id);
       timer.breakPeriod = value;
     },
