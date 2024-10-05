@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/i18n",
     "nuxt-viewport",
+    "nuxt-gtag",
   ],
   colorMode: {
     preference: "system",
@@ -24,6 +25,12 @@ export default defineNuxtConfig({
   build: {
     transpile: ["@vuepic/vue-datepicker"],
   },
+
+  gtag: {
+    enabled: process.env.NODE_ENV === "production",
+    id: process.env.GTAG,
+  },
+
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE,

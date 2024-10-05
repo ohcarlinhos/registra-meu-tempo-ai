@@ -14,6 +14,7 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@types/uuid": "^9.0.8",
     "nuxt": "3.11.2",
+    "nuxt-gtag": "^3.0.1",
     "nuxt-viewport": "^2.1.5",
     "vue": "3.4.27",
     "vue-router": "4.3.2"
