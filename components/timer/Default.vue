@@ -396,7 +396,7 @@ onBeforeUnmount(() => {
   >
     <h3 class="text-xl text-center pt-6">Qual modo deseja ativar?</h3>
 
-    <GCloseButton @close="timerStore.toggleOptions" />
+    <GCloseButton @close="timerStore.toggleOptions(props.id)" />
 
     <TimerOptions :float="props.optionsModal" :id="props.id" />
   </UModal>
