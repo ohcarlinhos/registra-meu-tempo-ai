@@ -4,6 +4,7 @@ const ErrorTranslateList = [
   ["user_not_found", "userNotFound"],
   ["recovery_code_not_found", "invalidRecoveryCode"],
   ["recovery_code_is_used_or_expired", "invalidRecoveryCode"],
+  ["send_recovery_email_error", "sendRecoveryError"],
 ];
 
 export const TranslateErrorHandle = (tag: string) => {

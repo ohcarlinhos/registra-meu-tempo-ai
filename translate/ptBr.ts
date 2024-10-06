@@ -163,10 +163,9 @@ const i18nObj = {
   },
 
   updatePasswordSuccess: "Senha atualizada com sucesso",
-
   wrongEmailOrPassword: "E-mail ou senha incorretos.",
-
   invalidRecoveryCode: "Código de recuperação inválido ou expirado.",
+  sendRecoveryError: "Não possível enviar o email de recuperação de senha.",
 
   apiGenericError:
     "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
