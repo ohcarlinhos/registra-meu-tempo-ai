@@ -16,7 +16,7 @@ const openModal = () => {
 <template>
   <UButton
     icon="i-icon-park-outline-add"
-    :label="`${$t('add')} ${$t('period')}`"
+    :label="_$t('period')"
     @click="openModal"
   />
 </template>

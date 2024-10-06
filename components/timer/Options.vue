@@ -67,7 +67,7 @@ onMounted(() => {
       <UButton
         :variant="isSolidOrSoftButton(timer.type === 'break')"
         :disabled="timerHasMiliseconds"
-        label="Pausa"
+        label="Descanso"
         color="blue"
         icon="i-icon-park-outline-sleep-two"
         @click="timerStore.setTimerType('break', id)"
