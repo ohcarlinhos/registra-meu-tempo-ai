@@ -52,6 +52,8 @@ const i18nObj = {
   pause: "Pausar",
   finish: "Finalizar",
   stop: "Parar",
+  break: "Descanso",
+  minutes: "Minutos",
 
   sync: "Sincronizar",
   title: "Título",
@@ -143,6 +145,9 @@ const i18nObj = {
       },
     },
   },
+
+  historyRecord: "Histórico do Registro",
+  timerType: "Cronômetro",
 
   timer: {
     title: {

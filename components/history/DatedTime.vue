@@ -44,6 +44,18 @@ const getData = () => {
   return getDatedTimeData(props.timeRecordId!);
 };
 
+const getSessionColor = (type: string) => {
+  if (type === "break") return "blue";
+  if (type === "pomodoro") return "red";
+  return "primary";
+};
+
+const getSessionLabel = (type: string) => {
+  if (type === "break") return _$t("break");
+  if (type === "pomodoro") return _$t("pomodoro");
+  return _$t("timerType");
+};
+
 const isFetchNow = computed(() => {
   return getIsFetch.value || props.isFetch;
 });
@@ -68,7 +80,7 @@ defineExpose({
           padding: 'pb-5 px-0 lg:px-0 sm:px-0',
         }"
       >
-        <h2 class="text-4xl font-bold">Histórico do Registro</h2>
+        <h2 class="text-4xl font-bold">{{ _$t("historyRecord") }}</h2>
 
         <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
           <TimePeriodButtonAdd
@@ -122,7 +134,7 @@ defineExpose({
             mode="hover"
           >
             <UBadge
-              :color="timerSession.type === 'timer' ? 'primary' : 'red'"
+              :color="getSessionColor(timerSession.type)"
               :variant="index % 2 == 0 ? 'subtle' : 'soft'"
               size="md"
             >
@@ -132,9 +144,7 @@ defineExpose({
             <template #panel>
               <div class="p-2 pt-1 flex flex-col items-center gap-2">
                 <p class="text-sm">
-                  {{
-                    timerSession.type === "pomodoro" ? "Pomodoro" : "Cronômetro"
-                  }}
+                  {{ getSessionLabel(timerSession.type) }}
                 </p>
 
                 <UDivider />

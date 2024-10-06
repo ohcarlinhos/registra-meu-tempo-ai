@@ -50,13 +50,13 @@ onMounted(() => {
       <UButton
         :variant="isSolidOrSoftButton(timer.type == 'timer')"
         :disabled="timerHasMiliseconds"
-        label="Cronômetro"
+        :label="_$t('timerType')"
         icon="i-icon-park-outline-timer"
         @click="timerStore.setTimerType('timer', id)"
       />
 
       <UButton
-        label="Pomodoro"
+        :label="_$t('pomodoro')"
         :variant="isSolidOrSoftButton(timer.type == 'pomodoro')"
         :disabled="timerHasMiliseconds"
         color="red"
@@ -67,7 +67,7 @@ onMounted(() => {
       <UButton
         :variant="isSolidOrSoftButton(timer.type === 'break')"
         :disabled="timerHasMiliseconds"
-        label="Descanso"
+        :label="_$t('break')"
         color="blue"
         icon="i-icon-park-outline-sleep-two"
         @click="timerStore.setTimerType('break', id)"
@@ -78,7 +78,7 @@ onMounted(() => {
       v-if="timer.type == 'pomodoro'"
       class="flex gap-3 items-center pt-2"
     >
-      <p class="leading-1">Minutos:</p>
+      <p class="leading-1">{{ _$t("minutes") }}</p>
 
       <UButton
         label="25"
@@ -108,7 +108,7 @@ onMounted(() => {
     </section>
 
     <section v-if="timer.type === 'break'" class="flex gap-3 items-center pt-2">
-      <p class="leading-1">Minutos:</p>
+      <p class="leading-1">{{ _$t("minutes") }}</p>
 
       <UButton
         label="5"
