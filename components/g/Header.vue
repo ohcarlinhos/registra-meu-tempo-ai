@@ -59,7 +59,7 @@ const activeClass = "text-primary font-bold";
 
     <nav
       v-if="useRuntimeConfig().public.onlyGuestMode != '1'"
-      class="pt-6 flex gap-4"
+      class="pt-6 flex gap-4 items-center"
       :class="{ 'justify-center': center }"
     >
       <ULink :to="{ name: 'home' }" :active-class="activeClass">{{
@@ -72,6 +72,15 @@ const activeClass = "text-primary font-bold";
         :active-class="activeClass"
       >
         {{ _$t("records") }}
+      </ULink>
+
+      <ULink
+        v-if="authStore.isAuth"
+        class="line-clamp-1"
+        :to="{ name: 'statistic.day' }"
+        :active-class="activeClass"
+      >
+        {{ "Resumo Diário" }}
       </ULink>
 
       <ULink
