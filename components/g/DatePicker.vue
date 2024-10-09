@@ -29,6 +29,11 @@ defineProps({
     type: String,
     default: "",
   },
+
+  utc: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["change"]);
@@ -51,6 +56,7 @@ watch(model, (value) => {
     :format="disableTimePicker ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'"
     :name="name"
     :dark="isDark"
+    :utc
     locale="pt-BR"
     select-text="Selecionar"
     cancel-text="Fechar"

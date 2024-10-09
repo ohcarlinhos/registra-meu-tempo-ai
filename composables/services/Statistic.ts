@@ -3,7 +3,7 @@ export const getDayStatistic = async function (
   mounted = false
 ) {
   return CustomHttp<null, DayStatistic>(
-    `/statistic/day?date=${date?.toUTCString()}`,
+    `/statistic/day?date=${date?.toISOString()}`,
     "get",
     null,
     mounted

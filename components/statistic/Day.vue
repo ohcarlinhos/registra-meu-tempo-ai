@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { startOfDay } from "date-fns";
+
 type CardType = {
   title: string;
   value: string | number;
@@ -26,8 +28,8 @@ const isFetch = ref(false);
 
 onMounted(() => {
   selectedDate.value = route.query.date
-    ? new Date(route.query.date as string)
-    : new Date();
+    ? startOfDay(new Date(route.query.date as string))
+    : startOfDay(new Date());
 
   pushQuery();
 });
@@ -71,8 +73,7 @@ const mountInfoCardList = () => {
     title: "Total",
     value: statistic.totalHours,
     obs: "Soma de todos os períodos de tempo.",
-    customClass:
-      "col-span-2 row-span-2 h-full flex items-center justify-center",
+    customClass: "col-span-2 row-span-2 h-full",
     valueStyle: "text-5xl font-bold",
   });
 
@@ -169,10 +170,12 @@ var maxDate = ref(new Date(Date.now()));
 
         <div class="max-w-44">
           <GDatePicker
-            v-model="selectedDate"
+            :modelValue="selectedDate"
             :disabled="isFetch"
             :max-date="maxDate"
             disableTimePicker
+            utc
+            @update:modelValue="(e: string | Date) => selectedDate = startOfDay(e)"
           />
         </div>
       </section>
@@ -180,7 +183,33 @@ var maxDate = ref(new Date(Date.now()));
 
     <UDivider class="py-2" />
 
-    <section class="w-full grid grid-cols-1 items-start gap-5">
+    <section
+      v-if="isFetch"
+      class="w-full grid grid-cols-4 items-start gap-4 md:gap-4"
+    >
+      <section class="col-span-full">
+        <USkeleton class="h-8 w-32" />
+      </section>
+
+      <USkeleton
+        class="col-span-2 row-span-2 h-full flex items-center justify-center"
+      />
+
+      <USkeleton class="h-44" />
+      <USkeleton class="h-44" />
+      <USkeleton class="h-44" />
+      <USkeleton class="h-44" />
+
+      <section class="col-span-full">
+        <USkeleton class="h-8 w-44 mt-8" />
+      </section>
+
+      <USkeleton class="h-44" />
+      <USkeleton class="h-44" />
+      <USkeleton class="h-44" />
+    </section>
+
+    <section v-else class="w-full grid grid-cols-1 items-start gap-5">
       <section
         v-for="(section, index) in infoCardList"
         :key="section.title"
@@ -194,6 +223,7 @@ var maxDate = ref(new Date(Date.now()));
               background: card.cardBackgroundStyle,
               ring: card.cardRingStyle,
             }"
+            class="min-h-44 flex items-center justify-center"
             :class="[card.customClass]"
             v-for="card in section.cards"
             :key="card.title"
