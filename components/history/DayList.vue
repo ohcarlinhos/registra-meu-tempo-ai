@@ -9,15 +9,15 @@ import {
   deleteTpModal,
   openDeleteTpModal,
   closeDeleteTpModal,
-} from "./dated-time/modal";
+} from "./day-list/modal";
 
 import {
   dtpReq,
   getIsFetch,
-  getDatedTimeData,
+  getPeriodHistoryData,
   deleteTimePeriodAction,
   deleteIsFetch,
-} from "./dated-time/actions";
+} from "./day-list/actions";
 
 const props = defineProps<{
   timeRecordId?: number;
@@ -41,7 +41,7 @@ const closeTimePeriodCallback = async (refresh = false) => {
 };
 
 const getData = () => {
-  return getDatedTimeData(props.timeRecordId!);
+  return getPeriodHistoryData(props.timeRecordId!);
 };
 
 const getSessionColor = (type: string) => {

@@ -67,7 +67,7 @@ onBeforeRouteLeave(() => {
         </section>
 
         <section v-if="trReq" class="w-full md:col-span-12 md:mb-5">
-          <HistoryDatedTime
+          <HistoryDayList
             ref="historyTp"
             v-if="actualTimeRecordId"
             :is-fetch="getIsFetch"

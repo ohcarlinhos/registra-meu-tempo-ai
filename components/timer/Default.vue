@@ -242,10 +242,6 @@ const isFetch = computed(() => {
   return submitIsFetch.value || timer.value.isFetch;
 });
 
-onMounted(() => {
-  console.log(timer.value);
-});
-
 onBeforeUnmount(() => {
   timerStore.pauseTimer(props.id);
 });

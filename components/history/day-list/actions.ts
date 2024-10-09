@@ -1,14 +1,14 @@
-export const dtpReq = ref<DatedTimeMap[]>();
+export const dtpReq = ref<HistoryDayMap[]>();
 
 export const getIsFetch = ref(false);
 
-export const getDatedTimeData = async (
+export const getPeriodHistoryData = async (
   timeRecordId: number,
   disableUpdateFetch = false
 ) => {
   if (!disableUpdateFetch) getIsFetch.value = true;
 
-  getDatedTime(timeRecordId, true)
+  getPeriodHistory(timeRecordId, true)
     .then((data) => {
       if (data) dtpReq.value = data;
     })
@@ -33,12 +33,11 @@ export const deleteTimePeriodAction = async (
     const { $i18n } = useNuxtApp();
     OkToast($i18n.t("form.timePeriod.status.success.delete"));
 
-    await getDatedTimeData(timeRecordId);
+    await getPeriodHistory(timeRecordId);
     if (callback) await callback();
 
     closeModalMethod();
   } catch (err) {
-    console.log(err);
     ErrorToast(err);
   } finally {
     deleteIsFetch.value = false;

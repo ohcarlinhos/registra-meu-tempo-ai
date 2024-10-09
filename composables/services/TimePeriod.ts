@@ -11,18 +11,6 @@ export const getTimePeriods = async function (
   );
 };
 
-export const getDatedTime = async function (
-  timeRecordId: number,
-  mounted = false
-) {
-  return await CustomHttp<null, DatedTimeMap[]>(
-    `/period/dated/${timeRecordId}`,
-    "get",
-    null,
-    mounted
-  );
-};
-
 export const postTimePeriod = async (payload: TimePeriodDto) => {
   return CustomHttp<TimePeriodDto, TimePeriodMap>(
     "/period",
