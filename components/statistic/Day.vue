@@ -75,14 +75,7 @@ const mountInfoCardList = () => {
     obs: "Soma de todos os períodos de tempo.",
     customClass: "col-span-2 row-span-2 h-full",
     valueStyle: "text-5xl font-bold",
-  });
-
-  hourCards.push({
-    title: "Períodos (Isolados)",
-    value: statistic.totalIsolatedPeriodHours,
-    obs: `Quantidade: ${statistic.isolatedPeriodCount}`,
-    cardBackgroundStyle: "dark:bg-yellow-500 dark:bg-opacity-30",
-    cardRingStyle: `ring-2 dark:ring-yellow-500 ring-2 ring-yellow-500`,
+    cardRingStyle: `ring-2 dark:ring-gray-500 ring-gray-500`,
   });
 
   hourCards.push({
@@ -90,7 +83,7 @@ const mountInfoCardList = () => {
     value: statistic.totalTimerHours,
     obs: `Sessões: ${statistic.timerCount}`,
     cardBackgroundStyle: "dark:bg-primary-950 dark:bg-opacity-70",
-    cardRingStyle: `ring-2 dark:ring-primary-500 ring-2 ring-primary-500`,
+    cardRingStyle: `ring-2 dark:ring-primary-500 ring-primary-500`,
   });
 
   hourCards.push({
@@ -98,7 +91,7 @@ const mountInfoCardList = () => {
     value: statistic.totalPomodoroHours,
     obs: `Sessões: ${statistic.pomodoroCount}`,
     cardBackgroundStyle: "dark:bg-red-950 dark:bg-opacity-70",
-    cardRingStyle: `ring-2 dark:ring-red-500 ring-2 ring-red-500`,
+    cardRingStyle: `ring-2 dark:ring-red-500 ring-red-500`,
   });
 
   hourCards.push({
@@ -107,6 +100,14 @@ const mountInfoCardList = () => {
     obs: `Sessões: ${statistic.breakCount}`,
     cardBackgroundStyle: "dark:bg-blue-950 dark:bg-opacity-70",
     cardRingStyle: `ring-2 dark:ring-blue-500 ring-2 ring-blue-500`,
+  });
+
+  hourCards.push({
+    title: "Períodos (Isolados)",
+    value: statistic.totalIsolatedPeriodHours,
+    obs: `Quantidade: ${statistic.isolatedPeriodCount}`,
+    cardBackgroundStyle: "dark:bg-yellow-500 dark:bg-opacity-30",
+    cardRingStyle: `ring-2 dark:ring-yellow-500 ring-yellow-500`,
   });
 
   infoCardList.value.push({
@@ -215,9 +216,11 @@ var maxDate = ref(new Date(Date.now()));
         :key="section.title"
         class="pb-4"
       >
-        <h3 class="text-2xl font-semibold pb-5">{{ section.title }}</h3>
+        <h3 class="text-2xl font-semibold pb-5">
+          {{ section.title }}
+        </h3>
 
-        <section class="w-full grid grid-cols-4 items-start gap-4 md:gap-4">
+        <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
           <UCard
             :ui="{
               background: card.cardBackgroundStyle,
@@ -230,7 +233,7 @@ var maxDate = ref(new Date(Date.now()));
           >
             <section class="flex flex-col gap-2 items-center w-full h-full">
               <h3
-                class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70"
+                class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
               >
                 {{ card.title }}
               </h3>
