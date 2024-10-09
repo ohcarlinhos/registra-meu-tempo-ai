@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
+
   modules: [
     "@nuxt/ui",
     "@pinia/nuxt",
@@ -10,18 +11,19 @@ export default defineNuxtConfig({
     "nuxt-viewport",
     "nuxt-gtag",
   ],
+
   colorMode: {
     preference: "system",
   },
-  ui: {
-    icons: ["icon-park-outline"],
-  },
+
   i18n: {
     vueI18n: "./i18n.config.ts",
   },
+
   imports: {
     dirs: ["composables/**", "utils/**"],
   },
+
   build: {
     transpile: ["@vuepic/vue-datepicker"],
   },
@@ -44,4 +46,6 @@ export default defineNuxtConfig({
       oldUserToken: process.env.OLD_USER_TOKEN,
     },
   },
+
+  compatibilityDate: "2024-10-09",
 });

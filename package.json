@@ -12,22 +12,22 @@
   "devDependencies": {
     "@nuxtjs/i18n": "^8.3.1",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
-    "@types/uuid": "^9.0.8",
-    "nuxt": "3.11.2",
+    "@types/uuid": "10.0.0",
+    "nuxt": "^3.13.2",
     "nuxt-gtag": "^3.0.1",
-    "nuxt-viewport": "^2.1.5",
-    "vue": "3.4.27",
-    "vue-router": "4.3.2"
+    "nuxt-viewport": "^2.2.0",
+    "vue": "^3.5.11",
+    "vue-router": "^4.4.5"
   },
   "dependencies": {
     "@iconify-json/icon-park-outline": "^1.1.15",
-    "@nuxt/ui": "2.16.0",
+    "@nuxt/ui": "^2.18.7",
     "@pinia/nuxt": "^0.5.1",
-    "@vuepic/vue-datepicker": "8.6.0",
-    "date-fns": "3.6.0",
+    "@vuepic/vue-datepicker": "9.0.3",
+    "date-fns": "4.1.0",
     "maska": "^3.0.0",
     "nosleep.js": "^0.12.0",
-    "uuid": "^9.0.1",
+    "uuid": "10.0.0",
     "yup": "1.4.0"
   }
 }
