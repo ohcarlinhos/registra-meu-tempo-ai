@@ -73,10 +73,10 @@ const submit = async () => {
       <UFormGroup :label="_$t('registerCode')" name="registerCode" required>
         <UInput type="registerCode" v-model="form.registerCode" />
         <p class="text-xs pt-1">
-          Envie uma mensagem para receber um código de registro
+          Receba um código
           <a
             class="font-bold text-primary"
-            href="https://www.linkedin.com/in/carlos-roberto/"
+            href="https://forms.gle/goJ1Tzn4DRd9Wq3o7"
             target="_blank"
           >
             clicando aqui.
