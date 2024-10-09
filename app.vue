@@ -22,7 +22,7 @@ const setOldToken = () => {
 
   <NuxtLayout>
     <UButton
-      :ui="{ base: 'fixed top-2 left-2 z-50' }"
+      :ui="{ base: 'absolute lg:fixed top-2 left-2 z-50' }"
       :icon="
         isDark ? 'i-icon-park-outline-moon' : 'i-icon-park-outline-sun-one'
       "
