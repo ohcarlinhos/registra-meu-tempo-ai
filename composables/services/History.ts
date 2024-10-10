@@ -3,7 +3,7 @@ export const getPeriodHistoryDay = async function (
   timeRecordId: number,
   mounted = false
 ) {
-  return await CustomHttp<null, Pagination<HistoryDayMap>>(
+  return await CustomHttp<null, Pagination<HistoryPeriodDayMap>>(
     `/period/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
     "get",
     null,

@@ -4,7 +4,7 @@ export const useHistoryPeriodDayStore = defineStore({
   id: "HistoryPeriodDayStore",
   state: () => ({
     paginationQuery: new PaginationQuery(),
-    apiRes: {} as Pagination<HistoryDayMap>,
+    apiRes: {} as Pagination<HistoryPeriodDayMap>,
     isFetch: false,
     _timeRecordId: 0,
     _first: true,
