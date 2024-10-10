@@ -11,24 +11,19 @@ import {
   closeDeleteTpModal,
 } from "./day-list/modal";
 
-import {
-  dtpReq,
-  getIsFetch,
-  getPeriodHistoryData,
-  deleteTimePeriodAction,
-  deleteIsFetch,
-} from "./day-list/actions";
+import { deleteTimePeriodAction, deleteIsFetch } from "./day-list/actions";
 
 const props = defineProps<{
-  timeRecordId?: number;
+  timeRecordId: number;
   isFetch?: boolean;
   callback?: () => Promise<void>;
 }>();
 
+const dayStore = useHistoryPeriodDayStore();
+
 const deleteTpAction = () => {
   return deleteTimePeriodAction(
     deleteTpModal.id,
-    props.timeRecordId!,
     closeDeleteTpModal,
     props.callback
   );
@@ -41,7 +36,8 @@ const closeTimePeriodCallback = async (refresh = false) => {
 };
 
 const getData = () => {
-  return getPeriodHistoryData(props.timeRecordId!);
+  dayStore.setTimeRecordId(props.timeRecordId);
+  return dayStore.fetch(true);
 };
 
 const getSessionColor = (type: string) => {
@@ -57,7 +53,7 @@ const getSessionLabel = (type: string) => {
 };
 
 const isFetchNow = computed(() => {
-  return getIsFetch.value || props.isFetch;
+  return dayStore.isFetch || props.isFetch;
 });
 
 onMounted(async () => {
@@ -103,33 +99,33 @@ defineExpose({
 
     <UCard
       v-else
-      v-for="dtp in dtpReq"
+      v-for="day in dayStore.apiRes.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
       <h3 class="text-xl inline-flex gap-2 items-center">
-        {{ format(dtp.date, "dd/MM/yyyy") }}
+        {{ format(day.date, "dd/MM/yyyy") }}
       </h3>
 
       <p class="text-md pb-1">
-        <span>Total: {{ dtp.formattedTime }}</span>
+        <span>Total: {{ day.formattedTime }}</span>
       </p>
 
-      <template v-if="dtp.timerSessions.length">
+      <template v-if="day.timerSessions.length">
         <UDivider class="py-2" />
 
         <p class="text-lg">Sessões</p>
 
         <p class="text-sm">
-          {{ dtp.timerSessionsFormattedTime }}, {{ dtp.timerSessions.length }}
-          {{ dtp.timerSessions.length > 1 ? "sessões" : "sessão" }}
+          {{ day.timerSessionsFormattedTime }}, {{ day.timerSessions.length }}
+          {{ day.timerSessions.length > 1 ? "sessões" : "sessão" }}
         </p>
 
         <section
-          v-if="dtp.timerSessions.length"
+          v-if="day.timerSessions.length"
           class="flex flex-row gap-2 flex-wrap py-2"
         >
           <UPopover
-            v-for="(timerSession, index) in dtp.timerSessions"
+            v-for="(timerSession, index) in day.timerSessions"
             :key="timerSession.id"
             mode="hover"
           >
@@ -181,19 +177,19 @@ defineExpose({
         </section>
       </template>
 
-      <template v-if="dtp.timePeriods.length">
+      <template v-if="day.timePeriods.length">
         <UDivider class="py-2" />
 
         <p class="text-lg">Períodos</p>
 
         <p class="text-sm">
-          {{ dtp.timePeriodsFormattedTime }}, {{ dtp.timePeriods.length }}
-          {{ dtp.timePeriods.length > 1 ? "períodos" : "período" }}
+          {{ day.timePeriodsFormattedTime }}, {{ day.timePeriods.length }}
+          {{ day.timePeriods.length > 1 ? "períodos" : "período" }}
         </p>
 
         <section class="flex flex-row gap-2 flex-wrap py-2">
           <UPopover
-            v-for="(period, index) in dtp.timePeriods"
+            v-for="(period, index) in day.timePeriods"
             :key="period.id"
             mode="hover"
           >
@@ -245,6 +241,18 @@ defineExpose({
         </section>
       </template>
     </UCard>
+
+    <section class="col-span-full">
+      <GPagination
+        :page="dayStore.apiRes?.page"
+        :perPage="dayStore.apiRes?.perPage"
+        :totalPages="dayStore.apiRes?.totalPages"
+        :totalItems="dayStore.apiRes?.totalItems"
+        :store="dayStore"
+        :is-fetch="isFetch"
+        :perPageList="[9, 18]"
+      />
+    </section>
   </section>
 
   <UModal v-model="tpModal.open" prevent-close>

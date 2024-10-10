@@ -1,9 +1,10 @@
-export const getPeriodHistory = async function (
+export const getPeriodHistoryDay = async function (
+  pagQuery: IPaginationQuery,
   timeRecordId: number,
   mounted = false
 ) {
-  return await CustomHttp<null, HistoryDayMap[]>(
-    `/period/history/${timeRecordId}`,
+  return await CustomHttp<null, Pagination<HistoryDayMap>>(
+    `/period/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
     "get",
     null,
     mounted

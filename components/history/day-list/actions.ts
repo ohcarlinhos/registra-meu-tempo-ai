@@ -1,31 +1,14 @@
-export const dtpReq = ref<HistoryDayMap[]>();
-
 export const getIsFetch = ref(false);
-
-export const getPeriodHistoryData = async (
-  timeRecordId: number,
-  disableUpdateFetch = false
-) => {
-  if (!disableUpdateFetch) getIsFetch.value = true;
-
-  getPeriodHistory(timeRecordId, true)
-    .then((data) => {
-      if (data) dtpReq.value = data;
-    })
-    .finally(() => {
-      if (!disableUpdateFetch) getIsFetch.value = false;
-    });
-};
-
 export const deleteIsFetch = ref(false);
 
 export const deleteTimePeriodAction = async (
   timePeriodId: number,
-  timeRecordId: number,
   closeModalMethod: () => void = () => {},
   callback: (() => Promise<void>) | undefined = undefined
 ) => {
   deleteIsFetch.value = true;
+
+  const dayStore = useHistoryPeriodDayStore();
 
   try {
     await deleteTimePeriod(timePeriodId);
@@ -33,7 +16,7 @@ export const deleteTimePeriodAction = async (
     const { $i18n } = useNuxtApp();
     OkToast($i18n.t("form.timePeriod.status.success.delete"));
 
-    await getPeriodHistory(timeRecordId);
+    await dayStore.refetch();
     if (callback) await callback();
 
     closeModalMethod();
