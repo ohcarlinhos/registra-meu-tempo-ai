@@ -107,7 +107,23 @@ defineExpose({
       </h3>
 
       <p class="text-md pb-1">
-        <span>Total: {{ day.formattedTime }}</span>
+        <span class="flex gap-1 content-center">
+          Total: {{ day.formattedTime }}
+
+          <UPopover mode="hover">
+            <UIcon name="i-icon-park-outline-attention" class="w-3 h-3" />
+
+            <template #panel>
+              <section class="p-2 max-w-96 leading-none">
+                <span class="text-xs">
+                  O "Total" é a soma de todos os períodos de tempo e sessões que
+                  iniciaram entre 00:00:00 e 23:59:59, mesmo que finalizem
+                  depois desse horário, ou seja, em outro dia.
+                </span>
+              </section>
+            </template>
+          </UPopover>
+        </span>
       </p>
 
       <template v-if="day.timerSessions.length">
