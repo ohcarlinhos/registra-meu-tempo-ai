@@ -17,11 +17,15 @@ defineProps<{
   </div>
 
   <div v-else-if="timeRecord" class="w-full">
-    <h2 class="text-4xl font-bold mb-1">
-      {{ timeRecord.title || _$t("noTitle") }}
+    <section
+      class="flex md:flex-row gap-5 flex-col md:items-center items-start mb-5"
+    >
+      <h2 class="text-4xl font-bold">
+        {{ timeRecord.title || _$t("noTitle") }}
+      </h2>
 
       <slot name="button"></slot>
-    </h2>
+    </section>
 
     <p class="text-2xl pb-6 font-medium">
       Tempo total:
