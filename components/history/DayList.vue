@@ -72,19 +72,23 @@ defineExpose({
     <section class="w-full md:col-span-12">
       <UContainer
         :ui="{
-          base: 'flex flex-row justify-between gap-5',
           padding: 'pb-5 px-0 lg:px-0 sm:px-0',
         }"
       >
-        <h2 class="text-4xl font-bold">{{ _$t("historyRecord") }}</h2>
+        <section class="flex md:flex-row justify-between gap-5 flex-col">
+          <section>
+            <h2 class="text-4xl font-bold">{{ _$t("historyRecord") }}</h2>
+            <span>Listagem por data de criação de sessões e períodos.</span>
+          </section>
 
-        <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
-          <TimePeriodButtonAdd
-            :time-record-id="timeRecordId"
-            :disabled="isFetchNow"
-            @open="createTimePeriod"
-          />
-        </div>
+          <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
+            <TimePeriodButtonAdd
+              :time-record-id="timeRecordId"
+              :disabled="isFetchNow"
+              @open="createTimePeriod"
+            />
+          </div>
+        </section>
       </UContainer>
     </section>
 
