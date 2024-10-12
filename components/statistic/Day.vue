@@ -119,7 +119,7 @@ const mountInfoCardList = () => {
 
   quantityCards.push({
     title: "Sessões",
-    value: statistic.timerCount,
+    value: statistic.sessionCount,
     obs: 'Cada uso do "timer" é considerada uma sessão.',
   });
 
