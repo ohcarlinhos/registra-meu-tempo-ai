@@ -102,7 +102,7 @@ defineExpose({
     </section>
 
     <UCard
-      v-else
+      v-else-if="dayStore.apiRes?.data.length"
       v-for="day in dayStore.apiRes.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
@@ -300,6 +300,16 @@ defineExpose({
         </section>
       </template>
     </UCard>
+
+    <section
+      v-else
+      class="col-span-full flex justify-center md:items-center flex-col pt-12 pb-8 opacity-50"
+    >
+      <h4 class="text-3xl">Não há nada por aqui...</h4>
+      <span class="text-lg">
+        Adicione um período de tempo ou utilize o cronômetro.
+      </span>
+    </section>
 
     <section class="col-span-full">
       <GPagination
