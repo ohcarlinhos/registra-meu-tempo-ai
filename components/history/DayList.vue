@@ -233,7 +233,8 @@ defineExpose({
             <template #panel>
               <section class="p-2 max-w-96 leading-none">
                 <span class="text-xs">
-                  Períodos criados entre 00:00:00 e 23:59:59.
+                  Períodos criados entre 00:00:00 e 23:59:59. O cálculo de horas
+                  considera períodos finalizados no próximo dia.
                 </span>
               </section>
             </template>
