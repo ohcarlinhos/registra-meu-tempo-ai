@@ -115,14 +115,17 @@ defineExpose({
           Total: {{ day.formattedTime }}
 
           <UPopover mode="hover">
-            <UIcon name="i-icon-park-outline-attention" class="w-3 h-3" />
+            <UIcon
+              name="i-icon-park-outline-attention"
+              class="w-3 h-3 -translate-y-1"
+            />
 
             <template #panel>
               <section class="p-2 max-w-96 leading-none">
                 <span class="text-xs">
                   O "Total" é a soma de todos os períodos de tempo e sessões que
                   iniciaram entre 00:00:00 e 23:59:59, mesmo que finalizem
-                  depois desse horário, ou seja, em outro dia.
+                  depois desse horário (próximo dia).
                 </span>
               </section>
             </template>
@@ -133,7 +136,25 @@ defineExpose({
       <template v-if="day.timerSessions.length">
         <UDivider class="py-2" />
 
-        <p class="text-lg">Sessões</p>
+        <p class="text-lg flex gap-1">
+          Sessões
+
+          <UPopover mode="hover">
+            <UIcon
+              name="i-icon-park-outline-attention"
+              class="w-3 h-3 -translate-y-1"
+            />
+
+            <template #panel>
+              <section class="p-2 max-w-96 leading-none">
+                <span class="text-xs">
+                  Sessões iniciadas entre 00:00:00 e 23:59:59. O cálculo de
+                  horas considera períodos finalizados no próximo dia.
+                </span>
+              </section>
+            </template>
+          </UPopover>
+        </p>
 
         <p class="text-sm">
           {{ day.timerSessionsFormattedTime }}, {{ day.timerSessions.length }}
@@ -200,7 +221,24 @@ defineExpose({
       <template v-if="day.timePeriods.length">
         <UDivider class="py-2" />
 
-        <p class="text-lg">Períodos</p>
+        <p class="text-lg flex gap-1">
+          Períodos
+
+          <UPopover mode="hover">
+            <UIcon
+              name="i-icon-park-outline-attention"
+              class="w-3 h-3 -translate-y-1"
+            />
+
+            <template #panel>
+              <section class="p-2 max-w-96 leading-none">
+                <span class="text-xs">
+                  Períodos criados entre 00:00:00 e 23:59:59.
+                </span>
+              </section>
+            </template>
+          </UPopover>
+        </p>
 
         <p class="text-sm">
           {{ day.timePeriodsFormattedTime }}, {{ day.timePeriods.length }}
