@@ -1,4 +1,4 @@
-export type HistoryPeriodDayMap = {
+export type TimeRecordHistoryDayMap = {
   date: string;
   count: number;
   timePeriods: TimePeriodMap[];

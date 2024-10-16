@@ -8,7 +8,7 @@ export const deleteTimePeriodAction = async (
 ) => {
   deleteIsFetch.value = true;
 
-  const dayStore = useHistoryPeriodDayStore();
+  const dayStore = useTimeRecordHistoryStore();
 
   try {
     await deleteTimePeriod(timePeriodId);

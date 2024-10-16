@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 
-export const useHistoryPeriodDayStore = defineStore({
-  id: "HistoryPeriodDayStore",
+export const useTimeRecordHistoryStore = defineStore({
+  id: "TimeRecordHistoryStore",
   state: () => ({
     paginationQuery: new PaginationQuery(),
-    apiRes: {} as Pagination<HistoryPeriodDayMap>,
+    apiRes: {} as Pagination<TimeRecordHistoryDayMap>,
     isFetch: false,
     _timeRecordId: 0,
     _first: true,
@@ -22,7 +22,7 @@ export const useHistoryPeriodDayStore = defineStore({
 
       try {
         this.isFetch = true;
-        const data = await getPeriodHistoryDay(
+        const data = await getTimeRecordHistory(
           this.paginationQuery,
           this._timeRecordId,
           mounted

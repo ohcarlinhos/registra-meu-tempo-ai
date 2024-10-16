@@ -19,7 +19,7 @@ const props = defineProps<{
   callback?: () => Promise<void>;
 }>();
 
-const dayStore = useHistoryPeriodDayStore();
+const dayStore = useTimeRecordHistoryStore();
 
 const deleteTpAction = () => {
   return deleteTimePeriodAction(
@@ -102,7 +102,7 @@ defineExpose({
     </section>
 
     <UCard
-      v-else-if="dayStore.apiRes?.data.length"
+      v-else-if="dayStore.apiRes?.data?.length"
       v-for="day in dayStore.apiRes.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >

@@ -47,3 +47,16 @@ export const putTimeRecord = async (payload: UpdateTimeRecordDto) => {
     true
   );
 };
+
+export const getTimeRecordHistory = async function (
+  pagQuery: IPaginationQuery,
+  timeRecordId: number,
+  mounted = false
+) {
+  return await CustomHttp<null, Pagination<TimeRecordHistoryDayMap>>(
+    `/record/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
+    "get",
+    null,
+    mounted
+  );
+};
