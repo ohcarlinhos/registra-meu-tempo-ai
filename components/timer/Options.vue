@@ -35,7 +35,7 @@ const setBreakPeriod = (value: number) => {
 const timer = computed(() => timerStore.getTimer(props.id));
 
 const timerHasMiliseconds = computed(
-  () => timerStore.getTotalMilisecondsPast(props.id) > 0
+  () => timerStore.getTotalMillisecondsPast(props.id) > 0
 );
 
 onMounted(() => {

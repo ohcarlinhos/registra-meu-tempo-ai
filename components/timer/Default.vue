@@ -28,30 +28,30 @@ const timerStore = useTimerStore();
 
 const timer = computed(() => timerStore.getTimer(props.id));
 
-const timerHasMiliseconds = computed(
-  () => timerStore.getTotalMilisecondsPast(props.id) > 0
+const timerHasMilliseconds = computed(
+  () => timerStore.getTotalMillisecondsPast(props.id) > 0
 );
 
-const timerDontHasMiliseconds = computed(
-  () => timerStore.getTotalMilisecondsPast(props.id) === 0
+const timerDoNotHasMilliseconds = computed(
+  () => timerStore.getTotalMillisecondsPast(props.id) === 0
 );
 
-const timerFormated = ref("");
+const timerLabelText = ref("");
 
 watch(
   () => timer.value.currentPeriod.end,
   (newValue) => {
-    timerFormated.value = millisecondsToString(
+    timerLabelText.value = millisecondsToString(
       timer.value.type == "pomodoro" || timer.value.type == "break"
-        ? timerStore.getRegressiveMilissecondsNecessary(props.id) -
-            timerStore.getTotalMilisecondsPast(props.id)
-        : timerStore.getTotalMilisecondsPast(props.id)
+        ? timerStore.getRegressiveMillisecondsNecessary(props.id) -
+            timerStore.getTotalMillisecondsPast(props.id)
+        : timerStore.getTotalMillisecondsPast(props.id)
     );
   }
 );
 
 watch(
-  () => timerFormated.value,
+  () => timerLabelText.value,
   (newValue) => {
     if (!oldPageTitle.value) oldPageTitle.value = document.title;
 
@@ -61,6 +61,8 @@ watch(
           oldPageTitle.value
         }`
       );
+    } else {
+      useTitle(oldPageTitle.value);
     }
   }
 );
@@ -264,7 +266,7 @@ onBeforeUnmount(() => {
 
       <section class="flex flex-col gap-5 justify-center items-center">
         <section class="text-center">
-          <h3 v-if="timerDontHasMiliseconds" class="text-4xl font-bold">
+          <h3 v-if="timerDoNotHasMilliseconds" class="text-4xl font-bold">
             {{
               timer.type == "pomodoro" || timer.type == "break"
                 ? timer.type == "pomodoro"
@@ -275,10 +277,10 @@ onBeforeUnmount(() => {
           </h3>
 
           <h3 v-else class="text-4xl font-bold">
-            {{ timerFormated }}
+            {{ timerLabelText }}
           </h3>
 
-          <p v-if="!timer.isRun && timerHasMiliseconds">Continuar?</p>
+          <p v-if="!timer.isRun && timerHasMilliseconds">Continuar?</p>
 
           <p v-else-if="timer.type == 'pomodoro'">
             {{
@@ -318,7 +320,7 @@ onBeforeUnmount(() => {
 
           <UButton
             v-if="timer.type !== 'break'"
-            :disabled="timerDontHasMiliseconds || isFetch"
+            :disabled="timerDoNotHasMilliseconds || isFetch"
             :loading="isFetch"
             :title="$t('finish')"
             color="green"
@@ -327,7 +329,7 @@ onBeforeUnmount(() => {
           />
 
           <UButton
-            :disabled="timerDontHasMiliseconds || isFetch"
+            :disabled="timerDoNotHasMilliseconds || isFetch"
             :title="$t('stop')"
             color="red"
             icon="i-icon-park-outline-close-small"

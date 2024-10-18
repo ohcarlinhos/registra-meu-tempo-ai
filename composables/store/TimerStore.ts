@@ -79,7 +79,7 @@ export const useTimerStore = defineStore("TimerStore", {
       return this._timerList[index];
     },
 
-    getRegressiveMilissecondsNecessary(id: number | null = null): number {
+    getRegressiveMillisecondsNecessary(id: number | null = null): number {
       const timer = this.getTimer(id);
 
       const mult = 60000;
@@ -101,7 +101,7 @@ export const useTimerStore = defineStore("TimerStore", {
       return timer.currentPeriod.end - timer.currentPeriod.start;
     },
 
-    getTotalMilisecondsPast(id: number | null = null): number {
+    getTotalMillisecondsPast(id: number | null = null): number {
       const timer = this.getTimer(id);
       return (
         this.getPeriodListTotalMiliseconds(id) +
@@ -175,8 +175,8 @@ export const useTimerStore = defineStore("TimerStore", {
 
     handleWithPomoOrBreakEnd(id: number | null = null) {
       if (
-        this.getTotalMilisecondsPast(id) >=
-        this.getRegressiveMilissecondsNecessary(id)
+        this.getTotalMillisecondsPast(id) >=
+        this.getRegressiveMillisecondsNecessary(id)
       ) {
         this.noSleep?.disable();
         this.playAlarm();
@@ -201,7 +201,7 @@ export const useTimerStore = defineStore("TimerStore", {
 
       const timer = this.getTimer(id);
 
-      if (timer.isRun && this.getTotalMilisecondsPast(id) !== 0) {
+      if (timer.isRun && this.getTotalMillisecondsPast(id) !== 0) {
         timer.currentPeriodList.push({
           start: timer.currentPeriod.start,
           end: timer.currentPeriod.end,
