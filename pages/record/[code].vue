@@ -7,7 +7,7 @@ definePageMeta({
 const router = useRouter();
 const historyTp = ref();
 
-const emit = defineEmits<{
+defineEmits<{
   delete: [value: number];
 }>();
 
@@ -31,6 +31,13 @@ onBeforeRouteLeave(() => {
   actualTimeRecordId.value = undefined;
   getIsFetch.value = true;
 });
+
+watch(
+  () => trReq.value?.title,
+  (val) => {
+    setTitle(val);
+  }
+);
 </script>
 
 <template>

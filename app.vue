@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-useHead({
-  title: "Registra meu tempo aí! - Gerenciador de Tempo",
-});
-
 const colorMode = useColorMode();
 
 const toggleDark = () => {
@@ -15,6 +11,10 @@ const cs = useConfigStore();
 const setOldToken = () => {
   authStore.setOldToken();
 };
+
+onMounted(() => {
+  setTitle();
+});
 </script>
 
 <template>

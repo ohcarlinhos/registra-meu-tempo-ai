@@ -1,5 +1,6 @@
 import { format, getDayOfYear, intervalToDuration } from "date-fns";
 import type { i18nT } from "~/translate/ptBr";
+import { useTitle } from "@vueuse/core";
 
 export const timePeriodLabel = (count?: number) => {
   const countText = count === 1 ? " período" : " períodos";
@@ -98,4 +99,12 @@ export const millisecondsToString = (milliseconds: number) => {
 export const _$t = (key: i18nT) => {
   const { $i18n } = useNuxtApp();
   return $i18n.t(key);
+};
+
+export const setTitle = (text?: string) => {
+  if (text) {
+    useTitle(text + " | " + _$t("appTitle"));
+  } else {
+    useTitle(_$t("appTitle"));
+  }
 };

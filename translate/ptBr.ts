@@ -1,4 +1,5 @@
 const i18nObj = {
+  appTitle: "Registra meu tempo aí! - Gerenciador de Tempo",
   infos: "Informações",
   add: "Adicionar",
   send: "Enviar",
@@ -130,7 +131,7 @@ const i18nObj = {
   updateUserSuccess: "Usuário atualizado com sucesso.",
   createUserSuccess: "Usuário criado com sucesso.",
   loginSuccess: "Autenticação feita com sucesso.",
-
+  login: "Acessar",
   createTimeRecordSuccess: "Registro criado com sucesso.",
   updateTimeRecordSuccess: "Registro atualizado com sucesso.",
 

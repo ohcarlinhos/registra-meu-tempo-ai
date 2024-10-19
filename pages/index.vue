@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 definePageMeta({ name: "home" });
+
+onMounted(() => {
+  setTitle();
+});
 </script>
 
 <template>

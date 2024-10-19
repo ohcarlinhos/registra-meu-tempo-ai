@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useTitle } from "@vueuse/core";
-
 const props = defineProps({
   id: {
     type: Number,
@@ -56,13 +54,9 @@ watch(
     if (!oldPageTitle.value) oldPageTitle.value = document.title;
 
     if (timer.value.isRun) {
-      useTitle(
-        `${newValue} ${props.title ? "- " + props.title + " " : ""}| ${
-          oldPageTitle.value
-        }`
-      );
+      setTitle(newValue + " - " + props.title);
     } else {
-      useTitle(oldPageTitle.value);
+      setTitle(props.title);
     }
   }
 );
@@ -99,7 +93,7 @@ const startTimer = () => {
 };
 
 const pauseTimer = () => {
-  useTitle(oldPageTitle.value);
+  setTitle(props.title);
 
   timerStore.noSleep?.disable();
   timerStore.pauseTimer(props.id);
@@ -120,7 +114,7 @@ const stopTimer = () => {
 };
 
 const stopTimerAction = () => {
-  useTitle(oldPageTitle.value);
+  setTitle(props.title);
 
   modal.confirmStopTimer.open = false;
   timerStore.stopTimer(props.id);
@@ -129,7 +123,7 @@ const stopTimerAction = () => {
 const submitIsFetch = ref(false);
 
 const endTimer = async () => {
-  useTitle(oldPageTitle.value);
+  setTitle(props.title);
 
   timerStore.noSleep?.disable();
   timerStore.playClick();

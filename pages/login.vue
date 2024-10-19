@@ -2,6 +2,7 @@
 definePageMeta({ middleware: ["guest"], name: "login" });
 
 onMounted(() => {
+  setTitle(_$t("login"));
   useAuthStore().closeModal();
 });
 </script>

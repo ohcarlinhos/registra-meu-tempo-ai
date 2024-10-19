@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"] });
+
+onMounted(() => {
+  setTitle(_$t("options"));
+});
 </script>
 
 <template>
