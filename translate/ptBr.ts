@@ -135,17 +135,9 @@ const i18nObj = {
   createTimeRecordSuccess: "Registro criado com sucesso.",
   updateTimeRecordSuccess: "Registro atualizado com sucesso.",
 
-  form: {
-    timePeriod: {
-      status: {
-        success: {
-          create: "Período adicionado com sucesso.",
-          update: "Período atualizado com sucesso.",
-          delete: "Período excluído com sucesso.",
-        },
-      },
-    },
-  },
+  deleteTimePeriodSuccess: "Período excluído com sucesso.",
+  createTimePeriodSuccess: "Período criado com sucesso.",
+  updateTimePeriodSuccess: "Período atualizado com sucesso.",
 
   historyRecord: "Histórico do Registro",
   timerType: "Cronômetro",

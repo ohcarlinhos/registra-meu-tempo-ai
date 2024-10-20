@@ -9,9 +9,17 @@ import {
   deleteTpModal,
   openDeleteTpModal,
   closeDeleteTpModal,
+  deleteTsModal,
+  openDeleteTsModal,
+  closeDeleteTsModal,
 } from "./day-list/modal";
 
-import { deleteTimePeriodAction, deleteIsFetch } from "./day-list/actions";
+import {
+  deleteTimePeriodAction,
+  deleteTpIsFetch,
+  deleteTsIsFetch,
+  deleteTimerSessionAction,
+} from "./day-list/actions";
 
 const props = defineProps<{
   timeRecordId: number;
@@ -25,6 +33,14 @@ const deleteTpAction = () => {
   return deleteTimePeriodAction(
     deleteTpModal.id,
     closeDeleteTpModal,
+    props.callback
+  );
+};
+
+const deleteTsAction = () => {
+  return deleteTimerSessionAction(
+    deleteTsModal.id,
+    closeDeleteTsModal,
     props.callback
   );
 };
@@ -204,13 +220,33 @@ defineExpose({
                     {{ format(tp.end, "HH:mm:ss") }}
                   </UBadge>
 
-                  <UBadge
-                    color="yellow"
-                    variant="subtle"
-                    :title="tp.formattedTime"
-                  >
-                    {{ tp.formattedTime }}
-                  </UBadge>
+                  <section class="flex gap-2">
+                    <UBadge
+                      color="yellow"
+                      variant="subtle"
+                      :title="tp.formattedTime"
+                    >
+                      {{ tp.formattedTime }}
+                    </UBadge>
+
+                    <UButton
+                      color="gray"
+                      variant="ghost"
+                      size="2xs"
+                      icon="i-icon-park-outline-delete-themes"
+                      @click="openDeleteTpModal(tp.id)"
+                    />
+                  </section>
+                </section>
+
+                <section>
+                  <UButton
+                    :label="_$t('delete')"
+                    color="gray"
+                    variant="ghost"
+                    icon="i-icon-park-outline-delete-themes"
+                    @click="openDeleteTsModal(timerSession.id)"
+                  />
                 </section>
               </div>
             </template>
@@ -334,9 +370,19 @@ defineExpose({
 
   <GModalConfirm
     v-model:open="deleteTpModal.open"
-    :isFetch="deleteIsFetch"
+    :isFetch="deleteTpIsFetch"
     :title="_$t('confirmDeleteTimePeriodMessage')"
     @confirm="deleteTpAction"
     @cancel="closeDeleteTpModal"
+  />
+
+  <GModalConfirm
+    v-model:open="deleteTsModal.open"
+    :isFetch="deleteTsIsFetch"
+    title="Tem certeza que deseja apagar essa sessão?"
+    text="Todos os períodos de tempo relacionados à essa sessão também serão excluídos."
+    custom-width="w-96"
+    @confirm="deleteTsAction"
+    @cancel="closeDeleteTsModal"
   />
 </template>

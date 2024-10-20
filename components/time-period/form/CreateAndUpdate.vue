@@ -49,7 +49,7 @@ const createAction = async () => {
       end: new Date(form.end),
     });
 
-    OkToast(t("form.timePeriod.status.success.create"));
+    OkToast(_$t("createTimePeriodSuccess"));
     closeModal(true);
   } catch (error) {
     submitIsOk = false;
@@ -72,7 +72,7 @@ const editAction = async (id: number) => {
 
     if (form.callback) form.callback();
 
-    OkToast(t("form.timePeriod.status.success.update"));
+    OkToast(_$t("updateTimePeriodSuccess"));
     closeModal(true);
   } catch (error) {
     ErrorToast(error);

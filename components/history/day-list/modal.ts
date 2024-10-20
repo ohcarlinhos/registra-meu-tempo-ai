@@ -41,3 +41,17 @@ export const openDeleteTpModal = (id: number) => {
 export const closeDeleteTpModal = () => {
   deleteTpModal.open = false;
 };
+
+export const deleteTsModal = reactive({
+  open: false,
+  id: 0,
+});
+
+export const openDeleteTsModal = (id: number) => {
+  deleteTsModal.open = true;
+  deleteTsModal.id = id;
+};
+
+export const closeDeleteTsModal = () => {
+  deleteTsModal.open = false;
+};
