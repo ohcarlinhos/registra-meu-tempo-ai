@@ -10,6 +10,18 @@ export const getTimeRecords = async function (
   );
 };
 
+export const searchTimeRecord = async function (
+  search: string = "",
+  mounted = false
+) {
+  return await CustomHttp<null, SearchTimeRecordItem[]>(
+    `/record/search?value=${search}`,
+    "get",
+    null,
+    mounted
+  );
+};
+
 export const getTimeRecordByCode = async function (
   code: string,
   mounted = false

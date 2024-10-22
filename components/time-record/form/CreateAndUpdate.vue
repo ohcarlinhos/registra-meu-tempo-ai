@@ -34,10 +34,12 @@ const form = reactive<TimeRecordForm>({
   timePeriods: [],
   callback: undefined,
   isSync: false,
+  isBind: false,
   timerSessionType: "manual",
   timerSessionFrom: "browser",
 });
 
+const searchTrList = ref<SearchTimeRecordItem[]>([]);
 const newCategories = ref<string[]>([]);
 
 watch(
@@ -63,12 +65,16 @@ const schema = yup.object({
  */
 
 const isEditMode = computed(() => {
-  return Boolean(props.editObject && props.editObject.id);
+  return Boolean(
+    props.editObject && (props.editObject.id || props.editObject.isBind)
+  );
 });
 
 const isSyncMode = computed(() => {
   return Boolean(
-    props.editObject && props.editObject.id && props.editObject.isSync
+    props.editObject &&
+      (props.editObject.id || props.editObject.isBind) &&
+      props.editObject.isSync
   );
 });
 
@@ -236,6 +242,7 @@ onMounted(async () => {
     form.externalLink = props.editObject.externalLink;
     form.callback = props.editObject.callback;
     form.isSync = props.editObject.isSync;
+    form.isBind = props.editObject.isBind;
 
     if (!props.hideTimePeriods) {
       form.timePeriods = props.editObject.timePeriods;
@@ -248,7 +255,32 @@ onMounted(async () => {
   }
 
   if (!isSyncMode.value) categoryStore.fetchAllCategories(closeModal);
+
+  if (form.isBind) await searchTr();
 });
+
+const isTrSearch = ref<boolean>(false);
+
+const searchTr = async (q: string = "") => {
+  try {
+    isTrSearch.value = true;
+    const result = await searchTimeRecord(q, true);
+    if (result) {
+      searchTrList.value = result.map((item) => {
+        item.title = item.title ? `${item.title} (${item.code})` : item.code;
+        return item;
+      });
+    }
+    return result;
+  } finally {
+    isTrSearch.value = false;
+  }
+};
+
+const searchTrSelectAction = async (q: string) => {
+  const result = await searchTr(q);
+  return result ?? [];
+};
 </script>
 
 <template>
@@ -268,6 +300,24 @@ onMounted(async () => {
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+      <section v-if="form.isBind">
+        <UFormGroup :label="_$t('record')" name="time-record-bind-id">
+          <USelectMenu
+            v-model="form.id"
+            :options="searchTrList"
+            :clear-search-on-close="true"
+            :ui-menu="{ height: 'max-h-40' }"
+            :disabled="disableInputs || isTrSearch"
+            value-attribute="id"
+            option-attribute="title"
+            :loading="isTrSearch"
+            :searchable="searchTrSelectAction"
+            :debounce="1000"
+          >
+          </USelectMenu>
+        </UFormGroup>
+      </section>
+
       <div v-if="!hideTimePeriods" class="flex justify-between">
         <h3>{{ _$t("periods") }}</h3>
 

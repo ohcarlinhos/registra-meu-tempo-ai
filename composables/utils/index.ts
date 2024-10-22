@@ -20,7 +20,7 @@ export const formatToTimerDisplay = (milliseconds: number) => {
 };
 
 export const timeRecordLocalToForm = (
-  obj: Partial<TimeRecordLocal> & { isSync?: boolean },
+  obj: Partial<TimeRecordLocal> & { isSync?: boolean; isBind?: boolean },
   callback = () => {}
 ): TimeRecordForm => {
   return {
@@ -31,6 +31,7 @@ export const timeRecordLocalToForm = (
     category: "",
     timePeriods: obj.timePeriods || [],
     isSync: Boolean(obj.isSync),
+    isBind: Boolean(obj.isBind),
     timerSessionType: obj.timerSessionType || "",
     timerSessionFrom: obj.timerSessionFrom || "",
     callback,

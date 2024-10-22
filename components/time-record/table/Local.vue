@@ -91,7 +91,12 @@ const items = (row: TimeRecordLocal) => {
       });
     } else {
       actions[0].unshift({
-        label: "Persistir (Registros)",
+        label: "Vincular (Registro)",
+        icon: "i-icon-park-outline-refresh-one",
+        click: async () => openModal(row, true, true),
+      });
+      actions[0].unshift({
+        label: "Persistir (Registro)",
         icon: "i-icon-park-outline-save-one",
         click: async () => openModal(row),
       });
@@ -101,11 +106,15 @@ const items = (row: TimeRecordLocal) => {
   return actions;
 };
 
-const openModal = (timeRecord: TimeRecordLocal, isSync = false) => {
+const openModal = (
+  timeRecord: TimeRecordLocal,
+  isSync = false,
+  isBind = false
+) => {
   if (!timeRecord) return;
 
   editTimeRecordObject.value = timeRecordLocalToForm(
-    { ...timeRecord, isSync },
+    { ...timeRecord, isSync, isBind },
     () => {
       timerStore.deleteTimeRecordLocal(timeRecord.localUuid, props.id);
       props.postTimePeriodCallback(timeRecord.code || "");
