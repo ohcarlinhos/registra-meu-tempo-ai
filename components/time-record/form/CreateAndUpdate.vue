@@ -255,8 +255,6 @@ onMounted(async () => {
   }
 
   if (!isSyncMode.value) categoryStore.fetchAllCategories(closeModal);
-
-  if (form.isBind) await searchTr();
 });
 
 const isTrSearch = ref<boolean>(false);
@@ -310,6 +308,8 @@ const searchTrSelectAction = async (q: string) => {
             :disabled="disableInputs || isTrSearch"
             value-attribute="id"
             option-attribute="title"
+            placeholder="Selecione um Registro"
+            searchable-placeholder="Pesquisar..."
             :loading="isTrSearch"
             :searchable="searchTrSelectAction"
             :debounce="1000"
