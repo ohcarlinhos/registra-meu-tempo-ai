@@ -41,6 +41,8 @@ const i18nObj = {
   options: "Opções",
   exit: "Sair",
 
+  bind: "Vincular",
+
   registerCode: "Código de registro",
   newPassword: "Nova senha",
   confirmPassword: "Confirmação da senha",
@@ -62,7 +64,15 @@ const i18nObj = {
   confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
   confirmDeleteTimeRecordMessage:
     'Tem certeza deseja excluir o registro "{title}"?',
+  confirmDeleteLocalRecordMessage:
+    "Tem certeza que deseja excluir esse registro local?",
   confirmDeleteTimePeriodMessage: "Tem certeza que quer excluir esse período?",
+
+  localRecordObs1:
+    "Registros de tempo locais são salvos em seu dispositivo (navegador) e não contabilizam nos resumos diários e estatísticas.",
+
+  localRecordObs2:
+    "Acesse ou crie uma conta para persistir ou vincula-los com um registro.",
 
   codeIsWrong: "O código digitado é diferente do esperado.",
   codeIsRequired: "É obrigatório digitar o código.",
