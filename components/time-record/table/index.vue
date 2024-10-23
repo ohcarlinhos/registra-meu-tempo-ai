@@ -9,8 +9,8 @@ const emit = defineEmits<{
 
 const columns = [
   { key: "lastTimePeriodDate", label: "Último Progresso" },
-  { key: "code", label: _$t("code") },
   { key: "title", label: _$t("title") },
+  { key: "code", label: _$t("code") },
   { key: "categoryName", label: _$t("category") },
   { key: "formattedTime", label: _$t("time") },
   { key: "timePeriodCountText", label: _$t("periods") },
