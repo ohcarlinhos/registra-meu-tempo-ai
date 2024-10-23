@@ -67,7 +67,6 @@ const columns = [
   { key: "timeRecordDate", label: "Data" },
   { key: "timePeriods", label: "Períodos" },
   { key: "formattedTime", label: "Tempo" },
-  { key: "code", label: _$t("code") },
   { key: "actions" },
 ];
 
@@ -126,7 +125,12 @@ const openModal = (
 
 const closeModal = () => {
   modal.open = false;
-  editTimeRecordObject.value = undefined;
+
+  setTimeout(() => {
+    if (modal.open == false) {
+      editTimeRecordObject.value = undefined;
+    }
+  }, 500);
 };
 </script>
 
@@ -174,7 +178,7 @@ const closeModal = () => {
 
   <GModalConfirm
     v-model:open="confirmDelete.open"
-    :title="_$t('confirmDeleteTimeRecordMessage')"
+    :title="_$t('confirmDeleteLocalRecordMessage')"
     @confirm="deleteAction"
     @cancel="closeConfirmDeleteModal"
   />
