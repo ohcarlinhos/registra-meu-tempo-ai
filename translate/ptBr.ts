@@ -72,7 +72,7 @@ const i18nObj = {
     "Registros de tempo locais são salvos em seu dispositivo (navegador) e não contabilizam nos resumos diários e estatísticas.",
 
   localRecordObs2:
-    "Acesse ou crie uma conta para persistir ou vincula-los com um registro.",
+    "Acesse ou crie uma conta para persistir ou vincula-los a um registro.",
 
   codeIsWrong: "O código digitado é diferente do esperado.",
   codeIsRequired: "É obrigatório digitar o código.",

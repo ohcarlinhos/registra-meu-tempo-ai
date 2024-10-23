@@ -389,6 +389,13 @@ onBeforeUnmount(() => {
             : "Não há mais nenhum registro local."
         }}
       </p>
+
+      <UDivider class="pt-4" />
+
+      <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
+      <p v-if="!authStore.isAuth" class="pt-2 text-xs">
+        {{ _$t("localRecordObs2") }}
+      </p>
     </UCard>
   </UModal>
 
