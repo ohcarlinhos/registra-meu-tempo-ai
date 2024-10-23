@@ -111,6 +111,7 @@ const categoryIsDisabled = computed(() => {
 });
 
 const submitIsDisabled = computed(() => {
+  if (form.isBind && !form.id) return true;
   return trStore && trStore.isFetch;
 });
 
@@ -448,7 +449,9 @@ const searchTrSelectAction = async (q: string) => {
       <UButton
         :loading="isFetch"
         :disabled="submitIsDisabled"
-        :label="isSyncMode ? _$t('sync') : _$t('send')"
+        :label="
+          isSyncMode ? (form.isBind ? _$t('bind') : _$t('sync')) : _$t('send')
+        "
         type="submit"
         block
       />
