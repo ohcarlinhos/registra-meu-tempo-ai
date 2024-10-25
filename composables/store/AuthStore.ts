@@ -1,3 +1,5 @@
+import * as jose from "jose";
+
 export const useAuthStore = defineStore("AuthStore", {
   state: () => {
     return {
@@ -34,6 +36,15 @@ export const useAuthStore = defineStore("AuthStore", {
   },
   getters: {
     getUserToken: (state) => state._userToken,
+
+    claim(state): jose.JWTPayload & { isVerified: boolean } {
+      const payload = jose.decodeJwt(state._userToken);
+
+      return {
+        ...payload,
+        isVerified: payload.isVerified == "True",
+      };
+    },
 
     isAuth: (state) => {
       return state._userToken != "";

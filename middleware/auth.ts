@@ -1,4 +1,10 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const token = useAuthStore().getUserToken;
-  if (!token) return navigateTo("/");
+  const authStore = useAuthStore();
+  const router = useRouter();
+
+  if (!authStore.getUserToken) return navigateTo("/");
+
+  // if (authStore.claim.isVerified == false) {
+  //   return router.push({ name: "verify.page" });
+  // }
 });
