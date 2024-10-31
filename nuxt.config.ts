@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "nuxt-viewport",
     "nuxt-gtag",
+    "@nuxt/image",
   ],
 
   colorMode: {
