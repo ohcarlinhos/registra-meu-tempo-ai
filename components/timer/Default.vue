@@ -54,7 +54,7 @@ watch(
     if (!oldPageTitle.value) oldPageTitle.value = document.title;
 
     if (timer.value.isRun) {
-      setTitle(newValue + " - " + props.title);
+      setTitle(newValue + (props.title ? " - " + props.title : ""));
     } else {
       setTitle(props.title);
     }
