@@ -98,7 +98,7 @@ const i18nObj = {
   recoveryPasswordSuccess:
     "E-mail de recuperação enviado, verifique a caixa de SPAM caso não esteja nas caixas principais.",
 
-  successPeriodSync: "Períodos de tempo sincronizados com sucesso.",
+  successPeriodSync: "Períodos sincronizados com sucesso.",
   errorPeriodSync:
     "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador).",
 
