@@ -35,15 +35,16 @@ const activeClass = "text-primary font-bold";
       class="flex justify-between"
       :class="{ 'flex-col justify-center gap-10': center }"
     >
-      <div>
-        <UBadge variant="subtle" size="xs">Versão Alfa</UBadge>
+      <section>
+        <section :class="{ 'flex justify-center': center }">
+          <NuxtImg
+            :src="imgUrl"
+            class="pt-6 w-full max-w-56 sm:max-w-xs"
+            label="Registra meu tempo aí!"
+            title="Registra meu tempo aí!"
+          />
+        </section>
 
-        <img
-          :src="imgUrl"
-          class="pt-6"
-          label="Registra meu tempo aí!"
-          title="Registra meu tempo aí!"
-        />
         <h1 class="title-hide">Registra meu tempo aí!</h1>
 
         <p v-if="!hideDescription" class="pt-4">
@@ -51,20 +52,21 @@ const activeClass = "text-primary font-bold";
           <br v-if="center" />
           <span class="font-bold text-primary">gerenciamento de tempo.</span>
         </p>
-      </div>
-      <div v-if="$slots.right">
-        <slot name="right"> </slot>
-      </div>
+      </section>
+
+      <section v-if="$slots.right">
+        <slot name="right"></slot>
+      </section>
     </section>
 
     <nav
       v-if="useRuntimeConfig().public.onlyGuestMode != '1'"
-      class="pt-6 flex gap-4 items-center"
+      class="pt-8 flex items-center flex-wrap gap-x-4 gap-y-2"
       :class="{ 'justify-center': center }"
     >
-      <ULink :to="{ name: 'home' }" :active-class="activeClass">{{
-        _$t("timers")
-      }}</ULink>
+      <ULink :to="{ name: 'home' }" :active-class="activeClass">
+        {{ _$t("timers") }}
+      </ULink>
 
       <ULink
         v-if="authStore.isAuth"
@@ -80,7 +82,7 @@ const activeClass = "text-primary font-bold";
         :to="{ name: 'statistic.day' }"
         :active-class="activeClass"
       >
-        {{ "Resumo Diário" }}
+        {{ "Estatísticas" }}
       </ULink>
 
       <ULink
