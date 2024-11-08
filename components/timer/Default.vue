@@ -351,9 +351,11 @@ onBeforeUnmount(() => {
         Há {{ timer.localRecords.length }}
         {{
           timer.localRecords.length > 1
-            ? "registros locais."
-            : "registro local."
+            ? " sessões salvas no navegador."
+            : " sessão salva no navegador."
         }}
+        <br />
+        Clique aqui para sincronizar!
       </template>
 
       <template v-else> Há registros não sincronizados.</template>
