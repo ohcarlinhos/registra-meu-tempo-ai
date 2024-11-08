@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@iconify-json/icon-park-outline": "^1.1.15",
-    "@nuxt/ui": "^2.18.7",
+    "@nuxt/ui": "2.19.2",
     "@pinia/nuxt": "^0.5.1",
     "@vuepic/vue-datepicker": "9.0.3",
     "date-fns": "4.1.0",
