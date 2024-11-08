@@ -245,6 +245,12 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="flex flex-col gap-3 items-center min-w-72">
+    <p v-if="!code" class="text-sm text-center pb-2">
+      Atenção: Sessões registradas nessa página são
+      <b class="text-primary">salvas no navegador.</b>
+      Sincronize-as para que apareçam nas estatísticas.
+    </p>
+
     <UCard :ui="timerCardUi">
       <section class="flex -mt-4 mb-2 justify-center">
         <UButton

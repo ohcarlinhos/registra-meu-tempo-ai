@@ -74,7 +74,7 @@ const items = (row: TimeRecordLocal) => {
   const actions = [
     [
       {
-        label: "Apagar do Navegador",
+        label: "Apagar sessão do navegador",
         icon: "i-icon-park-outline-delete-themes",
         click: () => openConfirmDeleteModal(row.localUuid, row.id),
       },
@@ -84,18 +84,18 @@ const items = (row: TimeRecordLocal) => {
   if (authStore.isAuth) {
     if (row.id) {
       actions[0].unshift({
-        label: "Sincronizar (Registro)",
+        label: "Sincronizar sessão com registro",
         icon: "i-icon-park-outline-refresh-one",
         click: async () => openModal(row, true),
       });
     } else {
       actions[0].unshift({
-        label: "Vincular (Registro)",
+        label: "Vincular sessão à registro existente",
         icon: "i-icon-park-outline-refresh-one",
         click: async () => openModal(row, true, true),
       });
       actions[0].unshift({
-        label: "Persistir (Registro)",
+        label: "Criar registro a partir de sessão",
         icon: "i-icon-park-outline-save-one",
         click: async () => openModal(row),
       });
@@ -149,7 +149,12 @@ const closeModal = () => {
 
     <template #actions-data="{ row }">
       <div class="flex justify-end">
-        <UDropdown :items="items(row)">
+        <UDropdown
+          :items="items(row)"
+          :ui="{
+            width: 'max-w-80 w-auto',
+          }"
+        >
           <UButton
             color="gray"
             variant="ghost"
