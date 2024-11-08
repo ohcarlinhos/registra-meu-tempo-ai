@@ -13,7 +13,7 @@ const columns = [
   { key: "code", label: _$t("code") },
   { key: "categoryName", label: _$t("category") },
   { key: "formattedTime", label: _$t("time") },
-  { key: "timePeriodCountText", label: _$t("periods") },
+  // { key: "timePeriodCountText", label: _$t("periods") },
   { key: "actions" },
 ];
 
