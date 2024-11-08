@@ -20,11 +20,6 @@ const columns = [
 const items = (row: TimeRecordMap) => [
   [
     {
-      label: _$t("access"),
-      icon: "i-icon-park-outline-view-grid-detail",
-      click: () => emit("access", row.code!),
-    },
-    {
       label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
       click: async () => emit("delete", row),
@@ -123,7 +118,13 @@ onMounted(() => {
         :loading="isFetch"
       >
         <template #actions-data="{ row }">
-          <div class="flex justify-end">
+          <div class="flex justify-end gap-2">
+            <UButton
+              :label="_$t('access')"
+              color="gray"
+              @click="() => emit('access', row.code!)"
+            />
+
             <UDropdown :items="items(row)">
               <UButton
                 color="gray"
