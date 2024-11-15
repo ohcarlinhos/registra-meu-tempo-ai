@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "nuxt-viewport",
     "nuxt-gtag",
     "@nuxt/image",
+    "@nuxtjs/seo",
   ],
 
   colorMode: {
