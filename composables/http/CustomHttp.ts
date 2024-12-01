@@ -20,6 +20,16 @@ const clearSession = (needUse$Fetch = false) => {
   return null;
 };
 
+const clearSessionV2 = (needRefresh = false) => {
+  const { clearUserToken, openAuthModal } = useAuthStoreV2();
+  const { $i18n } = useNuxtApp();
+
+  clearUserToken();
+  openAuthModal(needRefresh);
+
+  throw new Error($i18n.t("sessionExpiredError"));
+};
+
 const emitGenericError = () => {
   throw new Error(useNuxtApp().$i18n.t("apiGenericError"));
 };
@@ -121,25 +131,36 @@ export const CustomHttp = async <P, R>(
   return CustomHttpUsingFetch<P, R>(route, method, payload, authorization);
 };
 
-export const useCustomFetch = (needRefresh = false) => {
+export const useCustomFetch = (needRefresh = false, stopIfNotAuth = false) => {
   const configStore = useConfigStore();
+  const { $i18n } = useNuxtApp();
+
+  const authStore = useAuthStoreV2();
+  const { isAuth, userToken } = storeToRefs(authStore);
 
   return $fetch.create({
     baseURL: configStore.apiBase,
-    onRequest({ options }) {
-      const token = storeToRefs(useAuthStoreV2()).userToken.value;
 
-      if (token) {
-        options.headers.append("Authorization", token);
+    onRequest({ options }) {
+      if (userToken.value) {
+        options.headers.append("Authorization", userToken.value);
       }
     },
+
     onRequestError({ response }) {
-      const { clearUserToken, openAuthModal } = useAuthStoreV2();
+      if (stopIfNotAuth && !isAuth.value) {
+        clearSessionV2(needRefresh);
+      }
 
       if (response?.status === 401) {
-        clearUserToken();
-        openAuthModal(needRefresh);
+        clearSessionV2(needRefresh);
       }
+
+      if (response?._data.message) {
+        throw new Error(response?._data.message);
+      }
+
+      throw new Error($i18n.t("apiGenericError"));
     },
   });
 };
