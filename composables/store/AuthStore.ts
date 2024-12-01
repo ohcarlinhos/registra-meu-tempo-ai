@@ -1,58 +1,63 @@
 import * as jose from "jose";
 
-export const useAuthStore = defineStore("AuthStore", {
-  state: () => {
-    return {
-      _userToken: "",
-      _openModal: false,
-      _needRefreshBeforeLogin: false,
-    };
-  },
-  actions: {
-    setUserToken(token: string) {
-      this._userToken = token;
-    },
+export const useAuthStoreV2 = defineStore(
+  "auth-store",
+  () => {
+    const userToken = ref("");
+    const authModal = reactive({ open: false });
+    const needRefresh = ref(false);
 
-    clearUserToken() {
-      this._userToken = "";
-    },
+    const isAuth = computed(() => {
+      return userToken.value != "";
+    });
 
-    setOldToken() {
-      this._userToken = useConfigStore().oldUserToken;
-    },
-
-    openModal(refresh = false) {
-      if (refresh) this._needRefreshBeforeLogin = true;
-      this._openModal = true;
-    },
-
-    closeModal() {
-      this._openModal = false;
-      if (this._needRefreshBeforeLogin) {
-        this._needRefreshBeforeLogin = false;
-        location.reload();
-      }
-    },
-  },
-  getters: {
-    getUserToken: (state) => state._userToken,
-
-    claim(state): jose.JWTPayload & { isVerified: boolean } {
-      const payload = jose.decodeJwt(state._userToken);
+    const claim = computed(() => {
+      const payload = userToken.value ? jose.decodeJwt(userToken.value) : null;
 
       return {
         ...payload,
-        isVerified: payload.isVerified == "True",
+        isVerified: payload?.isVerified == "True" || false,
       };
-    },
+    });
 
-    isAuth: (state) => {
-      return state._userToken != "";
-    },
+    const setUserToken = (token: string) => {
+      userToken.value = token;
+    };
 
-    needRefresh: (state) => {
-      return state._needRefreshBeforeLogin;
-    },
+    const setExpiredToken = () => {
+      userToken.value = useConfigStore().oldUserToken;
+    };
+
+    const clearUserToken = () => {
+      userToken.value = "";
+    };
+
+    const openAuthModal = (_needRefresh = false) => {
+      needRefresh.value = _needRefresh;
+      authModal.open = true;
+    };
+
+    const closeAuthModal = () => {
+      authModal.open = false;
+
+      if (needRefresh.value) {
+        needRefresh.value = false;
+        location.reload();
+      }
+    };
+
+    return {
+      userToken,
+      authModal,
+      needRefresh,
+      isAuth,
+      claim,
+      setUserToken,
+      clearUserToken,
+      setExpiredToken,
+      openAuthModal,
+      closeAuthModal,
+    };
   },
-  persist: true,
-});
+  { persist: true }
+);

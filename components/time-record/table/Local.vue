@@ -2,7 +2,9 @@
 import { watch } from "vue";
 
 const timerStore = useTimerStore();
-const authStore = useAuthStore();
+
+const authStore = useAuthStoreV2();
+const { isAuth: userIsAuth } = storeToRefs(authStore);
 
 const props = withDefaults(
   defineProps<{
@@ -81,7 +83,7 @@ const items = (row: TimeRecordLocal) => {
     ],
   ];
 
-  if (authStore.isAuth) {
+  if (userIsAuth.value) {
     if (row.id) {
       actions[0].unshift({
         label: "Sincronizar sessão com registro",

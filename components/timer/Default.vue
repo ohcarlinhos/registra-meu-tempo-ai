@@ -21,7 +21,9 @@ const props = defineProps({
 const oldPageTitle = ref();
 const { t } = useI18n();
 
-const authStore = useAuthStore();
+const authStore = useAuthStoreV2();
+const { isAuth: userIsAuth } = storeToRefs(authStore);
+
 const timerStore = useTimerStore();
 
 const timer = computed(() => timerStore.getTimer(props.id));
@@ -128,7 +130,7 @@ const endTimer = async () => {
   timerStore.noSleep?.disable();
   timerStore.playClick();
 
-  if (!authStore.isAuth) {
+  if (!userIsAuth.value) {
     timerStore.endTimer(props.id);
     return;
   }
@@ -249,7 +251,7 @@ onBeforeUnmount(() => {
       Atenção: Sessões registradas nessa página são
       <b class="text-primary">salvas no navegador.</b>
 
-      <template v-if="!authStore.isAuth"> Faça login e sincronize-as</template>
+      <template v-if="!userIsAuth"> Faça login e sincronize-as</template>
       <template v-else> Sincronize-as </template>
       para que apareçam nas estatísticas.
     </p>
@@ -404,7 +406,7 @@ onBeforeUnmount(() => {
       <UDivider class="pt-4" />
 
       <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
-      <p v-if="!authStore.isAuth" class="pt-2 text-xs">
+      <p v-if="!userIsAuth" class="pt-2 text-xs">
         {{ _$t("localRecordObs2") }}
       </p>
     </UCard>

@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-const authStore = useAuthStore();
+const authStore = useAuthStoreV2();
+const { isAuth: userIsAuth } = storeToRefs(authStore);
+const { clearUserToken } = authStore;
+
 const colorMode = useColorMode();
 
 withDefaults(
@@ -22,7 +25,7 @@ const imgUrl = computed(() => {
 });
 
 const exit = () => {
-  authStore.clearUserToken();
+  clearUserToken();
   useRouter().push("/login");
 };
 
@@ -69,7 +72,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <ULink
-        v-if="authStore.isAuth"
+        v-if="userIsAuth"
         :to="{ name: 'record.panel' }"
         :active-class="activeClass"
       >
@@ -77,7 +80,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <ULink
-        v-if="authStore.isAuth"
+        v-if="userIsAuth"
         class="line-clamp-1"
         :to="{ name: 'statistic.day' }"
         :active-class="activeClass"
@@ -86,7 +89,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <ULink
-        v-if="authStore.isAuth"
+        v-if="userIsAuth"
         :to="{ name: 'options' }"
         :active-class="activeClass"
       >
@@ -94,7 +97,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <ULink
-        v-if="!authStore.isAuth"
+        v-if="!userIsAuth"
         :to="{ name: 'login' }"
         :active-class="activeClass"
       >
@@ -102,7 +105,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <ULink
-        v-if="!authStore.isAuth"
+        v-if="!userIsAuth"
         :to="{ name: 'register' }"
         :active-class="activeClass"
       >
@@ -110,7 +113,7 @@ const activeClass = "text-primary font-bold";
       </ULink>
 
       <UButton
-        v-if="authStore.isAuth"
+        v-if="userIsAuth"
         :padded="false"
         :label="_$t('exit')"
         color="black"

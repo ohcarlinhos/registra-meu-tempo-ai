@@ -27,3 +27,7 @@ export const postRecoveryPassword = async (payload: RecoveryPasswordDto) => {
     false
   );
 };
+
+export const postLoginV2 = (body: LoginDto) => {
+  return useCustomFetch()<JwtDta>("/auth/login", { body, method: "POST" });
+};

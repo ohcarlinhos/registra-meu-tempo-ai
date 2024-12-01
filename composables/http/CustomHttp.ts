@@ -10,8 +10,8 @@ type MethodType =
   | "trace";
 
 const clearSession = (needUse$Fetch = false) => {
-  useAuthStore().clearUserToken();
-  useAuthStore().openModal(!needUse$Fetch);
+  useAuthStoreV2().clearUserToken();
+  useAuthStoreV2().openAuthModal(!needUse$Fetch);
 
   if (needUse$Fetch) {
     throw new Error(useNuxtApp().$i18n.t("sessionExpiredError"));
@@ -102,13 +102,15 @@ export const CustomHttp = async <P, R>(
   stopIfNotAuth = true
 ) => {
   const configStore = useConfigStore();
-  const authorization = `Bearer ${useAuthStore().getUserToken}`;
+  const authorization = `Bearer ${
+    storeToRefs(useAuthStoreV2()).userToken.value
+  }`;
 
   if (!configStore.apiBase) {
     throw new Error(useNuxtApp().$i18n.t("sessionExpiredError"));
   }
 
-  if (stopIfNotAuth && !useAuthStore().isAuth) {
+  if (stopIfNotAuth && !storeToRefs(useAuthStoreV2()).isAuth.value) {
     return clearSession(needUse$Fetch);
   }
 
@@ -117,4 +119,27 @@ export const CustomHttp = async <P, R>(
   }
 
   return CustomHttpUsingFetch<P, R>(route, method, payload, authorization);
+};
+
+export const useCustomFetch = (needRefresh = false) => {
+  const configStore = useConfigStore();
+
+  return $fetch.create({
+    baseURL: configStore.apiBase,
+    onRequest({ options }) {
+      const token = storeToRefs(useAuthStoreV2()).userToken.value;
+
+      if (token) {
+        options.headers.append("Authorization", token);
+      }
+    },
+    onRequestError({ response }) {
+      const { clearUserToken, openAuthModal } = useAuthStoreV2();
+
+      if (response?.status === 401) {
+        clearUserToken();
+        openAuthModal(needRefresh);
+      }
+    },
+  });
 };

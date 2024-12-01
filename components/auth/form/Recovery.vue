@@ -2,7 +2,9 @@
 import * as yup from "yup";
 
 const { t } = useI18n();
-const authStore = useAuthStore();
+
+const authStore = useAuthStoreV2();
+const { authModal } = storeToRefs(authStore);
 
 const form = reactive({
   email: "",
@@ -81,7 +83,7 @@ const submitIsDisabled = computed(() => {
       />
     </UForm>
 
-    <template v-if="!authStore._openModal" #footer>
+    <template v-if="!authModal.open" #footer>
       <section class="flex gap-5 justify-center">
         <ULink
           :to="{ name: 'login' }"

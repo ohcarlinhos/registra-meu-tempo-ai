@@ -18,11 +18,14 @@ const toggleDark = () => {
   colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 };
 
-const authStore = useAuthStore();
+const authStore = useAuthStoreV2();
+const { setExpiredToken } = authStore;
+const { authModal } = storeToRefs(authStore);
+
 const cs = useConfigStore();
 
 const setOldToken = () => {
-  authStore.setOldToken();
+  setExpiredToken();
 };
 
 onMounted(() => {
@@ -49,8 +52,8 @@ onMounted(() => {
       <UButton @click="setOldToken"> Set Old Token </UButton>
     </section>
 
-    <UModal v-model="authStore._openModal" prevent-close>
-      <AuthFormLogin v-if="authStore._openModal" />
+    <UModal v-model="authModal.open" prevent-close>
+      <AuthFormLogin v-if="authModal.open" />
     </UModal>
 
     <NuxtPage />
