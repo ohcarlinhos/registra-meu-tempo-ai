@@ -1225,6 +1225,18 @@
     defu "^6.1.4"
     pinia-plugin-persistedstate ">=3.2.1"
 
+"@pinia/colada-nuxt@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@pinia/colada-nuxt/-/colada-nuxt-0.0.3.tgz#b22924a8f6b32e01ed8361e54b7a8bb820b643f9"
+  integrity sha512-WeVSb3WVVYCkIFpQYUul0unWZd4LYkhxwPm7Tl6NrLf3mB65czsV+KKuzUjLq24l6HefUzsSHV6aLugIAm/sPw==
+  dependencies:
+    "@nuxt/kit" "^3.13.2"
+
+"@pinia/colada@^0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@pinia/colada/-/colada-0.12.1.tgz#6d121308c3c74f34d7398c8d850f390b09621322"
+  integrity sha512-mpq2zbNshNeQ9KU5HipnJgFWQTBqx67bRGBQOrbvemryGQVztstEnxrOrr3SEmZT3C/OVwE4l2BJC4FyGKcamg==
+
 "@pinia/nuxt@^0.5.1":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@pinia/nuxt/-/nuxt-0.5.5.tgz#0e156bbb86b3ccb087006ff505bc0c1b6522e8c3"
