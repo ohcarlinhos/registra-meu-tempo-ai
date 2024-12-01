@@ -248,7 +248,10 @@ onBeforeUnmount(() => {
     <p v-if="!code" class="text-sm text-center pb-2">
       Atenção: Sessões registradas nessa página são
       <b class="text-primary">salvas no navegador.</b>
-      Sincronize-as para que apareçam nas estatísticas.
+
+      <template v-if="!authStore.isAuth"> Faça login e sincronize-as</template>
+      <template v-else> Sincronize-as </template>
+      para que apareçam nas estatísticas.
     </p>
 
     <UCard :ui="timerCardUi">
