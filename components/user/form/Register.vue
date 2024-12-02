@@ -11,14 +11,14 @@ const form = reactive({
   confirmPassword: "",
 });
 
-const mockStore = useMockStore();
+const { rfMock, rfMockEnable } = storeToRefs(useMockStoreV2());
 
-if (mockStore.registerFormEnable) {
-  form.name = mockStore.registerForm.name;
-  form.email = mockStore.registerForm.email;
-  form.registerCode = mockStore.registerForm.registerCode;
-  form.password = mockStore.registerForm.password;
-  form.confirmPassword = mockStore.registerForm.confirmPassword;
+if (rfMockEnable.value) {
+  form.name = rfMock.value.name;
+  form.email = rfMock.value.email;
+  form.registerCode = rfMock.value.registerCode;
+  form.password = rfMock.value.password;
+  form.confirmPassword = rfMock.value.confirmPassword;
 }
 
 const schema = yup.object({

@@ -10,10 +10,10 @@ const form = reactive({
   email: "",
 });
 
-const mockStore = useMockStore();
+const { rfMock, rfMockEnable } = storeToRefs(useMockStoreV2());
 
-if (mockStore.registerFormEnable) {
-  form.email = mockStore.registerForm.email;
+if (rfMockEnable.value) {
+  form.email = rfMock.value.email;
 }
 
 const successEmailSend = ref(false);

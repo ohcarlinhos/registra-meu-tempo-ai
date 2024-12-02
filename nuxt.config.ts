@@ -37,15 +37,15 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE,
-      onlyGuestMode: process.env.ONLY_GUEST_MODE,
-      registerFormMockEnable: process.env.REGISTER_FORM_MOCK_ENABLE,
-      registerFormMockName: process.env.REGISTER_FORM_MOCK_NAME,
-      registerFormMockEmail: process.env.REGISTER_FORM_MOCK_EMAIL,
-      registerFormMockCode: process.env.REGISTER_FORM_MOCK_CODE,
-      registerFormMockPassword: process.env.REGISTER_FORM_MOCK_PASSWORD,
-      enableWarTools: process.env.ENABLE_WAR_TOOLS,
-      oldUserToken: process.env.OLD_USER_TOKEN,
+      apiBase: process.env.API_BASE || "http://localhost:5051/api",
+      onlyGuestMode: process.env.ONLY_GUEST_MODE || "0",
+      rfmEnable: process.env.REGISTER_FORM_MOCK_ENABLE || "0",
+      rfmName: process.env.REGISTER_FORM_MOCK_NAME || "",
+      rfmEmail: process.env.REGISTER_FORM_MOCK_EMAIL || "",
+      rfmCode: process.env.REGISTER_FORM_MOCK_CODE || "",
+      rfmPassword: process.env.REGISTER_FORM_MOCK_PASSWORD || "",
+      enableWarTools: process.env.ENABLE_WAR_TOOLS || "",
+      oldUserToken: process.env.OLD_USER_TOKEN || "",
     },
   },
 

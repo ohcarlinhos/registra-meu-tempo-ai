@@ -1,19 +1,24 @@
-export const useMockStore = defineStore("MockStore", {
-  getters: {
-    registerFormEnable() {
-      const env = useRuntimeConfig().public;
-      return env.registerFormMockEnable === "1";
-    },
-    registerForm() {
-      const env = useRuntimeConfig().public;
+import { defineStore } from "pinia";
 
-      return {
-        name: env.registerFormMockName,
-        email: env.registerFormMockEmail,
-        registerCode: env.registerFormMockCode,
-        password: env.registerFormMockPassword,
-        confirmPassword: env.registerFormMockPassword,
-      };
-    },
-  },
+export const useMockStoreV2 = defineStore("mock-store", () => {
+  const { public: p } = useRuntimeConfig();
+
+  const rfMock = computed(() => {
+    return {
+      name: p.rfmName,
+      email: p.rfmEmail,
+      registerCode: p.rfmCode,
+      password: p.rfmPassword,
+      confirmPassword: p.rfmPassword,
+    };
+  });
+
+  const rfMockEnable = computed(() => {
+    return p.rfmEnable === "1";
+  });
+
+  return {
+    rfMock,
+    rfMockEnable,
+  };
 });

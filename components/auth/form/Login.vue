@@ -11,11 +11,11 @@ const form = reactive({
   password: "",
 });
 
-const mockStore = useMockStore();
+const { rfMock, rfMockEnable } = storeToRefs(useMockStoreV2());
 
-if (mockStore.registerFormEnable) {
-  form.email = mockStore.registerForm.email;
-  form.password = mockStore.registerForm.password;
+if (rfMockEnable.value) {
+  form.email = rfMock.value.email;
+  form.password = rfMock.value.password;
 }
 
 const page = reactive({ fetch: false });
