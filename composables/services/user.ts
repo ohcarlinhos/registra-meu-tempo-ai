@@ -13,5 +13,5 @@ export const updateUser = async (id: number, payload: UpdateUserDto) => {
 };
 
 export const getMySelf = async () => {
-  return useCustomFetch()<UserMap>("user/myself", { method: "GET" });
+  return useCustomFetch(true)<UserMap>("user/myself", { method: "GET" });
 };

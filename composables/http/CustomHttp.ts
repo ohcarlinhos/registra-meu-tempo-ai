@@ -143,17 +143,19 @@ export const useCustomFetch = (needRefresh = false, stopIfNotAuth = false) => {
 
     onRequest({ options }) {
       if (userToken.value) {
-        options.headers.append("Authorization", userToken.value);
+        options.headers.append("Authorization", `Bearer ${userToken.value}`);
       }
     },
 
-    onRequestError({ response }) {
+    onResponseError({ response }) {
       if (stopIfNotAuth && !isAuth.value) {
         clearSessionV2(needRefresh);
+        return;
       }
 
       if (response?.status === 401) {
         clearSessionV2(needRefresh);
+        return;
       }
 
       if (response?._data.message) {
