@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
-const userStore = useUserStore();
+const { mySelf } = storeToRefs(useUserStore());
+const { fetchMySelf } = useUserStore();
+
 const pageStatus = reactive({ fetching: false });
 
 const v = useUserValidation();
@@ -38,6 +40,8 @@ const schema = yup.object({
 });
 
 const submit = async () => {
+  if (!mySelf.value) return;
+
   try {
     const data = toRaw(form);
 
@@ -49,7 +53,7 @@ const submit = async () => {
     if (!data.password) delete data.password;
     if (!data.oldPassword) delete data.oldPassword;
 
-    await updateUser(userStore.myself.id, form);
+    await updateUser(mySelf.value.id, form);
 
     OkToast(_$t("updateUserSuccess"));
 
@@ -63,7 +67,7 @@ const submit = async () => {
   }
 };
 
-await userStore.fetchMyself((data) => {
+await fetchMySelf((data) => {
   if (!data) return;
 
   form.name = data.name;
