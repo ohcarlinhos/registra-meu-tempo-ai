@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
+const v = useUserValidation();
+
 const props = defineProps<{
   code: string;
 }>();
@@ -14,9 +16,9 @@ const form = reactive(<RecoveryPasswordDto & { confirmPassword: string }>{
 });
 
 const schema = yup.object({
-  email: vUser.email(),
-  password: vUser.password(),
-  confirmPassword: vUser.confirmPassword(),
+  email: v.email(),
+  password: v.password(),
+  confirmPassword: v.confirmPassword(),
 });
 
 const submit = async () => {

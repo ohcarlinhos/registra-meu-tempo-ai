@@ -4,6 +4,8 @@ import * as yup from "yup";
 const userStore = useUserStore();
 const pageStatus = reactive({ fetching: false });
 
+const v = useUserValidation();
+
 const form = reactive(<UpdateUserDto & { confirmPassword: string }>{
   name: "",
   email: "",
@@ -13,24 +15,24 @@ const form = reactive(<UpdateUserDto & { confirmPassword: string }>{
 });
 
 const schema = yup.object({
-  name: vUser.name(),
-  email: vUser.email(),
+  name: v.name(),
+  email: v.email(),
 
   oldPassword: yup.string().when("modifyPassword", {
     is: () => form.oldPassword || form.password || form.confirmPassword,
-    then: (s) => vUser.oldPassword(s),
+    then: (s) => v.oldPassword(s),
     otherwise: (s) => s.notRequired(),
   }),
 
   password: yup.string().when("hasPassword", {
     is: () => form.password || form.oldPassword || form.confirmPassword,
-    then: (s) => vUser.password(s),
+    then: (s) => v.password(s),
     otherwise: (s) => s.notRequired(),
   }),
 
   confirmPassword: yup.string().when("confirmOldPassword", {
     is: () => form.confirmPassword || form.oldPassword || form.password,
-    then: (s) => vUser.confirmPassword(s),
+    then: (s) => v.confirmPassword(s),
     otherwise: (s) => s.notRequired(),
   }),
 });

@@ -2,9 +2,12 @@
 import * as yup from "yup";
 
 const { t } = useI18n();
+
 const authStore = useAuthStoreV2();
 const { authModal } = storeToRefs(authStore);
 const { closeAuthModal, setUserToken } = authStore;
+
+const v = useUserValidation();
 
 const form = reactive({
   email: "",
@@ -21,8 +24,8 @@ if (rfMockEnable.value) {
 const page = reactive({ fetch: false });
 
 const schema = yup.object({
-  email: vUser.email(),
-  password: vUser.password(),
+  email: v.email(),
+  password: v.password(),
 });
 
 const submit = async () => {

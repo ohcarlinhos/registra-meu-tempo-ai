@@ -6,6 +6,8 @@ const { t } = useI18n();
 const authStore = useAuthStoreV2();
 const { authModal } = storeToRefs(authStore);
 
+const v = useUserValidation();
+
 const form = reactive({
   email: "",
 });
@@ -21,7 +23,7 @@ const successEmailSend = ref(false);
 const page = reactive({ fetch: false });
 
 const schema = yup.object({
-  email: vUser.email(),
+  email: v.email(),
 });
 
 const submit = async () => {

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import * as yup from "yup";
 
+const v = useUserValidation();
+
 const isFetch = ref(false);
 
 const form = reactive({
@@ -22,11 +24,11 @@ if (rfMockEnable.value) {
 }
 
 const schema = yup.object({
-  name: vUser.name(),
-  email: vUser.email(),
-  registerCode: vUser.registerCode(),
-  password: vUser.password(),
-  confirmPassword: vUser.confirmPassword(),
+  name: v.name(),
+  email: v.email(),
+  registerCode: v.registerCode(),
+  password: v.password(),
+  confirmPassword: v.confirmPassword(),
 });
 
 const submit = async () => {
