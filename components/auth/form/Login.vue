@@ -38,7 +38,7 @@ const submitAction = async () => {
   try {
     page.fetch = true;
 
-    const data = await postLoginV2(form);
+    const data = await postLogin(form);
 
     OkToast(_$t("loginSuccess"));
 
