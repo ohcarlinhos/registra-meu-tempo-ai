@@ -1,15 +1,15 @@
-export const postUser = async (payload: CreateUserDto) => {
-  return CustomHttp<CreateUserDto, UserMap>(
-    "user",
-    "post",
-    payload,
-    true,
-    false
-  );
+export const postUser = async (body: CreateUserDto) => {
+  return useCustomFetch(false, false)<UserMap>("user", {
+    method: "POST",
+    body,
+  });
 };
 
-export const updateUser = async (id: number, payload: UpdateUserDto) => {
-  return CustomHttp<UpdateUserDto, UserMap>(`user/${id}`, "put", payload, true);
+export const updateUser = async (id: number, body: UpdateUserDto) => {
+  return useCustomFetch()<UserMap>(`user/${id}`, {
+    method: "PUT",
+    body,
+  });
 };
 
 export const getMySelf = async () => {
