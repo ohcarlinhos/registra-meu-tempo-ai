@@ -4474,6 +4474,13 @@ nuxi@^3.15.0:
   resolved "https://registry.yarnpkg.com/nuxi/-/nuxi-3.15.0.tgz#ed54923ca46727c6e7df10495143db340d9791c9"
   integrity sha512-ZVu45nuDrdb7nzKW2kLGY/N1vvFYLLbUVX6gUYw4BApKGGu4+GktTR5o48dGVgMYX9A8chaugl7TL9ZYmwC9Mg==
 
+nuxt-clarity-analytics@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/nuxt-clarity-analytics/-/nuxt-clarity-analytics-0.0.9.tgz#3cd53a34bb0f59afa652442269ecf1779a684f92"
+  integrity sha512-H5w+B5XOm9hdoVn3CnDCKIcnZli48UwuD8fP1bOogse0NVxNDUKhW0pdqOMRkniL/oORiqIwMrEZh12YE+23KQ==
+  dependencies:
+    "@nuxt/kit" "^3.13.1"
+
 nuxt-gtag@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/nuxt-gtag/-/nuxt-gtag-3.0.1.tgz#b027f7dda0ff1819529cf42b75d32c2d818ce6f9"

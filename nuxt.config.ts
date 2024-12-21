@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "nuxt-gtag",
     "@nuxt/image",
     "@pinia/colada-nuxt",
+    "nuxt-clarity-analytics",
   ],
 
   colorMode: {
