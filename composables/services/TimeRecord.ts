@@ -1,74 +1,53 @@
-export const getTimeRecords = async function (
-  pagQuery: IPaginationQuery,
-  mounted = false
-) {
-  return await CustomHttp<null, Pagination<TimeRecordMap>>(
+export const getTimeRecords = async (pagQuery: IPaginationQuery) => {
+  return useCustomFetch()<Pagination<TimeRecordMap>>(
     `/record${paginationQueryHandle(pagQuery)}`,
-    "get",
-    null,
-    mounted
+    { method: "GET" }
   );
 };
 
-export const searchTimeRecord = async function (
-  search: string = "",
-  mounted = false
-) {
-  return await CustomHttp<null, SearchTimeRecordItem[]>(
+export const searchTimeRecord = async (search: string = "") => {
+  return useCustomFetch()<SearchTimeRecordItem[]>(
     `/record/search?value=${search}`,
-    "get",
-    null,
-    mounted
+    { method: "GET" }
   );
 };
 
-export const getTimeRecordByCode = async function (
-  code: string,
-  mounted = false
-) {
-  return await CustomHttp<null, TimeRecordMap>(
-    `/record/${code}`,
-    "get",
-    null,
-    mounted
+export const getTimeRecordByCode = async (code: string) => {
+  return useCustomFetch()<TimeRecordMap>(`/record/${code}`, {
+    method: "GET",
+  });
+};
+
+export const getTimeRecordHistory = async (
+  pagQuery: IPaginationQuery,
+  timeRecordId: number
+) => {
+  return useCustomFetch()<Pagination<TimeRecordHistoryDayMap>>(
+    `/record/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
+    {
+      method: "GET",
+    }
   );
+};
+
+export const postTimeRecord = async (body: CreateTimeRecordDto) => {
+  if (body.categoryId == null) delete body.categoryId;
+
+  return useCustomFetch(false)<TimeRecordMap>("/record", {
+    method: "POST",
+    body,
+  });
+};
+
+export const putTimeRecord = async (body: UpdateTimeRecordDto) => {
+  if (body.categoryId == null) delete body.categoryId;
+
+  return useCustomFetch(false)<TimeRecordMap>(`/record/${body.id}`, {
+    method: "PUT",
+    body,
+  });
 };
 
 export const deleteTimeRecord = async (id: number) => {
-  return await CustomHttp<null, boolean>(`/record/${id}`, "delete", null, true);
-};
-
-export const postTimeRecord = async (payload: CreateTimeRecordDto) => {
-  if (payload.categoryId == null) delete payload.categoryId;
-
-  return CustomHttp<CreateTimeRecordDto, TimeRecordMap>(
-    "/record",
-    "post",
-    payload,
-    true
-  );
-};
-
-export const putTimeRecord = async (payload: UpdateTimeRecordDto) => {
-  if (payload.categoryId == null) delete payload.categoryId;
-
-  return CustomHttp<UpdateTimeRecordDto, TimeRecordMap>(
-    `/record/${payload.id}`,
-    "put",
-    payload,
-    true
-  );
-};
-
-export const getTimeRecordHistory = async function (
-  pagQuery: IPaginationQuery,
-  timeRecordId: number,
-  mounted = false
-) {
-  return await CustomHttp<null, Pagination<TimeRecordHistoryDayMap>>(
-    `/record/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
-    "get",
-    null,
-    mounted
-  );
+  return useCustomFetch(false)<boolean>(`/record/${id}`, { method: "DELETE" });
 };
