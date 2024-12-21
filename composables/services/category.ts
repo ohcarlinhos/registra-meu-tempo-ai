@@ -6,7 +6,7 @@ export const getAllCategories = async (onlyWithData = false) => {
 };
 
 export const getCategories = async (pagQuery: IPaginationQuery) => {
-  return useCustomFetch()<CategoryMap[]>(
+  return useCustomFetch()<Pagination<CategoryMap>>(
     `/category${paginationQueryHandle(pagQuery)}`,
     { method: "GET" }
   );

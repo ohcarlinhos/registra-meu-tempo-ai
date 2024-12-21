@@ -24,15 +24,15 @@ export const useCategoryStore = defineStore("CategoryStore", {
     },
 
     async refetch() {
-      await this.fetch(true);
+      await this.fetch();
     },
 
-    async fetch(mounted = false) {
+    async fetch() {
       if (!this.paginationQuery) this.paginationQuery = new PaginationQuery();
 
       try {
         this._fetch = true;
-        const data = await getCategories(this.paginationQuery, mounted);
+        const data = await getCategories(this.paginationQuery);
         if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);

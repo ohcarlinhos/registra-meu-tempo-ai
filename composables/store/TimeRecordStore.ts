@@ -11,12 +11,12 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
   },
 
   actions: {
-    async fetch(mounted = false) {
+    async fetch() {
       if (!this.paginationQuery) this.paginationQuery = new PaginationQuery();
 
       try {
         this._fetch = true;
-        const data = await getTimeRecords(this.paginationQuery, mounted);
+        const data = await getTimeRecords(this.paginationQuery);
         if (data) this._apiRes = data;
       } catch (error) {
         ErrorToast(error);
@@ -26,7 +26,7 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
     },
 
     async refetch() {
-      await this.fetch(true);
+      await this.fetch();
     },
 
     async deleteTimeRecord(id: number) {

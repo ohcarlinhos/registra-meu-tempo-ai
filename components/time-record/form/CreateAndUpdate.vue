@@ -263,7 +263,7 @@ const isTrSearch = ref<boolean>(false);
 const searchTr = async (q: string = "") => {
   try {
     isTrSearch.value = true;
-    const result = await searchTimeRecord(q, true);
+    const result = await searchTimeRecord(q);
     if (result) {
       searchTrList.value = result.map((item) => {
         item.title = item.title ? `${item.title} (${item.code})` : item.code;

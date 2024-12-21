@@ -10,7 +10,7 @@ export const useTimeRecordHistoryStore = defineStore({
     _first: true,
   }),
   actions: {
-    async fetch(mounted = false) {
+    async fetch() {
       if (!this.paginationQuery) {
         this.paginationQuery = new PaginationQuery();
       }
@@ -24,8 +24,7 @@ export const useTimeRecordHistoryStore = defineStore({
         this.isFetch = true;
         const data = await getTimeRecordHistory(
           this.paginationQuery,
-          this._timeRecordId,
-          mounted
+          this._timeRecordId
         );
         if (data) this.apiRes = data;
       } catch (error) {
@@ -36,7 +35,7 @@ export const useTimeRecordHistoryStore = defineStore({
     },
 
     async refetch() {
-      await this.fetch(true);
+      await this.fetch();
     },
 
     setTimeRecordId(id: number) {

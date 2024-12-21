@@ -53,7 +53,7 @@ const closeTimePeriodCallback = async (refresh = false) => {
 
 const getData = () => {
   dayStore.setTimeRecordId(props.timeRecordId);
-  return dayStore.fetch(true);
+  return dayStore.fetch();
 };
 
 const getSessionColor = (type: string) => {
