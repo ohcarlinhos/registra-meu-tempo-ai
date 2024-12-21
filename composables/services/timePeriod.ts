@@ -1,4 +1,4 @@
-export const getTimePeriods = async (
+export const getTimePeriod = async (
   timeRecordId: number,
   pagQuery: IPaginationQuery
 ) => {
