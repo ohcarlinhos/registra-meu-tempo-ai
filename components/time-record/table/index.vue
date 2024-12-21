@@ -47,7 +47,7 @@ const computedCategory = computed({
     if (category === oldCategory) return;
 
     trStore.paginationQuery.addFilter({ tag: "category", value: category });
-    trStore.fetch(true);
+    trStore.fetch();
   },
 });
 
