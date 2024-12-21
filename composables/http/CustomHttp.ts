@@ -131,7 +131,7 @@ export const CustomHttp = async <P, R>(
   return CustomHttpUsingFetch<P, R>(route, method, payload, authorization);
 };
 
-export const useCustomFetch = (needRefresh = false, stopIfNotAuth = true) => {
+export const useCustomFetch = (needRefresh = true, stopIfNotAuth = true) => {
   const configStore = useConfigStore();
   const { $i18n } = useNuxtApp();
 

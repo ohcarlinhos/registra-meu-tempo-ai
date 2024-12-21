@@ -1,33 +1,33 @@
 export const getAllCategories = async (onlyWithData = false) => {
-  return useCustomFetch(true, false)<CategoryMap[]>(
+  return useCustomFetch()<CategoryMap[]>(
     `/category/all${onlyWithData ? "?onlyWithData=true" : ""}`,
     { method: "GET" }
   );
 };
 
 export const getCategories = async (pagQuery: IPaginationQuery) => {
-  return useCustomFetch(true, false)<CategoryMap[]>(
+  return useCustomFetch()<CategoryMap[]>(
     `/category${paginationQueryHandle(pagQuery)}`,
     { method: "GET" }
   );
 };
 
 export const postCategory = async (body: CategoryDto) => {
-  return useCustomFetch(true, false)<CategoryMap>("/category", {
+  return useCustomFetch(false)<CategoryMap>("/category", {
     method: "POST",
     body,
   });
 };
 
 export const putCategory = async (id: number, body: CategoryDto) => {
-  return useCustomFetch(true, false)<CategoryMap>(`/category/${id}`, {
+  return useCustomFetch(false)<CategoryMap>(`/category/${id}`, {
     method: "PUT",
     body,
   });
 };
 
 export const deleteCategory = async (id: number) => {
-  return useCustomFetch(true, false)<boolean>(`/category/${id}`, {
+  return useCustomFetch(false)<boolean>(`/category/${id}`, {
     method: "DELETE",
   });
 };

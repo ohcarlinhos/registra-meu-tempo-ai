@@ -6,12 +6,12 @@ export const postUser = async (body: CreateUserDto) => {
 };
 
 export const updateUser = async (id: number, body: UpdateUserDto) => {
-  return useCustomFetch()<UserMap>(`user/${id}`, {
+  return useCustomFetch(false)<UserMap>(`user/${id}`, {
     method: "PUT",
     body,
   });
 };
 
 export const getMySelf = async () => {
-  return useCustomFetch(true)<UserMap>("user/myself", { method: "GET" });
+  return useCustomFetch()<UserMap>("user/myself", { method: "GET" });
 };
