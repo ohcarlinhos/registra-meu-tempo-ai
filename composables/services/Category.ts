@@ -1,42 +1,33 @@
-export const getAllCategories = async function (onlyWithData = false) {
-  return CustomHttp<null, CategoryMap[]>(
+export const getAllCategories = async (onlyWithData = false) => {
+  return useCustomFetch(true, false)<CategoryMap[]>(
     `/category/all${onlyWithData ? "?onlyWithData=true" : ""}`,
-    "get",
-    null,
-    true
+    { method: "GET" }
   );
 };
 
-export const getCategories = async function (
-  pagQuery: IPaginationQuery,
-  mounted = false
-) {
-  return CustomHttp<null, Pagination<CategoryMap>>(
+export const getCategories = async (pagQuery: IPaginationQuery) => {
+  return useCustomFetch(true, false)<CategoryMap[]>(
     `/category${paginationQueryHandle(pagQuery)}`,
-    "get",
-    null,
-    mounted
+    { method: "GET" }
   );
 };
 
-export const postCategory = async (payload: CategoryDto) => {
-  return CustomHttp<CategoryDto, CategoryMap>(
-    "/category",
-    "post",
-    payload,
-    true
-  );
+export const postCategory = async (body: CategoryDto) => {
+  return useCustomFetch(true, false)<CategoryMap>("/category", {
+    method: "POST",
+    body,
+  });
 };
 
-export const putCategory = async (id: number, payload: CategoryDto) => {
-  return CustomHttp<CategoryDto, CategoryMap>(
-    `/category/${id}`,
-    "put",
-    payload,
-    true
-  );
+export const putCategory = async (id: number, body: CategoryDto) => {
+  return useCustomFetch(true, false)<CategoryMap>(`/category/${id}`, {
+    method: "PUT",
+    body,
+  });
 };
 
 export const deleteCategory = async (id: number) => {
-  return CustomHttp<null, boolean>(`/category/${id}`, "delete", null, true);
+  return useCustomFetch(true, false)<boolean>(`/category/${id}`, {
+    method: "DELETE",
+  });
 };
