@@ -1,11 +1,6 @@
-export const getDayStatistic = async function (
-  date: Date | null = null,
-  mounted = false
-) {
-  return CustomHttp<null, DayStatistic>(
+export const getDayStatistic = async (date: Date | null = null) => {
+  return useCustomFetch(true, false)<DayStatistic>(
     `/statistic/day?date=${date?.toISOString()}`,
-    "get",
-    null,
-    mounted
+    { method: "GET" }
   );
 };
