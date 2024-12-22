@@ -7,10 +7,17 @@ const disableRequestCodeButton = ref(false);
 
 const registerCodeInfo = ref<RegisterCodeInfo>();
 
-onMounted(() => {
-  setTitle("Confirmar E-mail");
-  getRegisterCodeInfoAction();
-});
+const userStore = useUserStore();
+const { isVerified, mySelf } = storeToRefs(userStore);
+
+const router = useRouter();
+
+watch(
+  () => isVerified.value,
+  (newValue) => {
+    if (newValue) router.push({ name: "record.panel" });
+  }
+);
 
 const getRegisterCodeInfoAction = async () => {
   try {
@@ -58,19 +65,43 @@ const requestRegisterCodeEmail = async () => {
     isFetch.value = false;
   }
 };
+
+onMounted(async () => {
+  setTitle("Confirmar E-mail");
+
+  if (isVerified.value) {
+    return router.push({ name: "record.panel" });
+  }
+
+  await getRegisterCodeInfoAction();
+});
 </script>
 
 <template>
   <NuxtLayout name="center">
     <UCard :ui="{ base: 'w-full' }">
+      <section
+        v-if="isFetch && !showRequestCodeButton"
+        class="flex justify-center"
+      >
+        <UIcon
+          name="i-svg-spinners-180-ring-with-bg"
+          class="w-7 h-7 opacity-40"
+        />
+      </section>
+
       <template v-if="showRequestCodeButton">
-        <p>
+        <p class="pb-2">
           {{ "Você ainda não confirmou seu e-mail!" }}
         </p>
 
+        <UFormGroup label="E-mail do cadastro" name="email">
+          <UInput :model-value="mySelf?.email" disabled />
+        </UFormGroup>
+
         <UButton
           class="mt-4"
-          :disabled="disableRequestCodeButton"
+          :disabled="disableRequestCodeButton || isVerified"
           :loading="isFetch"
           @click="requestRegisterCodeEmail"
         >

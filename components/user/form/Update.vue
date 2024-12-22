@@ -82,7 +82,7 @@ await fetchMySelf((data) => {
     <UCard>
       <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
         <UFormGroup :label="_$t('name')" name="name" required>
-          <UInput type="text" v-model="form.name" autofocus />
+          <UInput type="text" v-model="form.name" />
         </UFormGroup>
 
         <UFormGroup :label="_$t('email')" name="email" required>

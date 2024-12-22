@@ -20,9 +20,30 @@ export const useUserStore = defineStore("user-store", () => {
     }
   };
 
+  const isVerified = computed(() => {
+    return Boolean(mySelf.value?.isVerified);
+  });
+
+  const isActive = computed(() => {
+    return Boolean(mySelf.value?.isVerified);
+  });
+
+  const checkIfIsVerified = async () => {
+    await fetchMySelf();
+
+    if (mySelf.value?.isVerified == false) {
+      console.log("Não está verificado.");
+    }
+
+    return mySelf.value?.isVerified;
+  };
+
   return {
     mySelf,
     isFetch,
+    isActive,
+    isVerified,
     fetchMySelf,
+    checkIfIsVerified,
   };
 });
