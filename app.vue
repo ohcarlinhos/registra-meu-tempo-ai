@@ -24,7 +24,7 @@ const { authModal, isAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
 const { checkIfIsVerified } = userStore;
-const { isVerified } = storeToRefs(userStore);
+const { isVerified, isFetch: mySelfIsFetch } = storeToRefs(userStore);
 
 const cs = useConfigStore();
 
@@ -45,7 +45,12 @@ const isVerifiedPage = computed(() => {
 });
 
 const showNotVerifiedStatus = computed(() => {
-  return !isVerifiedPage.value && !isVerified.value && isAuth.value;
+  return (
+    !mySelfIsFetch.value &&
+    !isVerifiedPage.value &&
+    !isVerified.value &&
+    isAuth.value
+  );
 });
 
 const verifyEmail = () => {

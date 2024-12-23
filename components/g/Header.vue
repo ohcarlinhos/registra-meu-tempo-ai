@@ -3,6 +3,9 @@ const authStore = useAuthStoreV2();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 const { clearUserToken } = authStore;
 
+const userStore = useUserStore();
+const { clearMySelf } = userStore;
+
 const colorMode = useColorMode();
 
 withDefaults(
@@ -26,6 +29,8 @@ const imgUrl = computed(() => {
 
 const exit = () => {
   clearUserToken();
+  clearMySelf();
+
   useRouter().push("/login");
 };
 

@@ -38,6 +38,10 @@ export const useUserStore = defineStore("user-store", () => {
     return mySelf.value?.isVerified;
   };
 
+  const clearMySelf = () => {
+    mySelf.value = undefined;
+  };
+
   return {
     mySelf,
     isFetch,
@@ -45,5 +49,6 @@ export const useUserStore = defineStore("user-store", () => {
     isVerified,
     fetchMySelf,
     checkIfIsVerified,
+    clearMySelf,
   };
 });
