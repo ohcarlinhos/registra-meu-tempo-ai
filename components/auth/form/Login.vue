@@ -7,6 +7,9 @@ const authStore = useAuthStoreV2();
 const { authModal } = storeToRefs(authStore);
 const { closeAuthModal, setUserToken } = authStore;
 
+const userStore = useUserStore();
+const { checkIfIsVerified } = userStore;
+
 const v = useUserValidation();
 
 const form = reactive({
@@ -39,10 +42,11 @@ const submitAction = async () => {
     page.fetch = true;
 
     const data = await postLogin(form);
+    setUserToken(data!.token);
 
     OkToast(_$t("loginSuccess"));
 
-    setUserToken(data!.token);
+    await checkIfIsVerified();
 
     const route = useRoute();
     const router = useRouter();
