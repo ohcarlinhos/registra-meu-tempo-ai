@@ -8,6 +8,9 @@ const pageStatus = reactive({ fetching: false });
 
 const v = useUserValidation();
 
+const userStore = useUserStore();
+const { checkIfIsVerified } = userStore;
+
 const form = reactive(<UpdateUserDto & { confirmPassword: string }>{
   name: "",
   email: "",
@@ -54,6 +57,7 @@ const submit = async () => {
     if (!data.oldPassword) delete data.oldPassword;
 
     await updateUser(mySelf.value.id, form);
+    await checkIfIsVerified();
 
     OkToast(_$t("updateUserSuccess"));
 
