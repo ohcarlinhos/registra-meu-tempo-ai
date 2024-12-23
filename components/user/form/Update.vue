@@ -4,12 +4,16 @@ import * as yup from "yup";
 const { mySelf } = storeToRefs(useUserStore());
 const { fetchMySelf } = useUserStore();
 
+const userStore = useUserStore();
+
+const authStore = useAuthStoreV2();
+const { setExpiredToken, clearSession } = authStore;
+
 const pageStatus = reactive({ fetching: false });
 
 const v = useUserValidation();
 
-const userStore = useUserStore();
-const { checkIfIsVerified } = userStore;
+const oldEmail = ref("");
 
 const form = reactive(<UpdateUserDto & { confirmPassword: string }>{
   name: "",
@@ -57,9 +61,13 @@ const submit = async () => {
     if (!data.oldPassword) delete data.oldPassword;
 
     await updateUser(mySelf.value.id, form);
-    await checkIfIsVerified();
 
     OkToast(_$t("updateUserSuccess"));
+
+    if (oldEmail.value != data.email) {
+      OkToast("Faça login novamente com seu novo e-mail.");
+      return exit();
+    }
 
     form.oldPassword = "";
     form.confirmPassword = "";
@@ -71,8 +79,15 @@ const submit = async () => {
   }
 };
 
+const exit = () => {
+  clearSession();
+  router.push("/login");
+};
+
 await fetchMySelf((data) => {
   if (!data) return;
+
+  oldEmail.value = data.email;
 
   form.name = data.name;
   form.email = data.email;

@@ -7,6 +7,8 @@ export const useAuthStoreV2 = defineStore(
     const authModal = reactive({ open: false });
     const needRefresh = ref(false);
 
+    const { clearMySelf } = useUserStore();
+
     const isAuth = computed(() => {
       return userToken.value != "";
     });
@@ -46,6 +48,11 @@ export const useAuthStoreV2 = defineStore(
       }
     };
 
+    const clearSession = () => {
+      clearUserToken();
+      clearMySelf();
+    };
+
     return {
       userToken,
       authModal,
@@ -57,6 +64,7 @@ export const useAuthStoreV2 = defineStore(
       setExpiredToken,
       openAuthModal,
       closeAuthModal,
+      clearSession,
     };
   },
   { persist: true }

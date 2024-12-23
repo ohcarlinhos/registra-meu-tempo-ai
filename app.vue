@@ -19,7 +19,7 @@ const toggleDark = () => {
 };
 
 const authStore = useAuthStoreV2();
-const { setExpiredToken, clearUserToken } = authStore;
+const { setExpiredToken, clearSession } = authStore;
 const { authModal, isAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
@@ -36,7 +36,7 @@ const setOldToken = () => {
 };
 
 const exit = () => {
-  clearUserToken();
+  clearSession();
   router.push("/login");
 };
 

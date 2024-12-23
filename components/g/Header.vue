@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const authStore = useAuthStoreV2();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
-const { clearUserToken } = authStore;
+const { clearSession } = authStore;
 
 const userStore = useUserStore();
 const { clearMySelf } = userStore;
@@ -28,8 +28,7 @@ const imgUrl = computed(() => {
 });
 
 const exit = () => {
-  clearUserToken();
-  clearMySelf();
+  clearSession();
 
   useRouter().push("/login");
 };
