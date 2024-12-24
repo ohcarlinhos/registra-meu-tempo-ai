@@ -56,7 +56,7 @@ const titlePage = computed(() => {
   if (timer.value.isRun) {
     return timerLabelText.value + (props.title ? " — " + props.title : "");
   }
-  return "";
+  return props.title ? props.title : "";
 });
 
 useHead({
