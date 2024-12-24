@@ -6,6 +6,9 @@ const timerStore = useTimerStore();
 const authStore = useAuthStoreV2();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
+const userStore = useUserStore();
+const { isVerified: userIsVerified } = storeToRefs(userStore);
+
 const props = withDefaults(
   defineProps<{
     id: number | null;
@@ -78,6 +81,7 @@ const items = (row: TimeRecordLocal) => {
       {
         label: "Apagar sessão do navegador",
         icon: "i-icon-park-outline-delete-themes",
+        disabled: false,
         click: () => openConfirmDeleteModal(row.localUuid, row.id),
       },
     ],
@@ -88,17 +92,20 @@ const items = (row: TimeRecordLocal) => {
       actions[0].unshift({
         label: "Sincronizar sessão com registro",
         icon: "i-icon-park-outline-refresh-one",
+        disabled: !userIsVerified.value,
         click: async () => openModal(row, true),
       });
     } else {
       actions[0].unshift({
         label: "Vincular sessão à registro existente",
         icon: "i-icon-park-outline-refresh-one",
+        disabled: !userIsVerified.value,
         click: async () => openModal(row, true, true),
       });
       actions[0].unshift({
         label: "Criar registro a partir de sessão",
         icon: "i-icon-park-outline-save-one",
+        disabled: !userIsVerified.value,
         click: async () => openModal(row),
       });
     }

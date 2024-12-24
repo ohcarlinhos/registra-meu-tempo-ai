@@ -24,6 +24,9 @@ const { t } = useI18n();
 const authStore = useAuthStoreV2();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
+const userStore = useUserStore();
+const { isVerified: userIsVerified } = storeToRefs(userStore);
+
 const timerStore = useTimerStore();
 
 const timer = computed(() => timerStore.getTimer(props.id));
@@ -418,6 +421,7 @@ onBeforeUnmount(() => {
     :title="$t('timer.persistModal.text')"
     :cancel-text="$t('timer.persistModal.browserButton')"
     :confirm-text="$t('timer.persistModal.accountButton')"
+    :disable-confirm="!userIsVerified"
     @confirm="persistOnServer"
     @cancel="saveOnBrowser"
   />
