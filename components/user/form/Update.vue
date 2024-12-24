@@ -66,7 +66,7 @@ const submit = async () => {
 
     if (oldEmail.value != data.email) {
       OkToast("Faça login novamente com seu novo e-mail.");
-      return exit();
+      return logout();
     }
 
     form.oldPassword = "";
@@ -77,11 +77,6 @@ const submit = async () => {
   } finally {
     pageStatus.fetching = false;
   }
-};
-
-const exit = () => {
-  clearSession();
-  router.push("/login");
 };
 
 await fetchMySelf((data) => {

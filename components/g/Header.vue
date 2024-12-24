@@ -27,12 +27,6 @@ const imgUrl = computed(() => {
   return `/img/rmta_${colorMode.value === "dark" ? "dark" : "light"}.svg`;
 });
 
-const exit = () => {
-  clearSession();
-
-  useRouter().push("/login");
-};
-
 const activeClass = "text-primary font-bold";
 </script>
 
@@ -123,7 +117,7 @@ const activeClass = "text-primary font-bold";
         color="black"
         variant="link"
         size="xl"
-        @click="exit"
+        @click="logout"
       />
     </nav>
   </header>

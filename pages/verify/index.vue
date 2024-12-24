@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ name: "verify.page" });
+definePageMeta({ middleware: ["auth"], name: "verify.page" });
 
 const isFetch = ref(false);
 const showRequestCodeButton = ref(false);
