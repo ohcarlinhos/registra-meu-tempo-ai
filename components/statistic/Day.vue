@@ -50,7 +50,7 @@ const init = (mounted = false) => {
   infoCardList.value = [];
   isFetch.value = true;
 
-  getDayStatistic(selectedDate.value, mounted)
+  getDayStatistic(selectedDate.value)
     .then((data) => {
       if (data) {
         dayStatistic.value = data;

@@ -3,6 +3,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
 
+  seo: {
+    fallbackTitle: false,
+  },
+
   modules: [
     "@nuxt/ui",
     "@pinia/nuxt",
@@ -13,6 +17,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@pinia/colada-nuxt",
     "nuxt-clarity-analytics",
+    "@nuxtjs/seo",
   ],
 
   colorMode: {

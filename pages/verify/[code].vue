@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ name: "verify.page.code" });
+useHead({ title: "Verificar conta" });
 
 const isFetch = ref(false);
 
@@ -11,7 +12,6 @@ const route = useRoute();
 const router = useRouter();
 
 onMounted(async () => {
-  setTitle("Confirmar E-mail");
   await initCode();
 });
 

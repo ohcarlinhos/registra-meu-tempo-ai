@@ -4,6 +4,12 @@ definePageMeta({
   name: "record",
 });
 
+const title = computed(() => {
+  return trReq.value?.title || "";
+});
+
+useHead({ title });
+
 const router = useRouter();
 const historyTp = ref();
 
@@ -31,13 +37,6 @@ onBeforeRouteLeave(() => {
   actualTimeRecordId.value = undefined;
   getIsFetch.value = true;
 });
-
-watch(
-  () => trReq.value?.title,
-  (val) => {
-    setTitle(val);
-  }
-);
 </script>
 
 <template>

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "record.panel" });
-
-onMounted(() => {
-  setTitle(_$t("records"));
-});
+useHead({ title: "Registros" });
 </script>
 
 <template>

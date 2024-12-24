@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["guest"], name: "login" });
+useHead({ title: "Acessar ferramenta" });
 
 onMounted(() => {
-  setTitle(_$t("login"));
   useAuthStoreV2().closeAuthModal();
 });
 </script>

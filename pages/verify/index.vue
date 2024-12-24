@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "verify.page" });
+useHead({ title: "Verificar conta" });
 
 const isFetch = ref(false);
 const showRequestCodeButton = ref(false);
@@ -67,8 +68,6 @@ const requestRegisterCodeEmail = async () => {
 };
 
 onMounted(async () => {
-  setTitle("Confirmar E-mail");
-
   if (isVerified.value) {
     return router.push({ name: "record.panel" });
   }

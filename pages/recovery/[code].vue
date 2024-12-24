@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["guest"], name: "recovery.password" });
-
-onMounted(() => {
-  setTitle("Recuperar Senha");
-});
+useHead({ title: "Nova senha" });
 </script>
 
 <template>

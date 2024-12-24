@@ -18,7 +18,6 @@ const props = defineProps({
   },
 });
 
-const oldPageTitle = ref();
 const { t } = useI18n();
 
 const authStore = useAuthStoreV2();
@@ -53,18 +52,16 @@ watch(
   }
 );
 
-watch(
-  () => timerLabelText.value,
-  (newValue) => {
-    if (!oldPageTitle.value) oldPageTitle.value = document.title;
-
-    if (timer.value.isRun) {
-      setTitle(newValue + (props.title ? " - " + props.title : ""));
-    } else {
-      setTitle(props.title);
-    }
+const titlePage = computed(() => {
+  if (timer.value.isRun) {
+    return timerLabelText.value + (props.title ? " — " + props.title : "");
   }
-);
+  return "";
+});
+
+useHead({
+  title: titlePage,
+});
 
 timerStore.initTimerConfig(props.id, props.code);
 
@@ -98,8 +95,6 @@ const startTimer = () => {
 };
 
 const pauseTimer = () => {
-  setTitle(props.title);
-
   timerStore.noSleep?.disable();
   timerStore.pauseTimer(props.id);
   timerStore.playClick();
@@ -119,8 +114,6 @@ const stopTimer = () => {
 };
 
 const stopTimerAction = () => {
-  setTitle(props.title);
-
   modal.confirmStopTimer.open = false;
   timerStore.stopTimer(props.id);
 };
@@ -128,8 +121,6 @@ const stopTimerAction = () => {
 const submitIsFetch = ref(false);
 
 const endTimer = async () => {
-  setTitle(props.title);
-
   timerStore.noSleep?.disable();
   timerStore.playClick();
 

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ name: "home" });
-
-onMounted(() => {
-  setTitle();
-});
+useHead({ title: "Cronômetros" });
 </script>
 
 <template>

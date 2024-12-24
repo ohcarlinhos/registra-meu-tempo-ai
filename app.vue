@@ -1,5 +1,10 @@
 <script lang="ts" setup>
 useHead({
+  titleTemplate: "%s %separator %siteName",
+  templateParams: {
+    separator: "—", // choose a seperator
+    siteName: "Registra meu tempo aí!", // set a site name
+  },
   meta: [
     { name: "google-adsense-account", content: "ca-pub-5691189191143225" },
   ],
@@ -35,10 +40,6 @@ const setOldToken = () => {
 
 const showNotVerifiedStatus = computed(() => {
   return isAuth.value && !mySelfIsFetch.value && !isVerified.value;
-});
-
-onMounted(async () => {
-  setTitle();
 });
 </script>
 

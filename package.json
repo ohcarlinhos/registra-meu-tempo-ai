@@ -12,6 +12,7 @@
   "devDependencies": {
     "@nuxt/image": "^1.8.1",
     "@nuxtjs/i18n": "^8.3.1",
+    "@nuxtjs/seo": "^2.0.2",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/colada-nuxt": "^0.0.3",
     "@types/uuid": "10.0.0",
