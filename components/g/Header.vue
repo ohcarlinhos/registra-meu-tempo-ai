@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 const authStore = useAuthStoreV2();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
-const { clearSession } = authStore;
-
-const userStore = useUserStore();
-const { clearMySelf } = userStore;
 
 const colorMode = useColorMode();
 

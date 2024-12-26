@@ -9,5 +9,5 @@ export const logout = () => {
   const { clearSession } = authStore;
 
   clearSession();
-  router.push("/login");
+  router.push({ name: "login" });
 };

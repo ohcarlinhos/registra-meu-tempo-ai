@@ -33,10 +33,15 @@ const verifyCode = async () => {
     if (!result) return;
 
     const isVerified = await checkIfIsVerified();
-
-    if (isVerified) {
-      router.push({ name: "record.panel" });
+    if (!isVerified) {
+      return;
     }
+
+    OkToast(
+      "Conta verificada com sucesso, por favor acesse sua conta novamente."
+    );
+
+    logout();
   } catch (err: any) {
     ErrorToast(err);
 

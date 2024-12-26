@@ -20,7 +20,7 @@ export const getTimeRecordData = async (code = "", disableFetch = false) => {
   if (!disableFetch) getIsFetch.value = true;
 
   try {
-    const data = await getTimeRecordByCode(`${route.params.code}`, true);
+    const data = await getTimeRecordByCode(`${route.params.code}`);
     if (data) {
       trReq.value = data;
       actualTimeRecordId.value = data.id;

@@ -4,11 +4,6 @@ import * as yup from "yup";
 const { mySelf } = storeToRefs(useUserStore());
 const { fetchMySelf } = useUserStore();
 
-const userStore = useUserStore();
-
-const authStore = useAuthStoreV2();
-const { setExpiredToken, clearSession } = authStore;
-
 const pageStatus = reactive({ fetching: false });
 
 const v = useUserValidation();
