@@ -114,7 +114,12 @@ onMounted(async () => {
             "Enviamos o link de confirmação em seu endereço de email, caso não encontre na caixa de entrada, verifique a caixa de SPAM."
           }}
         </p>
+
         <p class="pt-4">
+          {{ `E-mail: ${mySelf?.email}` }}
+        </p>
+
+        <p>
           {{ `Data de expiração: ${registerCodeInfo.formattedExpireDate}` }}
         </p>
       </template>
