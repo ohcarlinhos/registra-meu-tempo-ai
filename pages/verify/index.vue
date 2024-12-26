@@ -46,11 +46,11 @@ const getRegisterCodeInfoAction = async () => {
   }
 };
 
-const requestRegisterCodeEmail = async () => {
+const requestVerifyUserCodeEmail = async () => {
   try {
     isFetch.value = true;
 
-    const result = await requestRegisterCode();
+    const result = await requestVerifyUserCode();
     if (!result) return;
 
     showRequestCodeButton.value = false;
@@ -102,7 +102,7 @@ onMounted(async () => {
           class="mt-4"
           :disabled="disableRequestCodeButton || isVerified"
           :loading="isFetch"
-          @click="requestRegisterCodeEmail"
+          @click="requestVerifyUserCodeEmail"
         >
           Solicitar Código de Verificação
         </UButton>

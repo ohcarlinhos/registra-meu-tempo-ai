@@ -36,7 +36,7 @@ const submitAction = async () => {
   try {
     page.fetch = true;
 
-    const data = await postRecovery({
+    const data = await requestRecoveryPasswordCode({
       email: form.email,
     });
 

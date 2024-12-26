@@ -28,7 +28,7 @@ const submit = async () => {
   try {
     isFetch.value = true;
 
-    await postRecoveryPassword({ ...data, code: props.code });
+    await recoveryNewPassword({ ...data, code: props.code });
 
     OkToast(_$t("updatePasswordSuccess"));
 

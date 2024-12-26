@@ -4,15 +4,3 @@ export const getRegisterCodeInfo = async () => {
     { method: "GET" }
   );
 };
-
-export const requestRegisterCode = async () => {
-  return useCustomFetch(false)<boolean>("/auth/verify", {
-    method: "POST",
-  });
-};
-
-export const verifyRegisterCode = async (code: string) => {
-  return useCustomFetch(false)<boolean>(`/auth/verify/${code}`, {
-    method: "POST",
-  });
-};
