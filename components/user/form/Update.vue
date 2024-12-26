@@ -57,11 +57,11 @@ const submit = async () => {
 
     await updateUser(mySelf.value.id, form);
 
-    OkToast(_$t("updateUserSuccess"));
-
     if (oldEmail.value != data.email) {
-      OkToast("Faça login novamente com seu novo e-mail.");
+      OkToast(_$t("updateUserSuccessAndLogin"));
       return logout();
+    } else {
+      OkToast(_$t("updateUserSuccess"));
     }
 
     form.oldPassword = "";

@@ -139,6 +139,8 @@ const i18nObj = {
 
   userDate: "Dados do Usuário",
   updateUserSuccess: "Usuário atualizado com sucesso.",
+  updateUserSuccessAndLogin:
+    "Usuário atualizado com sucesso, acesse sua conta novamente utilizando seu novo e-mail.",
   createUserSuccess: "Usuário criado com sucesso.",
   loginSuccess: "Autenticação feita com sucesso.",
   login: "Acessar",
