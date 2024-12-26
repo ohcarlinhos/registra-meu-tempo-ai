@@ -7,17 +7,19 @@ export default defineNuxtConfig({
     fallbackTitle: false,
   },
 
+  ogImage: { enabled: false },
+
   modules: [
     "@nuxt/ui",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
-    "@nuxtjs/i18n",
     "nuxt-viewport",
     "nuxt-gtag",
     "@nuxt/image",
     "@pinia/colada-nuxt",
     "nuxt-clarity-analytics",
     "@nuxtjs/seo",
+    "@nuxtjs/i18n",
   ],
 
   colorMode: {
