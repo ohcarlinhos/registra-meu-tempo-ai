@@ -5,7 +5,7 @@ export const isVerifiedPage = (name: string) => {
 export const logout = () => {
   const router = useRouter();
 
-  const authStore = useAuthStoreV2();
+  const authStore = useAuthStore();
   const { clearSession } = authStore;
 
   clearSession();

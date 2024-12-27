@@ -3,7 +3,7 @@ import * as yup from "yup";
 
 const { t } = useI18n();
 
-const authStore = useAuthStoreV2();
+const authStore = useAuthStore();
 const { authModal } = storeToRefs(authStore);
 
 const v = useUserValidation();

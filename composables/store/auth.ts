@@ -1,6 +1,6 @@
 import * as jose from "jose";
 
-export const useAuthStoreV2 = defineStore(
+export const useAuthStore = defineStore(
   "auth-store",
   () => {
     const userToken = ref("");

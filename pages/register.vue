@@ -3,7 +3,7 @@ definePageMeta({ middleware: ["guest"], name: "register" });
 useHead({ title: "Criar conta" });
 
 onMounted(() => {
-  useAuthStoreV2().closeAuthModal();
+  useAuthStore().closeAuthModal();
 });
 </script>
 

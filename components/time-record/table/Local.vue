@@ -3,7 +3,7 @@ import { watch } from "vue";
 
 const timerStore = useTimerStore();
 
-const authStore = useAuthStoreV2();
+const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();

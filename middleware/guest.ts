@@ -1,4 +1,4 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const { userToken } = storeToRefs(useAuthStoreV2());
+  const { userToken } = storeToRefs(useAuthStore());
   if (userToken.value) return navigateTo({ name: "record.panel" });
 });

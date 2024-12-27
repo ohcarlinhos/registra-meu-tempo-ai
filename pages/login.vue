@@ -3,7 +3,7 @@ definePageMeta({ middleware: ["guest"], name: "login" });
 useHead({ title: "Acessar ferramenta" });
 
 onMounted(() => {
-  useAuthStoreV2().closeAuthModal();
+  useAuthStore().closeAuthModal();
 });
 </script>
 

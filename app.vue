@@ -23,7 +23,7 @@ const toggleDark = () => {
   colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 };
 
-const authStore = useAuthStoreV2();
+const authStore = useAuthStore();
 const { setExpiredToken, clearSession } = authStore;
 const { authModal, isAuth } = storeToRefs(authStore);
 

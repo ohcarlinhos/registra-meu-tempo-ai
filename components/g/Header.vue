@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const authStore = useAuthStoreV2();
+const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
 const colorMode = useColorMode();

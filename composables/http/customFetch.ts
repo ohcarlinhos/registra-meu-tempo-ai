@@ -1,5 +1,5 @@
 const clearSession = (needRefresh = false) => {
-  const { clearUserToken, openAuthModal } = useAuthStoreV2();
+  const { clearUserToken, openAuthModal } = useAuthStore();
   const { $i18n } = useNuxtApp();
 
   clearUserToken();
@@ -12,7 +12,7 @@ export const useCustomFetch = (needRefresh = true, stopIfNotAuth = true) => {
   const configStore = useConfigStore();
   const { $i18n } = useNuxtApp();
 
-  const authStore = useAuthStoreV2();
+  const authStore = useAuthStore();
   const { isAuth, userToken } = storeToRefs(authStore);
 
   return $fetch.create({
