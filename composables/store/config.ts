@@ -13,9 +13,14 @@ export const useConfigStore = defineStore("config-store", () => {
     return runtimeConfig.public.oldUserToken || "";
   });
 
+  const onlyGuestMode = computed(() => {
+    return runtimeConfig.public.onlyGuestMode === "1";
+  });
+
   return {
     baseURL,
     hasWarTools,
     oldUserToken,
+    onlyGuestMode,
   };
 });

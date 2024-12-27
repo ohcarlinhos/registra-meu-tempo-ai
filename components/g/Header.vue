@@ -19,6 +19,8 @@ withDefaults(
   }
 );
 
+const { onlyGuestMode } = storeToRefs(useConfigStore());
+
 const imgUrl = computed(() => {
   return `/img/rmta_${colorMode.value === "dark" ? "dark" : "light"}.svg`;
 });
@@ -58,7 +60,7 @@ const activeClass = "text-primary font-bold";
     </section>
 
     <nav
-      v-if="useRuntimeConfig().public.onlyGuestMode != '1'"
+      v-if="!onlyGuestMode"
       class="pt-8 flex items-center flex-wrap gap-x-4 gap-y-2"
       :class="{ 'justify-center': center }"
     >
