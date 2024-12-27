@@ -2,8 +2,8 @@
 useHead({
   titleTemplate: "%s %separator %siteName",
   templateParams: {
-    separator: "—", // choose a seperator
-    siteName: "Registra meu tempo aí!", // set a site name
+    separator: "—",
+    siteName: "Registra meu tempo aí!",
   },
   meta: [
     { name: "google-adsense-account", content: "ca-pub-5691189191143225" },
