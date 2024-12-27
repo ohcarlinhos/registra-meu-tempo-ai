@@ -34,6 +34,8 @@ const i18nObj = {
   toRecord: "Registrar",
   name: "Nome",
   email: "Email",
+  emailInUse:
+    "E-mail em uso, forneça um e-mail diferente ou tente recuperar sua senha.",
   password: "Senha",
   oldPassword: "Senha antiga",
   goToHome: "Ir para Página Inicial",
