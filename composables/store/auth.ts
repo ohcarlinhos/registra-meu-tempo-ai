@@ -7,6 +7,7 @@ export const useAuthStore = defineStore(
     const authModal = reactive({ open: false });
     const needRefresh = ref(false);
 
+    const { oldUserToken } = storeToRefs(useConfigStore());
     const { clearMySelf } = useUserStore();
 
     const isAuth = computed(() => {
@@ -27,7 +28,7 @@ export const useAuthStore = defineStore(
     };
 
     const setExpiredToken = () => {
-      userToken.value = useConfigStore().oldUserToken;
+      userToken.value = oldUserToken.value;
     };
 
     const clearUserToken = () => {

@@ -30,7 +30,7 @@ const { authModal, isAuth } = storeToRefs(authStore);
 const userStore = useUserStore();
 const { isVerified, isFetch: mySelfIsFetch } = storeToRefs(userStore);
 
-const configStore = useConfigStore();
+const { hasWarTools } = storeToRefs(useConfigStore());
 
 const router = useRouter();
 
@@ -57,7 +57,7 @@ const showNotVerifiedStatus = computed(() => {
         :icon="
           isDark ? 'i-icon-park-outline-sun-one' : 'i-icon-park-outline-moon'
         "
-        :label="!isDark && 'Experimente a noite...'"
+        :label="(!isDark && 'Experimente a noite...') || ''"
         title="Na opinião dos desenvolvedores, o modo noturno é bem mais bonito e agradável."
         color="gray"
         variant="ghost"
@@ -83,13 +83,13 @@ const showNotVerifiedStatus = computed(() => {
       </section>
 
       <section class="flex gap-2">
-        <UButton @click="setOldToken" v-if="configStore.hasWarTools">
+        <UButton @click="setOldToken" v-if="hasWarTools">
           Definir Token Antigo
         </UButton>
 
         <UButton
           @click="() => router.push({ name: 'verify.page' })"
-          v-if="configStore.hasWarTools"
+          v-if="hasWarTools"
         >
           Verificar e-mail
         </UButton>

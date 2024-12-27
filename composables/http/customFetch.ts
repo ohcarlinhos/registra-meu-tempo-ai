@@ -9,14 +9,14 @@ const clearSession = (needRefresh = false) => {
 };
 
 export const useCustomFetch = (needRefresh = true, stopIfNotAuth = true) => {
-  const configStore = useConfigStore();
+  const { baseURL } = storeToRefs(useConfigStore());
   const { $i18n } = useNuxtApp();
 
   const authStore = useAuthStore();
   const { isAuth, userToken } = storeToRefs(authStore);
 
   return $fetch.create({
-    baseURL: configStore.apiBase,
+    baseURL: baseURL.value,
 
     onRequest({ options }) {
       if (userToken.value) {

@@ -50,7 +50,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE || "http://localhost:5051/api",
+      baseURL: process.env.BASE_URL || "http://localhost:5051/api",
       onlyGuestMode: process.env.ONLY_GUEST_MODE || "0",
       rfmEnable: process.env.REGISTER_FORM_MOCK_ENABLE || "0",
       rfmName: process.env.REGISTER_FORM_MOCK_NAME || "",

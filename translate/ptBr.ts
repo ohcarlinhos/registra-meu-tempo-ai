@@ -156,7 +156,6 @@ const i18nObj = {
 
   apiGenericError:
     "Não foi possível realizar essa ação, espere alguns minutos e tente novamente.",
-  apiBaseDoNotSet: "Variável API_BASE não definida.",
   sessionExpiredError: "Sessão expirada, efetue um novo login.",
   genericError: "Não foi possível executar essa ação.",
 } as const;
