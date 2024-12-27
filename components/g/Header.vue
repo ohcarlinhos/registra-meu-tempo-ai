@@ -45,9 +45,10 @@ const activeClass = "text-primary font-bold";
         <h1 class="title-hide">Registra meu tempo aí!</h1>
 
         <p v-if="!hideDescription" class="pt-4">
-          Sua ferramenta de
-          <br v-if="center" />
-          <span class="font-bold text-primary">gerenciamento de tempo.</span>
+          Gerencie seu tempo
+          <span class="font-bold text-primary">
+            e controle melhor sua vida.</span
+          >
         </p>
       </section>
 
