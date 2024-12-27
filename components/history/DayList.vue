@@ -339,7 +339,10 @@ defineExpose({
 
     <section
       v-else
-      class="col-span-full flex justify-center md:items-center flex-col pt-12 pb-8 opacity-50"
+      :class="[
+        'col-span-full flex justify-center md:items-center flex-col pt-12 pb-8',
+        isDark && 'opacity-50',
+      ]"
     >
       <h4 class="text-3xl">Não há nada por aqui...</h4>
       <span class="text-lg">

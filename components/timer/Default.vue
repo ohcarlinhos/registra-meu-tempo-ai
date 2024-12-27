@@ -16,6 +16,10 @@ const props = defineProps({
     type: Function,
     default: (code = "") => {},
   },
+  roundedFull: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const { t } = useI18n();
@@ -216,18 +220,20 @@ const getButtonColor = computed(() => {
   return "green";
 });
 
-const timerCardUi = computed(() => {
+const timerComponentClass = computed(() => {
   const getColor = () => {
     if (timer.value.type === "pomodoro") return "red";
     if (timer.value.type === "break") return "blue";
     return "green";
   };
 
-  return {
-    base: `pt-3 relative w-full`,
-    background: `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
-    ring: `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
-  };
+  return [
+    `p-6 pb-8 relative ${
+      props.roundedFull ? "rounded-full" : "rounded-xl"
+    } w-full`,
+    `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
+    `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
+  ];
 });
 
 const isFetch = computed(() => {
@@ -241,7 +247,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="flex flex-col gap-3 items-center min-w-72">
-    <p v-if="!code" class="text-sm text-center pb-2">
+    <p v-if="!code" class="text-sm text-center pb-4">
       Atenção: Sessões registradas nessa página são
       <b class="text-primary">salvas no navegador.</b>
 
@@ -250,8 +256,8 @@ onBeforeUnmount(() => {
       para que apareçam nas estatísticas.
     </p>
 
-    <UCard :ui="timerCardUi">
-      <section class="flex -mt-4 mb-2 justify-center">
+    <section :class="timerComponentClass">
+      <section class="flex mb-2 justify-center">
         <UButton
           title="Selecione entre Cronômetro, Pomodoro ou Pausa."
           color="white"
@@ -263,7 +269,9 @@ onBeforeUnmount(() => {
         </UButton>
       </section>
 
-      <section class="flex flex-col gap-5 justify-center items-center">
+      <section
+        class="flex flex-col gap-5 justify-center items-center aspect-square"
+      >
         <section class="text-center">
           <h3 v-if="timerDoNotHasMilliseconds" class="text-4xl font-bold">
             {{
@@ -339,14 +347,17 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <p v-if="props.code" class="text-center pt-5 text-sm opacity-50">
+      <p
+        v-if="props.code"
+        :class="['text-center pt-5 text-sm', isDark && 'opacity-50']"
+      >
         Sincronizado com registro:
 
         <UBadge :color="getButtonColor" variant="soft" size="md">
           {{ props.code }}
         </UBadge>
       </p>
-    </UCard>
+    </section>
 
     <UButton
       v-if="timer.localRecords.length >= 1"
