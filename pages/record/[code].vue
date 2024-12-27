@@ -3,7 +3,6 @@ definePageMeta({
   middleware: ["auth"],
   name: "record",
 });
-defineRouteRules({ robots: false });
 
 const title = computed(() => {
   return trReq.value?.title || "";

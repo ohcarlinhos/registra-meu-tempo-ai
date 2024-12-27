@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "verify.page" });
 useHead({ title: "Verificar conta" });
-defineRouteRules({ robots: false });
 
 const isFetch = ref(false);
 const showRequestCodeButton = ref(false);
