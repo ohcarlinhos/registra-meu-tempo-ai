@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"] });
 useHead({ title: "Opções" });
+defineRouteRules({ robots: false });
 </script>
 
 <template>

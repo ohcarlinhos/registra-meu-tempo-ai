@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "need.verify" });
 useHead({ title: "Você precisa verificar sua conta!" });
-
+defineRouteRules({ robots: false });
 const router = useRouter();
 
 const verifyEmail = () => {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({ name: "verify.page.code" });
 useHead({ title: "Verificar conta" });
+defineRouteRules({ robots: false });
 
 const isFetch = ref(false);
 

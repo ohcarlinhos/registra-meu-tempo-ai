@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
 
+  site: {
+    url: "https://registrameutempoai.com.br",
+    name: "Registra meu tempo aí!",
+  },
+
   seo: {
     fallbackTitle: false,
   },
