@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useMockStoreV2 = defineStore("mock-store", () => {
+export const useMockStore = defineStore("mock-store", () => {
   const { public: p } = useRuntimeConfig();
 
   const rfMock = computed(() => {

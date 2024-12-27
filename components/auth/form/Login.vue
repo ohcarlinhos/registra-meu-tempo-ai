@@ -17,7 +17,7 @@ const form = reactive({
   password: "",
 });
 
-const { rfMock, rfMockEnable } = storeToRefs(useMockStoreV2());
+const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 
 if (rfMockEnable.value) {
   form.email = rfMock.value.email;

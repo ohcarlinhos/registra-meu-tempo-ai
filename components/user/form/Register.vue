@@ -12,7 +12,7 @@ const form = reactive({
   confirmPassword: "",
 });
 
-const { rfMock, rfMockEnable } = storeToRefs(useMockStoreV2());
+const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 
 if (rfMockEnable.value) {
   form.name = rfMock.value.name;
