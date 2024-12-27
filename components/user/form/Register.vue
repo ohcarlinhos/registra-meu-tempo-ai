@@ -8,7 +8,7 @@ const isFetch = ref(false);
 const form = reactive({
   name: "",
   email: "",
-  registerCode: "",
+  // registerCode: "",
   password: "",
   confirmPassword: "",
 });
@@ -18,7 +18,7 @@ const { rfMock, rfMockEnable } = storeToRefs(useMockStoreV2());
 if (rfMockEnable.value) {
   form.name = rfMock.value.name;
   form.email = rfMock.value.email;
-  form.registerCode = rfMock.value.registerCode;
+  // form.registerCode = rfMock.value.registerCode;
   form.password = rfMock.value.password;
   form.confirmPassword = rfMock.value.confirmPassword;
 }
@@ -26,7 +26,7 @@ if (rfMockEnable.value) {
 const schema = yup.object({
   name: v.name(),
   email: v.email(),
-  registerCode: v.registerCode(),
+  // registerCode: v.registerCode(),
   password: v.password(),
   confirmPassword: v.confirmPassword(),
 });
@@ -72,7 +72,7 @@ const submit = async () => {
         <UInput type="email" v-model="form.email" />
       </UFormGroup>
 
-      <UFormGroup :label="_$t('registerCode')" name="registerCode" required>
+      <!-- <UFormGroup :label="_$t('registerCode')" name="registerCode" required>
         <UInput type="registerCode" v-model="form.registerCode" />
         <p class="text-xs pt-1">
           Receba um código
@@ -84,7 +84,7 @@ const submit = async () => {
             clicando aqui.
           </a>
         </p>
-      </UFormGroup>
+      </UFormGroup> -->
 
       <UFormGroup :label="_$t('password')" name="password" required>
         <UInput type="password" v-model="form.password" />
