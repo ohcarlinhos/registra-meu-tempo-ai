@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   ],
 
   colorMode: {
-    preference: "system",
+    preference: "dark",
   },
 
   i18n: {
