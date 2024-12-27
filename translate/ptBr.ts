@@ -107,35 +107,18 @@ const i18nObj = {
 
   userNotFound: "Usuário não encontrado.",
 
-  v: {
-    email: {
-      format: "Digite um e-mail válido.",
-      required: "E-mail é obrigatório.",
-    },
-
-    user: {
-      name: {
-        required: "Nome é obrigatório.",
-        min: "Nome deve possuir pelo menos 3 caracteres.",
-        max: "Nome tem o tamanho máximo de 120 caracteres.",
-      },
-      password: {
-        required: "Senha é obrigatório",
-        min: "Senha deve possuir pelo menos 8 caracteres.",
-        max: "Senha tem o tamanho máximo de 48 caracteres.",
-      },
-      confirmPassword: {
-        required: "A confirmação da nova senha é obrigatória.",
-        diff: "Senhas diferentes.",
-      },
-      oldPassword: {
-        required: "Informe a senha antiga para criar uma nova senha.",
-      },
-      registerCode: {
-        required: "Código de registro obrigatório.",
-      },
-    },
-  },
+  emailIsInvalid: "Digite um e-mail válido.",
+  emailIsRequired: "E-mail é obrigatório.",
+  nameIsRequired: "Nome é obrigatório.",
+  nameMin: "Nome deve possuir pelo menos 3 caracteres.",
+  nameMax: "Nome tem o tamanho máximo de 120 caracteres.",
+  passwordIsRequired: "Senha é obrigatório.",
+  passwordMin: "Senha deve possuir pelo menos 8 caracteres.",
+  passwordMax: "Senha tem o tamanho máximo de 48 caracteres.",
+  confirmPasswordIsRequired: "A confirmação da nova senha é obrigatória.",
+  confirmPasswordIsDifferent: "Senhas diferentes.",
+  oldPasswordIsRequired: "Informe a senha antiga para criar uma nova senha.",
+  registerCodeIsRequired: "Código de registro obrigatório.",
 
   userDate: "Dados do Usuário",
   updateUserSuccess: "Usuário atualizado com sucesso.",
@@ -154,18 +137,15 @@ const i18nObj = {
   historyRecord: "Histórico do Registro",
   timerType: "Cronômetro",
 
-  timer: {
-    title: {
-      t1: "1, 2, 3 e...",
-      t2: "Prontos?",
-      t3: "Dá um start!",
-    },
-    persistModal: {
-      text: "Como deseja salvar o Registro?",
-      browserButton: "Salvar no Navegador",
-      accountButton: "Salvar em Minha Conta",
-    },
-  },
+  timerLabel01: "Bota pra rodar!",
+  timerLabel02: "1, 2, 3 e...",
+  timerLabel03: "Começar!",
+  timerLabel04: "Bora?",
+  timerLabel05: "Vamo trem!",
+
+  howDoYouPrefereSaveRecord: "Como deseja salvar o Registro?",
+  saveOnBrowser: "Salvar no Navegador",
+  saveOnAccount: "Salvar em Minha Conta",
 
   updatePasswordSuccess: "Senha atualizada com sucesso",
   wrongEmailOrPassword: "E-mail ou senha incorretos.",

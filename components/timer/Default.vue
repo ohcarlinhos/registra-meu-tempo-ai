@@ -197,17 +197,17 @@ const closeTimeRecordModal = () => {
   editTimeRecordObject.value = undefined;
 };
 
-// TODO: finalizar isso aqui
-
-const title = computed(() => {
-  const titleList = [
-    t("timer.title.t1"),
-    t("timer.title.t2"),
-    t("timer.title.t3"),
+const randomTimerLabel = computed(() => {
+  const timerLabelList = [
+    _$t("timerLabel01"),
+    _$t("timerLabel02"),
+    _$t("timerLabel03"),
+    _$t("timerLabel04"),
+    _$t("timerLabel05"),
   ];
 
-  const randomIndex = Math.floor(Math.random() * titleList.length);
-  return titleList[randomIndex];
+  const randomIndex = Math.floor(Math.random() * timerLabelList.length);
+  return timerLabelList[randomIndex];
 });
 
 const getButtonColor = computed(() => {
@@ -269,9 +269,9 @@ onBeforeUnmount(() => {
             {{
               timer.type == "pomodoro" || timer.type == "break"
                 ? timer.type == "pomodoro"
-                  ? timer.pomodoroPeriod + "m de foco"
-                  : timer.breakPeriod + "m"
-                : title
+                  ? timer.pomodoroPeriod + " minutos"
+                  : timer.breakPeriod + " minutos"
+                : randomTimerLabel
             }}
           </h3>
 
@@ -283,16 +283,18 @@ onBeforeUnmount(() => {
 
           <p v-else-if="timer.type == 'pomodoro'">
             {{
-              timer.isRun ? "até finalizar o Pomodoro." : "com seu Pomodoro?"
+              timer.isRun ? "até finalizar o Pomodoro." : "no modo Pomodoro."
             }}
           </p>
 
           <p v-else-if="timer.type == 'break'">
-            {{ timer.isRun ? "para acabar o descanso..." : "para descansar." }}
+            {{
+              timer.isRun ? "para acabar o descanso..." : "de descanso (break)."
+            }}
           </p>
 
           <p v-else-if="timer.type == 'timer'">
-            {{ timer.isRun ? "até o momento." : "Pronto para começar?" }}
+            {{ timer.isRun ? "até o momento." : "utilizando o cronômetro." }}
           </p>
         </section>
 
@@ -409,9 +411,9 @@ onBeforeUnmount(() => {
   <GModalConfirm
     v-model:open="modal.confirmPersistMethod.open"
     custom-width="sm:w-88"
-    :title="$t('timer.persistModal.text')"
-    :cancel-text="$t('timer.persistModal.browserButton')"
-    :confirm-text="$t('timer.persistModal.accountButton')"
+    :title="_$t('howDoYouPrefereSaveRecord')"
+    :cancel-text="_$t('saveOnBrowser')"
+    :confirm-text="_$t('accountButton')"
     :disable-confirm="!userIsVerified"
     @confirm="persistOnServer"
     @cancel="saveOnBrowser"

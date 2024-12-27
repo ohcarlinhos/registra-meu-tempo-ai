@@ -6,38 +6,38 @@ export const useUserValidation = () => {
   const name = () =>
     yup
       .string()
-      .min(3, $i18n.t("v.user.name.min"))
-      .max(120, $i18n.t("v.user.name.max"))
-      .required($i18n.t("v.user.name.required"));
+      .min(3, $i18n.t("nameMin"))
+      .max(120, $i18n.t("nameMax"))
+      .required($i18n.t("nameIsRequired"));
 
   const email = () =>
     yup
       .string()
-      .email($i18n.t("v.email.format"))
-      .required($i18n.t("v.email.required"));
+      .email($i18n.t("emailIsInvalid"))
+      .required($i18n.t("emailIsRequired"));
 
   const password = (y = yup.string()) => {
     return y
-      .min(8, $i18n.t("v.user.password.min"))
-      .max(48, $i18n.t("v.user.password.max"))
-      .required($i18n.t("v.user.password.required"));
+      .min(8, $i18n.t("passwordMin"))
+      .max(48, $i18n.t("passwordMax"))
+      .required($i18n.t("passwordIsRequired"));
   };
 
   const confirmPassword = (y = yup.string()) => {
     return y
-      .oneOf([yup.ref("password")], $i18n.t("v.user.confirmPassword.diff"))
-      .required($i18n.t("v.user.confirmPassword.required"));
+      .oneOf([yup.ref("password")], $i18n.t("confirmPasswordIsDifferent"))
+      .required($i18n.t("confirmPasswordIsRequired"));
   };
 
   const oldPassword = (y = yup.string()) => {
     return y
-      .min(8, $i18n.t("v.user.password.min"))
-      .max(48, $i18n.t("v.user.password.max"))
-      .required($i18n.t("v.user.oldPassword.required"));
+      .min(8, $i18n.t("passwordMin"))
+      .max(48, $i18n.t("passwordMax"))
+      .required($i18n.t("oldPasswordIsRequired"));
   };
 
   const registerCode = (y = yup.string()) => {
-    return y.required($i18n.t("v.user.registerCode.required"));
+    return y.required($i18n.t("registerCodeIsRequired"));
   };
 
   return { name, email, password, confirmPassword, oldPassword, registerCode };
