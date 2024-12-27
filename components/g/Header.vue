@@ -39,18 +39,16 @@ const activeClass = "text-primary font-bold";
           <NuxtImg
             :src="imgUrl"
             class="pt-6 w-full max-w-56 sm:max-w-xs"
-            label="Registra meu tempo aí!"
-            title="Registra meu tempo aí!"
+            label="Registra meu tempo aí! - Controle seu tempo e mantenha-se focado."
+            title="Registra meu tempo aí! - Controle seu tempo e mantenha-se focado."
           />
         </section>
 
         <h1 class="title-hide">Registra meu tempo aí!</h1>
 
         <p v-if="!hideDescription" class="pt-4">
-          Gerencie seu tempo
-          <span class="font-bold text-primary">
-            e controle melhor sua vida.</span
-          >
+          Controle seu tempo
+          <span class="font-bold text-primary"> e mantenha-se focado.</span>
         </p>
       </section>
 

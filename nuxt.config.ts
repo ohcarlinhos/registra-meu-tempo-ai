@@ -10,6 +10,12 @@ export default defineNuxtConfig({
 
   seo: {
     fallbackTitle: false,
+    meta: {
+      title: "Registra meu tempo aí!",
+      description: "Controle seu tempo e mantenha-se focado.",
+      ogTitle: "Registra meu tempo aí!",
+      ogDescription: "Controle seu tempo e mantenha-se focado.",
+    },
   },
 
   ogImage: { enabled: false },
