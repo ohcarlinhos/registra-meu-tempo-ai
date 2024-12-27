@@ -251,7 +251,7 @@ onBeforeUnmount(() => {
       Atenção: Sessões registradas nessa página são
       <b class="text-primary">salvas no navegador.</b>
 
-      <template v-if="!userIsAuth"> Faça login e sincronize-as</template>
+      <template v-if="!userIsAuth"> Acesse sua conta e sincronize-as</template>
       <template v-else> Sincronize-as </template>
       para que apareçam nas estatísticas.
     </p>
@@ -259,7 +259,7 @@ onBeforeUnmount(() => {
     <section :class="timerComponentClass">
       <section class="flex mb-2 justify-center">
         <UButton
-          title="Selecione entre Cronômetro, Pomodoro ou Pausa."
+          title="Selecione entre Cronômetro, Pomodoro ou Descanso."
           color="white"
           variant="ghost"
           icon="i-icon-park-outline-timer"
@@ -424,7 +424,7 @@ onBeforeUnmount(() => {
     custom-width="sm:w-88"
     :title="_$t('howDoYouPrefereSaveRecord')"
     :cancel-text="_$t('saveOnBrowser')"
-    :confirm-text="_$t('accountButton')"
+    :confirm-text="_$t('saveOnAccount')"
     :disable-confirm="!userIsVerified"
     @confirm="persistOnServer"
     @cancel="saveOnBrowser"
