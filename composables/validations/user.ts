@@ -20,6 +20,10 @@ export const useUserValidation = () => {
     return y
       .min(8, $i18n.t("passwordMin"))
       .max(48, $i18n.t("passwordMax"))
+      .matches(/[0-9]/, $i18n.t("passwordNeedANumber"))
+      .matches(/[a-z]/, $i18n.t("passwordNeedALow"))
+      .matches(/[A-Z]/, $i18n.t("passwordNeedAUpper"))
+      .matches(/[^\w]/, $i18n.t("passwordNeedASymbol"))
       .required($i18n.t("passwordIsRequired"));
   };
 
