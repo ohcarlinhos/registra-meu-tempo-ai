@@ -2,12 +2,9 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "editor.quickSuggestions": {
-    "strings": true
-  },
   "tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"],
   "editor.formatOnSave": true,
-  "explorer.excludeGitIgnore": true,
+  // "explorer.excludeGitIgnore": true,
   "search.exclude": {
     "**/node_modules": true,
     "**/bower_components": true,
