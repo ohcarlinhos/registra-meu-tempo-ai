@@ -35,14 +35,10 @@ export const useUserValidation = () => {
 
   const oldPassword = (y = yup.string()) => {
     return y
-      .min(8, $i18n.t("passwordMin"))
+      .min(1, $i18n.t("passwordMin"))
       .max(48, $i18n.t("passwordMax"))
       .required($i18n.t("oldPasswordIsRequired"));
   };
 
-  const registerCode = (y = yup.string()) => {
-    return y.required($i18n.t("registerCodeIsRequired"));
-  };
-
-  return { name, email, password, confirmPassword, oldPassword, registerCode };
+  return { name, email, password, confirmPassword, oldPassword };
 };

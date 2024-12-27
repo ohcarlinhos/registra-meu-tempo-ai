@@ -43,7 +43,6 @@ const i18nObj = {
 
   bind: "Vincular",
 
-  registerCode: "Código de registro",
   newPassword: "Nova senha",
   confirmPassword: "Confirmação da senha",
   confirmNewPassword: "Confirmação da nova senha",
@@ -122,7 +121,6 @@ const i18nObj = {
   confirmPasswordIsRequired: "A confirmação da nova senha é obrigatória.",
   confirmPasswordIsDifferent: "Senhas diferentes.",
   oldPasswordIsRequired: "Informe a senha antiga para criar uma nova senha.",
-  registerCodeIsRequired: "Código de registro obrigatório.",
 
   userDate: "Dados do Usuário",
   updateUserSuccess: "Usuário atualizado com sucesso.",

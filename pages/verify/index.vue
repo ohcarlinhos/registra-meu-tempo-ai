@@ -7,7 +7,7 @@ const isFetch = ref(false);
 const showRequestCodeButton = ref(false);
 const disableRequestCodeButton = ref(false);
 
-const registerCodeInfo = ref<RegisterCodeInfo>();
+const verifyCodeInfo = ref<RegisterCodeInfo>();
 
 const userStore = useUserStore();
 const { isVerified, mySelf } = storeToRefs(userStore);
@@ -28,7 +28,7 @@ const getRegisterCodeInfoAction = async () => {
     const result = await getRegisterCodeInfo();
     if (!result) return;
 
-    registerCodeInfo.value = result;
+    verifyCodeInfo.value = result;
 
     if (result.wasSent) {
       disableRequestCodeButton.value = true;
@@ -109,7 +109,7 @@ onMounted(async () => {
         </UButton>
       </template>
 
-      <template v-else-if="registerCodeInfo">
+      <template v-else-if="verifyCodeInfo">
         <p class="pt-2">
           {{
             "Enviamos o link de confirmação em seu endereço de email, caso não encontre na caixa de entrada, verifique a caixa de SPAM."
@@ -121,7 +121,7 @@ onMounted(async () => {
         </p>
 
         <p>
-          {{ `Data de expiração: ${registerCodeInfo.formattedExpireDate}` }}
+          {{ `Data de expiração: ${verifyCodeInfo.formattedExpireDate}` }}
         </p>
       </template>
     </UCard>

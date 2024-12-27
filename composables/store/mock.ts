@@ -7,7 +7,6 @@ export const useMockStoreV2 = defineStore("mock-store", () => {
     return {
       name: p.rfmName,
       email: p.rfmEmail,
-      registerCode: p.rfmCode,
       password: p.rfmPassword,
       confirmPassword: p.rfmPassword,
     };
