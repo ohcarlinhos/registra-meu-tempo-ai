@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { SunIcon, MoonIcon } from "@radix-icons/vue";
-
 useHead({
   titleTemplate: "%s %separator %siteName",
   templateParams: {

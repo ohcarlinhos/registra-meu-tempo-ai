@@ -26,16 +26,12 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
-    // "nuxt-viewport",
     "nuxt-gtag",
     "@nuxt/image",
     "@pinia/colada-nuxt",
-    "nuxt-clarity-analytics",
-    // "@nuxtjs/sitemap",
+    "nuxt-clarita-analytics",
     "@nuxtjs/robots",
     "@nuxtjs/i18n",
-    "@nuxtjs/tailwindcss",
-    "shadcn-nuxt",
   ],
 
   colorMode: {
@@ -57,11 +53,6 @@ export default defineNuxtConfig({
   gtag: {
     enabled: process.env.NODE_ENV === "production",
     id: process.env.GTAG,
-  },
-
-  shadcn: {
-    prefix: "UI",
-    componentDir: "./components/ui",
   },
 
   runtimeConfig: {
