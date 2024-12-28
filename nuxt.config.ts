@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     "nuxt-gtag",
     "@nuxt/image",
     "@pinia/colada-nuxt",
-    "nuxt-clarita-analytics",
+    "nuxt-clarity-analytics",
     "@nuxtjs/robots",
     "@nuxtjs/i18n",
   ],
