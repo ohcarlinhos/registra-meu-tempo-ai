@@ -3,6 +3,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
 
+  experimental: {
+    inlineRouteRules: true,
+  },
+
   site: {
     url: "https://registrameutempoai.com.br",
     name: "Registra meu tempo aí!",
@@ -23,7 +27,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     "@pinia/nuxt",
-    "@pinia-plugin-persistedstate/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
     "nuxt-viewport",
     "nuxt-gtag",
     "@nuxt/image",
