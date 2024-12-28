@@ -55,15 +55,16 @@ const showNotVerifiedStatus = computed(() => {
         showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
       ]"
     >
-      <UIButton
-        variant="ghost"
+      <UButton
+        :icon="
+          isDark ? 'i-icon-park-outline-sun-one' : 'i-icon-park-outline-moon'
+        "
+        :label="(!isDark && 'Experimente a noite...') || ''"
         title="Na opinião dos desenvolvedores, o modo noturno é bem mais bonito e agradável."
+        color="gray"
+        variant="ghost"
         @click="toggleDark"
-      >
-        <SunIcon v-if="isDark" />
-        <MoonIcon v-else />
-        {{ isDark ? "" : "Experimente a noite..." }}
-      </UIButton>
+      />
 
       <section
         v-if="showNotVerifiedStatus"
@@ -84,17 +85,16 @@ const showNotVerifiedStatus = computed(() => {
       </section>
 
       <section class="flex gap-2">
-        <UIButton v-if="hasWarTools" variant="secondary" @click="setOldToken">
+        <UButton v-if="hasWarTools" @click="setOldToken">
           Definir Token Antigo
-        </UIButton>
+        </UButton>
 
-        <UIButton
+        <UButton
           v-if="hasWarTools"
-          variant="secondary"
           @click="() => router.push({ name: 'verify.page' })"
         >
           Verificar e-mail
-        </UIButton>
+        </UButton>
       </section>
     </section>
 
