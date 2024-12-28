@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { SunIcon, MoonIcon } from "@radix-icons/vue";
+
 useHead({
   titleTemplate: "%s %separator %siteName",
   templateParams: {
@@ -24,7 +26,7 @@ const toggleDark = () => {
 };
 
 const authStore = useAuthStore();
-const { setExpiredToken, clearSession } = authStore;
+const { setExpiredToken } = authStore;
 const { authModal, isAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
@@ -53,16 +55,15 @@ const showNotVerifiedStatus = computed(() => {
         showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
       ]"
     >
-      <UButton
-        :icon="
-          isDark ? 'i-icon-park-outline-sun-one' : 'i-icon-park-outline-moon'
-        "
-        :label="(!isDark && 'Experimente a noite...') || ''"
-        title="Na opinião dos desenvolvedores, o modo noturno é bem mais bonito e agradável."
-        color="gray"
+      <UIButton
         variant="ghost"
+        title="Na opinião dos desenvolvedores, o modo noturno é bem mais bonito e agradável."
         @click="toggleDark"
-      />
+      >
+        <SunIcon v-if="isDark" />
+        <MoonIcon v-else />
+        {{ isDark ? "" : "Experimente a noite..." }}
+      </UIButton>
 
       <section
         v-if="showNotVerifiedStatus"
@@ -83,16 +84,17 @@ const showNotVerifiedStatus = computed(() => {
       </section>
 
       <section class="flex gap-2">
-        <UButton @click="setOldToken" v-if="hasWarTools">
+        <UIButton v-if="hasWarTools" variant="secondary" @click="setOldToken">
           Definir Token Antigo
-        </UButton>
+        </UIButton>
 
-        <UButton
-          @click="() => router.push({ name: 'verify.page' })"
+        <UIButton
           v-if="hasWarTools"
+          variant="secondary"
+          @click="() => router.push({ name: 'verify.page' })"
         >
           Verificar e-mail
-        </UButton>
+        </UIButton>
       </section>
     </section>
 
