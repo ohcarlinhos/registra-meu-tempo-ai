@@ -12,28 +12,27 @@ export default defineNuxtConfig({
     name: "Registra meu tempo aí!",
   },
 
-  seo: {
-    fallbackTitle: false,
-    meta: {
-      title: "Registra meu tempo aí!",
-      description: "Controle seu tempo e mantenha-se focado.",
-      ogTitle: "Registra meu tempo aí!",
-      ogDescription: "Controle seu tempo e mantenha-se focado.",
-    },
-  },
-
-  ogImage: { enabled: false },
+  // seo: {
+  //   fallbackTitle: false,
+  //   meta: {
+  //     title: "Registra meu tempo aí!",
+  //     description: "Controle seu tempo e mantenha-se focado.",
+  //     ogTitle: "Registra meu tempo aí!",
+  //     ogDescription: "Controle seu tempo e mantenha-se focado.",
+  //   },
+  // },
 
   modules: [
     "@nuxt/ui",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
-    "nuxt-viewport",
+    // "nuxt-viewport",
     "nuxt-gtag",
     "@nuxt/image",
     "@pinia/colada-nuxt",
     "nuxt-clarity-analytics",
-    "@nuxtjs/seo",
+    // "@nuxtjs/sitemap",
+    "@nuxtjs/robots",
     "@nuxtjs/i18n",
     "@nuxtjs/tailwindcss",
     "shadcn-nuxt",
