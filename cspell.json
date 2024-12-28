@@ -1,3 +1,11 @@
 {
-  "words": ["pagination", "toast", "emits", "nuxt", "pomodoro", "mock"]
+  "words": [
+    "emits",
+    "mock",
+    "nuxt",
+    "pagination",
+    "persistedstate",
+    "pomodoro",
+    "toast"
+  ]
 }
