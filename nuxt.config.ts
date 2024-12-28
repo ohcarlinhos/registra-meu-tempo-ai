@@ -35,6 +35,8 @@ export default defineNuxtConfig({
     "nuxt-clarity-analytics",
     "@nuxtjs/seo",
     "@nuxtjs/i18n",
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
   ],
 
   colorMode: {
@@ -58,17 +60,23 @@ export default defineNuxtConfig({
     id: process.env.GTAG,
   },
 
+  shadcn: {
+    prefix: "UI",
+    componentDir: "./components/ui",
+  },
+
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_URL || "http://localhost:5051/api",
       onlyGuestMode: process.env.ONLY_GUEST_MODE || "0",
+      enableWarTools: process.env.ENABLE_WAR_TOOLS || "",
+      oldUserToken: process.env.OLD_USER_TOKEN || "",
+
       rfmEnable: process.env.REGISTER_FORM_MOCK_ENABLE || "0",
       rfmName: process.env.REGISTER_FORM_MOCK_NAME || "",
       rfmEmail: process.env.REGISTER_FORM_MOCK_EMAIL || "",
       rfmCode: process.env.REGISTER_FORM_MOCK_CODE || "",
       rfmPassword: process.env.REGISTER_FORM_MOCK_PASSWORD || "",
-      enableWarTools: process.env.ENABLE_WAR_TOOLS || "",
-      oldUserToken: process.env.OLD_USER_TOKEN || "",
     },
   },
 
