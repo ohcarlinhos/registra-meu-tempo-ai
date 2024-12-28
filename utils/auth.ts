@@ -1,7 +1,3 @@
-export const isVerifiedPage = (name: string) => {
-  return ["verify.page.code", "verify.page"].includes(name);
-};
-
 export const logout = () => {
   const router = useRouter();
 
