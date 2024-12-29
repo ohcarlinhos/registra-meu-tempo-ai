@@ -16,10 +16,6 @@ export default defineNuxtConfig({
     fallbackTitle: false,
   },
 
-  icon: {
-    provider: "server",
-  },
-
   modules: [
     "@nuxt/ui",
     "@nuxt/icon",
