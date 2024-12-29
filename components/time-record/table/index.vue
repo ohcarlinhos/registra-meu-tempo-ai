@@ -56,7 +56,10 @@ const computedCategory = computed({
   },
 });
 
-const sort = ref<{ column: string; direction: "asc" | "desc" }>();
+const sort = ref<{ column: string; direction: "asc" | "desc" }>({
+  column: "",
+  direction: "desc",
+});
 
 const computedSort = computed({
   get: () => {
@@ -88,6 +91,15 @@ const computedSort = computed({
   },
 });
 
+const hasSortProp = trStore.paginationQuery.sortProp;
+
+if (hasSortProp) {
+  sort.value = {
+    column: trStore.paginationQuery.sortProp,
+    direction: trStore.paginationQuery.sort,
+  };
+}
+
 const isFetch = computed(() => {
   return categoriesIsFetch.value || trStore.isFetch;
 });
@@ -98,6 +110,12 @@ onMounted(() => {
   getAllCategories(true)
     .then((result) => {
       if (result) categories.value = result;
+
+      trStore.paginationQuery.updateSort(
+        computedSort?.value?.direction,
+        computedSort?.value?.column
+      );
+
       return trStore.fetch();
     })
     .finally(() => {
