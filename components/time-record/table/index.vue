@@ -66,7 +66,7 @@ const computedSort = computed({
   set: (newSort?: { column: string | null; direction: "asc" | "desc" }) => {
     sort.value = {
       column: newSort?.column || "",
-      direction: !newSort?.column ? "desc" : newSort?.direction,
+      direction: !newSort?.column ? "desc" : newSort?.direction || "desc",
     };
 
     let column = "";
