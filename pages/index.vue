@@ -5,6 +5,6 @@ useHead({ title: "Cronômetros" });
 
 <template>
   <NuxtLayout name="center">
-    <TimerDefault title="Cronômetros" rounded-full />
+    <TimerDefault title="Cronômetros" />
   </NuxtLayout>
 </template>

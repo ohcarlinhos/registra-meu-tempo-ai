@@ -16,10 +16,6 @@ const props = defineProps({
     type: Function,
     default: (code = "") => {},
   },
-  roundedFull: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const { t } = useI18n();
@@ -228,9 +224,7 @@ const timerComponentClass = computed(() => {
   };
 
   return [
-    `p-6 pb-8 relative ${
-      props.roundedFull ? "rounded-full" : "rounded-xl"
-    } w-full`,
+    `p-6 pb-8 relative rounded-xl w-full`,
     `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
     `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
   ];
