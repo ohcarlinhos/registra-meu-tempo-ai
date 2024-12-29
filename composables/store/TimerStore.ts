@@ -312,14 +312,14 @@ export const useTimerStore = defineStore("TimerStore", {
       this.createAudioObject();
 
       if (this.audioObject) {
-        this.audioObject.src = clickSound.src;
+        this.audioObject.src = "/audio/click.mp3";
         this.audioObject.play();
       }
     },
 
     playAlarm() {
       if (this.audioObject) {
-        this.audioObject.src = alarmSound.src;
+        this.audioObject.src = "/audio/alarm.mp3";
         this.audioObject.play();
       }
     },
