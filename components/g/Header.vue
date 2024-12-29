@@ -39,8 +39,8 @@ const activeClass = "text-primary font-bold";
           <NuxtImg
             :src="imgUrl"
             class="pt-6 w-full max-w-56 sm:max-w-xs"
-            label="Registra meu tempo aí! - Controle seu tempo e mantenha-se focado."
-            title="Registra meu tempo aí! - Controle seu tempo e mantenha-se focado."
+            label="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado."
+            title="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado."
           />
         </section>
 
@@ -50,6 +50,8 @@ const activeClass = "text-primary font-bold";
           Controle seu tempo
           <span class="font-bold text-primary"> e mantenha-se focado.</span>
         </p>
+
+        <p class="text-sm">Pomodoro, Cronômetro e Estatísticas.</p>
       </section>
 
       <section v-if="$slots.right">

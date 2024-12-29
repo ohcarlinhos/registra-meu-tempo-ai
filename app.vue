@@ -15,6 +15,28 @@ useHead({
       async: true,
     },
   ],
+  link: [
+    {
+      rel: "icon",
+      type: "image/png",
+      href: "/apple-touch-icon.png",
+    },
+  ],
+});
+
+const { hasWarTools } = storeToRefs(useConfigStore());
+
+useSeoMeta({
+  description:
+    "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco e registro de esforços (tempo) de suas atividades do dia a dia.",
+  ogImage: "/og-image.png",
+  ogDescription:
+    "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco e registro de esforços (tempo) de suas atividades do dia a dia.",
+  twitterTitle: "Registra meu tempo aí!",
+  twitterDescription:
+    "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco e registro de esforços (tempo) de suas atividades do dia a dia.",
+  twitterImageAlt:
+    "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado.",
 });
 
 const colorMode = useColorMode();
@@ -29,8 +51,6 @@ const { authModal, isAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
 const { isVerified, isFetch: mySelfIsFetch } = storeToRefs(userStore);
-
-const { hasWarTools } = storeToRefs(useConfigStore());
 
 const router = useRouter();
 
