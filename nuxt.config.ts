@@ -16,8 +16,13 @@ export default defineNuxtConfig({
     fallbackTitle: false,
   },
 
+  icon: {
+    provider: "server",
+  },
+
   modules: [
     "@nuxt/ui",
+    "@nuxt/icon",
     "@pinia/nuxt",
     "@nuxt/image",
     "@pinia/colada-nuxt",
