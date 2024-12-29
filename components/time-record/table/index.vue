@@ -8,12 +8,11 @@ const emit = defineEmits<{
 }>();
 
 const columns = [
-  { key: "lastTimePeriodDate", label: "Último Progresso" },
-  { key: "title", label: _$t("title") },
-  { key: "code", label: _$t("code") },
+  { key: "lastTimePeriodDate", label: "Último Progresso", sortable: true },
+  { key: "title", label: _$t("title"), sortable: true },
+  { key: "code", label: _$t("code"), sortable: true },
   { key: "categoryName", label: _$t("category") },
-  { key: "formattedTime", label: _$t("time") },
-  // { key: "timePeriodCountText", label: _$t("periods") },
+  { key: "formattedTime", label: _$t("time"), sortable: true },
   { key: "actions" },
 ];
 
@@ -34,19 +33,57 @@ const categoryFilter = ref<string>();
 const hasFilter = trStore.paginationQuery.filters.find(
   (e) => e.tag === "category"
 );
-if (hasFilter) categoryFilter.value = hasFilter.value;
+
+if (hasFilter) {
+  categoryFilter.value = hasFilter.value;
+}
 
 const computedCategory = computed({
   get: () => {
     return categoryFilter.value || "";
   },
+
   set: (category: string) => {
     const oldCategory = categoryFilter.value;
     categoryFilter.value = category;
 
-    if (category === oldCategory) return;
+    if (category === oldCategory) {
+      return;
+    }
 
     trStore.paginationQuery.addFilter({ tag: "category", value: category });
+    trStore.fetch();
+  },
+});
+
+const sort = ref<{ column: string; direction: "asc" | "desc" }>();
+
+const computedSort = computed({
+  get: () => {
+    return sort.value;
+  },
+
+  set: (newSort?: { column: string | null; direction: "asc" | "desc" }) => {
+    sort.value = {
+      column: newSort?.column || "",
+      direction: !newSort?.column ? "desc" : newSort?.direction,
+    };
+
+    let column = "";
+
+    switch (sort.value?.column) {
+      case "formattedTime":
+        column = "timeOnSeconds";
+        break;
+      case "lastTimePeriodDate":
+        column = "";
+        break;
+      default:
+        column = sort.value?.column || "";
+    }
+
+    trStore.paginationQuery.updateSort(sort.value?.direction, column);
+
     trStore.fetch();
   },
 });
@@ -57,6 +94,7 @@ const isFetch = computed(() => {
 
 onMounted(() => {
   categoriesIsFetch.value = true;
+
   getAllCategories(true)
     .then((result) => {
       if (result) categories.value = result;
@@ -116,6 +154,8 @@ onMounted(() => {
         :columns="columns"
         :rows="trStore.timeRecordsTableData"
         :loading="isFetch"
+        v-model:sort="computedSort"
+        sort-mode="manual"
       >
         <template #actions-data="{ row }">
           <div class="flex justify-end gap-2">

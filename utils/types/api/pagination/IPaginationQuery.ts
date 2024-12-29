@@ -7,5 +7,7 @@ export interface IPaginationQuery {
   page: number;
   perPage: number;
   search: string;
+  sort: "asc" | "desc";
+  sortProp: string;
   filters: PaginationQueryFilter[];
 }

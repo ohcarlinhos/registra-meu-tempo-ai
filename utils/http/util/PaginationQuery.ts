@@ -4,6 +4,8 @@ export class PaginationQuery implements IPaginationQuery {
   private _defaultPerPage = 10;
   private _search: string = "";
   private _filters: PaginationQueryFilter[] = [];
+  private _sort: "asc" | "desc" = "asc";
+  private _sortProp: string = "";
 
   public get page(): number {
     return this._page;
@@ -38,6 +40,14 @@ export class PaginationQuery implements IPaginationQuery {
     return this._filters;
   }
 
+  public get sort() {
+    return this._sort;
+  }
+
+  public get sortProp() {
+    return this._sortProp;
+  }
+
   public addFilter(filter: PaginationQueryFilter) {
     this._filters = this._filters.filter((e) => e.tag != filter.tag);
     if (filter.value) this._filters.push(filter);
@@ -50,5 +60,10 @@ export class PaginationQuery implements IPaginationQuery {
   public setDefaultPerPage(perPage: number) {
     this._defaultPerPage = perPage;
     this.perPage = perPage;
+  }
+
+  public updateSort(direction: "asc" | "desc" = "asc", prop: string = "") {
+    this._sort = direction;
+    this._sortProp = prop;
   }
 }

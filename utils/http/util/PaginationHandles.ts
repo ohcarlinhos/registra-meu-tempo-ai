@@ -14,13 +14,35 @@ export const paginationFilterQueryHandle = (
 };
 
 export const paginationQueryHandle = (pagQuery: IPaginationQuery) => {
-  let query = "?";
+  let q = "";
 
-  if (pagQuery.page) query += `page=${pagQuery.page}`;
-  if (pagQuery.perPage) query += `&perPage=${pagQuery.perPage}`;
-  if (pagQuery.search) query += `&search=${pagQuery.search}`;
-  if (pagQuery.filters.length)
-    query += `&${paginationFilterQueryHandle(pagQuery.filters)}`;
+  const addToQuery = (addQuery: string) => {
+    q += Boolean(q) ? "&" + addQuery : addQuery;
+  };
 
-  return query;
+  if (pagQuery.page) {
+    addToQuery(`page=${pagQuery.page}`);
+  }
+
+  if (pagQuery.perPage) {
+    addToQuery(`perPage=${pagQuery.perPage}`);
+  }
+
+  if (pagQuery.search) {
+    addToQuery(`search=${pagQuery.search}`);
+  }
+
+  if (pagQuery.filters.length) {
+    addToQuery(`${paginationFilterQueryHandle(pagQuery.filters)}`);
+  }
+
+  if (pagQuery.sort) {
+    addToQuery(`sort=${pagQuery.sort}`);
+  }
+
+  if (pagQuery.sortProp) {
+    addToQuery(`sortProp=${pagQuery.sortProp}`);
+  }
+
+  return "?" + q;
 };
