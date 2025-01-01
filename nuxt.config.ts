@@ -7,13 +7,12 @@ export default defineNuxtConfig({
     inlineRouteRules: true,
   },
 
-  site: {
-    url: "https://registrameutempoai.com.br",
-    name: "Registra meu tempo aí!",
+  imports: {
+    dirs: ["composables/**", "utils/**"],
   },
 
-  seo: {
-    fallbackTitle: false,
+  build: {
+    transpile: ["@vuepic/vue-datepicker"],
   },
 
   modules: [
@@ -31,6 +30,15 @@ export default defineNuxtConfig({
     "nuxt-seo-utils",
   ],
 
+  site: {
+    url: "https://registrameutempoai.com.br",
+    name: "Registra meu tempo aí!",
+  },
+
+  seo: {
+    fallbackTitle: false,
+  },
+
   colorMode: {
     preference: "dark",
   },
@@ -39,22 +47,20 @@ export default defineNuxtConfig({
     vueI18n: "./i18n.config.ts",
   },
 
-  imports: {
-    dirs: ["composables/**", "utils/**"],
-  },
-
-  build: {
-    transpile: ["@vuepic/vue-datepicker"],
-  },
-
   gtag: {
     enabled: process.env.NODE_ENV === "production",
     id: process.env.GTAG,
   },
 
+  piniaPluginPersistedstate: {
+    storage: "localStorage",
+    debug: true,
+  },
+
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_URL || "http://localhost:5051/api",
+
       onlyGuestMode: process.env.ONLY_GUEST_MODE || "0",
       enableWarTools: process.env.ENABLE_WAR_TOOLS || "",
       oldUserToken: process.env.OLD_USER_TOKEN || "",
