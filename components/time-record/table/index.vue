@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useDebounceFn } from "@vueuse/core";
+
 const trStore = useTimeRecordStore();
 
 const emit = defineEmits<{
@@ -30,13 +32,9 @@ const categories = ref<CategoryMap[]>([]);
 const categoriesIsFetch = ref(false);
 const categoryFilter = ref<string>();
 
-const hasFilter = trStore.paginationQuery.filters.find(
-  (e) => e.tag === "category"
-);
-
-if (hasFilter) {
-  categoryFilter.value = hasFilter.value;
-}
+const debounceTrFetch = useDebounceFn(() => {
+  trStore.fetch();
+}, 1000);
 
 const computedCategory = computed({
   get: () => {
@@ -52,7 +50,7 @@ const computedCategory = computed({
     }
 
     trStore.paginationQuery.addFilter({ tag: "category", value: category });
-    trStore.fetch();
+    debounceTrFetch();
   },
 });
 
@@ -86,23 +84,50 @@ const computedSort = computed({
     }
 
     trStore.paginationQuery.updateSort(sort.value?.direction, column);
-
-    trStore.fetch();
+    debounceTrFetch();
   },
 });
-
-const hasSortProp = trStore.paginationQuery.sortProp;
-
-if (hasSortProp) {
-  sort.value = {
-    column: trStore.paginationQuery.sortProp,
-    direction: trStore.paginationQuery.sort,
-  };
-}
 
 const isFetch = computed(() => {
   return categoriesIsFetch.value || trStore.isFetch;
 });
+
+const configTableDataAndFetch = () => {
+  const hasFilter = trStore.paginationQuery.filters.find(
+    (e) => e.tag === "category"
+  );
+
+  if (hasFilter) {
+    categoryFilter.value = hasFilter.value;
+  }
+
+  const hasSortProp = trStore.paginationQuery.sortProp;
+
+  if (hasSortProp) {
+    let column = "";
+
+    switch (trStore.paginationQuery.sortProp) {
+      case "timeOnSeconds":
+        column = "formattedTime";
+        break;
+      default:
+        column = trStore.paginationQuery.sortProp || "";
+    }
+
+    sort.value = {
+      column: column,
+      direction: trStore.paginationQuery.sort,
+    };
+  } else {
+    sort.value = {
+      column:
+        trStore.paginationQuery.sortProp == "" ? "lastTimePeriodDate" : "",
+      direction: trStore.paginationQuery.sort,
+    };
+  }
+
+  return trStore.fetch();
+};
 
 onMounted(() => {
   categoriesIsFetch.value = true;
@@ -110,13 +135,7 @@ onMounted(() => {
   getAllCategories(true)
     .then((result) => {
       if (result) categories.value = result;
-
-      trStore.paginationQuery.updateSort(
-        computedSort?.value?.direction,
-        computedSort?.value?.column
-      );
-
-      return trStore.fetch();
+      return configTableDataAndFetch();
     })
     .finally(() => {
       categoriesIsFetch.value = false;
