@@ -55,7 +55,7 @@ const computedCategory = computed({
 });
 
 const sort = ref<{ column: string; direction: "asc" | "desc" }>({
-  column: "",
+  column: "lastTimePeriodDate",
   direction: "desc",
 });
 
@@ -67,17 +67,13 @@ const computedSort = computed({
   set: (newSort?: { column: string | null; direction: "asc" | "desc" }) => {
     sort.value = {
       column: newSort?.column || "",
-      direction: !newSort?.column ? "desc" : newSort?.direction || "desc",
+      direction: newSort?.direction || "desc",
     };
 
-    let column = "";
+    let column = sort.value?.column || "";
 
-    switch (sort.value?.column) {
-      case "formattedTime":
-        column = "timeOnSeconds";
-        break;
-      default:
-        column = sort.value?.column || "";
+    if (column == "formattedTime") {
+      column = "timeOnSeconds";
     }
 
     trStore.paginationQuery.updateSort(sort.value?.direction, column);
@@ -99,24 +95,15 @@ const configTableDataAndFetch = () => {
   }
 
   if (trStore.paginationQuery.sortProp) {
-    let column = "";
+    let column = trStore.paginationQuery.sortProp;
 
-    switch (trStore.paginationQuery.sortProp) {
-      case "timeOnSeconds":
-        column = "formattedTime";
-        break;
-      default:
-        column = trStore.paginationQuery.sortProp;
+    if (column == "timeOnSeconds") {
+      column = "formattedTime";
     }
 
     sort.value = {
       column,
       direction: trStore.paginationQuery.sort,
-    };
-  } else {
-    sort.value = {
-      column: "lastTimePeriodDate",
-      direction: "desc",
     };
   }
 
