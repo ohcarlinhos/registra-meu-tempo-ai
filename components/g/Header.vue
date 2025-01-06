@@ -73,7 +73,7 @@ const activeClass = "text-primary font-bold";
         :to="{ name: 'record.panel' }"
         :active-class="activeClass"
       >
-        {{ _$t("records") }}
+        {{ "Tarefas" }}
       </ULink>
 
       <ULink

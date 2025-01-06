@@ -64,26 +64,26 @@ const i18nObj = {
 
   confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
   confirmDeleteTimeRecordMessage:
-    'Tem certeza deseja excluir o registro "{title}"?',
+    'Tem certeza deseja excluir a tarefa "{title}"?',
   confirmDeleteLocalRecordMessage:
-    "Tem certeza que deseja excluir esse registro local?",
+    "Tem certeza que deseja excluir esse registro de tempo local?",
   confirmDeleteTimePeriodMessage: "Tem certeza que quer excluir esse período?",
 
   localRecordObs1:
     "Sessões de tempo locais são salvos em seu dispositivo (navegador) e não contabilizam nos resumos diários e estatísticas.",
 
   localRecordObs2:
-    "Acesse ou crie uma conta para persistir ou vincula-las a um registro.",
+    "Acesse ou crie uma conta para persistir ou vincula-las a uma tarefa.",
 
   codeIsWrong: "O código digitado é diferente do esperado.",
   codeIsRequired: "É obrigatório digitar o código.",
 
-  confirmCodeToDeleteRecord: "Confirme o código para apagar o registro:",
+  confirmCodeToDeleteRecord: "Confirme o código para apagar a tarefa:",
 
   noPeriodRecorded: "Nenhum período registrado.",
-  recordNotFound: "Registro não encontrado.",
-  backToRecordList: "Voltar para Registros",
-  emptyRecordDescription: "Nenhuma descrição fornecida para o registro.",
+  recordNotFound: "Tarefa não encontrado.",
+  backToRecordList: "Voltar para Tarefas",
+  emptyRecordDescription: "Nenhuma descrição fornecida para a tarefa.",
   pomodoro: "Pomodoro",
   pomodoros: "Pomodoros",
 
@@ -101,7 +101,7 @@ const i18nObj = {
 
   successPeriodSync: "Períodos sincronizados com sucesso.",
   errorPeriodSync:
-    "Não foi possível sincronizar seu registro, porem seu tempo foi salvo localmente (navegador).",
+    "Não foi possível sincronizar com sua tarefa, porem seu tempo foi salvo localmente (navegador).",
 
   createAccount: "Criar conta",
   recoveryPassword: "Recuperar senha",
@@ -131,14 +131,14 @@ const i18nObj = {
   createUserSuccess: "Usuário criado com sucesso.",
   loginSuccess: "Autenticação feita com sucesso.",
   login: "Acessar",
-  createTimeRecordSuccess: "Registro criado com sucesso.",
-  updateTimeRecordSuccess: "Registro atualizado com sucesso.",
+  createTimeRecordSuccess: "Terefa criada com sucesso.",
+  updateTimeRecordSuccess: "Terefa atualizada com sucesso.",
 
   deleteTimePeriodSuccess: "Período excluído com sucesso.",
   createTimePeriodSuccess: "Período criado com sucesso.",
   updateTimePeriodSuccess: "Período atualizado com sucesso.",
 
-  historyRecord: "Histórico do Registro",
+  historyRecord: "Histórico",
   timerType: "Cronômetro",
 
   timerLabel01: "Bota pra rodar!",
@@ -147,7 +147,7 @@ const i18nObj = {
   timerLabel04: "Bora?",
   timerLabel05: "Vamo trem!",
 
-  howDoYouPrefereSaveRecord: "Como deseja salvar o Registro?",
+  howDoYouPrefereSaveRecord: "Como deseja salvar seu tempo?",
   saveOnBrowser: "Salvar no Navegador",
   saveOnAccount: "Salvar em Minha Conta",
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "record.panel" });
-useHead({ title: "Registros" });
+useHead({ title: "Tarefas" });
 </script>
 
 <template>

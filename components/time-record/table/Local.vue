@@ -90,20 +90,20 @@ const items = (row: TimeRecordLocal) => {
   if (userIsAuth.value) {
     if (row.id) {
       actions[0].unshift({
-        label: "Sincronizar sessão com registro",
+        label: "Sincronizar sessão com tarefa",
         icon: "i-icon-park-outline-refresh-one",
         disabled: !userIsVerified.value,
         click: async () => openModal(row, true),
       });
     } else {
       actions[0].unshift({
-        label: "Vincular sessão à registro existente",
+        label: "Vincular sessão à tarefa existente",
         icon: "i-icon-park-outline-refresh-one",
         disabled: !userIsVerified.value,
         click: async () => openModal(row, true, true),
       });
       actions[0].unshift({
-        label: "Criar registro a partir de sessão",
+        label: "Criar tarefa a partir de sessão",
         icon: "i-icon-park-outline-save-one",
         disabled: !userIsVerified.value,
         click: async () => openModal(row),

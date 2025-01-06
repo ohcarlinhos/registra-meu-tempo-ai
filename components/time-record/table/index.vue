@@ -140,7 +140,7 @@ onMounted(() => {
       }"
     >
       <section class="flex items-center gap-5">
-        <h2 class="text-4xl font-bold">{{ $t("records") }}</h2>
+        <h2 class="text-4xl font-bold">{{ "Tarefas" }}</h2>
 
         <UButton
           :label="_$t('create')"

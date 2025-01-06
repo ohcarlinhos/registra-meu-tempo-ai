@@ -285,22 +285,26 @@ const searchTrSelectAction = async (q: string) => {
 <template>
   <UCard>
     <template #header>
-      <h2>
-        {{ _$t("record") }}
-        <UBadge
-          v-if="(isEditMode || isSyncMode) && props.editObject?.code"
-          variant="subtle"
-          size="xs"
-        >
-          {{ props.editObject?.code }}
-        </UBadge>
+      <h2 class="text-2xl font-bold">
+        {{ "Tarefa" }}
       </h2>
+      <UBadge
+        v-if="(isEditMode || isSyncMode) && props.editObject?.code"
+        variant="subtle"
+        size="xs"
+      >
+        {{ props.editObject?.code }}
+      </UBadge>
+      <p v-else class="text-sm">
+        Você pode agrupar e sincronizar o tempo registrado em nossos cronômetros
+        em tarefas personalizadas.
+      </p>
       <GCloseButton @close="closeModal" />
     </template>
 
     <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
       <section v-if="form.isBind">
-        <UFormGroup :label="_$t('record')" name="time-record-bind-id">
+        <UFormGroup label="Tarefa existente" name="time-record-bind-id">
           <USelectMenu
             v-model="form.id"
             :options="searchTrList"
@@ -309,7 +313,7 @@ const searchTrSelectAction = async (q: string) => {
             :disabled="disableInputs || isTrSearch"
             value-attribute="id"
             option-attribute="title"
-            placeholder="Selecione um Registro"
+            placeholder="Selecione uma Terafa"
             searchable-placeholder="Pesquisar..."
             :loading="isTrSearch"
             :searchable="searchTrSelectAction"

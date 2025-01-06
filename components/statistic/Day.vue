@@ -120,7 +120,7 @@ const mountInfoCardList = () => {
   quantityCards.push({
     title: "Sessões",
     value: statistic.sessionCount,
-    obs: 'Cada uso do "timer" é considerada uma sessão.',
+    obs: 'Cada uso do "timer" é considerado como uma sessão.',
   });
 
   quantityCards.push({
@@ -143,19 +143,19 @@ const mountInfoCardList = () => {
   const recordCards: CardType[] = [];
 
   recordCards.push({
-    title: "Criados",
+    title: "Criadas",
     value: statistic.createdTimeRecordCount,
     obs: "",
   });
 
   recordCards.push({
-    title: "Atualizados",
+    title: "Atualizadas",
     value: statistic.updatedTimeRecordCount,
     obs: "",
   });
 
   infoCardList.value.push({
-    title: "Registros",
+    title: "Tarefas",
     cards: recordCards,
   });
 };

@@ -345,7 +345,7 @@ onBeforeUnmount(() => {
         v-if="props.code"
         :class="['text-center pt-5 text-sm', isDark && 'opacity-50']"
       >
-        Sincronizado com registro:
+        Sincronizado com a tarefa:
 
         <UBadge :color="getButtonColor" variant="soft" size="md">
           {{ props.code }}
@@ -370,7 +370,7 @@ onBeforeUnmount(() => {
         Clique aqui para sincronizar!
       </template>
 
-      <template v-else> Há registros não sincronizados.</template>
+      <template v-else> Há registro de tempo não sincronizados.</template>
     </UButton>
   </section>
 
@@ -399,8 +399,8 @@ onBeforeUnmount(() => {
       <p v-else class="py-3">
         {{
           props.id
-            ? "Os períodos de tempo do seu registro estão sincronizados."
-            : "Não há mais nenhum registro local."
+            ? "Os períodos de tempo da sua tarefa estão sincronizados."
+            : "Não há mais nenhum registro de tempo local."
         }}
       </p>
 
