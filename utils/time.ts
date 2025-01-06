@@ -5,18 +5,6 @@ export const timePeriodLabel = (count?: number) => {
   return !count ? "Nenhum" : count + countText;
 };
 
-export const formatToTimerDisplay = (milliseconds: number) => {
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds - minutes * 60;
-
-  let result = "";
-  result += ("00" + minutes).slice(-2) + ":";
-  result += ("00" + seconds).slice(-2);
-
-  return result;
-};
-
 export const timeRecordLocalToForm = (
   obj: Partial<TimeRecordLocal> & { isSync?: boolean; isBind?: boolean },
   callback = () => {}
