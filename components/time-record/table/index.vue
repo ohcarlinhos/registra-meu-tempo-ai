@@ -122,7 +122,9 @@ const configTableDataAndFetch = () => {
     sort.value = {
       column:
         trStore.paginationQuery.sortProp == "" ? "lastTimePeriodDate" : "",
-      direction: trStore.paginationQuery.sort,
+      direction: !trStore.paginationQuery.sortProp
+        ? "desc"
+        : trStore.paginationQuery.sort,
     };
   }
 
