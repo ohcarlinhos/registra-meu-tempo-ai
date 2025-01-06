@@ -76,9 +76,6 @@ const computedSort = computed({
       case "formattedTime":
         column = "timeOnSeconds";
         break;
-      case "lastTimePeriodDate":
-        column = "";
-        break;
       default:
         column = sort.value?.column || "";
     }
@@ -101,9 +98,7 @@ const configTableDataAndFetch = () => {
     categoryFilter.value = hasFilter.value;
   }
 
-  const hasSortProp = trStore.paginationQuery.sortProp;
-
-  if (hasSortProp) {
+  if (trStore.paginationQuery.sortProp) {
     let column = "";
 
     switch (trStore.paginationQuery.sortProp) {
@@ -111,23 +106,21 @@ const configTableDataAndFetch = () => {
         column = "formattedTime";
         break;
       default:
-        column = trStore.paginationQuery.sortProp || "";
+        column = trStore.paginationQuery.sortProp;
     }
 
     sort.value = {
-      column: column,
+      column,
       direction: trStore.paginationQuery.sort,
     };
   } else {
     sort.value = {
-      column:
-        trStore.paginationQuery.sortProp == "" ? "lastTimePeriodDate" : "",
-      direction: !trStore.paginationQuery.sortProp
-        ? "desc"
-        : trStore.paginationQuery.sort,
+      column: "lastTimePeriodDate",
+      direction: "desc",
     };
   }
 
+  trStore.paginationQuery.updateSort(sort.value.direction, sort.value.column);
   return trStore.fetch();
 };
 
