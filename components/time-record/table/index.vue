@@ -10,11 +10,16 @@ const emit = defineEmits<{
 }>();
 
 const columns = [
-  { key: "lastTimePeriodDate", label: "Último Progresso", sortable: true },
-  { key: "title", label: _$t("title"), sortable: true },
-  { key: "code", label: _$t("code"), sortable: true },
-  { key: "categoryName", label: _$t("category") },
+  { key: "lastTimePeriodDate", label: "Iteração", sortable: true },
   { key: "formattedTime", label: _$t("time"), sortable: true },
+  {
+    key: "title",
+    label: _$t("title"),
+    sortable: true,
+    rowClass: "truncate",
+  },
+  { key: "code", label: _$t("code"), sortable: true, rowClass: "truncate" },
+  { key: "categoryName", label: _$t("category") },
   { key: "actions" },
 ];
 
