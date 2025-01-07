@@ -182,13 +182,13 @@ var maxDate = ref(new Date(Date.now()));
       </section>
     </section>
 
-    <UAlert
+    <!-- <UAlert
       icon="i-heroicons-outline-exclaimation-triangle"
       color="orange"
       variant="outline"
       title="Atenção usuário!"
       description="Essa página ainda está em testes e pode conter informações imprecisas."
-    />
+    /> -->
 
     <UDivider class="py-2" />
 
