@@ -11,7 +11,7 @@
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["dev"],
-      "console": "externalTerminal"
+      "console": "integratedTerminal"
     }
   ]
 }
