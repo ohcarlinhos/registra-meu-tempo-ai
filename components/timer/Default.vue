@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="flex flex-col gap-3 items-center min-w-72">
+  <section v-if="timer" class="flex flex-col gap-3 items-center min-w-72">
     <p v-if="!code" class="text-sm text-center pb-4">
       Atenção: Sessões registradas nessa página são
       <b class="text-primary">salvas no navegador.</b>
@@ -354,7 +354,7 @@ onBeforeUnmount(() => {
     </section>
 
     <UButton
-      v-if="timer.localRecords.length >= 1"
+      v-if="modal && timer.localRecords.length >= 1"
       color="black"
       variant="link"
       @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
@@ -375,7 +375,7 @@ onBeforeUnmount(() => {
   </section>
 
   <UModal
-    v-if="timer.showOptions"
+    v-if="timer && timer.showOptions"
     :modelValue="timer.showOptions"
     @update:modelValue="(e) => (timer.showOptions = e)"
   >
@@ -386,7 +386,7 @@ onBeforeUnmount(() => {
     <TimerOptions :id="props.id" />
   </UModal>
 
-  <UModal v-model="modal.timeRecordsTable.open">
+  <UModal v-if="modal" v-model="modal.timeRecordsTable.open">
     <UCard v-if="modal.timeRecordsTable.open">
       <GCloseButton @close="modal.timeRecordsTable.open = false" />
 
@@ -413,6 +413,7 @@ onBeforeUnmount(() => {
     </UCard>
   </UModal>
 
+  <template v-if="modal">
   <GModalConfirm
     v-model:open="modal.confirmPersistMethod.open"
     custom-width="sm:w-88"
@@ -441,4 +442,5 @@ onBeforeUnmount(() => {
       @close="closeTimeRecordModal"
     />
   </UModal>
+  </template>
 </template>
