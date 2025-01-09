@@ -5,6 +5,7 @@ export default defineNuxtConfig({
 
   experimental: {
     inlineRouteRules: true,
+    // renderJsonPayloads: false,
   },
 
   imports: {
