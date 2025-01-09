@@ -93,6 +93,20 @@ const chartOptions = computed(() => ({
       boxPadding: 5,
       padding: 16,
       borderWidth: 1,
+      callbacks: {
+        title: function (items: any) {
+          return `Dia ${items[0].label}`;
+        },
+        label: function (tooltipItem: any) {
+          console.log(tooltipItem);
+          const idx = tooltipItem.dataIndex;
+          const value = tooltipItem.formattedValue;
+          return [
+            `${value} horas`,
+            `(${dayStore?.apiRes?.data[idx].formattedTime})`,
+          ];
+        },
+      },
     },
   },
 }));
