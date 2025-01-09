@@ -179,7 +179,14 @@ defineExpose({
     </section>
 
     <section
-      v-if="!isFetchNow && dayStore.apiRes?.data?.length"
+      v-if="isFetchNow"
+      class="w-full col-span-12 grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
+    >
+      <USkeleton class="h-[260px] w-full col-span-12" />
+    </section>
+
+    <section
+      v-else-if="dayStore.apiRes?.data?.length"
       class="w-full col-span-12 flex"
     >
       <Line
