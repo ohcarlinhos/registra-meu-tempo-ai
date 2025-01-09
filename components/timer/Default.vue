@@ -414,33 +414,33 @@ onBeforeUnmount(() => {
   </UModal>
 
   <template v-if="modal">
-  <GModalConfirm
-    v-model:open="modal.confirmPersistMethod.open"
-    custom-width="sm:w-88"
-    :title="_$t('howDoYouPrefereSaveRecord')"
-    :cancel-text="_$t('saveOnBrowser')"
-    :confirm-text="_$t('saveOnAccount')"
-    :disable-confirm="!userIsVerified"
-    @confirm="persistOnServer"
-    @cancel="saveOnBrowser"
-  />
-
-  <GModalConfirm
-    v-model:open="modal.confirmStopTimer.open"
-    custom-width="sm:w-88"
-    title="Deseja parar o cronômetro?"
-    text="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
-    :cancel-text="$t('cancel')"
-    :confirm-text="$t('confirm')"
-    @cancel="modal.confirmStopTimer.open = false"
-    @confirm="stopTimerAction"
-  />
-
-  <UModal v-model="modal.createTimeRecord.open" prevent-close>
-    <TimeRecordFormCreateAndUpdate
-      :edit-object="editTimeRecordObject"
-      @close="closeTimeRecordModal"
+    <GModalConfirm
+      v-model:open="modal.confirmPersistMethod.open"
+      custom-width="sm:w-88"
+      :title="_$t('howDoYouPrefereSaveRecord')"
+      :cancel-text="_$t('saveOnBrowser')"
+      :confirm-text="_$t('saveOnAccount')"
+      :disable-confirm="!userIsVerified"
+      @confirm="persistOnServer"
+      @cancel="saveOnBrowser"
     />
-  </UModal>
+
+    <GModalConfirm
+      v-model:open="modal.confirmStopTimer.open"
+      custom-width="sm:w-88"
+      title="Deseja parar o cronômetro?"
+      text="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
+      :cancel-text="$t('cancel')"
+      :confirm-text="$t('confirm')"
+      @cancel="modal.confirmStopTimer.open = false"
+      @confirm="stopTimerAction"
+    />
+
+    <UModal v-model="modal.createTimeRecord.open" prevent-close>
+      <TimeRecordFormCreateAndUpdate
+        :edit-object="editTimeRecordObject"
+        @close="closeTimeRecordModal"
+      />
+    </UModal>
   </template>
 </template>
