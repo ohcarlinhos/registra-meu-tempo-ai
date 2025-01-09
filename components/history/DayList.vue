@@ -61,25 +61,12 @@ const chartData = computed(() => {
       }) || [],
     datasets: [
       {
-        label: "Horas (por dia)",
+        label: "Horas",
         data: dayStore?.apiRes?.data?.map((i) => i.timeOnHours) || [],
         borderWidth: 2,
-        // borderColor: "#4ade8087",
-        // pointBackgroundColor: "#4ade80",
-        // pointBorderColor: "#4ade80",
         pointBorderWidth: 5,
         fill: true,
       },
-      // {
-      //   label: "Sessões",
-      //   data: dayStore?.apiRes?.data?.map((i) => i.timerSessions.length) || [],
-      //   borderWidth: 2,
-      //   borderColor: "#4ade8087",
-      //   pointBackgroundColor: "#4ade80",
-      //   pointBorderColor: "#4ade80",
-      //   pointBorderWidth: 5,
-      //   fill: true,
-      // },
     ],
   };
 });
@@ -192,7 +179,7 @@ defineExpose({
     </section>
 
     <section
-      v-if="dayStore.apiRes?.data?.length"
+      v-if="!isFetchNow && dayStore.apiRes?.data?.length"
       class="w-full col-span-12 flex"
     >
       <Line
