@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import { Line } from "vue-chartjs";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 import {
   tpModal,
@@ -21,11 +23,92 @@ import {
   deleteTimerSessionAction,
 } from "./day-list/actions";
 
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  Colors,
+  scales,
+} from "chart.js";
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  Colors
+);
+
 const props = defineProps<{
   timeRecordId: number;
   isFetch?: boolean;
   callback?: () => Promise<void>;
 }>();
+
+const chartData = computed(() => {
+  return {
+    labels:
+      dayStore?.apiRes?.data?.map((i) => format(i.date, "dd/MM/yyyy"), {
+        locale: ptBR,
+      }) || [],
+    datasets: [
+      {
+        label: "Horas (por dia)",
+        data: dayStore?.apiRes?.data?.map((i) => i.timeOnHours) || [],
+        borderWidth: 2,
+        // borderColor: "#4ade8087",
+        // pointBackgroundColor: "#4ade80",
+        // pointBorderColor: "#4ade80",
+        pointBorderWidth: 5,
+        fill: true,
+      },
+      // {
+      //   label: "Sessões",
+      //   data: dayStore?.apiRes?.data?.map((i) => i.timerSessions.length) || [],
+      //   borderWidth: 2,
+      //   borderColor: "#4ade8087",
+      //   pointBackgroundColor: "#4ade80",
+      //   pointBorderColor: "#4ade80",
+      //   pointBorderWidth: 5,
+      //   fill: true,
+      // },
+    ],
+  };
+});
+
+const chartOptions = computed(() => ({
+  responsive: true,
+  scales: {
+    x: {
+      grid: {
+        color: isDark.value ? "#262626" : "#e5e5e5",
+      },
+    },
+    y: {
+      grid: {
+        color: isDark.value ? "#262626" : "#e5e5e5",
+      },
+    },
+  },
+  plugins: {
+    tooltip: {
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      titleColor: "#fff",
+      bodyColor: "#fff",
+      boxPadding: 5,
+      padding: 16,
+      borderWidth: 1,
+    },
+  },
+}));
 
 const dayStore = useTimeRecordHistoryStore();
 
@@ -106,6 +189,18 @@ defineExpose({
           </div>
         </section>
       </UContainer>
+    </section>
+
+    <section
+      v-if="dayStore.apiRes?.data?.length"
+      class="w-full col-span-12 flex"
+    >
+      <Line
+        id="my-chart-id"
+        :options="chartOptions"
+        :data="chartData"
+        style="max-height: 280px"
+      />
     </section>
 
     <section
