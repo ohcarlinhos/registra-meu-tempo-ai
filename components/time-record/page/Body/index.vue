@@ -89,7 +89,7 @@ onBeforeRouteLeave(() => {
         />
       </section>
 
-      <section id="page-nav" class="w-full md:col-span-12 md:mb-5 mt-10">
+      <section id="page-nav" class="w-full md:col-span-12 md:mb-5 pt-12">
         <UHorizontalNavigation
           :links="links"
           class="border-b border-gray-200 dark:border-gray-800"
