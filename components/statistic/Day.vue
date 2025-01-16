@@ -81,7 +81,7 @@ const mountInfoCardList = () => {
   hourCards.push({
     title: "Total",
     value: statistic.totalHours,
-    obs: "Soma de todos os períodos de tempo.",
+    obs: "Soma de todo tempo diário registrado.",
     customClass: "col-span-2 row-span-2 h-full",
     valueStyle: "text-5xl font-bold",
     cardRingStyle: `ring-2 dark:ring-gray-500 ring-gray-500`,
