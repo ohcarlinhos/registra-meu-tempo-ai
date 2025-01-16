@@ -98,7 +98,6 @@ const chartOptions = computed(() => ({
           return `Dia ${items[0].label}`;
         },
         label: function (tooltipItem: any) {
-          console.log(tooltipItem);
           const idx = tooltipItem.dataIndex;
           const value = tooltipItem.formattedValue;
           return [
