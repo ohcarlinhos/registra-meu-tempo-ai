@@ -107,7 +107,8 @@ const showNotVerifiedStatus = computed(() => {
         v-if="!isAuth && $route.name != 'register'"
         class="font-medium pt-1 dark:text-white text-gray-600"
       >
-        Crie um conta para manter seu tempo em tarefas e gerar estatísticas
+        Crie uma conta para salvar seu tempo registrado em tarefas e gerar
+        estatísticas
         <ULink
           @click="() => $router.push({ name: 'register' })"
           class="dark:text-blue-300 text-blue-500"
