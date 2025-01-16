@@ -50,6 +50,8 @@ ChartJS.register(
 const props = defineProps<{
   timeRecordId: number;
   isFetch?: boolean;
+  updatedOn?: Date;
+  clearUpdatedOn?: () => void;
   callback?: () => Promise<void>;
 }>();
 
@@ -136,6 +138,11 @@ const closeTimePeriodCallback = async (refresh = false) => {
 
 const getData = () => {
   dayStore.setTimeRecordId(props.timeRecordId);
+
+  if (props.updatedOn && props.clearUpdatedOn) {
+    props.clearUpdatedOn();
+  }
+
   return dayStore.fetch();
 };
 
@@ -176,7 +183,21 @@ defineExpose({
       >
         <section class="flex md:flex-row justify-between gap-5 flex-col">
           <section>
-            <h2 class="text-4xl font-bold">{{ _$t("historyRecord") }}</h2>
+            <h2 class="text-4xl font-bold">
+              {{ _$t("historyRecord") }}
+
+              <UButton
+                v-if="updatedOn"
+                icon="i-icon-park-outline-refresh"
+                :title="`Dados atualizados em: ${updatedOn.toLocaleDateString()}`"
+                :disabled="isFetchNow"
+                color="gray"
+                variant="ghost"
+                @click="getData"
+              >
+                Atualizar
+              </UButton>
+            </h2>
             <span>Listagem por data de criação de sessões e períodos.</span>
           </section>
 

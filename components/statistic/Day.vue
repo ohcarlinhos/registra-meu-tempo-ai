@@ -183,7 +183,13 @@ var maxDate = ref(new Date(Date.now()));
         class="flex items-center justify-between gap-5 max-sm:flex-col max-sm:items-start"
       >
         <section>
-          <h3 class="text-4xl font-bold">{{ "Resumo Diário" }}</h3>
+          <h3 class="text-4xl font-bold">
+            {{
+              !timeRecordId && !isFetch
+                ? "Resumo Diário (Geral)"
+                : "Resumo Diário"
+            }}
+          </h3>
           <span>Estatísticas referentes ao dia selecionado.</span>
         </section>
 

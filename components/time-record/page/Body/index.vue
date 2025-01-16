@@ -1,30 +1,58 @@
 <script lang="ts" setup>
+const router = useRouter();
+const route = useRoute();
+
+const { state, isLoading, refresh } = getTimeRecordQuery();
+
+const timeRecord = computed(() => {
+  return state.value.data;
+});
+
 const title = computed(() => {
-  return trReq.value?.title || "";
+  return timeRecord.value?.title || "";
 });
 
 useHead({ title });
 
-const router = useRouter();
-const route = useRoute();
-const historyTp = ref();
+const actualTimeRecordId = computed(() => {
+  return state.value.data?.id;
+});
+
+const refreshTimeRecord = async (code = "") => {
+  const router = useRouter();
+
+  if (code && code != route.params.code) {
+    router.push({
+      name: "record",
+      params: {
+        code,
+      },
+    });
+  }
+
+  refresh();
+};
+
+const updatedOn = ref<Date>();
+
+const clearUpdatedOn = () => {
+  updatedOn.value = undefined;
+};
+
+const setUpdatedOn = () => {
+  updatedOn.value = new Date(Date.now());
+};
 
 defineEmits<{
   delete: [value: number];
 }>();
 
-import {
-  trReq,
-  actualTimeRecordId,
-  getTimeRecordData,
-  getIsFetch,
-} from "./utils/actions";
+import { getTimeRecordQuery } from "./utils/actions";
 
 const links = computed(() => [
   {
     label: "Histórico",
     icon: "i-icon-park-outline-history",
-    // to: `/record/${route.params.code}`,
     to: {
       name: "record",
       params: {
@@ -46,46 +74,37 @@ const links = computed(() => [
   },
 ]);
 
-const refreshTimePeriodCallback = async (refreshTp = false) => {
-  if (refreshTp && historyTp.value) await historyTp.value.getData();
-  await getTimeRecordData("", true);
+const refreshTimePeriodCallback = async () => {
+  setUpdatedOn();
+  refreshTimeRecord();
 };
-
-onMounted(() => {
-  getTimeRecordData();
-});
-
-onBeforeRouteLeave(() => {
-  actualTimeRecordId.value = undefined;
-  getIsFetch.value = true;
-});
 </script>
 
 <template>
   <section class="min-h-svh">
     <section class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 w-full">
       <section class="w-full md:col-span-8 md:mb-5">
-        <TimeRecordPageHeader :time-record="trReq" :is-fetch="getIsFetch">
+        <TimeRecordPageHeader :time-record="timeRecord" :is-fetch="isLoading">
           <template #button>
             <TimeRecordButtonEdit
-              v-if="actualTimeRecordId && trReq"
-              :time-record="trReq"
-              :callback="getTimeRecordData"
+              v-if="actualTimeRecordId && timeRecord"
+              :time-record="timeRecord"
+              :callback="refreshTimeRecord"
             />
           </template>
         </TimeRecordPageHeader>
       </section>
 
       <section
-        v-if="trReq"
+        v-if="timeRecord"
         class="w-full col-span-1 md:col-span-6 lg:col-span-4"
       >
         <TimerDefault
-          v-if="actualTimeRecordId && trReq"
+          v-if="actualTimeRecordId && timeRecord"
           :id="actualTimeRecordId"
-          :code="trReq.code"
-          :title="trReq.title"
-          :post-time-period-callback="() => refreshTimePeriodCallback(true)"
+          :code="timeRecord.code"
+          :title="timeRecord.title"
+          :post-time-period-callback="refreshTimePeriodCallback"
         />
       </section>
 
@@ -96,14 +115,20 @@ onBeforeRouteLeave(() => {
         />
       </section>
 
-      <section v-if="trReq" class="w-full md:col-span-12 md:mb-5">
+      <section v-if="timeRecord" class="w-full md:col-span-12 md:mb-5">
         <slot
-          v-bind="{ actualTimeRecordId, getIsFetch, refreshTimePeriodCallback }"
+          v-bind="{
+            actualTimeRecordId,
+            isLoading,
+            updatedOn,
+            clearUpdatedOn,
+            refreshTimePeriodCallback,
+          }"
         ></slot>
       </section>
     </section>
 
-    <section class="w-full" v-if="!trReq && !getIsFetch">
+    <section class="w-full" v-if="!timeRecord && !isLoading">
       <h2 class="text-2xl text-primary font-bold pb-3">
         {{ _$t("recordNotFound") }}
       </h2>
