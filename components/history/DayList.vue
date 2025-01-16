@@ -33,7 +33,7 @@ import {
   CategoryScale,
   LinearScale,
   Colors,
-  scales,
+  Filler,
 } from "chart.js";
 
 ChartJS.register(
@@ -44,6 +44,7 @@ ChartJS.register(
   LineElement,
   CategoryScale,
   LinearScale,
+  Filler,
   Colors
 );
 
