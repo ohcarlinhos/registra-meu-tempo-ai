@@ -70,6 +70,7 @@ const showNotVerifiedStatus = computed(() => {
     <section
       :class="[
         'absolute lg:fixed p-2 flex justify-between w-full z-50 gap-2',
+        'bg-primary-500 bg-opacity-10',
         showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
       ]"
     >
@@ -100,6 +101,33 @@ const showNotVerifiedStatus = computed(() => {
           clique aqui para sair
         </ULink>
         da sua conta.
+      </section>
+
+      <section
+        v-if="!isAuth && $route.name != 'register'"
+        class="font-medium pt-1 dark:text-white text-gray-600"
+      >
+        Crie um conta para manter seu tempo em tarefas e gerar estatísticas
+        <ULink
+          @click="() => $router.push({ name: 'register' })"
+          class="dark:text-blue-300 text-blue-500"
+        >
+          clicando aqui!
+        </ULink>
+      </section>
+
+      <section
+        v-else-if="!isAuth"
+        class="font-medium pt-1 dark:text-white text-gray-600"
+      >
+        Já possui conta?
+        <ULink
+          @click="() => $router.push({ name: 'login' })"
+          class="dark:text-blue-300 text-blue-500"
+        >
+          Clique aqui
+        </ULink>
+        para acessar.
       </section>
 
       <section class="flex gap-2">
