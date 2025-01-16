@@ -12,6 +12,8 @@ type CardType = {
   valueStyle?: string;
 };
 
+const props = defineProps<{ timeRecordId?: number; isFetch?: boolean }>();
+
 const infoCardList = ref<
   {
     title: string;
@@ -24,7 +26,7 @@ const router = useRouter();
 
 const selectedDate = ref<Date>();
 const dayStatistic = ref<DayStatistic>();
-const isFetch = ref(false);
+const isFetchStatistics = ref(false);
 
 onMounted(() => {
   selectedDate.value = route.query.date
@@ -38,19 +40,23 @@ watch(
   () => selectedDate.value,
   () => {
     pushQuery();
-    init(true);
+    init(props.timeRecordId);
   }
 );
+
+const hasFetch = computed(() => {
+  return isFetchStatistics.value || props.isFetch;
+});
 
 const pushQuery = () => {
   router.push({ query: { date: selectedDate.value!.toISOString() } });
 };
 
-const init = (mounted = false) => {
+const init = (timeRecordId: number | undefined = undefined) => {
   infoCardList.value = [];
-  isFetch.value = true;
+  isFetchStatistics.value = true;
 
-  getDayStatistic(selectedDate.value)
+  getDayStatistic(selectedDate.value, timeRecordId)
     .then((data) => {
       if (data) {
         dayStatistic.value = data;
@@ -58,7 +64,7 @@ const init = (mounted = false) => {
       }
     })
     .finally(() => {
-      isFetch.value = false;
+      isFetchStatistics.value = false;
     });
 };
 
@@ -140,6 +146,10 @@ const mountInfoCardList = () => {
     cards: quantityCards,
   });
 
+  if (props.timeRecordId) {
+    return;
+  }
+
   const recordCards: CardType[] = [];
 
   recordCards.push({
@@ -166,34 +176,31 @@ var maxDate = ref(new Date(Date.now()));
 <template>
   <section class="flex flex-col gap-5 w-full">
     <section class="col-span-full">
-      <section class="flex items-center gap-5">
-        <h3 class="text-4xl font-bold">{{ "Resumo Diário" }}</h3>
+      <section
+        class="flex items-center justify-between gap-5 max-sm:flex-col max-sm:items-start"
+      >
+        <section>
+          <h3 class="text-4xl font-bold">{{ "Resumo Diário" }}</h3>
+          <span>Estatísticas referentes ao dia selecionado.</span>
+        </section>
 
         <div class="max-w-44">
-          <GDatePicker
-            :modelValue="selectedDate"
-            :disabled="isFetch"
-            :max-date="maxDate"
-            disableTimePicker
-            utc
-            @update:modelValue="(e: string | Date) => selectedDate = startOfDay(e)"
-          />
+          <UFormGroup label="Dia selecionado" name="date">
+            <GDatePicker
+              :modelValue="selectedDate"
+              :disabled="hasFetch"
+              :max-date="maxDate"
+              disableTimePicker
+              utc
+              @update:modelValue="(e: string | Date) => selectedDate = startOfDay(e)"
+            />
+          </UFormGroup>
         </div>
       </section>
     </section>
 
-    <!-- <UAlert
-      icon="i-heroicons-outline-exclaimation-triangle"
-      color="orange"
-      variant="outline"
-      title="Atenção usuário!"
-      description="Essa página ainda está em testes e pode conter informações imprecisas."
-    /> -->
-
-    <UDivider class="py-2" />
-
     <section
-      v-if="isFetch"
+      v-if="hasFetch"
       class="w-full grid grid-cols-4 items-start gap-4 md:gap-4"
     >
       <section class="col-span-full">
