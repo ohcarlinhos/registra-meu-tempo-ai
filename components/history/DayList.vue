@@ -186,17 +186,12 @@ defineExpose({
             <h2 class="text-4xl font-bold">
               {{ _$t("historyRecord") }}
 
-              <UButton
+              <GUpdatedOn
                 v-if="updatedOn"
-                icon="i-icon-park-outline-refresh"
-                :title="`Dados atualizados em: ${updatedOn.toLocaleDateString()}`"
                 :disabled="isFetchNow"
-                color="gray"
-                variant="ghost"
-                @click="getData"
-              >
-                Atualizar
-              </UButton>
+                :updated-on="updatedOn"
+                :click-action="getData"
+              />
             </h2>
             <span>Listagem por data de criação de sessões e períodos.</span>
           </section>

@@ -12,7 +12,12 @@ type CardType = {
   valueStyle?: string;
 };
 
-const props = defineProps<{ timeRecordId?: number; isFetch?: boolean }>();
+const props = defineProps<{
+  timeRecordId?: number;
+  isFetch?: boolean;
+  updatedOn?: Date;
+  clearUpdatedOn?: () => void;
+}>();
 
 const infoCardList = ref<
   {
@@ -40,7 +45,7 @@ watch(
   () => selectedDate.value,
   () => {
     pushQuery();
-    init(props.timeRecordId);
+    init();
   }
 );
 
@@ -55,12 +60,16 @@ const pushQuery = () => {
   });
 };
 
-const init = (timeRecordId: number | undefined = undefined) => {
+const init = async () => {
   infoCardList.value = [];
   isFetchStatistics.value = true;
 
-  getDayStatistic(selectedDate.value, timeRecordId)
+  getDayStatistic(selectedDate.value, props.timeRecordId)
     .then((data) => {
+      if (props.updatedOn && props.clearUpdatedOn) {
+        props.clearUpdatedOn();
+      }
+
       if (data) {
         dayStatistic.value = data;
         mountInfoCardList();
@@ -185,10 +194,17 @@ var maxDate = ref(new Date(Date.now()));
         <section>
           <h3 class="text-4xl font-bold">
             {{
-              !timeRecordId && !isFetch
+              !timeRecordId && !hasFetch
                 ? "Resumo Diário (Geral)"
                 : "Resumo Diário"
             }}
+
+            <GUpdatedOn
+              v-if="updatedOn"
+              :disabled="hasFetch"
+              :updated-on="updatedOn"
+              :click-action="init"
+            />
           </h3>
           <span>Estatísticas referentes ao dia selecionado.</span>
         </section>
