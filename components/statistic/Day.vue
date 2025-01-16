@@ -49,7 +49,10 @@ const hasFetch = computed(() => {
 });
 
 const pushQuery = () => {
-  router.push({ query: { date: selectedDate.value!.toISOString() } });
+  router.replace({
+    query: { date: selectedDate.value!.toISOString() },
+    hash: route.hash,
+  });
 };
 
 const init = (timeRecordId: number | undefined = undefined) => {

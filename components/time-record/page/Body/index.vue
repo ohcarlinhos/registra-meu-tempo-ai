@@ -6,6 +6,7 @@ const title = computed(() => {
 useHead({ title });
 
 const router = useRouter();
+const route = useRoute();
 const historyTp = ref();
 
 defineEmits<{
@@ -18,6 +19,32 @@ import {
   getTimeRecordData,
   getIsFetch,
 } from "./utils/actions";
+
+const links = computed(() => [
+  {
+    label: "Histórico",
+    icon: "i-icon-park-outline-history",
+    // to: `/record/${route.params.code}`,
+    to: {
+      name: "record",
+      params: {
+        code: route.params.code,
+      },
+      hash: "#page-nav",
+    },
+  },
+  {
+    label: "Resumo Diário",
+    icon: "i-icon-park-outline-fire",
+    to: {
+      name: "record.statistic.day",
+      params: {
+        code: route.params.code,
+      },
+      hash: "#page-nav",
+    },
+  },
+]);
 
 const refreshTimePeriodCallback = async (refreshTp = false) => {
   if (refreshTp && historyTp.value) await historyTp.value.getData();
@@ -62,8 +89,11 @@ onBeforeRouteLeave(() => {
         />
       </section>
 
-      <section v-if="trReq" class="w-full md:col-span-12 md:mb-5 mt-10">
-        <UDivider />
+      <section id="page-nav" class="w-full md:col-span-12 md:mb-5 mt-10">
+        <UHorizontalNavigation
+          :links="links"
+          class="border-b border-gray-200 dark:border-gray-800"
+        />
       </section>
 
       <section v-if="trReq" class="w-full md:col-span-12 md:mb-5">
@@ -71,7 +101,6 @@ onBeforeRouteLeave(() => {
           v-bind="{ actualTimeRecordId, getIsFetch, refreshTimePeriodCallback }"
         ></slot>
       </section>
-      <NuxtPage />
     </section>
 
     <section class="w-full" v-if="!trReq && !getIsFetch">
