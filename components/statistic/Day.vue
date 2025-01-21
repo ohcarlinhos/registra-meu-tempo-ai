@@ -121,7 +121,7 @@ const mountInfoCardList = () => {
   });
 
   hourCards.push({
-    title: "Períodos (Isolados)",
+    title: "Manuais",
     value: statistic.totalIsolatedPeriodHours,
     obs: `Quantidade: ${statistic.isolatedPeriodCount}`,
     cardBackgroundStyle: "dark:bg-yellow-500 dark:bg-opacity-30",
