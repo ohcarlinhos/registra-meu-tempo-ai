@@ -16,7 +16,8 @@ const openModal = () => {
 <template>
   <UButton
     icon="i-icon-park-outline-add"
-    :label="_$t('period')"
+    label="Registro Manual"
+    title="Adicione seu tempo registrado de forma manual, como por exemplo outro cronômetro ou um pomodoro físico."
     @click="openModal"
   />
 </template>

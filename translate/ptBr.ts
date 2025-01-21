@@ -87,8 +87,8 @@ const i18nObj = {
   pomodoro: "Pomodoro",
   pomodoros: "Pomodoros",
 
-  startOfPeriod: "Início do período",
-  endOfPeriod: "Fim do período",
+  startOfPeriod: "Início",
+  endOfPeriod: "Fim",
 
   noTitle: "Sem título",
 

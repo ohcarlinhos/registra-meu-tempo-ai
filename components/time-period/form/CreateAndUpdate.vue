@@ -117,7 +117,7 @@ var dateNow = ref(addMinutes(Date.now(), 10));
 <template>
   <UCard>
     <template #header>
-      <h2>{{ _$t("period") }}</h2>
+      <h2>{{ "Registro de Tempo" }}</h2>
 
       <GCloseButton @close="closeModal" />
     </template>
