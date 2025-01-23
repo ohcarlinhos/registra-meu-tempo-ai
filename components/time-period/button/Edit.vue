@@ -15,7 +15,7 @@ const editData = reactive<TimePeriodForm>({
   callback: () => {},
 });
 
-const editTimePeriod = async () => {
+const clickAction = async () => {
   const tp = props.timePeriod;
 
   editData.id = tp.id;
@@ -34,6 +34,6 @@ const editTimePeriod = async () => {
     color="gray"
     variant="ghost"
     icon="i-icon-park-outline-edit"
-    @click="editTimePeriod"
+    @click="clickAction"
   />
 </template>

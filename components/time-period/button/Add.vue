@@ -7,7 +7,7 @@ const emit = defineEmits<{
   open: [value: number];
 }>();
 
-const openModal = () => {
+const clickAction = () => {
   if (!props.timeRecordId) return;
   emit("open", props.timeRecordId);
 };
@@ -18,6 +18,6 @@ const openModal = () => {
     icon="i-icon-park-outline-add"
     label="Registro Manual"
     title="Adicione seu tempo registrado de forma manual, como por exemplo outro cronômetro ou um pomodoro físico."
-    @click="openModal"
+    @click="clickAction"
   />
 </template>
