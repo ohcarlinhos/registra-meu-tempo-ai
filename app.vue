@@ -26,15 +26,15 @@ useHead({
 
 const { hasWarTools } = storeToRefs(useConfigStore());
 
+const description =
+  "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.";
+
 useSeoMeta({
-  description:
-    "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.",
+  description,
   ogImage: "/og-image.png",
-  ogDescription:
-    "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.",
+  ogDescription: description,
   twitterTitle: "Registra meu tempo aí!",
-  twitterDescription:
-    "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.",
+  twitterDescription: description,
   twitterImageAlt:
     "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado.",
 });
