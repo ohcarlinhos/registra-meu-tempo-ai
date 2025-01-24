@@ -52,6 +52,10 @@ const { authModal, isAuth } = storeToRefs(authStore);
 const userStore = useUserStore();
 const { isVerified, isFetch: mySelfIsFetch } = storeToRefs(userStore);
 
+const feedbackModal = reactive({
+  open: false,
+});
+
 const router = useRouter();
 
 const setOldToken = () => {
@@ -144,6 +148,16 @@ const showNotVerifiedStatus = computed(() => {
         </UButton>
       </section>
     </section>
+
+    <template v-if="isAuth">
+      <UModal v-model="feedbackModal.open" prevent-close>
+        <FeedbackFormCreate @close="feedbackModal.open = false" />
+      </UModal>
+
+      <section class="fixed bottom-0 right-0 p-2">
+        <FeedbackButtonNew @open="feedbackModal.open = true" />
+      </section>
+    </template>
 
     <UModal v-model="authModal.open" prevent-close>
       <AuthFormLogin v-if="authModal.open" />

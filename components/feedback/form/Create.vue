@@ -1,0 +1,69 @@
+<script lang="ts" setup>
+import * as yup from "yup";
+
+const emit = defineEmits(["close"]);
+
+const props = defineProps<{
+  callback?: Function;
+}>();
+
+const form = reactive<{ message: string }>({
+  message: "",
+});
+
+const schema = yup.object({
+  message: yup
+    .string()
+    .min(20, "A mensagem deve conter pelo menos 20 caracteres.")
+    .max(500, "A mensagem deve ter o tamanho máximo de 500 caracteres.")
+    .required("É obrigatório informar uma mensagem no seu feedback."),
+});
+
+const close = (refresh = false) => {
+  emit("close", refresh);
+};
+
+const submit = async () => {
+  schema.validate(form).then(async () => {
+    await createAction();
+  });
+};
+
+const isFetch = ref(false);
+
+const createAction = async () => {
+  isFetch.value = true;
+  let submitIsOk = true;
+
+  try {
+    await postFeedback(form.message);
+
+    OkToast("Feedback enviado com sucesso.");
+    close(true);
+  } catch (error) {
+    submitIsOk = false;
+    ErrorToast(error);
+  } finally {
+    if (submitIsOk && props.callback) props.callback();
+    isFetch.value = false;
+  }
+};
+</script>
+
+<template>
+  <UCard>
+    <template #header>
+      <h2>{{ "Feedback / Dúvida" }}</h2>
+
+      <GCloseButton @close="close" />
+    </template>
+
+    <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+      <UFormGroup label="Mensagem" name="message">
+        <UTextarea v-model="form.message" autoresize />
+      </UFormGroup>
+
+      <UButton :loading="isFetch" :label="$t('send')" block type="submit" />
+    </UForm>
+  </UCard>
+</template>
