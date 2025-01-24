@@ -149,7 +149,7 @@ const showNotVerifiedStatus = computed(() => {
       </section>
     </section>
 
-    <template v-if="isAuth">
+    <template v-if="isAuth && isVerified">
       <UModal v-model="feedbackModal.open" prevent-close>
         <FeedbackFormCreate @close="feedbackModal.open = false" />
       </UModal>
