@@ -15,14 +15,16 @@ definePageMeta({
         refreshTimePeriodCallback,
       }"
     >
-      <HistoryDayList
-        ref="historyTp"
-        v-if="actualTimeRecordId"
-        :time-record-id="actualTimeRecordId"
-        :callback="refreshTimePeriodCallback"
-        :updated-on="updatedOn"
-        :clear-updated-on="clearUpdatedOn"
-      />
+      <ClientOnly>
+        <HistoryDayList
+          ref="historyTp"
+          v-if="actualTimeRecordId"
+          :time-record-id="actualTimeRecordId"
+          :callback="refreshTimePeriodCallback"
+          :updated-on="updatedOn"
+          :clear-updated-on="clearUpdatedOn"
+        />
+      </ClientOnly>
     </TimeRecordPageBody>
   </NuxtLayout>
 </template>

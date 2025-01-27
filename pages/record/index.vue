@@ -5,6 +5,8 @@ useHead({ title: "Tarefas" });
 
 <template>
   <NuxtLayout name="panel">
-    <TimeRecordPanel />
+    <ClientOnly>
+      <TimeRecordPanel />
+    </ClientOnly>
   </NuxtLayout>
 </template>

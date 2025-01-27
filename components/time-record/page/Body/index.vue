@@ -99,13 +99,15 @@ const refreshTimePeriodCallback = async () => {
         v-if="timeRecord"
         class="w-full col-span-1 md:col-span-6 lg:col-span-4"
       >
-        <TimerDefault
-          v-if="actualTimeRecordId && timeRecord"
-          :id="actualTimeRecordId"
-          :code="timeRecord.code"
-          :title="timeRecord.title"
-          :post-time-period-callback="refreshTimePeriodCallback"
-        />
+        <ClientOnly>
+          <TimerDefault
+            v-if="actualTimeRecordId && timeRecord"
+            :id="actualTimeRecordId"
+            :code="timeRecord.code"
+            :title="timeRecord.title"
+            :post-time-period-callback="refreshTimePeriodCallback"
+          />
+        </ClientOnly>
       </section>
 
       <section id="page-nav" class="w-full md:col-span-12 md:mb-5 pt-12">

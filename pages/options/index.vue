@@ -10,7 +10,9 @@ useHead({ title: "Opções" });
         <UserFormUpdate />
       </div>
       <div class="w-full col-span-1 md:col-span-6 lg:col-span-4">
-        <CategoryTable />
+        <ClientOnly>
+          <CategoryTable />
+        </ClientOnly>
       </div>
     </div>
   </NuxtLayout>
