@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     "nuxt-clarity-analytics",
     "nuxt-site-config",
     "nuxt-seo-utils",
+    "@nuxtjs/turnstile",
   ],
 
   site: {
@@ -71,6 +72,8 @@ export default defineNuxtConfig({
       rfmEmail: process.env.REGISTER_FORM_MOCK_EMAIL || "",
       rfmCode: process.env.REGISTER_FORM_MOCK_CODE || "",
       rfmPassword: process.env.REGISTER_FORM_MOCK_PASSWORD || "",
+
+      enableUserChallenge: process.env.NODE_ENV !== "production",
     },
   },
 
