@@ -29,14 +29,16 @@ const { hasWarTools } = storeToRefs(useConfigStore());
 const description =
   "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.";
 
+const twitterImageAlt =
+  "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado.";
+
 useSeoMeta({
   description,
   ogImage: "/og-image.png",
   ogDescription: description,
   twitterTitle: "Registra meu tempo aí!",
   twitterDescription: description,
-  twitterImageAlt:
-    "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado.",
+  twitterImageAlt,
 });
 
 const colorMode = useColorMode();
