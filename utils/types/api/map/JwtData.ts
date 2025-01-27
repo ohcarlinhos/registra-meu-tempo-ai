@@ -1,3 +1,4 @@
-export type JwtDta = {
+export type JwtData = {
   token: string;
+  refresh: string;
 };
