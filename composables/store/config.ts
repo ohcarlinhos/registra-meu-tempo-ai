@@ -17,10 +17,15 @@ export const useConfigStore = defineStore("config-store", () => {
     return runtimeConfig.public.onlyGuestMode === "1";
   });
 
+  const enableUserChallenge = computed(() => {
+    return runtimeConfig.public.enableUserChallenge;
+  });
+
   return {
     baseURL,
     hasWarTools,
     oldUserToken,
     onlyGuestMode,
+    enableUserChallenge,
   };
 });

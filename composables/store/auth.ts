@@ -3,7 +3,7 @@ import * as jose from "jose";
 export const useAuthStore = defineStore(
   "auth-store",
   () => {
-    const userToken = ref("");
+    const jwt = ref<JwtData>();
     const authModal = reactive({ open: false });
     const needRefresh = ref(false);
 
@@ -11,11 +11,11 @@ export const useAuthStore = defineStore(
     const { clearMySelf } = useUserStore();
 
     const isAuth = computed(() => {
-      return userToken.value != "";
+      return Boolean(jwt.value?.token);
     });
 
     const claim = computed(() => {
-      const payload = userToken.value ? jose.decodeJwt(userToken.value) : null;
+      const payload = jwt.value ? jose.decodeJwt(jwt.value.token) : null;
 
       return {
         ...payload,
@@ -23,16 +23,16 @@ export const useAuthStore = defineStore(
       };
     });
 
-    const setUserToken = (token: string) => {
-      userToken.value = token;
+    const setJwt = (value: JwtData) => {
+      jwt.value = value;
     };
 
     const setExpiredToken = () => {
-      userToken.value = oldUserToken.value;
+      if (jwt.value) jwt.value.token = oldUserToken.value;
     };
 
-    const clearUserToken = () => {
-      userToken.value = "";
+    const clearJwt = () => {
+      jwt.value = undefined;
     };
 
     const openAuthModal = (_needRefresh = false) => {
@@ -50,18 +50,18 @@ export const useAuthStore = defineStore(
     };
 
     const clearSession = () => {
-      clearUserToken();
+      clearJwt();
       clearMySelf();
     };
 
     return {
-      userToken,
+      jwt,
       authModal,
       needRefresh,
       isAuth,
       claim,
-      setUserToken,
-      clearUserToken,
+      setJwt,
+      clearJwt,
       setExpiredToken,
       openAuthModal,
       closeAuthModal,

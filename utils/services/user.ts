@@ -1,5 +1,5 @@
 export const postUser = async (body: CreateUserDto) => {
-  return useCustomFetch(false, false)<UserMap>("user", {
+  return useCustomFetch(false, false)<CreateUserResult>("user", {
     method: "POST",
     body,
   });
