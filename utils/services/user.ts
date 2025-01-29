@@ -1,6 +1,7 @@
-export const postUser = async (body: CreateUserDto) => {
+export const postUser = async (body: CreateUserDto, token: string) => {
   return useCustomFetch(false, false)<CreateUserResult>("user", {
     method: "POST",
+    headers: { UserChallengeToken: token },
     body,
   });
 };

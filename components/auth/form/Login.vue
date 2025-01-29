@@ -5,7 +5,8 @@ const { t } = useI18n();
 
 const authStore = useAuthStore();
 const { authModal } = storeToRefs(authStore);
-const { closeAuthModal, setUserToken } = authStore;
+const { closeAuthModal, setJwt } = authStore;
+const { enableUserChallenge } = storeToRefs(useConfigStore());
 
 const userStore = useUserStore();
 const { checkIfIsVerified } = userStore;
@@ -16,6 +17,8 @@ const form = reactive({
   email: "",
   password: "",
 });
+
+const _tokenUserChallenge = ref();
 
 const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 
@@ -41,8 +44,7 @@ const submitAction = async () => {
   try {
     page.fetch = true;
 
-    const data = await postLogin(form);
-    setUserToken(data!.token);
+    setJwt(await postLogin(form, _tokenUserChallenge.value));
 
     OkToast(_$t("loginSuccess"));
 
@@ -69,7 +71,11 @@ const submitAction = async () => {
 };
 
 const submitIsDisabled = computed(() => {
-  return !form.email || !form.password;
+  return (
+    !form.email ||
+    !form.password ||
+    (!_tokenUserChallenge.value && enableUserChallenge.value)
+  );
 });
 </script>
 
@@ -90,6 +96,13 @@ const submitIsDisabled = computed(() => {
       <UFormGroup :label="t('password')" name="password" required>
         <UInput type="password" v-model="form.password" />
       </UFormGroup>
+
+      <section
+        v-if="enableUserChallenge && form.email && form.password"
+        class="flex justify-center pt-1"
+      >
+        <NuxtTurnstile v-model="_tokenUserChallenge" />
+      </section>
 
       <UButton
         :loading="page.fetch"

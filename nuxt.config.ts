@@ -73,7 +73,7 @@ export default defineNuxtConfig({
       rfmCode: process.env.REGISTER_FORM_MOCK_CODE || "",
       rfmPassword: process.env.REGISTER_FORM_MOCK_PASSWORD || "",
 
-      enableUserChallenge: process.env.NODE_ENV !== "production",
+      enableUserChallenge: process.env.NODE_ENV === "production",
     },
   },
 

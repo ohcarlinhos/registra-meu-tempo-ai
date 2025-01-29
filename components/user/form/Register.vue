@@ -2,6 +2,7 @@
 import * as yup from "yup";
 
 const v = useUserValidation();
+const { enableUserChallenge } = storeToRefs(useConfigStore());
 
 const isFetch = ref(false);
 
@@ -11,6 +12,8 @@ const form = reactive({
   password: "",
   confirmPassword: "",
 });
+
+const _tokenUserChallenge = ref();
 
 const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 
@@ -32,13 +35,11 @@ const submit = async () => {
   try {
     isFetch.value = true;
 
-    await postUser(form);
+    const result = await postUser(form, _tokenUserChallenge.value);
 
-    const loginData = await postLogin(form);
-
-    if (loginData) {
+    if (result) {
       OkToast(_$t("createUserSuccess"));
-      useAuthStore().setUserToken(loginData.token);
+      useAuthStore().setJwt(result.jwt);
       useRouter().push({ name: "record.panel" });
     }
   } catch (error) {
@@ -81,10 +82,24 @@ const submit = async () => {
         <UInput type="password" v-model="form.confirmPassword" />
       </UFormGroup>
 
+      <section
+        v-if="
+          enableUserChallenge &&
+          form.email &&
+          form.name &&
+          form.password &&
+          form.confirmPassword
+        "
+        class="flex justify-center pt-1"
+      >
+        <NuxtTurnstile v-model="_tokenUserChallenge" />
+      </section>
+
       <UButton
-        :label="_$t('toRecord')"
         type="submit"
+        :label="_$t('toRecord')"
         :loading="isFetch"
+        :disabled="!_tokenUserChallenge && enableUserChallenge"
         block
       />
     </UForm>

@@ -7,9 +7,13 @@ const props = defineProps<{
   callback?: Function;
 }>();
 
-const form = reactive<{ message: string }>({
+const { enableUserChallenge } = storeToRefs(useConfigStore());
+
+const form = reactive({
   message: "",
 });
+
+const _tokenUserChallenge = ref();
 
 const schema = yup.object({
   message: yup
@@ -36,7 +40,7 @@ const createAction = async () => {
   let submitIsOk = true;
 
   try {
-    await postFeedback(form.message);
+    await postFeedback(form.message, _tokenUserChallenge.value);
 
     OkToast("Feedback enviado com sucesso.");
     close(true);
@@ -63,7 +67,22 @@ const createAction = async () => {
         <UTextarea v-model="form.message" autoresize />
       </UFormGroup>
 
-      <UButton :loading="isFetch" :label="$t('send')" block type="submit" />
+      <section
+        v-if="enableUserChallenge && form.message"
+        class="flex justify-center pt-1"
+      >
+        <NuxtTurnstile v-model="_tokenUserChallenge" />
+      </section>
+
+      <UButton
+        :loading="isFetch"
+        :label="$t('send')"
+        :disabled="
+          !form.message || (!_tokenUserChallenge && enableUserChallenge)
+        "
+        block
+        type="submit"
+      />
     </UForm>
   </UCard>
 </template>
