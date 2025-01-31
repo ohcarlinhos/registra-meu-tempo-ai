@@ -86,6 +86,6 @@ export const useCategoryStore = defineStore(
     };
   },
   {
-    persist: false,
+    persist: true,
   }
 );

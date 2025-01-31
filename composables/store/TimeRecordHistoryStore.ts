@@ -42,4 +42,5 @@ export const useTimeRecordHistoryStore = defineStore({
       this._timeRecordId = id;
     },
   },
+  persist: true,
 });

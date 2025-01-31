@@ -79,5 +79,5 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
     isFetch: (state) => state._fetch || state._deleteFetch,
   },
 
-  persist: false,
+  persist: true,
 });
