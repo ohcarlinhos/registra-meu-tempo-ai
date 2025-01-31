@@ -6,7 +6,10 @@ import { vMaska } from "maska/vue";
 const router = useRouter();
 
 const trStore = useTimeRecordStore();
+
 const categoryStore = useCategoryStore();
+const { fetchAllCategories } = categoryStore;
+const { allCategories, isAllCategoriesFetch } = storeToRefs(categoryStore);
 
 const emit = defineEmits(["close", "refresh"]);
 
@@ -79,10 +82,7 @@ const isSyncMode = computed(() => {
 });
 
 const categories = computed(() => {
-  return [
-    ...newCategories.value,
-    ...categoryStore.getAllCategories.map((c) => c.name),
-  ];
+  return [...newCategories.value, ...allCategories.value.map((c) => c.name)];
 });
 
 const categoryValue = computed({
@@ -107,7 +107,7 @@ const addButtonIsDisabled = computed(() => {
 });
 
 const categoryIsDisabled = computed(() => {
-  return categoryStore && categoryStore.isFetch;
+  return isAllCategoriesFetch.value;
 });
 
 const submitIsDisabled = computed(() => {
@@ -148,7 +148,7 @@ const handleCategory = async () => {
   }
 
   if (form.category) {
-    const category = categoryStore.getAllCategories.find(
+    const category = allCategories.value.find(
       (category) => category.name === form.category
     );
 
@@ -255,7 +255,9 @@ onMounted(async () => {
     }
   }
 
-  if (!isSyncMode.value) categoryStore.fetchAllCategories(closeModal);
+  if (!isSyncMode.value) {
+    fetchAllCategories(closeModal);
+  }
 });
 
 const isTrSearch = ref<boolean>(false);

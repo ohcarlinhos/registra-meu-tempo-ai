@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as yup from "yup";
-const categoryStore = useCategoryStore();
+const { refetchData } = useCategoryStore();
 
 const emit = defineEmits(["close", "refresh"]);
 
@@ -39,7 +39,7 @@ const schema = yup.object({
 
 const closeModal = (refresh = false) => {
   emit("close");
-  if (refresh) categoryStore.refetch();
+  if (refresh) refetchData();
 };
 
 const submit = async () => {

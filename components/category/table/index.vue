@@ -2,8 +2,11 @@
 import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
+const { deleteCategoryMethod, fetchData: fetchCategoryData } = categoryStore;
+const { isPaginationFetch, paginationQuery, categoryTableData, apiRes } =
+  storeToRefs(categoryStore);
 
-const emit = defineEmits<{
+defineEmits<{
   edit: [value: number];
   delete: [value: DeletePayloadEvent];
   create: [];
@@ -50,10 +53,11 @@ const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
-    await categoryStore.delete(modal.confirmDelete.id);
+    await deleteCategoryMethod(modal.confirmDelete.id);
 
     closeConfirmDeleteModal();
   } catch (error) {
+    console.log(error);
     ErrorToast(error);
   }
 };
@@ -69,7 +73,7 @@ const openConfirmDeleteModal = async (payload: DeletePayloadEvent) => {
 };
 
 onMounted(() => {
-  categoryStore.fetch();
+  fetchCategoryData();
 });
 </script>
 
@@ -79,7 +83,11 @@ onMounted(() => {
       <GPanelTitle text="Categorias" />
 
       <div class="flex gap-5">
-        <GSearch :store="categoryStore" />
+        <GSearchV2
+          :pagination-query="paginationQuery"
+          :is-pagination-fetch="isPaginationFetch"
+          :fetch-data="fetchCategoryData"
+        />
 
         <UButton
           icon="i-icon-park-outline-add"
@@ -91,8 +99,8 @@ onMounted(() => {
     <UCard>
       <UTable
         :columns="columns"
-        :rows="categoryStore.categoryTableData"
-        :loading="categoryStore.isFetch"
+        :rows="categoryTableData"
+        :loading="isPaginationFetch"
       >
         <template #actions-data="{ row }">
           <div class="flex justify-end">
@@ -107,12 +115,15 @@ onMounted(() => {
         </template>
       </UTable>
 
-      <GPagination
-        :page="categoryStore.apiRes?.page"
-        :perPage="categoryStore.apiRes?.perPage"
-        :totalPages="categoryStore.apiRes?.totalPages"
-        :totalItems="categoryStore.apiRes?.totalItems"
-        :store="categoryStore"
+      <GPaginationV2
+        :page="apiRes?.page"
+        :perPage="apiRes?.perPage"
+        :totalPages="apiRes?.totalPages"
+        :totalItems="apiRes?.totalItems"
+        :pagination-query="paginationQuery"
+        :is-pagination-fetch="isPaginationFetch"
+        :fetch-data="fetchCategoryData"
+        using-store
       />
     </UCard>
   </GPanelCol>
@@ -120,7 +131,7 @@ onMounted(() => {
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     :text="_$t('confirmDeleteCategoryMessage')"
-    :isFetch="categoryStore.isFetch"
+    :isFetch="isPaginationFetch"
     @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"
   />
