@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     // "nuxt-site-config",
     // "nuxt-seo-utils",
     "@nuxtjs/turnstile",
-    "@nuxtjs/seo",
+    // "@nuxtjs/seo",
   ],
 
   site: {

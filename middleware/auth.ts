@@ -1,7 +1,9 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const { isAuth } = storeToRefs(useAuthStore());
 
-  if (!isAuth.value) return navigateTo("/");
+  if (!isAuth.value) {
+    console.log("bundinha");
+  }
 
   const userStore = useUserStore();
   const { checkIfIsVerified } = userStore;
