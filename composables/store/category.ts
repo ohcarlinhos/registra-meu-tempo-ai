@@ -20,17 +20,19 @@ export const useCategoryStore = defineStore(
       return allCategories.value.find((c) => c.id == id);
     };
 
-    const paginationQuery = ref(usePaginationQuery());
+    const paginationQuery = ref(new PaginationQuery());
     const apiRes = ref<Pagination<CategoryMap>>();
     const isPaginationFetch = ref(false);
 
     const fetchData = async () => {
+      if (!paginationQuery.value) paginationQuery.value = new PaginationQuery();
+
       try {
         isPaginationFetch.value = true;
         const data = await categoryAPI().get(paginationQuery.value);
         if (data) apiRes.value = data;
       } catch (error) {
-        // ErrorToast(error);
+        ErrorToast(error);
       } finally {
         isPaginationFetch.value = false;
       }
