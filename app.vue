@@ -24,8 +24,6 @@ useHead({
   ],
 });
 
-const { hasWarTools } = storeToRefs(useConfigStore());
-
 const description =
   "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.";
 
@@ -40,133 +38,10 @@ useSeoMeta({
   twitterDescription: description,
   twitterImageAlt,
 });
-
-const colorMode = useColorMode();
-
-const toggleDark = () => {
-  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
-};
-
-const authStore = useAuthStore();
-const { setExpiredToken } = authStore;
-const { authModal, isAuth } = storeToRefs(authStore);
-
-const userStore = useUserStore();
-const { isVerified, isFetch: mySelfIsFetch } = storeToRefs(userStore);
-
-const feedbackModal = reactive({
-  open: false,
-});
-
-const router = useRouter();
-
-const setOldToken = () => {
-  setExpiredToken();
-};
-
-const showNotVerifiedStatus = computed(() => {
-  return isAuth.value && !mySelfIsFetch.value && !isVerified.value;
-});
 </script>
 
 <template>
   <NuxtLoadingIndicator />
-
-  <NuxtLayout>
-    <section
-      :class="[
-        'absolute lg:fixed p-2 flex justify-between w-full z-50 gap-2',
-        'bg-primary-500 bg-opacity-10',
-        showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
-      ]"
-    >
-      <UButton
-        :icon="
-          isDark ? 'i-icon-park-outline-sun-one' : 'i-icon-park-outline-moon'
-        "
-        :label="(!isDark && 'Experimente a noite...') || ''"
-        title="Na opinião dos desenvolvedores, o modo noturno é bem mais bonito e agradável."
-        color="gray"
-        variant="ghost"
-        @click="toggleDark"
-      />
-
-      <section
-        v-if="showNotVerifiedStatus"
-        class="font-medium pt-1 dark:text-white text-gray-600"
-      >
-        <ULink
-          @click="() => $router.push({ name: 'verify.page' })"
-          class="dark:text-blue-300 text-blue-500"
-        >
-          Clique aqui para verificar seu e-mail
-        </ULink>
-
-        e utilizar nossas ferramentas, ou
-        <ULink @click="logout" class="dark:text-blue-300 text-blue-500">
-          clique aqui para sair
-        </ULink>
-        da sua conta.
-      </section>
-
-      <section
-        v-if="!isAuth && $route.name != 'register'"
-        class="font-medium pt-1 dark:text-white text-gray-600"
-      >
-        Crie uma conta para salvar seu tempo registrado em tarefas e gerar
-        estatísticas
-        <ULink
-          @click="() => $router.push({ name: 'register' })"
-          class="dark:text-blue-300 text-blue-500"
-        >
-          clicando aqui!
-        </ULink>
-      </section>
-
-      <section
-        v-else-if="!isAuth"
-        class="font-medium pt-1 dark:text-white text-gray-600"
-      >
-        Já possui conta?
-        <ULink
-          @click="() => $router.push({ name: 'login' })"
-          class="dark:text-blue-300 text-blue-500"
-        >
-          Clique aqui
-        </ULink>
-        para acessar.
-      </section>
-
-      <section class="flex gap-2">
-        <UButton v-if="hasWarTools" @click="setOldToken">
-          Definir Token Antigo
-        </UButton>
-
-        <UButton
-          v-if="hasWarTools"
-          @click="() => router.push({ name: 'verify.page' })"
-        >
-          Verificar e-mail
-        </UButton>
-      </section>
-    </section>
-
-    <template v-if="isAuth && isVerified">
-      <UModal v-model="feedbackModal.open" prevent-close>
-        <FeedbackFormCreate @close="feedbackModal.open = false" />
-      </UModal>
-
-      <section class="fixed bottom-0 right-0 p-2">
-        <FeedbackButtonNew @open="feedbackModal.open = true" />
-      </section>
-    </template>
-
-    <UModal v-model="authModal.open" prevent-close>
-      <AuthFormLogin v-if="authModal.open" />
-    </UModal>
-
-    <NuxtPage />
-  </NuxtLayout>
-
+  <NuxtPage />
   <UNotifications />
 </template>
