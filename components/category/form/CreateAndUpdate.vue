@@ -52,7 +52,7 @@ const createAction = async () => {
   isFetch.value = true;
 
   try {
-    await postCategory(form);
+    await categoryAPI().post(form);
 
     if (form.callback) form.callback();
 
@@ -68,7 +68,7 @@ const editAction = async (id: number) => {
   isFetch.value = true;
 
   try {
-    await putCategory(id, form);
+    await categoryAPI().put(id, form);
 
     if (form.callback) form.callback();
 

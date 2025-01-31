@@ -2,7 +2,7 @@
 import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
-const { deleteCategoryMethod, fetchData: fetchCategoryData } = categoryStore;
+const { deleteCategory, fetchData: fetchCategoryData } = categoryStore;
 const { isPaginationFetch, paginationQuery, categoryTableData, apiRes } =
   storeToRefs(categoryStore);
 
@@ -53,7 +53,7 @@ const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
-    await deleteCategoryMethod(modal.confirmDelete.id);
+    await deleteCategory(modal.confirmDelete.id);
 
     closeConfirmDeleteModal();
   } catch (error) {

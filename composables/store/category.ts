@@ -7,7 +7,7 @@ export const useCategoryStore = defineStore(
     const fetchAllCategories = async (errorCallback: Function) => {
       try {
         isAllCategoriesFetch.value = true;
-        allCategories.value = (await getAllCategories()) || [];
+        allCategories.value = (await categoryAPI().getAll()) || [];
       } catch (error) {
         ErrorToast(error);
         errorCallback();
@@ -20,19 +20,17 @@ export const useCategoryStore = defineStore(
       return allCategories.value.find((c) => c.id == id);
     };
 
-    const paginationQuery = ref<PaginationQuery>(new PaginationQuery());
+    const paginationQuery = ref(usePaginationQuery());
     const apiRes = ref<Pagination<CategoryMap>>();
     const isPaginationFetch = ref(false);
 
     const fetchData = async () => {
-      if (!paginationQuery.value) paginationQuery.value = new PaginationQuery();
-
       try {
         isPaginationFetch.value = true;
-        const data = await getCategories(paginationQuery.value);
+        const data = await categoryAPI().get(paginationQuery.value);
         if (data) apiRes.value = data;
       } catch (error) {
-        ErrorToast(error);
+        // ErrorToast(error);
       } finally {
         isPaginationFetch.value = false;
       }
@@ -44,10 +42,10 @@ export const useCategoryStore = defineStore(
 
     const isDeleteFetch = ref(false);
 
-    const deleteCategoryMethod = async (id: number) => {
+    const deleteCategory = async (id: number) => {
       try {
         isDeleteFetch.value = true;
-        await deleteCategory(id);
+        await categoryAPI().delete(id);
         await refetchData();
       } finally {
         isDeleteFetch.value = false;
@@ -83,11 +81,11 @@ export const useCategoryStore = defineStore(
       allCategories,
       isAllCategoriesFetch,
 
-      deleteCategoryMethod,
+      deleteCategory,
       isDeleteFetch,
     };
   },
   {
-    persist: true,
+    persist: false,
   }
 );
