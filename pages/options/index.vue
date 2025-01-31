@@ -10,24 +10,24 @@ useHead({ title: "Opções" });
         <ClientOnly>
           <UserFormUpdate />
 
-          <!-- <template #fallback>
+          <template #fallback>
             <div class="flex gap-5 flex-col w-full items-center">
               <USkeleton class="h-[40px] w-full" />
               <USkeleton class="h-[200px] w-full" />
             </div>
-          </template> -->
+          </template>
         </ClientOnly>
       </div>
       <div class="w-full col-span-1 md:col-span-6 lg:col-span-4">
         <ClientOnly>
           <CategoryTable />
 
-          <!-- <template #fallback>
+          <template #fallback>
             <div class="flex gap-5 flex-col w-full items-center">
               <USkeleton class="h-[40px] w-full" />
               <USkeleton class="h-[300px] w-full" />
             </div>
-          </template> -->
+          </template>
         </ClientOnly>
       </div>
     </div>
