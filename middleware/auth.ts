@@ -1,8 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const { isAuth } = storeToRefs(useAuthStore());
 
-  console.log("tá auth", isAuth.value);
-
   // if (import.meta.server) {
   //   return;
   // }

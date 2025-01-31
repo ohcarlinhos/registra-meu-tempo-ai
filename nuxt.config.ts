@@ -27,10 +27,10 @@ export default defineNuxtConfig({
     "nuxt-gtag",
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-clarity-analytics",
-    "nuxt-site-config",
-    "nuxt-seo-utils",
+    // "nuxt-site-config",
+    // "nuxt-seo-utils",
     "@nuxtjs/turnstile",
-    // "@nuxtjs/seo",
+    "@nuxtjs/seo",
   ],
 
   site: {

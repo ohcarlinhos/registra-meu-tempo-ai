@@ -35,10 +35,6 @@ export const useUserStore = defineStore(
     const checkIfIsVerified = async () => {
       await fetchMySelf();
 
-      if (mySelf.value?.isVerified == false) {
-        console.log("Não está verificado.");
-      }
-
       return mySelf.value?.isVerified;
     };
 

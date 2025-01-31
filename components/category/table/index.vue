@@ -57,7 +57,6 @@ const deleteCategoryAction = async () => {
 
     closeConfirmDeleteModal();
   } catch (error) {
-    console.log(error);
     ErrorToast(error);
   }
 };
