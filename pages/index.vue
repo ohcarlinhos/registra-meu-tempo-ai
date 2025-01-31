@@ -8,13 +8,13 @@ useHead({ title: "Cronômetros" });
     <ClientOnly>
       <TimerDefault title="Cronômetros" />
 
-      <template #fallback>
+      <!-- <template #fallback>
         <div class="flex gap-5 flex-col w-full items-center">
           <USkeleton class="h-[50px] w-[90%]" />
           <USkeleton class="h-[210px] w-full" />
           <USkeleton class="h-[40px] w-[60%]" />
         </div>
-      </template>
+      </template> -->
     </ClientOnly>
   </NuxtLayout>
 </template>
