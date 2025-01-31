@@ -1,8 +1,14 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const { isAuth } = storeToRefs(useAuthStore());
 
+  console.log("tá auth", isAuth.value);
+
+  // if (import.meta.server) {
+  //   return;
+  // }
+
   if (!isAuth.value) {
-    console.log("bundinha");
+    return navigateTo({ name: "home" });
   }
 
   const userStore = useUserStore();
