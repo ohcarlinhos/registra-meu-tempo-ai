@@ -39,15 +39,15 @@ const activeClass = "text-primary font-bold";
           <NuxtImg
             :src="imgUrl"
             class="pt-6 w-full max-w-56 sm:max-w-xs"
-            label="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado."
-            title="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado."
+            label="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado."
+            title="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado."
           />
         </section>
 
         <h1 class="title-hide">Registra meu tempo aí!</h1>
 
         <p v-if="!hideDescription" class="pt-4">
-          Controle seu tempo
+          Registre o tempo das suas tarefas
           <span class="font-bold text-primary"> e mantenha-se focado.</span>
         </p>
 

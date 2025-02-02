@@ -28,7 +28,7 @@ const description =
   "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.";
 
 const twitterImageAlt =
-  "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Controle seu tempo e mantenha-se focado.";
+  "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado.";
 
 useSeoMeta({
   description,
