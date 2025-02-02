@@ -19,6 +19,9 @@ withDefaults(
   }
 );
 
+const pageTitle =
+  "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado.";
+
 const { onlyGuestMode } = storeToRefs(useConfigStore());
 
 const imgUrl = computed(() => {
@@ -37,10 +40,10 @@ const activeClass = "text-primary font-bold";
       <section>
         <section :class="{ 'flex justify-center': center }">
           <NuxtImg
-            :src="imgUrl"
             class="pt-6 w-full max-w-56 sm:max-w-xs"
-            label="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado."
-            title="Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado."
+            :src="imgUrl"
+            :label="pageTitle"
+            :title="pageTitle"
           />
         </section>
 
@@ -76,14 +79,14 @@ const activeClass = "text-primary font-bold";
         {{ "Tarefas" }}
       </ULink>
 
-      <ULink
+      <!-- <ULink
         v-if="userIsAuth"
         class="line-clamp-1"
         :to="{ name: 'statistic.day' }"
         :active-class="activeClass"
       >
         {{ "Estatísticas" }}
-      </ULink>
+      </ULink> -->
 
       <ULink
         v-if="userIsAuth"
