@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import * as yup from "yup";
-
-const { t } = useI18n();
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import * as z from "zod";
 
 const authStore = useAuthStore();
 const { authModal } = storeToRefs(authStore);
@@ -11,40 +11,16 @@ const { enableUserChallenge } = storeToRefs(useConfigStore());
 const userStore = useUserStore();
 const { checkIfIsVerified } = userStore;
 
-const v = useUserValidation();
-
-const form = reactive({
-  email: "",
-  password: "",
-});
-
-const _tokenUserChallenge = ref();
-
 const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 
-if (rfMockEnable.value) {
-  form.email = rfMock.value.email;
-  form.password = rfMock.value.password;
-}
+const _tokenUserChallenge = ref();
+const isFetch = ref(false);
 
-const page = reactive({ fetch: false });
-
-const schema = yup.object({
-  email: v.email(),
-  password: v.password(),
-});
-
-const submit = async () => {
-  schema.validate(form).then(async () => {
-    await submitAction();
-  });
-};
-
-const submitAction = async () => {
+const submitAction = async (dto: LoginDto) => {
   try {
-    page.fetch = true;
+    isFetch.value = true;
 
-    setJwt(await postLogin(form, _tokenUserChallenge.value));
+    setJwt(await postLogin(dto, _tokenUserChallenge.value));
 
     OkToast(_$t("loginSuccess"));
 
@@ -66,17 +42,50 @@ const submitAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    page.fetch = false;
+    isFetch.value = false;
   }
 };
 
+const formSchema = toTypedSchema(
+  z.object({
+    email: z
+      .string({ message: _$t("emailIsRequired") })
+      .email(_$t("emailIsInvalid")),
+    password: z
+      .string({ message: _$t("passwordIsRequired") })
+      .min(8, _$t("passwordMin"))
+      .max(48, _$t("passwordMax"))
+      .regex(/[0-9]/, _$t("passwordNeedANumber"))
+      .regex(/[a-z]/, _$t("passwordNeedALow"))
+      .regex(/[A-Z]/, _$t("passwordNeedAUpper"))
+      .regex(/[^\w]/, _$t("passwordNeedASymbol")),
+  })
+);
+
+const {
+  handleSubmit,
+  values: formValues,
+  setValues,
+} = useForm({
+  validationSchema: formSchema,
+});
+
+const onSubmit = handleSubmit((value) => submitAction(value));
+
 const submitIsDisabled = computed(() => {
   return (
-    !form.email ||
-    !form.password ||
+    !formValues.email ||
+    !formValues.password ||
     (!_tokenUserChallenge.value && enableUserChallenge.value)
   );
 });
+
+if (rfMockEnable.value) {
+  setValues({
+    email: rfMock.value.email,
+    password: rfMock.value.password,
+  });
+}
 </script>
 
 <template>
@@ -91,47 +100,57 @@ const submitIsDisabled = computed(() => {
     </CardHeader>
 
     <CardContent>
-      <UForm :schema="schema" :state="form" class="space-y-4">
-        <UFormGroup :label="t('email')" name="email" required>
-          <UInput type="email" v-model="form.email" autofocus />
-        </UFormGroup>
+      <form @submit="onSubmit" class="flex flex-col gap-2">
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>{{ _$t("email") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" type="email" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <UFormGroup :label="t('password')" name="password" required>
-          <UInput type="password" v-model="form.password" />
-        </UFormGroup>
+        <FormField v-slot="{ componentField }" name="password">
+          <FormItem>
+            <FormLabel>{{ _$t("password") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" type="password" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <section
-          v-if="enableUserChallenge && form.email && form.password"
+          v-if="enableUserChallenge && formValues.email && formValues.password"
           class="flex justify-center pt-1"
         >
           <NuxtTurnstile v-model="_tokenUserChallenge" />
         </section>
 
-        <UButton
-          :loading="page.fetch"
-          :disabled="submitIsDisabled"
-          :label="t('access')"
-          block
-          @click="submit"
-        />
-      </UForm>
+        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+          {{ _$t("access") }}
+        </Button>
+      </form>
     </CardContent>
 
     <CardFooter>
-      <section class="flex gap-5 justify-center">
-        <ULink
+      <section class="flex gap-5 justify-center w-full">
+        <NuxtLink
           :to="{ name: 'register' }"
-          inactive-class="text-primary font-bold text-xs"
+          class="hover:text-primary hover:underline text-sm"
         >
           {{ _$t("createAccount") }}
-        </ULink>
+        </NuxtLink>
 
-        <ULink
+        <NuxtLink
           :to="{ name: 'recovery' }"
-          inactive-class="text-primary font-bold text-xs"
+          class="hover:text-primary hover:underline text-sm"
         >
           {{ _$t("recoveryPassword") }}
-        </ULink>
+        </NuxtLink>
       </section>
     </CardFooter>
   </Card>

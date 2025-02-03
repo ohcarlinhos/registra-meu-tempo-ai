@@ -113,7 +113,7 @@ const i18nObj = {
   nameIsRequired: "Nome é obrigatório.",
   nameMin: "Nome deve possuir pelo menos 3 caracteres.",
   nameMax: "Nome tem o tamanho máximo de 120 caracteres.",
-  passwordIsRequired: "Senha é obrigatório.",
+  passwordIsRequired: "Senha é obrigatória.",
   passwordMin: "Senha deve possuir pelo menos 8 caracteres.",
   passwordMax: "Senha tem o tamanho máximo de 48 caracteres.",
   passwordNeedANumber: "Senha deve possuir pelo menos um número.",
