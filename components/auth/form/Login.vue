@@ -80,40 +80,44 @@ const submitIsDisabled = computed(() => {
 </script>
 
 <template>
-  <UCard
-    :ui="{
-      base: 'w-full',
-      footer: { base: 'text-center' },
-    }"
-  >
-    <template #header>{{ _$t("access") }}</template>
+  <Card>
+    <CardHeader>
+      <CardTitle>
+        {{ _$t("access") }}
+      </CardTitle>
+      <CardDescription>
+        Informe suas credenciais para acessar a ferramenta.
+      </CardDescription>
+    </CardHeader>
 
-    <UForm :schema="schema" :state="form" class="space-y-4">
-      <UFormGroup :label="t('email')" name="email" required>
-        <UInput type="email" v-model="form.email" autofocus />
-      </UFormGroup>
+    <CardContent>
+      <UForm :schema="schema" :state="form" class="space-y-4">
+        <UFormGroup :label="t('email')" name="email" required>
+          <UInput type="email" v-model="form.email" autofocus />
+        </UFormGroup>
 
-      <UFormGroup :label="t('password')" name="password" required>
-        <UInput type="password" v-model="form.password" />
-      </UFormGroup>
+        <UFormGroup :label="t('password')" name="password" required>
+          <UInput type="password" v-model="form.password" />
+        </UFormGroup>
 
-      <section
-        v-if="enableUserChallenge && form.email && form.password"
-        class="flex justify-center pt-1"
-      >
-        <NuxtTurnstile v-model="_tokenUserChallenge" />
-      </section>
+        <section
+          v-if="enableUserChallenge && form.email && form.password"
+          class="flex justify-center pt-1"
+        >
+          <NuxtTurnstile v-model="_tokenUserChallenge" />
+        </section>
 
-      <UButton
-        :loading="page.fetch"
-        :disabled="submitIsDisabled"
-        :label="t('access')"
-        block
-        @click="submit"
-      />
-    </UForm>
+        <UButton
+          :loading="page.fetch"
+          :disabled="submitIsDisabled"
+          :label="t('access')"
+          block
+          @click="submit"
+        />
+      </UForm>
+    </CardContent>
 
-    <template #footer>
+    <CardFooter>
       <section class="flex gap-5 justify-center">
         <ULink
           :to="{ name: 'register' }"
@@ -129,6 +133,6 @@ const submitIsDisabled = computed(() => {
           {{ _$t("recoveryPassword") }}
         </ULink>
       </section>
-    </template>
-  </UCard>
+    </CardFooter>
+  </Card>
 </template>
