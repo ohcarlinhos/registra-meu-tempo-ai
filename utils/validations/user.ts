@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import * as z from "zod";
 
 export const useUserValidation = () => {
   const { $i18n } = useNuxtApp();
@@ -38,6 +39,43 @@ export const useUserValidation = () => {
       .min(1, $i18n.t("passwordMin"))
       .max(48, $i18n.t("passwordMax"))
       .required($i18n.t("oldPasswordIsRequired"));
+  };
+
+  return { name, email, password, confirmPassword, oldPassword };
+};
+
+export const useUserValidationZ = () => {
+  const { $i18n } = useNuxtApp();
+
+  const name = () =>
+    z
+      .string({ message: _$t("nameIsRequired") })
+      .min(3, _$t("nameMin"))
+      .max(120, _$t("nameMax"));
+
+  const email = () =>
+    z.string({ message: _$t("emailIsRequired") }).email(_$t("emailIsInvalid"));
+
+  const password = (y = z.string({ message: _$t("passwordIsRequired") })) => {
+    return y
+      .min(8, _$t("passwordMin"))
+      .max(48, _$t("passwordMax"))
+      .regex(/[0-9]/, _$t("passwordNeedANumber"))
+      .regex(/[a-z]/, _$t("passwordNeedALow"))
+      .regex(/[A-Z]/, _$t("passwordNeedAUpper"))
+      .regex(/[^\w]/, _$t("passwordNeedASymbol"));
+  };
+
+  const confirmPassword = (
+    y = z.string({ message: $i18n.t("confirmPasswordIsRequired") })
+  ) => {
+    return y;
+  };
+
+  const oldPassword = (
+    y = z.string({ message: $i18n.t("oldPasswordIsRequired") })
+  ) => {
+    return y.min(1, $i18n.t("passwordMin")).max(48, $i18n.t("passwordMax"));
   };
 
   return { name, email, password, confirmPassword, oldPassword };

@@ -1,41 +1,21 @@
 <script lang="ts" setup>
-import * as yup from "yup";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import * as z from "zod";
 
-const v = useUserValidation();
+const v = useUserValidationZ();
 const { enableUserChallenge } = storeToRefs(useConfigStore());
 
 const isFetch = ref(false);
-
-const form = reactive({
-  name: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-});
-
 const _tokenUserChallenge = ref();
 
 const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 
-if (rfMockEnable.value) {
-  form.name = rfMock.value.name;
-  form.email = rfMock.value.email;
-  form.password = rfMock.value.password;
-  form.confirmPassword = rfMock.value.confirmPassword;
-}
-
-const schema = yup.object({
-  name: v.name(),
-  email: v.email(),
-  password: v.password(),
-  confirmPassword: v.confirmPassword(),
-});
-
-const submit = async () => {
+const submitAction = async (dto: CreateUserDto) => {
   try {
     isFetch.value = true;
 
-    const result = await postUser(form, _tokenUserChallenge.value);
+    const result = await postUser(dto, _tokenUserChallenge.value);
 
     if (result) {
       OkToast(_$t("createUserSuccess"));
@@ -48,71 +28,138 @@ const submit = async () => {
     isFetch.value = false;
   }
 };
+
+const formSchema = toTypedSchema(
+  z
+    .object({
+      name: v.name(),
+      email: v.email(),
+      password: v.password(),
+      confirmPassword: v.confirmPassword(),
+    })
+    .superRefine(({ confirmPassword, password }, ctx) => {
+      if (confirmPassword != password) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["confirmPassword"],
+          message: _$t("confirmPasswordIsDifferent"),
+        });
+      }
+    })
+);
+
+const {
+  handleSubmit,
+  values: formValues,
+  setValues,
+} = useForm({
+  validationSchema: formSchema,
+});
+
+const onSubmit = handleSubmit((value) => submitAction(value));
+
+const submitIsDisabled = computed(() => {
+  return (
+    isFetch.value || (!_tokenUserChallenge.value && enableUserChallenge.value)
+  );
+});
+
+if (rfMockEnable.value) {
+  setValues({
+    name: rfMock.value.name,
+    email: rfMock.value.email,
+    password: rfMock.value.password,
+    confirmPassword: rfMock.value.confirmPassword,
+  });
+}
 </script>
 
 <template>
-  <UCard
-    :ui="{
-      base: 'w-full',
-      footer: {
-        base: 'text-center',
-      },
-    }"
-  >
-    <template #header>{{ _$t("toRecord") }}</template>
+  <Card class="w-full">
+    <CardHeader>
+      <CardTitle>
+        {{ "Criar conta" }}
+      </CardTitle>
+      <CardDescription>
+        Com uma conta você pode organizar seu tempo por tarefas, ver o total
+        gasto e estatísticas.
+      </CardDescription>
+    </CardHeader>
 
-    <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-      <UFormGroup :label="_$t('name')" name="name" required>
-        <UInput type="text" v-model="form.name" autofocus />
-      </UFormGroup>
+    <CardContent>
+      <form @submit="onSubmit" class="flex flex-col gap-2">
+        <FormField v-slot="{ componentField }" name="name">
+          <FormItem>
+            <FormLabel>{{ _$t("name") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-      <UFormGroup :label="_$t('email')" name="email" required>
-        <UInput type="email" v-model="form.email" />
-      </UFormGroup>
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>{{ _$t("email") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" type="email" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-      <UFormGroup :label="_$t('password')" name="password" required>
-        <UInput type="password" v-model="form.password" />
-      </UFormGroup>
+        <FormField v-slot="{ componentField }" name="password">
+          <FormItem>
+            <FormLabel>{{ _$t("password") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" type="password" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-      <UFormGroup
-        :label="_$t('confirmPassword')"
-        name="confirmPassword"
-        required
-      >
-        <UInput type="password" v-model="form.confirmPassword" />
-      </UFormGroup>
+        <FormField v-slot="{ componentField }" name="confirmPassword">
+          <FormItem>
+            <FormLabel>{{ _$t("confirmPassword") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" type="password" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-      <section
-        v-if="
-          enableUserChallenge &&
-          form.email &&
-          form.name &&
-          form.password &&
-          form.confirmPassword
-        "
-        class="flex justify-center pt-1"
-      >
-        <NuxtTurnstile v-model="_tokenUserChallenge" />
-      </section>
-
-      <UButton
-        type="submit"
-        :label="_$t('toRecord')"
-        :loading="isFetch"
-        :disabled="!_tokenUserChallenge && enableUserChallenge"
-        block
-      />
-    </UForm>
-
-    <template #footer>
-      <section class="flex gap-5 justify-center">
-        <ULink
-          :to="{ name: 'login' }"
-          inactive-class="text-primary font-bold text-xs"
+        <section
+          v-if="
+            enableUserChallenge &&
+            formValues.email &&
+            formValues.name &&
+            formValues.password &&
+            formValues.confirmPassword
+          "
+          class="flex justify-center pt-1"
         >
-          {{ _$t("access") }}
-        </ULink>
+          <NuxtTurnstile v-model="_tokenUserChallenge" />
+        </section>
+
+        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+          {{ _$t("toRecord") }}
+        </Button>
+      </form>
+    </CardContent>
+
+    <CardFooter>
+      <section class="flex gap-5 justify-center w-full">
+        <NuxtLink
+          :to="{ name: 'login' }"
+          class="hover:text-primary hover:underline text-sm"
+        >
+          {{ "Acessar conta" }}
+        </NuxtLink>
       </section>
-    </template>
-  </UCard>
+    </CardFooter>
+  </Card>
 </template>

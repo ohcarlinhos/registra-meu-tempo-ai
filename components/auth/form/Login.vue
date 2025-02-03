@@ -8,6 +8,8 @@ const { authModal } = storeToRefs(authStore);
 const { closeAuthModal, setJwt } = authStore;
 const { enableUserChallenge } = storeToRefs(useConfigStore());
 
+const v = useUserValidationZ();
+
 const userStore = useUserStore();
 const { checkIfIsVerified } = userStore;
 
@@ -48,17 +50,8 @@ const submitAction = async (dto: LoginDto) => {
 
 const formSchema = toTypedSchema(
   z.object({
-    email: z
-      .string({ message: _$t("emailIsRequired") })
-      .email(_$t("emailIsInvalid")),
-    password: z
-      .string({ message: _$t("passwordIsRequired") })
-      .min(8, _$t("passwordMin"))
-      .max(48, _$t("passwordMax"))
-      .regex(/[0-9]/, _$t("passwordNeedANumber"))
-      .regex(/[a-z]/, _$t("passwordNeedALow"))
-      .regex(/[A-Z]/, _$t("passwordNeedAUpper"))
-      .regex(/[^\w]/, _$t("passwordNeedASymbol")),
+    email: v.email(),
+    password: v.password(),
   })
 );
 
@@ -74,9 +67,7 @@ const onSubmit = handleSubmit((value) => submitAction(value));
 
 const submitIsDisabled = computed(() => {
   return (
-    !formValues.email ||
-    !formValues.password ||
-    (!_tokenUserChallenge.value && enableUserChallenge.value)
+    isFetch.value || (!_tokenUserChallenge.value && enableUserChallenge.value)
   );
 });
 
@@ -89,7 +80,7 @@ if (rfMockEnable.value) {
 </script>
 
 <template>
-  <Card>
+  <Card class="w-full">
     <CardHeader>
       <CardTitle>
         {{ _$t("access") }}
