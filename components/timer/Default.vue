@@ -241,14 +241,14 @@ onBeforeUnmount(() => {
 
 <template>
   <section v-if="timer" class="flex flex-col gap-3 items-center min-w-72">
-    <p v-if="!code" class="text-sm text-center pb-4">
+    <!-- <p v-if="!code" class="text-sm text-center pb-4">
       Atenção: Sessões registradas nessa página são
       <b class="text-primary">salvas no navegador.</b>
 
       <template v-if="!userIsAuth"> Acesse sua conta e sincronize-as</template>
       <template v-else> Sincronize-as </template>
       para que apareçam nas estatísticas.
-    </p>
+    </p> -->
 
     <section :class="timerComponentClass">
       <section class="flex mb-2 justify-center">

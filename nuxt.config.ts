@@ -29,7 +29,18 @@ export default defineNuxtConfig({
     "nuxt-clarity-analytics",
     "@nuxtjs/turnstile",
     "@nuxtjs/seo",
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
   ],
+
+  shadcn: {
+    prefix: "",
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: "./components/ui",
+  },
 
   site: {
     url: "https://registrameutempoai.com.br",
