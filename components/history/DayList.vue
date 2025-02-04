@@ -177,35 +177,29 @@ defineExpose({
     class="w-full grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
   >
     <section class="w-full md:col-span-12">
-      <UContainer
-        :ui="{
-          padding: 'pb-5 px-0 lg:px-0 sm:px-0',
-        }"
-      >
-        <section class="flex md:flex-row justify-between gap-5 flex-col">
-          <section>
-            <h2 class="text-4xl font-bold">
-              {{ _$t("historyRecord") }}
+      <section class="flex md:flex-row justify-between gap-5 flex-col">
+        <section>
+          <h2 class="text-4xl font-bold">
+            {{ _$t("historyRecord") }}
 
-              <GUpdatedOn
-                v-if="updatedOn"
-                :disabled="isFetchNow"
-                :updated-on="updatedOn"
-                :click-action="getData"
-              />
-            </h2>
-            <span>Listagem por data de criação de sessões e períodos.</span>
-          </section>
-
-          <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
-            <TimePeriodButtonAdd
-              :time-record-id="timeRecordId"
+            <GUpdatedOn
+              v-if="updatedOn"
               :disabled="isFetchNow"
-              @open="createTimePeriod"
+              :updated-on="updatedOn"
+              :click-action="getData"
             />
-          </div>
+          </h2>
+          <span>Listagem por data de criação de sessões e períodos.</span>
         </section>
-      </UContainer>
+
+        <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
+          <TimePeriodButtonAdd
+            :time-record-id="timeRecordId"
+            :disabled="isFetchNow"
+            @open="createTimePeriod"
+          />
+        </div>
+      </section>
     </section>
 
     <section
@@ -236,225 +230,227 @@ defineExpose({
       <USkeleton class="h-32 w-full col-span-1 md:col-span-6 lg:col-span-4" />
     </section>
 
-    <UCard
+    <Card
       v-else-if="dayStore.apiRes?.data?.length"
       v-for="day in dayStore.apiRes.data"
       class="w-full col-span-1 md:col-span-6 lg:col-span-4"
     >
-      <h3 class="text-xl inline-flex gap-2 items-center">
-        {{ format(day.date, "dd/MM/yyyy") }}
-      </h3>
+      <CardContent>
+        <h3 class="text-xl inline-flex gap-2 items-center pt-5">
+          {{ format(day.date, "dd/MM/yyyy") }}
+        </h3>
 
-      <p class="text-md pb-1">
-        <span class="flex gap-1 content-center">
-          Total: {{ day.formattedTime }}
+        <p class="text-md pb-1">
+          <span class="flex gap-1 content-center">
+            Total: {{ day.formattedTime }}
 
-          <UPopover mode="hover">
-            <UIcon
-              name="i-icon-park-outline-attention"
-              class="w-3 h-3 -translate-y-1"
-            />
+            <UPopover mode="hover">
+              <UIcon
+                name="i-icon-park-outline-attention"
+                class="w-3 h-3 -translate-y-1"
+              />
 
-            <template #panel>
-              <section class="p-2 max-w-96 leading-none">
-                <span class="text-xs">
-                  O "Total" é a soma de todos os períodos de tempo e sessões que
-                  iniciaram entre 00:00:00 e 23:59:59, mesmo que finalizem
-                  depois desse horário (próximo dia).
-                </span>
-              </section>
-            </template>
-          </UPopover>
-        </span>
-      </p>
-
-      <template v-if="day.timerSessions.length">
-        <UDivider class="py-2" />
-
-        <p class="text-lg flex gap-1">
-          Sessões
-
-          <UPopover mode="hover">
-            <UIcon
-              name="i-icon-park-outline-attention"
-              class="w-3 h-3 -translate-y-1"
-            />
-
-            <template #panel>
-              <section class="p-2 max-w-96 leading-none">
-                <span class="text-xs">
-                  Sessões iniciadas entre 00:00:00 e 23:59:59. O cálculo de
-                  horas considera períodos finalizados no próximo dia.
-                </span>
-              </section>
-            </template>
-          </UPopover>
+              <template #panel>
+                <section class="p-2 max-w-96 leading-none">
+                  <span class="text-xs">
+                    O "Total" é a soma de todos os períodos de tempo e sessões
+                    que iniciaram entre 00:00:00 e 23:59:59, mesmo que finalizem
+                    depois desse horário (próximo dia).
+                  </span>
+                </section>
+              </template>
+            </UPopover>
+          </span>
         </p>
 
-        <p class="text-sm">
-          {{ day.timerSessionsFormattedTime }}, {{ day.timerSessions.length }}
-          {{ day.timerSessions.length > 1 ? "sessões" : "sessão" }}
-        </p>
+        <template v-if="day.timerSessions.length">
+          <UDivider class="py-2" />
 
-        <section
-          v-if="day.timerSessions.length"
-          class="flex flex-row gap-2 flex-wrap py-2"
-        >
-          <UPopover
-            v-for="(timerSession, index) in day.timerSessions"
-            :key="timerSession.id"
-            mode="hover"
+          <p class="text-lg flex gap-1">
+            Sessões
+
+            <UPopover mode="hover">
+              <UIcon
+                name="i-icon-park-outline-attention"
+                class="w-3 h-3 -translate-y-1"
+              />
+
+              <template #panel>
+                <section class="p-2 max-w-96 leading-none">
+                  <span class="text-xs">
+                    Sessões iniciadas entre 00:00:00 e 23:59:59. O cálculo de
+                    horas considera períodos finalizados no próximo dia.
+                  </span>
+                </section>
+              </template>
+            </UPopover>
+          </p>
+
+          <p class="text-sm">
+            {{ day.timerSessionsFormattedTime }}, {{ day.timerSessions.length }}
+            {{ day.timerSessions.length > 1 ? "sessões" : "sessão" }}
+          </p>
+
+          <section
+            v-if="day.timerSessions.length"
+            class="flex flex-row gap-2 flex-wrap py-2"
           >
-            <UBadge
-              :color="getSessionColor(timerSession.type)"
-              :variant="index % 2 == 0 ? 'subtle' : 'soft'"
-              size="md"
+            <UPopover
+              v-for="(timerSession, index) in day.timerSessions"
+              :key="timerSession.id"
+              mode="hover"
             >
-              {{ timerSession.formattedTime || "0s" }}
-            </UBadge>
+              <UBadge
+                :color="getSessionColor(timerSession.type)"
+                :variant="index % 2 == 0 ? 'subtle' : 'soft'"
+                size="md"
+              >
+                {{ timerSession.formattedTime || "0s" }}
+              </UBadge>
 
-            <template #panel>
-              <div class="p-2 pt-1 flex flex-col items-center gap-2">
-                <p class="text-sm">
-                  {{ getSessionLabel(timerSession.type) }}
-                </p>
+              <template #panel>
+                <div class="p-2 pt-1 flex flex-col items-center gap-2">
+                  <p class="text-sm">
+                    {{ getSessionLabel(timerSession.type) }}
+                  </p>
 
-                <UDivider />
+                  <UDivider />
 
-                <section
-                  v-for="tp in timerSession.timePeriods"
-                  :key="tp.id"
-                  class="flex w-full justify-around gap-2"
-                >
-                  <UBadge
-                    color="gray"
-                    variant="solid"
-                    :title="
-                      format(tp.start, 'HH:mm:ss dd/MM/yyyy') +
-                      ' até ' +
-                      format(tp.end, 'HH:mm:ss dd/MM/yyyy')
-                    "
+                  <section
+                    v-for="tp in timerSession.timePeriods"
+                    :key="tp.id"
+                    class="flex w-full justify-around gap-2"
                   >
-                    {{ format(tp.start, "HH:mm:ss") }} até
-                    {{ format(tp.end, "HH:mm:ss") }}
-                  </UBadge>
-
-                  <section class="flex gap-2">
                     <UBadge
-                      color="yellow"
-                      variant="subtle"
-                      :title="tp.formattedTime"
+                      color="gray"
+                      variant="solid"
+                      :title="
+                        format(tp.start, 'HH:mm:ss dd/MM/yyyy') +
+                        ' até ' +
+                        format(tp.end, 'HH:mm:ss dd/MM/yyyy')
+                      "
                     >
-                      {{ tp.formattedTime }}
+                      {{ format(tp.start, "HH:mm:ss") }} até
+                      {{ format(tp.end, "HH:mm:ss") }}
                     </UBadge>
 
+                    <section class="flex gap-2">
+                      <UBadge
+                        color="yellow"
+                        variant="subtle"
+                        :title="tp.formattedTime"
+                      >
+                        {{ tp.formattedTime }}
+                      </UBadge>
+
+                      <UButton
+                        color="gray"
+                        variant="ghost"
+                        size="2xs"
+                        icon="i-icon-park-outline-delete-themes"
+                        @click="openDeleteTpModal(tp.id)"
+                      />
+                    </section>
+                  </section>
+
+                  <section>
                     <UButton
+                      :label="_$t('delete')"
                       color="gray"
                       variant="ghost"
-                      size="2xs"
                       icon="i-icon-park-outline-delete-themes"
-                      @click="openDeleteTpModal(tp.id)"
+                      @click="openDeleteTsModal(timerSession.id)"
                     />
                   </section>
+                </div>
+              </template>
+            </UPopover>
+          </section>
+        </template>
+
+        <template v-if="day.timePeriods.length">
+          <UDivider class="py-2" />
+
+          <p class="text-lg flex gap-1">
+            Períodos
+
+            <UPopover mode="hover">
+              <UIcon
+                name="i-icon-park-outline-attention"
+                class="w-3 h-3 -translate-y-1"
+              />
+
+              <template #panel>
+                <section class="p-2 max-w-96 leading-none">
+                  <span class="text-xs">
+                    Períodos criados entre 00:00:00 e 23:59:59. O cálculo de
+                    horas considera períodos finalizados no próximo dia.
+                  </span>
                 </section>
+              </template>
+            </UPopover>
+          </p>
 
-                <section>
-                  <UButton
-                    :label="_$t('delete')"
-                    color="gray"
-                    variant="ghost"
-                    icon="i-icon-park-outline-delete-themes"
-                    @click="openDeleteTsModal(timerSession.id)"
-                  />
-                </section>
-              </div>
-            </template>
-          </UPopover>
-        </section>
-      </template>
+          <p class="text-sm">
+            {{ day.timePeriodsFormattedTime }}, {{ day.timePeriods.length }}
+            {{ day.timePeriods.length > 1 ? "períodos" : "período" }}
+          </p>
 
-      <template v-if="day.timePeriods.length">
-        <UDivider class="py-2" />
-
-        <p class="text-lg flex gap-1">
-          Períodos
-
-          <UPopover mode="hover">
-            <UIcon
-              name="i-icon-park-outline-attention"
-              class="w-3 h-3 -translate-y-1"
-            />
-
-            <template #panel>
-              <section class="p-2 max-w-96 leading-none">
-                <span class="text-xs">
-                  Períodos criados entre 00:00:00 e 23:59:59. O cálculo de horas
-                  considera períodos finalizados no próximo dia.
-                </span>
-              </section>
-            </template>
-          </UPopover>
-        </p>
-
-        <p class="text-sm">
-          {{ day.timePeriodsFormattedTime }}, {{ day.timePeriods.length }}
-          {{ day.timePeriods.length > 1 ? "períodos" : "período" }}
-        </p>
-
-        <section class="flex flex-row gap-2 flex-wrap py-2">
-          <UPopover
-            v-for="(period, index) in day.timePeriods"
-            :key="period.id"
-            mode="hover"
-          >
-            <UBadge
-              color="yellow"
-              :variant="index % 2 == 0 ? 'subtle' : 'soft'"
-              size="md"
+          <section class="flex flex-row gap-2 flex-wrap py-2">
+            <UPopover
+              v-for="(period, index) in day.timePeriods"
+              :key="period.id"
+              mode="hover"
             >
-              {{ period.formattedTime || "0s" }}
-            </UBadge>
+              <UBadge
+                color="yellow"
+                :variant="index % 2 == 0 ? 'subtle' : 'soft'"
+                size="md"
+              >
+                {{ period.formattedTime || "0s" }}
+              </UBadge>
 
-            <template #panel>
-              <div class="p-2 pt-4 flex flex-col items-center gap-2">
-                <section class="flex items-center gap-2">
-                  <UBadge
-                    color="gray"
-                    variant="solid"
-                    :title="format(period.start, 'HH:mm:ss dd/MM/yyyy')"
-                  >
-                    {{ format(period.start, "HH:mm:ss") }}
-                  </UBadge>
-                  até
-                  <UBadge
-                    color="gray"
-                    variant="solid"
-                    :title="format(period.end, 'HH:mm:ss dd/MM/yyyy')"
-                  >
-                    {{ format(period.end, "HH:mm:ss") }}
-                  </UBadge>
-                </section>
+              <template #panel>
+                <div class="p-2 pt-4 flex flex-col items-center gap-2">
+                  <section class="flex items-center gap-2">
+                    <UBadge
+                      color="gray"
+                      variant="solid"
+                      :title="format(period.start, 'HH:mm:ss dd/MM/yyyy')"
+                    >
+                      {{ format(period.start, "HH:mm:ss") }}
+                    </UBadge>
+                    até
+                    <UBadge
+                      color="gray"
+                      variant="solid"
+                      :title="format(period.end, 'HH:mm:ss dd/MM/yyyy')"
+                    >
+                      {{ format(period.end, "HH:mm:ss") }}
+                    </UBadge>
+                  </section>
 
-                <section>
-                  <TimePeriodButtonEdit
-                    :time-period="period"
-                    @open="editTimePeriod"
-                  />
+                  <section>
+                    <TimePeriodButtonEdit
+                      :time-period="period"
+                      @open="editTimePeriod"
+                    />
 
-                  <UButton
-                    :label="_$t('delete')"
-                    color="gray"
-                    variant="ghost"
-                    icon="i-icon-park-outline-delete-themes"
-                    @click="openDeleteTpModal(period.id!)"
-                  />
-                </section>
-              </div>
-            </template>
-          </UPopover>
-        </section>
-      </template>
-    </UCard>
+                    <UButton
+                      :label="_$t('delete')"
+                      color="gray"
+                      variant="ghost"
+                      icon="i-icon-park-outline-delete-themes"
+                      @click="openDeleteTpModal(period.id!)"
+                    />
+                  </section>
+                </div>
+              </template>
+            </UPopover>
+          </section>
+        </template>
+      </CardContent>
+    </Card>
 
     <section
       v-else
