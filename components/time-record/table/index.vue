@@ -174,41 +174,43 @@ onMounted(() => {
       </div>
     </UContainer>
 
-    <UCard>
-      <UTable
-        :columns="columns"
-        :rows="trStore.timeRecordsTableData"
-        :loading="isFetch"
-        v-model:sort="computedSort"
-        sort-mode="manual"
-      >
-        <template #actions-data="{ row }">
-          <div class="flex justify-end gap-2">
-            <UButton
-              :label="_$t('access')"
-              color="gray"
-              @click="() => emit('access', row.code!)"
-            />
-
-            <UDropdown :items="items(row)">
+    <Card>
+      <CardContent>
+        <UTable
+          :columns="columns"
+          :rows="trStore.timeRecordsTableData"
+          :loading="isFetch"
+          v-model:sort="computedSort"
+          sort-mode="manual"
+        >
+          <template #actions-data="{ row }">
+            <div class="flex justify-end gap-2">
               <UButton
+                :label="_$t('access')"
                 color="gray"
-                variant="ghost"
-                icon="i-icon-park-outline-more-one"
+                @click="() => emit('access', row.code!)"
               />
-            </UDropdown>
-          </div>
-        </template>
-      </UTable>
 
-      <GPagination
-        :page="trStore.apiRes?.page"
-        :perPage="trStore.apiRes?.perPage"
-        :totalPages="trStore.apiRes?.totalPages"
-        :totalItems="trStore.apiRes?.totalItems"
-        :store="trStore"
-        :is-fetch="isFetch"
-      />
-    </UCard>
+              <UDropdown :items="items(row)">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-icon-park-outline-more-one"
+                />
+              </UDropdown>
+            </div>
+          </template>
+        </UTable>
+
+        <GPagination
+          :page="trStore.apiRes?.page"
+          :perPage="trStore.apiRes?.perPage"
+          :totalPages="trStore.apiRes?.totalPages"
+          :totalItems="trStore.apiRes?.totalItems"
+          :store="trStore"
+          :is-fetch="isFetch"
+        />
+      </CardContent>
+    </Card>
   </div>
 </template>
