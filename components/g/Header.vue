@@ -90,7 +90,7 @@ const activeClass = "text-primary font-bold";
 
       <ULink
         v-if="userIsAuth"
-        :to="{ name: 'options' }"
+        :to="{ name: 'user.me' }"
         :active-class="activeClass"
       >
         {{ _$t("options") }}
