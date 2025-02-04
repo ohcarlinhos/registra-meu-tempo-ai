@@ -77,7 +77,9 @@ const data = {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem @select="$router.push({ name: 'user.me' })">
+              <DropdownMenuItem
+                @select="() => $router.push({ name: 'user.me' })"
+              >
                 <BadgeCheck />
                 Minha Conta
               </DropdownMenuItem>
@@ -95,7 +97,7 @@ const data = {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem @select="logout">
               <LogOut />
               Sair
             </DropdownMenuItem>
