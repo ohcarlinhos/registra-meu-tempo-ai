@@ -54,11 +54,11 @@ const data = {
       name: "record.category",
       icon: Tag,
     },
-    {
-      title: "Metas",
-      name: "record.panel",
-      icon: Target,
-    },
+    // {
+    //   title: "Metas",
+    //   name: "record.panel",
+    //   icon: Target,
+    // },
   ],
 };
 
@@ -246,7 +246,7 @@ const breadcrumbList = computed(() => {
 
               <SidebarMenuItem>
                 <SidebarMenuButton as-child>
-                  <NuxtLink :to="{ name: 'record.category' }" as="a">
+                  <NuxtLink :to="{ name: 'feedback.page' }" as="a">
                     <component :is="MessageCircle" />
                     <span>Enviar Feedback</span>
                   </NuxtLink>
