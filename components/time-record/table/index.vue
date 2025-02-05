@@ -133,48 +133,44 @@ onMounted(() => {
 
 <template>
   <div class="flex-1">
-    <UContainer
-      :ui="{
-        base: 'flex flex-col md:flex-row justify-between gap-5',
-        padding: 'pb-6 px-0 lg:px-0 sm:px-0',
-        constrained: 'max-w-8xl',
-      }"
-    >
-      <section class="flex items-center gap-5">
-        <h2 class="text-4xl font-bold">{{ "Tarefas" }}</h2>
-
-        <UButton
-          :label="_$t('create')"
-          icon="i-icon-park-outline-add"
-          @click="emit('create')"
-        />
-      </section>
-
-      <div class="flex flex-col gap-5 md:flex-row items-start mt-1 mr-1">
-        <section class="flex gap-2">
-          <USelectMenu
-            v-model="computedCategory"
-            :options="categories"
-            :disabled="isFetch"
-            value-attribute="id"
-            option-attribute="name"
-            :placeholder="_$t('category')"
-          />
+    <Card>
+      <CardHeader class="flex-row gap-4 justify-between">
+        <section class="flex flex-row gap-4">
+          <CardTitle>
+            {{ "Tarefas" }}
+          </CardTitle>
 
           <UButton
-            :label="_$t('clear')"
-            :disabled="!computedCategory || isFetch"
-            variant="outline"
-            :color="!computedCategory ? 'white' : 'red'"
-            @click="computedCategory = ''"
+            :label="_$t('create')"
+            icon="i-icon-park-outline-add"
+            @click="emit('create')"
           />
         </section>
 
-        <GSearch :store="trStore" :is-fetch="isFetch" />
-      </div>
-    </UContainer>
+        <div class="flex flex-col gap-5 md:flex-row items-start">
+          <section class="flex gap-2">
+            <USelectMenu
+              v-model="computedCategory"
+              :options="categories"
+              :disabled="isFetch"
+              value-attribute="id"
+              option-attribute="name"
+              :placeholder="_$t('category')"
+            />
 
-    <Card>
+            <UButton
+              :label="_$t('clear')"
+              :disabled="!computedCategory || isFetch"
+              variant="outline"
+              :color="!computedCategory ? 'white' : 'red'"
+              @click="computedCategory = ''"
+            />
+          </section>
+
+          <GSearch :store="trStore" :is-fetch="isFetch" />
+        </div>
+      </CardHeader>
+
       <CardContent>
         <UTable
           :columns="columns"
