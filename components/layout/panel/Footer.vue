@@ -1,12 +1,5 @@
 <script lang="ts" setup>
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-vue-next";
+import { BadgeCheck, ChevronsUpDown, LogOut, Sun, Moon } from "lucide-vue-next";
 
 const data = {
   user: {
@@ -14,6 +7,11 @@ const data = {
     email: "teste@email.com",
     avatar: "/avatars/shadcn.jpg",
   },
+};
+
+const toggleDark = () => {
+  const colorMode = useColorMode();
+  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 };
 </script>
 
@@ -61,6 +59,11 @@ const data = {
                   </span>
 
                   <span class="truncate text-xs">{{ data.user.email }}</span>
+                </div>
+                <div>
+                  <Button variant="outline" size="icon" @click="toggleDark">
+                    <component :is="isDark ? Sun : Moon" />
+                  </Button>
                 </div>
               </div>
             </DropdownMenuLabel>
