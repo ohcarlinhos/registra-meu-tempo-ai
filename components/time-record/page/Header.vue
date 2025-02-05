@@ -16,7 +16,7 @@ defineProps<{
     <USkeleton class="mt-4 h-20 w-full" />
   </div>
 
-  <div v-else-if="timeRecord" class="w-full">
+  <section v-else-if="timeRecord" class="w-full">
     <section
       class="flex md:flex-row gap-5 flex-col md:items-center items-start mb-5"
     >
@@ -40,5 +40,5 @@ defineProps<{
     </p>
 
     <TimeRecordCardAbout :time-record="timeRecord" />
-  </div>
+  </section>
 </template>
