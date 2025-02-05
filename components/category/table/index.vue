@@ -22,7 +22,7 @@ const modal = reactive({
 
 const editCategoryObject = ref<CategoryForm>();
 
-const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
+const columns = [{ key: "name", label: "Nome" }, { key: "actions" }];
 
 const items = (row: CategoryMap) => [
   [
