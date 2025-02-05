@@ -55,34 +55,38 @@ const createAction = async () => {
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <h2>{{ "Feedback / Dúvida" }}</h2>
+  <Card>
+    <CardHeader>
+      <CardTitle>
+        {{ "Feedback / Dúvida" }}
+      </CardTitle>
 
       <GCloseButton @close="close" />
-    </template>
+    </CardHeader>
 
-    <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <UFormGroup label="Mensagem" name="message">
-        <UTextarea v-model="form.message" autoresize />
-      </UFormGroup>
+    <CardContent>
+      <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+        <UFormGroup label="Mensagem" name="message">
+          <UTextarea v-model="form.message" autoresize />
+        </UFormGroup>
 
-      <section
-        v-if="enableUserChallenge && form.message"
-        class="flex justify-center pt-1"
-      >
-        <NuxtTurnstile v-model="_tokenUserChallenge" />
-      </section>
+        <section
+          v-if="enableUserChallenge && form.message"
+          class="flex justify-center pt-1"
+        >
+          <NuxtTurnstile v-model="_tokenUserChallenge" />
+        </section>
 
-      <UButton
-        :loading="isFetch"
-        :label="$t('send')"
-        :disabled="
-          !form.message || (!_tokenUserChallenge && enableUserChallenge)
-        "
-        block
-        type="submit"
-      />
-    </UForm>
-  </UCard>
+        <UButton
+          :loading="isFetch"
+          :label="$t('send')"
+          :disabled="
+            !form.message || (!_tokenUserChallenge && enableUserChallenge)
+          "
+          block
+          type="submit"
+        />
+      </UForm>
+    </CardContent>
+  </Card>
 </template>
