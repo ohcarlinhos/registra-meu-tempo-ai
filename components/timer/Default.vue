@@ -18,8 +18,6 @@ const props = defineProps({
   },
 });
 
-const { t } = useI18n();
-
 const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
@@ -42,7 +40,7 @@ const timerLabelText = ref("");
 
 watch(
   () => timer.value.currentPeriod.end,
-  (newValue) => {
+  (_) => {
     timerLabelText.value = millisecondsToString(
       timer.value.type == "pomodoro" || timer.value.type == "break"
         ? timerStore.getRegressiveMillisecondsNecessary(props.id) -
@@ -197,37 +195,16 @@ const closeTimeRecordModal = () => {
   editTimeRecordObject.value = undefined;
 };
 
-const randomTimerLabel = computed(() => {
-  const timerLabelList = [
-    _$t("timerLabel01"),
-    _$t("timerLabel02"),
-    _$t("timerLabel03"),
-    _$t("timerLabel04"),
-    _$t("timerLabel05"),
-  ];
-
-  const randomIndex = Math.floor(Math.random() * timerLabelList.length);
-  return timerLabelList[randomIndex];
-});
-
 const getButtonColor = computed(() => {
   if (timer.value.type === "pomodoro") return "red";
   if (timer.value.type == "break") return "blue";
   return "green";
 });
 
-const timerComponentClass = computed(() => {
-  const getColor = () => {
-    if (timer.value.type === "pomodoro") return "red";
-    if (timer.value.type === "break") return "blue";
-    return "green";
-  };
-
-  return [
-    `p-6 pb-8 relative rounded-xl w-full`,
-    `dark:bg-${getColor()}-950 dark:bg-opacity-70`,
-    `ring-2 dark:ring-${getColor()}-500 ring-2 ring-${getColor()}-500`,
-  ];
+const getLabel = computed(() => {
+  if (timer.value.type === "pomodoro") return "Pomodoro";
+  if (timer.value.type == "break") return "Descanso";
+  return "Cronômetro";
 });
 
 const isFetch = computed(() => {
@@ -241,21 +218,24 @@ onBeforeUnmount(() => {
 
 <template>
   <section v-if="timer" class="flex flex-col gap-3 items-center min-w-72">
-    <!-- <p v-if="!code" class="text-sm text-center pb-4">
-      Atenção: Sessões registradas nessa página são
-      <b class="text-primary">salvas no navegador.</b>
-
-      <template v-if="!userIsAuth"> Acesse sua conta e sincronize-as</template>
-      <template v-else> Sincronize-as </template>
-      para que apareçam nas estatísticas.
-    </p> -->
-
-    <section :class="timerComponentClass">
+    <section
+      :class="[
+        'flex flex-col justify-center align-middle relative',
+        'w-[320px] h-[320px] ring-4 shadow-md rounded-full',
+        'ring-black ring-opacity-40 border-[12px] dark:ring-white dark:ring-opacity-10',
+        'border-[10px] border-opacity-70 bg-white text-gray-700 ',
+        'dark:border-[10px] dark:border-opacity-80 dark:bg-gray-800 dark:text-white',
+        timer.type == 'pomodoro' && 'border-red-500',
+        timer.type == 'timer' && 'border-green-500',
+        timer.type == 'break' && 'border-blue-500',
+      ]"
+    >
       <section class="flex mb-2 justify-center">
         <UButton
           title="Selecione entre Cronômetro, Pomodoro ou Descanso."
           color="white"
           variant="ghost"
+          :disabled="timerHasMilliseconds"
           icon="i-icon-park-outline-timer"
           @click="timerStore.toggleOptions(props.id)"
         >
@@ -263,95 +243,87 @@ onBeforeUnmount(() => {
         </UButton>
       </section>
 
-      <section
-        class="flex flex-col gap-5 justify-center items-center aspect-square"
-      >
+      <section class="flex flex-col gap-5 justify-center items-center relative">
         <section class="text-center">
-          <h3 v-if="timerDoNotHasMilliseconds" class="text-4xl font-bold">
+          <h3 v-if="timerDoNotHasMilliseconds" class="text-5xl font-bold">
             {{
               timer.type == "pomodoro" || timer.type == "break"
                 ? timer.type == "pomodoro"
-                  ? timer.pomodoroPeriod + " minutos"
-                  : timer.breakPeriod + " minutos"
-                : randomTimerLabel
+                  ? timer.pomodoroPeriod + "m"
+                  : timer.breakPeriod + "m"
+                : "0s"
             }}
           </h3>
 
-          <h3 v-else class="text-4xl font-bold">
+          <h3 v-else class="text-5xl font-bold">
             {{ timerLabelText }}
           </h3>
-
-          <p v-if="!timer.isRun && timerHasMilliseconds">Continuar?</p>
-
-          <p v-else-if="timer.type == 'pomodoro'">
-            {{
-              timer.isRun ? "até finalizar o Pomodoro." : "no modo Pomodoro."
-            }}
-          </p>
-
-          <p v-else-if="timer.type == 'break'">
-            {{
-              timer.isRun ? "para acabar o descanso..." : "de descanso (break)."
-            }}
-          </p>
-
-          <p v-else-if="timer.type == 'timer'">
-            {{ timer.isRun ? "até o momento." : "utilizando o cronômetro." }}
-          </p>
         </section>
 
-        <div class="flex gap-3">
+        <div class="flex gap-4">
           <UButton
             v-if="!timer.isRun"
             :title="
               timer.currentPeriodList.length ? $t('continue') : $t('doStart')
             "
+            class="rounded-full"
             :disabled="timer.isRun || isFetch"
             color="blue"
             icon="i-icon-park-outline-play-one"
+            size="lg"
             @click="startTimer"
           />
 
           <UButton
             v-if="timer.isRun"
+            class="rounded-full"
             :disabled="!timer.isRun || isFetch"
             :title="$t('pause')"
             color="yellow"
             icon="i-icon-park-outline-pause"
+            size="lg"
             @click="pauseTimer"
           />
 
           <UButton
             v-if="timer.type !== 'break'"
+            class="rounded-full"
             :disabled="timerDoNotHasMilliseconds || isFetch"
             :loading="isFetch"
             :title="$t('finish')"
             color="green"
             icon="i-icon-park-outline-hard-disk-one"
+            size="lg"
             @click="endTimer"
           />
 
           <UButton
+            class="rounded-full"
             :disabled="timerDoNotHasMilliseconds || isFetch"
             :title="$t('stop')"
             color="red"
             icon="i-icon-park-outline-close-small"
+            size="lg"
             @click="stopTimer"
           />
         </div>
+
+        <section class="text-sm opacity-30 -mt-2">
+          <label>{{ getLabel }}</label>
+        </section>
       </section>
-
-      <p
-        v-if="props.code"
-        :class="['text-center pt-5 text-sm', isDark && 'opacity-50']"
-      >
-        Sincronizado com a tarefa:
-
-        <UBadge :color="getButtonColor" variant="soft" size="md">
-          {{ props.code }}
-        </UBadge>
-      </p>
     </section>
+
+    <p
+      v-if="props.code"
+      :class="['text-center text-sm', isDark && 'opacity-50']"
+    >
+      Sincronizado com a tarefa:
+
+      <UBadge :color="getButtonColor" variant="soft" size="md">
+        {{ props.code }}
+      </UBadge>
+    </p>
 
     <UButton
       v-if="modal && timer.localRecords.length >= 1"
@@ -387,30 +359,38 @@ onBeforeUnmount(() => {
   </UModal>
 
   <UModal v-if="modal" v-model="modal.timeRecordsTable.open">
-    <UCard v-if="modal.timeRecordsTable.open">
-      <GCloseButton @close="modal.timeRecordsTable.open = false" />
+    <Card v-if="modal.timeRecordsTable.open">
+      <CardHeader>
+        <CardTitle>Sessões</CardTitle>
+        <GCloseButton @close="modal.timeRecordsTable.open = false" />
+        <CardDescription>
+          Sessões que aparecem nessa lista estão salvas apenas no navegador.
+        </CardDescription>
+      </CardHeader>
 
-      <TimeRecordTableLocal
-        v-if="timer.localRecords.length"
-        :id="props.id"
-        :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
-      />
+      <CardContent>
+        <TimeRecordTableLocal
+          v-if="timer.localRecords.length"
+          :id="props.id"
+          :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
+        />
 
-      <p v-else class="py-3">
-        {{
-          props.id
-            ? "Os períodos de tempo da sua tarefa estão sincronizados."
-            : "Não há mais nenhum registro de tempo local."
-        }}
-      </p>
+        <p v-else class="py-3">
+          {{
+            props.id
+              ? "Os períodos de tempo da sua tarefa estão sincronizados."
+              : "Não há mais nenhum registro de tempo local."
+          }}
+        </p>
 
-      <UDivider class="pt-4" />
+        <UDivider class="pt-4" />
 
-      <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
-      <p v-if="!userIsAuth" class="pt-2 text-xs">
-        {{ _$t("localRecordObs2") }}
-      </p>
-    </UCard>
+        <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
+        <p v-if="!userIsAuth" class="pt-2 text-xs">
+          {{ _$t("localRecordObs2") }}
+        </p>
+      </CardContent>
+    </Card>
   </UModal>
 
   <template v-if="modal">
