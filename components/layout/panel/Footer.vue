@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { BadgeCheck, ChevronsUpDown, LogOut, Sun, Moon } from "lucide-vue-next";
 
-const data = {
-  user: {
-    name: "Carlos Roberto",
-    email: "teste@email.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
+const authStore = useAuthStore();
+const { claim } = storeToRefs(authStore);
+
+const user = computed(() => {
+  return {
+    name: claim.value.name,
+    email: claim.value.email,
+    avatarFallback: claim.value.name.split(" ")[0][0],
+  };
+});
 
 const toggleDark = () => {
   const colorMode = useColorMode();
@@ -26,14 +29,16 @@ const toggleDark = () => {
               class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="data.user.avatar" :alt="data.user.name" />
-                <AvatarFallback class="rounded-lg"> CR </AvatarFallback>
+                <!-- <AvatarImage :src="user.avatar" :alt="user.name" /> -->
+                <AvatarFallback class="rounded-lg">
+                  {{ user.avatarFallback }}
+                </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">
-                  {{ data.user.name }}
+                  {{ user.name }}
                 </span>
-                <span class="truncate text-xs">{{ data.user.email }}</span>
+                <span class="truncate text-xs">{{ user.email }}</span>
               </div>
               <ChevronsUpDown class="ml-auto size-4" />
             </SidebarMenuButton>
@@ -50,15 +55,17 @@ const toggleDark = () => {
                 class="flex items-center gap-2 px-1 py-1.5 text-left text-sm"
               >
                 <Avatar class="h-8 w-8 rounded-lg">
-                  <AvatarImage :src="data.user.avatar" :alt="data.user.name" />
-                  <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
+                  <!-- <AvatarImage :src="user.avatar" :alt="user.name" /> -->
+                  <AvatarFallback class="rounded-lg">
+                    {{ user.avatarFallback }}
+                  </AvatarFallback>
                 </Avatar>
                 <div class="grid flex-1 text-left text-sm leading-tight">
                   <span class="truncate font-semibold">
-                    {{ data.user.name }}
+                    {{ user.name }}
                   </span>
 
-                  <span class="truncate text-xs">{{ data.user.email }}</span>
+                  <span class="truncate text-xs">{{ user.email }}</span>
                 </div>
                 <div>
                   <Button variant="outline" size="icon" @click="toggleDark">
