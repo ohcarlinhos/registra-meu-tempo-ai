@@ -133,82 +133,80 @@ onMounted(() => {
 
 <template>
   <div class="flex-1">
-    <UContainer
-      :ui="{
-        base: 'flex flex-col md:flex-row justify-between gap-5',
-        padding: 'pb-6 px-0 lg:px-0 sm:px-0',
-        constrained: 'max-w-8xl',
-      }"
-    >
-      <section class="flex items-center gap-5">
-        <h2 class="text-4xl font-bold">{{ "Tarefas" }}</h2>
-
-        <UButton
-          :label="_$t('create')"
-          icon="i-icon-park-outline-add"
-          @click="emit('create')"
-        />
-      </section>
-
-      <div class="flex flex-col gap-5 md:flex-row items-start mt-1 mr-1">
-        <section class="flex gap-2">
-          <USelectMenu
-            v-model="computedCategory"
-            :options="categories"
-            :disabled="isFetch"
-            value-attribute="id"
-            option-attribute="name"
-            :placeholder="_$t('category')"
-          />
+    <Card>
+      <CardHeader class="flex-row gap-4 justify-between">
+        <section class="flex flex-row gap-4">
+          <CardTitle>
+            {{ "Tarefas" }}
+          </CardTitle>
 
           <UButton
-            :label="_$t('clear')"
-            :disabled="!computedCategory || isFetch"
-            variant="outline"
-            :color="!computedCategory ? 'white' : 'red'"
-            @click="computedCategory = ''"
+            :label="_$t('create')"
+            icon="i-icon-park-outline-add"
+            @click="emit('create')"
           />
         </section>
 
-        <GSearch :store="trStore" :is-fetch="isFetch" />
-      </div>
-    </UContainer>
-
-    <UCard>
-      <UTable
-        :columns="columns"
-        :rows="trStore.timeRecordsTableData"
-        :loading="isFetch"
-        v-model:sort="computedSort"
-        sort-mode="manual"
-      >
-        <template #actions-data="{ row }">
-          <div class="flex justify-end gap-2">
-            <UButton
-              :label="_$t('access')"
-              color="gray"
-              @click="() => emit('access', row.code!)"
+        <div class="flex flex-col gap-5 md:flex-row items-start">
+          <section class="flex gap-2">
+            <USelectMenu
+              v-model="computedCategory"
+              :options="categories"
+              :disabled="isFetch"
+              value-attribute="id"
+              option-attribute="name"
+              :placeholder="_$t('category')"
             />
 
-            <UDropdown :items="items(row)">
-              <UButton
-                color="gray"
-                variant="ghost"
-                icon="i-icon-park-outline-more-one"
-              />
-            </UDropdown>
-          </div>
-        </template>
-      </UTable>
+            <UButton
+              :label="_$t('clear')"
+              :disabled="!computedCategory || isFetch"
+              variant="outline"
+              :color="!computedCategory ? 'white' : 'red'"
+              @click="computedCategory = ''"
+            />
+          </section>
 
-      <GPagination
-        :page="trStore.apiRes?.page"
-        :perPage="trStore.apiRes?.perPage"
-        :totalPages="trStore.apiRes?.totalPages"
-        :totalItems="trStore.apiRes?.totalItems"
-        :store="trStore"
-        :is-fetch="isFetch"
-      />
-    </UCard>
+          <GSearch :store="trStore" :is-fetch="isFetch" />
+        </div>
+      </CardHeader>
+
+      <CardContent>
+        <UTable
+          :columns="columns"
+          :rows="trStore.timeRecordsTableData"
+          :loading="isFetch"
+          v-model:sort="computedSort"
+          sort-mode="manual"
+        >
+          <template #actions-data="{ row }">
+            <div class="flex justify-end gap-2">
+              <UButton
+                :label="_$t('access')"
+                color="gray"
+                @click="() => emit('access', row.code!)"
+              />
+
+              <UDropdown :items="items(row)">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-icon-park-outline-more-one"
+                />
+              </UDropdown>
+            </div>
+          </template>
+        </UTable>
+
+        <GPagination
+          :page="trStore.apiRes?.page"
+          :perPage="trStore.apiRes?.perPage"
+          :totalPages="trStore.apiRes?.totalPages"
+          :totalItems="trStore.apiRes?.totalItems"
+          :store="trStore"
+          :is-fetch="isFetch"
+        />
+      </CardContent>
+    </Card>
   </div>
 </template>

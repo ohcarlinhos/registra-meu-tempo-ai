@@ -20,6 +20,8 @@ export const useAuthStore = defineStore(
       return {
         ...payload,
         isVerified: payload?.isVerified == "True" || false,
+        name: (payload?.unique_name as string) || "-",
+        email: (payload?.email as string) || "-",
       };
     });
 

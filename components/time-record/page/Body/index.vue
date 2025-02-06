@@ -82,32 +82,34 @@ const refreshTimePeriodCallback = async () => {
 
 <template>
   <section class="min-h-svh">
-    <section class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 w-full">
-      <section class="w-full md:col-span-8 md:mb-5">
-        <TimeRecordPageHeader :time-record="timeRecord" :is-fetch="isLoading">
-          <template #button>
-            <TimeRecordButtonEdit
-              v-if="actualTimeRecordId && timeRecord"
-              :time-record="timeRecord"
-              :callback="refreshTimeRecord"
-            />
-          </template>
-        </TimeRecordPageHeader>
-      </section>
+    <section class="flex flex-col gap-10 md:gap-5 w-full">
+      <section class="flex gap-10 md:gap-5">
+        <section class="w-full">
+          <TimeRecordPageHeader :time-record="timeRecord" :is-fetch="isLoading">
+            <template #button>
+              <TimeRecordButtonEdit
+                v-if="actualTimeRecordId && timeRecord"
+                :time-record="timeRecord"
+                :callback="refreshTimeRecord"
+              />
+            </template>
+          </TimeRecordPageHeader>
+        </section>
 
-      <section
-        v-if="timeRecord"
-        class="w-full col-span-1 md:col-span-6 lg:col-span-4"
-      >
-        <ClientOnly>
-          <TimerDefault
-            v-if="actualTimeRecordId && timeRecord"
-            :id="actualTimeRecordId"
-            :code="timeRecord.code"
-            :title="timeRecord.title"
-            :post-time-period-callback="refreshTimePeriodCallback"
-          />
-        </ClientOnly>
+        <section
+          v-if="timeRecord"
+          class="max-w-[400px] col-span-1 md:col-span-6 lg:col-span-4"
+        >
+          <ClientOnly>
+            <TimerDefault
+              v-if="actualTimeRecordId && timeRecord"
+              :id="actualTimeRecordId"
+              :code="timeRecord.code"
+              :title="timeRecord.title"
+              :post-time-period-callback="refreshTimePeriodCallback"
+            />
+          </ClientOnly>
+        </section>
       </section>
 
       <section id="page-nav" class="w-full md:col-span-12 md:mb-5 pt-12">

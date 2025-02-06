@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 const { hasWarTools } = storeToRefs(useConfigStore());
 
-const colorMode = useColorMode();
-
-const toggleDark = () => {
-  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
-};
-
 const authStore = useAuthStore();
 const { setExpiredToken } = authStore;
 const { authModal, isAuth } = storeToRefs(authStore);
@@ -30,11 +24,11 @@ const showNotVerifiedStatus = computed(() => {
 </script>
 
 <template>
-  <section
+  <!-- <section
     :class="[
       'absolute lg:fixed p-2 flex justify-between w-full z-50 gap-2',
-      'bg-primary-500 bg-opacity-10',
-      showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
+      // 'bg-primary-500 bg-opacity-10',
+      // showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
     ]"
   >
     <UButton
@@ -106,7 +100,7 @@ const showNotVerifiedStatus = computed(() => {
         Verificar e-mail
       </UButton>
     </section>
-  </section>
+  </section> -->
 
   <template v-if="isAuth && isVerified">
     <UModal v-model="feedbackModal.open" prevent-close>

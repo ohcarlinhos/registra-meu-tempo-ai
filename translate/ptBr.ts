@@ -141,12 +141,6 @@ const i18nObj = {
   historyRecord: "Histórico",
   timerType: "Cronômetro",
 
-  timerLabel01: "Bota pra rodar!",
-  timerLabel02: "1, 2, 3 e...",
-  timerLabel03: "Começar!",
-  timerLabel04: "Bora?",
-  timerLabel05: "Vamo trem!",
-
   howDoYouPrefereSaveRecord: "Como deseja salvar seu tempo?",
   saveOnBrowser: "Salvar no Navegador",
   saveOnAccount: "Salvar em Minha Conta",

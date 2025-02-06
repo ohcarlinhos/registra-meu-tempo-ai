@@ -49,12 +49,12 @@ const activeClass = "text-primary font-bold";
 
         <h1 class="title-hide">Registra meu tempo aí!</h1>
 
-        <p v-if="!hideDescription" class="pt-4">
+        <!-- <p v-if="!hideDescription" class="pt-4">
           Registre o tempo das suas tarefas
           <span class="font-bold text-primary"> e mantenha-se focado.</span>
         </p>
 
-        <p class="text-sm">Pomodoro, Cronômetro e Estatísticas.</p>
+        <p class="text-sm">Pomodoro, Cronômetro e Estatísticas.</p> -->
       </section>
 
       <section v-if="$slots.right">
@@ -64,7 +64,7 @@ const activeClass = "text-primary font-bold";
 
     <nav
       v-if="!onlyGuestMode"
-      class="pt-8 flex items-center flex-wrap gap-x-4 gap-y-2"
+      class="pt-4 flex items-center flex-wrap gap-x-4 gap-y-2"
       :class="{ 'justify-center': center }"
     >
       <ULink :to="{ name: 'home' }" :active-class="activeClass">
@@ -76,24 +76,7 @@ const activeClass = "text-primary font-bold";
         :to="{ name: 'record.panel' }"
         :active-class="activeClass"
       >
-        {{ "Tarefas" }}
-      </ULink>
-
-      <!-- <ULink
-        v-if="userIsAuth"
-        class="line-clamp-1"
-        :to="{ name: 'statistic.day' }"
-        :active-class="activeClass"
-      >
-        {{ "Estatísticas" }}
-      </ULink> -->
-
-      <ULink
-        v-if="userIsAuth"
-        :to="{ name: 'options' }"
-        :active-class="activeClass"
-      >
-        {{ _$t("options") }}
+        {{ "Painel" }}
       </ULink>
 
       <ULink

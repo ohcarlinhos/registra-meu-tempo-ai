@@ -22,7 +22,7 @@ const modal = reactive({
 
 const editCategoryObject = ref<CategoryForm>();
 
-const columns = [{ key: "name", label: "Categoria" }, { key: "actions" }];
+const columns = [{ key: "name", label: "Nome" }, { key: "actions" }];
 
 const items = (row: CategoryMap) => [
   [
@@ -95,36 +95,38 @@ onMounted(() => {
       </div>
     </div>
 
-    <UCard>
-      <UTable
-        :columns="columns"
-        :rows="categoryTableData"
-        :loading="isPaginationFetch"
-      >
-        <template #actions-data="{ row }">
-          <div class="flex justify-end">
-            <UDropdown :items="items(row)">
-              <UButton
-                color="gray"
-                variant="ghost"
-                icon="i-icon-park-outline-more-one"
-              />
-            </UDropdown>
-          </div>
-        </template>
-      </UTable>
+    <Card>
+      <CardContent>
+        <UTable
+          :columns="columns"
+          :rows="categoryTableData"
+          :loading="isPaginationFetch"
+        >
+          <template #actions-data="{ row }">
+            <div class="flex justify-end">
+              <UDropdown :items="items(row)">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-icon-park-outline-more-one"
+                />
+              </UDropdown>
+            </div>
+          </template>
+        </UTable>
 
-      <GPaginationV2
-        :page="apiRes?.page"
-        :perPage="apiRes?.perPage"
-        :totalPages="apiRes?.totalPages"
-        :totalItems="apiRes?.totalItems"
-        :pagination-query="paginationQuery"
-        :is-pagination-fetch="isPaginationFetch"
-        :fetch-data="fetchCategoryData"
-        using-store
-      />
-    </UCard>
+        <GPaginationV2
+          :page="apiRes?.page"
+          :perPage="apiRes?.perPage"
+          :totalPages="apiRes?.totalPages"
+          :totalItems="apiRes?.totalItems"
+          :pagination-query="paginationQuery"
+          :is-pagination-fetch="isPaginationFetch"
+          :fetch-data="fetchCategoryData"
+          using-store
+        />
+      </CardContent>
+    </Card>
   </GPanelCol>
 
   <GModalConfirm

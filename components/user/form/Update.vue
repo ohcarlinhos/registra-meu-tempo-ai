@@ -4,7 +4,7 @@ import * as yup from "yup";
 const { mySelf } = storeToRefs(useUserStore());
 const { fetchMySelf } = useUserStore();
 
-const pageStatus = reactive({ fetching: false });
+const isFetch = ref(false);
 
 const v = useUserValidation();
 
@@ -50,7 +50,7 @@ const submit = async () => {
     const test = await schema.validate(data);
     if (!test) return;
 
-    pageStatus.fetching = true;
+    isFetch.value = true;
 
     if (!data.password) delete data.password;
     if (!data.oldPassword) delete data.oldPassword;
@@ -70,7 +70,7 @@ const submit = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    pageStatus.fetching = false;
+    isFetch.value = false;
   }
 };
 
@@ -86,37 +86,47 @@ await fetchMySelf((data) => {
 
 <template>
   <GPanelCol custom-class="w-full">
-    <GPanelTitle :text="_$t('userDate')" />
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          {{ "Dados do usuário" }}
+        </CardTitle>
 
-    <UCard>
-      <UForm :schema="schema" :state="form" class="space-y-4" @submit="submit">
-        <UFormGroup :label="_$t('name')" name="name" required>
-          <UInput type="text" v-model="form.name" />
-        </UFormGroup>
+        <CardDescription>
+          Mantenha as informações da sua conta sempre atualizadas.
+        </CardDescription>
+      </CardHeader>
 
-        <UFormGroup :label="_$t('email')" name="email" required>
-          <UInput type="email" v-model="form.email" />
-        </UFormGroup>
+      <CardContent>
+        <UForm
+          :schema="schema"
+          :state="form"
+          class="space-y-4"
+          @submit="submit"
+        >
+          <UFormGroup :label="_$t('name')" name="name" required>
+            <UInput type="text" v-model="form.name" />
+          </UFormGroup>
 
-        <UFormGroup :label="_$t('oldPassword')" name="oldPassword">
-          <UInput type="password" v-model="form.oldPassword" />
-        </UFormGroup>
+          <UFormGroup :label="_$t('email')" name="email" required>
+            <UInput type="email" v-model="form.email" />
+          </UFormGroup>
 
-        <UFormGroup :label="_$t('newPassword')" name="password">
-          <UInput type="password" v-model="form.password" />
-        </UFormGroup>
+          <UFormGroup :label="_$t('oldPassword')" name="oldPassword">
+            <UInput type="password" v-model="form.oldPassword" />
+          </UFormGroup>
 
-        <UFormGroup :label="_$t('confirmNewPassword')" name="confirmPassword">
-          <UInput type="password" v-model="form.confirmPassword" />
-        </UFormGroup>
+          <UFormGroup :label="_$t('newPassword')" name="password">
+            <UInput type="password" v-model="form.password" />
+          </UFormGroup>
 
-        <UButton
-          :label="_$t('save')"
-          :loading="pageStatus.fetching"
-          type="submit"
-          block
-        />
-      </UForm>
-    </UCard>
+          <UFormGroup :label="_$t('confirmNewPassword')" name="confirmPassword">
+            <UInput type="password" v-model="form.confirmPassword" />
+          </UFormGroup>
+
+          <UButton label="Atualizar" :loading="isFetch" type="submit" block />
+        </UForm>
+      </CardContent>
+    </Card>
   </GPanelCol>
 </template>
