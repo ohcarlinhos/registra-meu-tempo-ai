@@ -5,10 +5,7 @@ import {
   Tag,
   Plus,
   Timer,
-  Target,
-  BookOpenText,
   MessageCircle,
-  ChevronRight,
 } from "lucide-vue-next";
 
 const data = {
@@ -24,24 +21,24 @@ const data = {
       type: "Ferramenta",
     },
   ],
-  documentation: [
-    {
-      title: "Documentação",
-      url: "#",
-      icon: BookOpenText,
-      isActive: false,
-      items: [
-        {
-          title: "Tarefas",
-          name: "record.panel",
-        },
-        {
-          title: "Categorias",
-          name: "record.category",
-        },
-      ],
-    },
-  ],
+  // documentation: [
+  //   {
+  //     title: "",
+  //     url: "#",
+  //     icon: BookOpenText,
+  //     isActive: false,
+  //     items: [
+  //       {
+  //         title: "Tarefas",
+  //         name: "record.panel",
+  //       },
+  //       {
+  //         title: "Categorias",
+  //         name: "record.category",
+  //       },
+  //     ],
+  //   },
+  // ],
 
   pages: [
     {
@@ -200,7 +197,7 @@ const breadcrumbList = computed(() => {
               </SidebarMenuButton>
             </SidebarMenuItem> -->
 
-              <SidebarGroup>
+              <!-- <SidebarGroup>
                 <SidebarGroupLabel>Ajuda</SidebarGroupLabel>
                 <SidebarMenu>
                   <Collapsible
@@ -242,7 +239,7 @@ const breadcrumbList = computed(() => {
                     </SidebarMenuItem>
                   </Collapsible>
                 </SidebarMenu>
-              </SidebarGroup>
+              </SidebarGroup> -->
 
               <SidebarMenuItem>
                 <SidebarMenuButton as-child>
