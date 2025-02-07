@@ -13,6 +13,16 @@ export const updateUser = async (id: number, body: UpdateUserDto) => {
   });
 };
 
+export const updatePassword = async (
+  id: number,
+  body: UpdateUserPasswordDto
+) => {
+  return useCustomFetch(false)<boolean>(`user/password/${id}`, {
+    method: "POST",
+    body,
+  });
+};
+
 export const getMySelf = async () => {
   return useCustomFetch()<UserMap>("user/myself", { method: "GET" });
 };

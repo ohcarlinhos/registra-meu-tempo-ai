@@ -1,72 +1,41 @@
 <script lang="ts" setup>
+import { toTypedSchema } from "@vee-validate/yup";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 const { mySelf } = storeToRefs(useUserStore());
 const { fetchMySelf } = useUserStore();
 
-const isFetch = ref(false);
-
 const v = useUserValidation();
 
+const isFetch = ref(false);
 const oldEmail = ref("");
 
-const form = reactive(<UpdateUserDto & { confirmPassword: string }>{
-  name: "",
-  email: "",
-  password: "",
-  oldPassword: "",
-  confirmPassword: "",
+const formSchema = toTypedSchema(
+  yup.object({
+    name: v.name(),
+    email: v.email(),
+  })
+);
+
+const { handleSubmit, setValues } = useForm({
+  validationSchema: formSchema,
 });
 
-const schema = yup.object({
-  name: v.name(),
-  email: v.email(),
+const onSubmit = handleSubmit((value) => submitAction(value));
 
-  oldPassword: yup.string().when("modifyPassword", {
-    is: () => form.oldPassword || form.password || form.confirmPassword,
-    then: (s) => v.oldPassword(s),
-    otherwise: (s) => s.notRequired(),
-  }),
-
-  password: yup.string().when("hasPassword", {
-    is: () => form.password || form.oldPassword || form.confirmPassword,
-    then: (s) => v.password(s),
-    otherwise: (s) => s.notRequired(),
-  }),
-
-  confirmPassword: yup.string().when("confirmOldPassword", {
-    is: () => form.confirmPassword || form.oldPassword || form.password,
-    then: (s) => v.confirmPassword(s),
-    otherwise: (s) => s.notRequired(),
-  }),
-});
-
-const submit = async () => {
-  if (!mySelf.value) return;
+const submitAction = async (dto: UpdateUserDto) => {
+  isFetch.value = true;
 
   try {
-    const data = toRaw(form);
+    await updateUser(mySelf.value!.id, dto);
 
-    const test = await schema.validate(data);
-    if (!test) return;
-
-    isFetch.value = true;
-
-    if (!data.password) delete data.password;
-    if (!data.oldPassword) delete data.oldPassword;
-
-    await updateUser(mySelf.value.id, form);
-
-    if (oldEmail.value != data.email) {
+    if (oldEmail.value != dto.email) {
       OkToast(_$t("updateUserSuccessAndLogin"));
       return logout();
     } else {
       OkToast(_$t("updateUserSuccess"));
     }
-
-    form.oldPassword = "";
-    form.confirmPassword = "";
-    form.password = "";
   } catch (error) {
     ErrorToast(error);
   } finally {
@@ -79,8 +48,10 @@ await fetchMySelf((data) => {
 
   oldEmail.value = data.email;
 
-  form.name = data.name;
-  form.email = data.email;
+  setValues({
+    name: data.name,
+    email: data.email,
+  });
 });
 </script>
 
@@ -98,34 +69,33 @@ await fetchMySelf((data) => {
       </CardHeader>
 
       <CardContent>
-        <UForm
-          :schema="schema"
-          :state="form"
-          class="space-y-4"
-          @submit="submit"
-        >
-          <UFormGroup :label="_$t('name')" name="name" required>
-            <UInput type="text" v-model="form.name" />
-          </UFormGroup>
+        <form class="space-y-4" @submit="onSubmit">
+          <FormField v-slot="{ componentField }" name="name">
+            <FormItem>
+              <FormLabel>{{ _$t("name") }}</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" />
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <UFormGroup :label="_$t('email')" name="email" required>
-            <UInput type="email" v-model="form.email" />
-          </UFormGroup>
+          <FormField v-slot="{ componentField }" name="email">
+            <FormItem>
+              <FormLabel>{{ _$t("email") }}</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="email" />
+              </FormControl>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <UFormGroup :label="_$t('oldPassword')" name="oldPassword">
-            <UInput type="password" v-model="form.oldPassword" />
-          </UFormGroup>
-
-          <UFormGroup :label="_$t('newPassword')" name="password">
-            <UInput type="password" v-model="form.password" />
-          </UFormGroup>
-
-          <UFormGroup :label="_$t('confirmNewPassword')" name="confirmPassword">
-            <UInput type="password" v-model="form.confirmPassword" />
-          </UFormGroup>
-
-          <UButton label="Atualizar" :loading="isFetch" type="submit" block />
-        </UForm>
+          <Button type="submit" :disabled="isFetch" class="w-full mt-2">
+            {{ "Atualizar dados do usuário" }}
+          </Button>
+        </form>
       </CardContent>
     </Card>
   </GPanelCol>

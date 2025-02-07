@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { UserFormPassword } from "#components";
+
 definePageMeta({
   middleware: ["auth"],
   name: "user.me",
@@ -16,8 +18,19 @@ useHead({ title: "Minha conta" });
 
           <template #fallback>
             <div class="flex gap-5 flex-col w-full items-center">
-              <USkeleton class="h-[40px] w-full" />
-              <USkeleton class="h-[200px] w-full" />
+              <Skeleton class="h-[344px] w-full" />
+            </div>
+          </template>
+        </ClientOnly>
+      </div>
+
+      <div class="w-full md:col-span-6 lg:col-span-4">
+        <ClientOnly>
+          <UserFormPassword />
+
+          <template #fallback>
+            <div class="flex gap-5 flex-col w-full items-center">
+              <Skeleton class="h-[432px] w-full" />
             </div>
           </template>
         </ClientOnly>
