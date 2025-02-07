@@ -7,15 +7,13 @@ const colorMode = useColorMode();
 withDefaults(
   defineProps<{
     center?: boolean;
-    smallTitle?: boolean;
     hideDescription?: boolean;
-    disablePadding?: boolean;
+    hideMenu?: boolean;
   }>(),
   {
     center: false,
-    smallTitle: false,
     hideDescription: false,
-    disablePadding: false,
+    hideMenu: false,
   }
 );
 
@@ -32,7 +30,7 @@ const activeClass = "text-primary font-bold";
 </script>
 
 <template>
-  <header :class="{ 'text-center': center, 'pb-12': !disablePadding }">
+  <header :class="{ 'text-center': center }">
     <section
       class="flex justify-between"
       :class="{ 'flex-col justify-center gap-10': center }"
@@ -63,13 +61,17 @@ const activeClass = "text-primary font-bold";
     </section>
 
     <nav
-      v-if="!onlyGuestMode"
+      v-if="!onlyGuestMode && !hideMenu"
       class="pt-4 flex items-center flex-wrap gap-x-4 gap-y-2"
       :class="{ 'justify-center': center }"
     >
       <ULink :to="{ name: 'home' }" :active-class="activeClass">
-        {{ _$t("timers") }}
+        {{ "Início" }}
       </ULink>
+
+      <!-- <ULink :to="{ name: 'timer' }" :active-class="activeClass">
+        {{ _$t("timers") }}
+      </ULink> -->
 
       <ULink
         v-if="userIsAuth"

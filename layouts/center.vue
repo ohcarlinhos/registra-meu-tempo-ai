@@ -21,15 +21,14 @@ const toggleDark = () => {
         @click="toggleDark"
       />
     </section>
-    <UContainer
-      :ui="{
-        padding: 'flex flex-col items-center justify-center py-10 gap-10',
-        constrained: 'max-w-md w-full min-h-svh',
-      }"
+
+    <section></section>
+    <section
+      class="flex flex-col items-center justify-center py-5 gap-10 max-w-md w-full min-h-svh"
     >
-      <GHeader center small-title disable-padding />
+      <GHeader center />
       <slot></slot>
       <GFooter />
-    </UContainer>
+    </section>
   </NuxtLayout>
 </template>
