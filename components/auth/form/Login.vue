@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
-import * as z from "zod";
+import * as yup from "yup";
 
 const authStore = useAuthStore();
 const { authModal } = storeToRefs(authStore);
 const { closeAuthModal, setJwt } = authStore;
 const { enableUserChallenge } = storeToRefs(useConfigStore());
 
-const v = useUserValidationZ();
+const v = useUserValidation();
 
 const userStore = useUserStore();
 const { checkIfIsVerified } = userStore;
@@ -49,7 +49,7 @@ const submitAction = async (dto: LoginDto) => {
 };
 
 const formSchema = toTypedSchema(
-  z.object({
+  yup.object({
     email: v.email(),
     password: v.password(),
   })

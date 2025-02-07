@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
-import * as z from "zod";
+import * as yup from "yup";
 
-const v = useUserValidationZ();
+const v = useUserValidation();
 const { enableUserChallenge } = storeToRefs(useConfigStore());
 
 const isFetch = ref(false);
@@ -30,22 +30,12 @@ const submitAction = async (dto: CreateUserDto) => {
 };
 
 const formSchema = toTypedSchema(
-  z
-    .object({
-      name: v.name(),
-      email: v.email(),
-      password: v.password(),
-      confirmPassword: v.confirmPassword(),
-    })
-    .superRefine(({ confirmPassword, password }, ctx) => {
-      if (confirmPassword != password) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["confirmPassword"],
-          message: _$t("confirmPasswordIsDifferent"),
-        });
-      }
-    })
+  yup.object({
+    name: v.name(),
+    email: v.email(),
+    password: v.password(),
+    confirmPassword: v.confirmPassword(),
+  })
 );
 
 const {
