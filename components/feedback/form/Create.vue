@@ -1,48 +1,58 @@
 <script lang="ts" setup>
+import { toTypedSchema } from "@vee-validate/yup";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 const emit = defineEmits(["close"]);
 
-const props = defineProps<{
-  callback?: Function;
-}>();
+const props = withDefaults(
+  defineProps<{
+    callback?: Function;
+    isForm?: boolean;
+  }>(),
+  {
+    isForm: true,
+  }
+);
 
 const { enableUserChallenge } = storeToRefs(useConfigStore());
 
-const form = reactive({
-  message: "",
-});
-
+const isFetch = ref(false);
 const _tokenUserChallenge = ref();
 
-const schema = yup.object({
-  message: yup
-    .string()
-    .min(20, "A mensagem deve conter pelo menos 20 caracteres.")
-    .max(500, "A mensagem deve ter o tamanho máximo de 500 caracteres.")
-    .required("É obrigatório informar uma mensagem no seu feedback."),
+const formSchema = toTypedSchema(
+  yup.object({
+    message: yup
+      .string()
+      .min(20, "A mensagem deve conter pelo menos 20 caracteres.")
+      .max(500, "A mensagem deve ter o tamanho máximo de 500 caracteres.")
+      .required("É obrigatório informar uma mensagem no seu feedback."),
+  })
+);
+
+const {
+  handleSubmit,
+  values: formValues,
+  resetForm,
+} = useForm({
+  validationSchema: formSchema,
 });
+
+const onSubmit = handleSubmit((value) => submitAction(value));
 
 const close = (refresh = false) => {
   emit("close", refresh);
 };
 
-const submit = async () => {
-  schema.validate(form).then(async () => {
-    await createAction();
-  });
-};
-
-const isFetch = ref(false);
-
-const createAction = async () => {
+const submitAction = async (dto: { message: string }) => {
   isFetch.value = true;
   let submitIsOk = true;
 
   try {
-    await postFeedback(form.message, _tokenUserChallenge.value);
+    await postFeedback(dto.message, _tokenUserChallenge.value);
 
     OkToast("Feedback enviado com sucesso.");
+    resetForm();
     close(true);
   } catch (error) {
     submitIsOk = false;
@@ -52,6 +62,12 @@ const createAction = async () => {
     isFetch.value = false;
   }
 };
+
+const submitIsDisabled = computed(() => {
+  return (
+    isFetch.value || (!_tokenUserChallenge.value && enableUserChallenge.value)
+  );
+});
 </script>
 
 <template>
@@ -61,32 +77,38 @@ const createAction = async () => {
         {{ "Feedback / Dúvida" }}
       </CardTitle>
 
-      <GCloseButton @close="close" />
+      <GCloseButton v-if="isForm" @close="close" />
+
+      <CardDescription>
+        Utilize esse formulário para deixar o seu comentário, dúvida ou pedir
+        ajuda caso algo não esteja funcionando corretamente.
+      </CardDescription>
     </CardHeader>
 
     <CardContent>
-      <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-        <UFormGroup label="Mensagem" name="message">
-          <UTextarea v-model="form.message" autoresize />
-        </UFormGroup>
+      <form @submit="onSubmit" class="space-y-4">
+        <FormField v-slot="{ componentField }" name="message">
+          <FormItem>
+            <FormLabel>{{ "Mensagem" }}</FormLabel>
+            <FormControl>
+              <Textarea v-bind="componentField" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <section
-          v-if="enableUserChallenge && form.message"
+          v-if="enableUserChallenge && formValues.message"
           class="flex justify-center pt-1"
         >
           <NuxtTurnstile v-model="_tokenUserChallenge" />
         </section>
 
-        <UButton
-          :loading="isFetch"
-          :label="$t('send')"
-          :disabled="
-            !form.message || (!_tokenUserChallenge && enableUserChallenge)
-          "
-          block
-          type="submit"
-        />
-      </UForm>
+        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+          {{ "Enviar feedback" }}
+        </Button>
+      </form>
     </CardContent>
   </Card>
 </template>
