@@ -24,11 +24,15 @@ const toggleDark = () => {
 
     <section></section>
     <section
-      class="flex flex-col items-center justify-center py-5 gap-10 max-w-md w-full min-h-svh"
+      class="flex flex-col items-center justify-center py-5 w-full min-h-svh"
     >
-      <GHeader center />
-      <slot></slot>
-      <GFooter />
+      <section
+        class="flex flex-col items-center justify-center py-5 gap-10 max-w-md"
+      >
+        <GHeader center />
+        <slot></slot>
+        <GFooter />
+      </section>
     </section>
   </NuxtLayout>
 </template>
