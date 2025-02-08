@@ -33,12 +33,12 @@ const activeClass = "text-primary font-bold";
   <header :class="{ 'text-center': center }">
     <section
       class="flex justify-between"
-      :class="{ 'flex-col justify-center gap-10': center }"
+      :class="{ 'flex-col justify-center gap-5': center }"
     >
       <section>
         <section :class="{ 'flex justify-center': center }">
           <NuxtImg
-            class="pt-6 w-full max-w-56 sm:max-w-xs"
+            class="w-full max-w-64"
             :src="imgUrl"
             :label="pageTitle"
             :title="pageTitle"

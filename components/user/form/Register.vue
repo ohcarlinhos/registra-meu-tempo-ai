@@ -149,6 +149,13 @@ if (rfMockEnable.value) {
         >
           {{ "Acessar conta" }}
         </NuxtLink>
+
+        <NuxtLink
+          :to="{ name: 'recovery' }"
+          class="hover:text-primary hover:underline text-sm"
+        >
+          {{ _$t("recoveryPassword") }}
+        </NuxtLink>
       </section>
     </CardFooter>
   </Card>

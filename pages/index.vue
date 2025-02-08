@@ -5,10 +5,10 @@ useHead({ title: "Cronômetros" });
 
 <template>
   <NuxtLayout name="home">
-    <section class="flex flex-col gap-10 items-center pb-10">
-      <h2 class="text-8xl font-bold">Registe seu tempo!</h2>
+    <section class="flex flex-col gap-10 items-center">
+      <h2 class="text-7xl font-bold">Registe seu tempo!</h2>
 
-      <p class="text-2xl text-center">
+      <p class="text-xl text-center">
         Utilize <b class="text-primary">nossos cronômetros</b> ou
         <b>registre manualmente</b> <br />
         caso prefira utilizar métodos mais tradicionais!

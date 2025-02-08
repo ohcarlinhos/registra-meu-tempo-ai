@@ -79,7 +79,7 @@ const onSubmit = handleSubmit((value) => submitAction(value));
           :to="{ name: 'login' }"
           class="hover:text-primary hover:underline text-sm"
         >
-          {{ _$t("access") }}
+          {{ "Acessar conta" }}
         </NuxtLink>
 
         <NuxtLink
