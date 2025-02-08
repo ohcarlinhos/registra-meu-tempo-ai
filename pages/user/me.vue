@@ -13,27 +13,11 @@ useHead({ title: "Minha conta" });
   <NuxtLayout name="panel-v2">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-5 w-full">
       <div class="w-full md:col-span-6 lg:col-span-4">
-        <ClientOnly>
-          <UserFormUpdate />
-
-          <template #fallback>
-            <div class="flex gap-5 flex-col w-full items-center">
-              <Skeleton class="h-[344px] w-full" />
-            </div>
-          </template>
-        </ClientOnly>
+        <UserFormUpdate />
       </div>
 
       <div class="w-full md:col-span-6 lg:col-span-4">
-        <ClientOnly>
-          <UserFormPassword />
-
-          <template #fallback>
-            <div class="flex gap-5 flex-col w-full items-center">
-              <Skeleton class="h-[432px] w-full" />
-            </div>
-          </template>
-        </ClientOnly>
+        <UserFormPassword />
       </div>
     </div>
   </NuxtLayout>

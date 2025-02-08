@@ -43,14 +43,19 @@ const submitAction = async (dto: UpdateUserDto) => {
   }
 };
 
-await fetchMySelf((data) => {
-  if (!data) return;
+isFetch.value = true;
 
-  oldEmail.value = data.email;
+onMounted(async () => {
+  await fetchMySelf((data) => {
+    if (!data) return;
 
-  setValues({
-    name: data.name,
-    email: data.email,
+    oldEmail.value = data.email;
+    isFetch.value = false;
+
+    setValues({
+      name: data.name,
+      email: data.email,
+    });
   });
 });
 </script>
@@ -74,7 +79,7 @@ await fetchMySelf((data) => {
             <FormItem>
               <FormLabel>{{ _$t("name") }}</FormLabel>
               <FormControl>
-                <Input v-bind="componentField" />
+                <Input v-bind="componentField" :disabled="isFetch" />
               </FormControl>
               <FormDescription />
               <FormMessage />
@@ -85,7 +90,11 @@ await fetchMySelf((data) => {
             <FormItem>
               <FormLabel>{{ _$t("email") }}</FormLabel>
               <FormControl>
-                <Input v-bind="componentField" type="email" />
+                <Input
+                  v-bind="componentField"
+                  type="email"
+                  :disabled="isFetch"
+                />
               </FormControl>
               <FormDescription />
               <FormMessage />
