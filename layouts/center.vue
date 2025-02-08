@@ -27,7 +27,7 @@ const toggleDark = () => {
       class="flex flex-col items-center justify-center py-5 w-full min-h-svh"
     >
       <section
-        class="flex flex-col items-center justify-center py-5 gap-10 max-w-md"
+        class="flex flex-col items-center justify-center py-5 gap-10 w-full max-w-md"
       >
         <GHeader center />
         <slot></slot>

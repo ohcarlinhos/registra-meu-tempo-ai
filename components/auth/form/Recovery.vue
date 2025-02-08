@@ -1,44 +1,27 @@
 <script lang="ts" setup>
+import { toTypedSchema } from "@vee-validate/yup";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
-
-const { t } = useI18n();
 
 const authStore = useAuthStore();
 const { authModal } = storeToRefs(authStore);
 
 const v = useUserValidation();
 
-const form = reactive({
-  email: "",
-});
-
-const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
-
-if (rfMockEnable.value) {
-  form.email = rfMock.value.email;
-}
-
 const successEmailSend = ref(false);
+const isFetch = ref(false);
 
-const page = reactive({ fetch: false });
+const formSchema = toTypedSchema(
+  yup.object({
+    email: v.email(),
+  })
+);
 
-const schema = yup.object({
-  email: v.email(),
-});
-
-const submit = async () => {
-  schema.validate(form).then(async () => {
-    await submitAction();
-  });
-};
-
-const submitAction = async () => {
+const submitAction = async (dto: RecoveryDto) => {
   try {
-    page.fetch = true;
+    isFetch.value = true;
 
-    const data = await userApi().requestRecoveryPasswordCode({
-      email: form.email,
-    });
+    const data = await userApi().requestRecoveryPasswordCode(dto);
 
     if (!!data && typeof data == "boolean") {
       successEmailSend.value = data;
@@ -48,59 +31,64 @@ const submitAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    page.fetch = false;
+    isFetch.value = false;
   }
 };
 
-const submitIsDisabled = computed(() => {
-  return !form.email;
+const { handleSubmit } = useForm({
+  validationSchema: formSchema,
 });
+
+const onSubmit = handleSubmit((value) => submitAction(value));
 </script>
 
 <template>
-  <UCard v-if="successEmailSend" :ui="{ base: 'w-full' }">
-    <p>{{ _$t("recoveryPasswordSuccess") }}</p>
-  </UCard>
+  <Card v-if="successEmailSend" class="w-full text-center pt-5">
+    <CardContent>
+      <p>{{ _$t("recoveryPasswordSuccess") }}</p>
+    </CardContent>
+  </Card>
 
-  <UCard
-    v-else
-    :ui="{
-      base: 'w-full',
-      footer: { base: 'text-center' },
-    }"
-  >
-    <template #header>{{ "Recuperar senha" }}</template>
+  <Card v-else class="w-full">
+    <CardHeader>
+      <CardTitle>{{ "Recuperar senha" }}</CardTitle>
+    </CardHeader>
 
-    <UForm :schema="schema" :state="form" class="space-y-4">
-      <UFormGroup :label="t('email')" name="email" required>
-        <UInput type="email" v-model="form.email" autofocus />
-      </UFormGroup>
+    <CardContent>
+      <form class="space-y-4" @submit="onSubmit">
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>{{ _$t("email") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" type="email" />
+            </FormControl>
+            <FormDescription />
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-      <UButton
-        :loading="page.fetch"
-        :disabled="submitIsDisabled"
-        :label="t('toRecovery')"
-        block
-        @click="submit"
-      />
-    </UForm>
+        <Button type="submit" :disabled="isFetch" class="w-full mt-2">
+          {{ _$t("toRecovery") }}
+        </Button>
+      </form>
+    </CardContent>
 
-    <template v-if="!authModal.open" #footer>
-      <section class="flex gap-5 justify-center">
-        <ULink
+    <CardFooter>
+      <section class="flex gap-5 justify-center w-full">
+        <NuxtLink
           :to="{ name: 'login' }"
-          inactive-class="text-primary font-bold text-xs"
+          class="hover:text-primary hover:underline text-sm"
         >
           {{ _$t("access") }}
-        </ULink>
+        </NuxtLink>
 
-        <ULink
+        <NuxtLink
           :to="{ name: 'register' }"
-          inactive-class="text-primary font-bold text-xs"
+          class="hover:text-primary hover:underline text-sm"
         >
           {{ _$t("createAccount") }}
-        </ULink>
+        </NuxtLink>
       </section>
-    </template>
-  </UCard>
+    </CardFooter>
+  </Card>
 </template>
