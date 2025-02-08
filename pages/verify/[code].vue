@@ -29,7 +29,7 @@ const verifyCode = async () => {
   try {
     isFetch.value = true;
 
-    const result = await verifyUser(route.params.code as string);
+    const result = await userApi().verifyUser(route.params.code as string);
     if (!result) return;
 
     const isVerified = await checkIfIsVerified();

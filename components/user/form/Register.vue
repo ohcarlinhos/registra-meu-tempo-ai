@@ -15,7 +15,7 @@ const submitAction = async (dto: CreateUserDto) => {
   try {
     isFetch.value = true;
 
-    const result = await postUser(dto, _tokenUserChallenge.value);
+    const result = await userApi().post(dto, _tokenUserChallenge.value);
 
     if (result) {
       OkToast(_$t("createUserSuccess"));

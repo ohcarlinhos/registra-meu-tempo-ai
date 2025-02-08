@@ -50,7 +50,7 @@ const requestVerifyUserCodeEmail = async () => {
   try {
     isFetch.value = true;
 
-    const result = await requestVerifyUserCode();
+    const result = await userApi().requestVerifyUserCode();
     if (!result) return;
 
     showRequestCodeButton.value = false;

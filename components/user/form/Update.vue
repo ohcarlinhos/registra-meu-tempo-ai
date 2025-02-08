@@ -28,7 +28,7 @@ const submitAction = async (dto: UpdateUserDto) => {
   isFetch.value = true;
 
   try {
-    await updateUser(mySelf.value!.id, dto);
+    await userApi().update(mySelf.value!.id, dto);
 
     if (oldEmail.value != dto.email) {
       OkToast(_$t("updateUserSuccessAndLogin"));

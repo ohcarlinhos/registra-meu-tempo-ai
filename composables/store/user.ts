@@ -11,7 +11,7 @@ export const useUserStore = defineStore(
     ) => {
       try {
         isFetch.value = true;
-        const data = await getMySelf();
+        const data = await userApi().getMySelf();
 
         if (data) {
           mySelf.value = data;

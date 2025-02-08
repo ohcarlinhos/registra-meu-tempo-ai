@@ -26,7 +26,7 @@ const submitAction = async (dto: UpdateUserPasswordDto) => {
   isFetch.value = true;
 
   try {
-    await updatePassword(mySelf.value!.id, dto);
+    await userApi().updatePassword(mySelf.value!.id, dto);
     resetForm();
   } catch (error) {
     ErrorToast(error);
