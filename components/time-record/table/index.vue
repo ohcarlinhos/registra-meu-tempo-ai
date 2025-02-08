@@ -119,7 +119,7 @@ const configTableDataAndFetch = () => {
 onMounted(() => {
   categoriesIsFetch.value = true;
 
-  categoryAPI()
+  categoryApi()
     .getAll(true)
     .then((result) => {
       if (result) categories.value = result;

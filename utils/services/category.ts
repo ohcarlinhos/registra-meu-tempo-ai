@@ -1,4 +1,4 @@
-export const categoryAPI = () => ({
+export const categoryApi = () => ({
   getAll: async (onlyWithData = false) => {
     return useCustomFetch()<CategoryMap[]>(
       `/category/all${onlyWithData ? "?onlyWithData=true" : ""}`,

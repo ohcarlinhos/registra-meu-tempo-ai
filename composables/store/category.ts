@@ -7,7 +7,7 @@ export const useCategoryStore = defineStore(
     const fetchAllCategories = async (errorCallback: Function) => {
       try {
         isAllCategoriesFetch.value = true;
-        allCategories.value = (await categoryAPI().getAll()) || [];
+        allCategories.value = (await categoryApi().getAll()) || [];
       } catch (error) {
         ErrorToast(error);
         errorCallback();
@@ -29,7 +29,7 @@ export const useCategoryStore = defineStore(
 
       try {
         isPaginationFetch.value = true;
-        const data = await categoryAPI().get(paginationQuery.value);
+        const data = await categoryApi().get(paginationQuery.value);
         if (data) apiRes.value = data;
       } catch (error) {
         ErrorToast(error);
@@ -47,7 +47,7 @@ export const useCategoryStore = defineStore(
     const deleteCategory = async (id: number) => {
       try {
         isDeleteFetch.value = true;
-        await categoryAPI().delete(id);
+        await categoryApi().delete(id);
         await refetchData();
       } finally {
         isDeleteFetch.value = false;

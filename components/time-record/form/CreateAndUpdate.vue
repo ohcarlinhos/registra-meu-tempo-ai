@@ -141,7 +141,7 @@ const deleteTimePeriodFromForm = (index: number) => {
 
 const handleCategory = async () => {
   if (newCategories.value.length && form.category === newCategories.value[0]) {
-    const category = await categoryAPI().post({ name: newCategories.value[0] });
+    const category = await categoryApi().post({ name: newCategories.value[0] });
     newCategories.value.splice(0, 1);
 
     return category!.id;
