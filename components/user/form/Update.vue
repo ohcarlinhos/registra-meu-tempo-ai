@@ -74,7 +74,7 @@ onMounted(async () => {
       </CardHeader>
 
       <CardContent>
-        <form class="space-y-4" @submit="onSubmit">
+        <form class="flex flex-col gap-2" @submit="onSubmit">
           <FormField v-slot="{ componentField }" name="name">
             <FormItem>
               <FormLabel>{{ _$t("name") }}</FormLabel>

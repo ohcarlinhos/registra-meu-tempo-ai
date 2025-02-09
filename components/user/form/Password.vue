@@ -50,7 +50,7 @@ const submitAction = async (dto: UpdateUserPasswordDto) => {
       </CardHeader>
 
       <CardContent>
-        <form class="space-y-4" @submit="onSubmit">
+        <form class="flex flex-col gap-2" @submit="onSubmit">
           <FormField v-slot="{ componentField }" name="oldPassword">
             <FormItem>
               <FormLabel>{{ _$t("oldPassword") }}</FormLabel>
