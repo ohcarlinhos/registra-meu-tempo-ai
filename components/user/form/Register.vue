@@ -77,7 +77,7 @@ if (rfMockEnable.value) {
     </CardHeader>
 
     <CardContent>
-      <form @submit="onSubmit" class="flex flex-col gap-2">
+      <form class="flex flex-col gap-2" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
             <FormLabel>{{ _$t("name") }}</FormLabel>

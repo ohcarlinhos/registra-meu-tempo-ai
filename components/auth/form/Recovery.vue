@@ -4,7 +4,6 @@ import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 const authStore = useAuthStore();
-const { authModal } = storeToRefs(authStore);
 
 const v = useUserValidation();
 
@@ -52,10 +51,14 @@ const onSubmit = handleSubmit((value) => submitAction(value));
   <Card v-else class="w-full">
     <CardHeader>
       <CardTitle>{{ "Recuperar senha" }}</CardTitle>
+      <CardDescription>
+        Caso o endereço de e-mail informado esteja cadastrado em nossa
+        ferramenta, enviaremos um e-mail de recuperação.
+      </CardDescription>
     </CardHeader>
 
     <CardContent>
-      <form class="space-y-4" @submit="onSubmit">
+      <form class="flex flex-col gap-2" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="email">
           <FormItem>
             <FormLabel>{{ _$t("email") }}</FormLabel>
