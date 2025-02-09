@@ -285,182 +285,181 @@ const searchTrSelectAction = async (q: string) => {
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <h2 class="text-2xl font-bold">
+  <Card>
+    <CardHeader>
+      <CardTitle class="flex items-center gap-2">
         {{ "Tarefa" }}
-      </h2>
-      <UBadge
-        v-if="(isEditMode || isSyncMode) && props.editObject?.code"
-        variant="subtle"
-        size="xs"
-      >
-        {{ props.editObject?.code }}
-      </UBadge>
-      <p v-else class="text-sm">
+        <Badge
+          v-if="(isEditMode || isSyncMode) && props.editObject?.code"
+          variant="outline"
+        >
+          {{ props.editObject?.code }}
+        </Badge>
+      </CardTitle>
+
+      <CardDescription>
         Você pode agrupar e sincronizar o tempo registrado em nossos cronômetros
         em tarefas personalizadas.
-      </p>
+      </CardDescription>
+
       <GCloseButton @close="closeModal" />
-    </template>
+    </CardHeader>
 
-    <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <section v-if="form.isBind">
-        <UFormGroup label="Tarefa existente" name="time-record-bind-id">
-          <USelectMenu
-            v-model="form.id"
-            :options="searchTrList"
-            :clear-search-on-close="true"
-            :ui-menu="{ height: 'max-h-40' }"
-            :disabled="disableInputs || isTrSearch"
-            value-attribute="id"
-            option-attribute="title"
-            placeholder="Selecione uma Terafa"
-            searchable-placeholder="Pesquisar..."
-            :loading="isTrSearch"
-            :searchable="searchTrSelectAction"
-            :debounce="1000"
-          >
-          </USelectMenu>
-        </UFormGroup>
-      </section>
+    <CardContent>
+      <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+        <section v-if="form.isBind">
+          <UFormGroup label="Tarefa existente" name="time-record-bind-id">
+            <USelectMenu
+              v-model="form.id"
+              :options="searchTrList"
+              :clear-search-on-close="true"
+              :ui-menu="{ height: 'max-h-40' }"
+              :disabled="disableInputs || isTrSearch"
+              value-attribute="id"
+              option-attribute="title"
+              placeholder="Selecione uma Terafa"
+              searchable-placeholder="Pesquisar..."
+              :loading="isTrSearch"
+              :searchable="searchTrSelectAction"
+              :debounce="1000"
+            >
+            </USelectMenu>
+          </UFormGroup>
+        </section>
 
-      <div v-if="!hideTimePeriods" class="flex justify-between">
-        <h3>{{ _$t("periods") }}</h3>
+        <div v-if="!hideTimePeriods" class="flex justify-between">
+          <h3>{{ _$t("periods") }}</h3>
 
-        <UButton
-          v-if="!isSyncMode"
-          :label="_$t('add')"
-          :disabled="addButtonIsDisabled || disableInputs"
-          size="sm"
-          type="button"
-          @click="addTimePeriodToForm"
-        />
-      </div>
-
-      <div
-        v-if="!hideTimePeriods"
-        v-for="(_, index) in form.timePeriods"
-        class="flex flex-row gap-4 relative dark:border-gray-800 border-b-2 pb-3"
-      >
-        <UFormGroup :label="_$t('startOfPeriod')" :name="'start-' + index">
-          <GDatePicker
-            v-model="form.timePeriods[index].start"
-            :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
-            :disabled="disableInputs || isSyncMode"
-            class="py-1"
-            @change="form.timePeriods[index].end = $event"
+          <UButton
+            v-if="!isSyncMode"
+            :label="_$t('add')"
+            :disabled="addButtonIsDisabled || disableInputs"
+            size="sm"
+            type="button"
+            @click="addTimePeriodToForm"
           />
-        </UFormGroup>
+        </div>
 
-        <UFormGroup :label="_$t('endOfPeriod')" :name="'end-' + index">
-          <GDatePicker
-            v-model="form.timePeriods[index].end"
-            :min="form.timePeriods[index].start"
-            :disabled="disableInputs || isSyncMode"
-            class="py-1"
-          />
-        </UFormGroup>
-
-        <UButton
-          v-if="!isSyncMode"
-          :disabled="disableInputs"
-          icon="i-icon-park-outline-close-small"
-          color="white"
-          variant="solid"
-          @click="deleteTimePeriodFromForm(index)"
-        />
-      </div>
-
-      <template v-if="!isSyncMode">
-        <UFormGroup :label="_$t('title')" name="title">
-          <UInput
-            v-model="form.title"
-            :disabled="disableInputs"
-            type="text"
-            maxlength="120"
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          :label="_$t('code')"
-          :required="isEditMode"
-          :description="_$t('codeFormDescription')"
-          name="code"
+        <div
+          v-if="!hideTimePeriods"
+          v-for="(_, index) in form.timePeriods"
+          class="flex flex-row gap-4 relative dark:border-gray-800 border-b-2 pb-3"
         >
-          <UInput
-            type="text"
-            v-model="form.code"
-            v-maska="{
-              mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-              tokens: {
-                X: {
-                  pattern: /[a-zA-Z0-9-]/,
-                  transform: (v: string) => v.toLowerCase(),
-                },
-              },
-            }"
+          <UFormGroup :label="_$t('startOfPeriod')" :name="'start-' + index">
+            <GDatePicker
+              v-model="form.timePeriods[index].start"
+              :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
+              :disabled="disableInputs || isSyncMode"
+              class="py-1"
+              @change="form.timePeriods[index].end = $event"
+            />
+          </UFormGroup>
+
+          <UFormGroup :label="_$t('endOfPeriod')" :name="'end-' + index">
+            <GDatePicker
+              v-model="form.timePeriods[index].end"
+              :min="form.timePeriods[index].start"
+              :disabled="disableInputs || isSyncMode"
+              class="py-1"
+            />
+          </UFormGroup>
+
+          <UButton
+            v-if="!isSyncMode"
+            :disabled="disableInputs"
+            icon="i-icon-park-outline-close-small"
+            color="white"
+            variant="solid"
+            @click="deleteTimePeriodFromForm(index)"
+          />
+        </div>
+
+        <template v-if="!isSyncMode">
+          <UFormGroup :label="_$t('title')" name="title">
+            <UInput
+              v-model="form.title"
+              :disabled="disableInputs"
+              type="text"
+              maxlength="120"
+            />
+          </UFormGroup>
+
+          <UFormGroup
+            :label="_$t('code')"
             :required="isEditMode"
-            :disabled="disableInputs"
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          :label="$t('category')"
-          name="category"
-          class="z-100 relative"
-        >
-          <USelectMenu
-            v-model="categoryValue"
-            :options="categories"
-            :clear-search-on-close="true"
-            :ui-menu="{ height: 'max-h-40' }"
-            :disabled="categoryIsDisabled || disableInputs"
-            show-create-option-when="always"
-            searchable
-            creatable
+            :description="_$t('codeFormDescription')"
+            name="code"
           >
-            <template #option-create="{ option }">
-              <span class="flex-shrink-0">
-                {{ _$t("create") }}
-              </span>
+            <UInput
+              type="text"
+              v-model="form.code"
+              v-maska="{
+								mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+								tokens: {
+									X: {
+										pattern: /[a-zA-Z0-9-]/,
+										transform: (v: string) => v.toLowerCase(),
+									},
+								},
+							}"
+              :required="isEditMode"
+              :disabled="disableInputs"
+            />
+          </UFormGroup>
 
-              <span class="block truncate">{{ option }}</span>
-            </template>
-          </USelectMenu>
-        </UFormGroup>
+          <UFormGroup
+            :label="$t('category')"
+            name="category"
+            class="z-100 relative"
+          >
+            <USelectMenu
+              v-model="categoryValue"
+              :options="categories"
+              :clear-search-on-close="true"
+              :ui-menu="{ height: 'max-h-40' }"
+              :disabled="categoryIsDisabled || disableInputs"
+              show-create-option-when="always"
+              searchable
+              creatable
+            >
+              <template #option-create="{ option }">
+                <span class="flex-shrink-0">
+                  {{ _$t("create") }}
+                </span>
 
-        <UFormGroup :label="_$t('description')" name="description">
-          <UTextarea
-            v-model="form.description"
-            :disabled="disableInputs"
-            maxlength="240"
-          />
-        </UFormGroup>
+                <span class="block truncate">{{ option }}</span>
+              </template>
+            </USelectMenu>
+          </UFormGroup>
 
-        <UFormGroup
-          :label="_$t('externalLink')"
-          name="externalLink"
-          description="Link externo para sua tarefa ou algo que queira fixar."
-          maxlength="120"
-        >
-          <UInput
-            v-model="form.externalLink"
-            :disabled="disableInputs"
-            type="text"
-          />
-        </UFormGroup>
-      </template>
+          <UFormGroup :label="_$t('description')" name="description">
+            <UTextarea
+              v-model="form.description"
+              :disabled="disableInputs"
+              maxlength="240"
+            />
+          </UFormGroup>
 
-      <UButton
-        :loading="isFetch"
-        :disabled="submitIsDisabled"
-        :label="
-          isSyncMode ? (form.isBind ? _$t('bind') : _$t('sync')) : _$t('send')
-        "
-        type="submit"
-        block
-      />
-    </UForm>
-  </UCard>
+          <UFormGroup
+            :label="_$t('externalLink')"
+            name="externalLink"
+            description="Link externo para sua tarefa ou algo que queira fixar."
+            maxlength="120"
+          >
+            <UInput
+              v-model="form.externalLink"
+              :disabled="disableInputs"
+              type="text"
+            />
+          </UFormGroup>
+        </template>
+
+        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+          {{
+            isSyncMode ? (form.isBind ? _$t("bind") : _$t("sync")) : _$t("send")
+          }}
+        </Button>
+      </UForm>
+    </CardContent>
+  </Card>
 </template>
