@@ -4,6 +4,12 @@ import { CirclePlus, Eye, EllipsisVertical, Trash } from "lucide-vue-next";
 import { useDebounceFn } from "@vueuse/core";
 
 const trStore = useTimeRecordStore();
+const {
+  paginationQuery,
+  tableData,
+  apiRes,
+  isFetch: isPaginationFetch,
+} = storeToRefs(trStore);
 
 const emit = defineEmits<{
   access: [value: string];
@@ -40,7 +46,7 @@ const categoriesIsFetch = ref(false);
 const categoryFilter = ref<string>();
 
 const debounceTrFetch = useDebounceFn(() => {
-  trStore.fetch();
+  trStore.fetchData();
 }, 1000);
 
 const computedCategory = computed({
@@ -56,7 +62,7 @@ const computedCategory = computed({
       return;
     }
 
-    trStore.paginationQuery.addFilter({ tag: "category", value: category });
+    trStore.addFilter({ tag: "category", value: category });
     debounceTrFetch();
   },
 });
@@ -83,7 +89,7 @@ const computedSort = computed({
       column = "timeOnSeconds";
     }
 
-    trStore.paginationQuery.updateSort(sort.value?.direction, column);
+    trStore.updateSort(sort.value?.direction, column);
     debounceTrFetch();
   },
 });
@@ -93,7 +99,7 @@ const isFetch = computed(() => {
 });
 
 const configTableDataAndFetch = () => {
-  const hasFilter = trStore.paginationQuery.filters.find(
+  const hasFilter = paginationQuery.value.filters.find(
     (e) => e.tag === "category"
   );
 
@@ -101,8 +107,8 @@ const configTableDataAndFetch = () => {
     categoryFilter.value = hasFilter.value;
   }
 
-  if (trStore.paginationQuery.sortProp) {
-    let column = trStore.paginationQuery.sortProp;
+  if (paginationQuery.value.sortProp) {
+    let column = paginationQuery.value.sortProp;
 
     if (column == "timeOnSeconds") {
       column = "formattedTime";
@@ -110,12 +116,12 @@ const configTableDataAndFetch = () => {
 
     sort.value = {
       column,
-      direction: trStore.paginationQuery.sort,
+      direction: paginationQuery.value.sort,
     };
   }
 
-  trStore.paginationQuery.updateSort(sort.value.direction, sort.value.column);
-  return trStore.fetch();
+  trStore.updateSort(sort.value.direction, sort.value.column);
+  return trStore.fetchData();
 };
 
 onMounted(() => {
@@ -170,14 +176,19 @@ onMounted(() => {
             </Button>
           </section>
 
-          <GSearch :store="trStore" :is-fetch="isFetch" />
+          <GSearchV2
+            :pagination-query="paginationQuery"
+            :pagination-query-methods="trStore"
+            :is-pagination-fetch="isPaginationFetch"
+            using-store
+          />
         </div>
       </CardHeader>
 
       <CardContent>
         <UTable
           :columns="columns"
-          :rows="trStore.timeRecordsTableData"
+          :rows="tableData"
           :loading="isFetch"
           v-model:sort="computedSort"
           sort-mode="manual"
@@ -201,13 +212,15 @@ onMounted(() => {
           </template>
         </UTable>
 
-        <GPagination
-          :page="trStore.apiRes?.page"
-          :perPage="trStore.apiRes?.perPage"
-          :totalPages="trStore.apiRes?.totalPages"
-          :totalItems="trStore.apiRes?.totalItems"
-          :store="trStore"
-          :is-fetch="isFetch"
+        <GPaginationV2
+          :page="apiRes?.page"
+          :per-page="apiRes?.perPage"
+          :total-pages="apiRes?.totalPages"
+          :total-items="apiRes?.totalItems"
+          :pagination-query="paginationQuery"
+          :pagination-query-methods="trStore"
+          :is-pagination-fetch="isPaginationFetch"
+          using-store
         />
       </CardContent>
     </Card>

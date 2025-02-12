@@ -51,3 +51,17 @@ export const putTimeRecord = async (body: UpdateTimeRecordDto) => {
 export const deleteTimeRecord = async (id: number) => {
   return useCustomFetch(false)<boolean>(`/record/${id}`, { method: "DELETE" });
 };
+
+export const timeRecordApi = () => ({
+  get: async (pagQuery: IPaginationQuery) => {
+    return useCustomFetch()<Pagination<TimeRecordMap>>(
+      `/record${paginationQueryHandle(pagQuery)}`,
+      { method: "GET" }
+    );
+  },
+  delete: async (id: number) => {
+    return useCustomFetch(false)<boolean>(`/record/${id}`, {
+      method: "DELETE",
+    });
+  },
+});

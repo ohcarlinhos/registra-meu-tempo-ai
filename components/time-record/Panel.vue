@@ -10,7 +10,9 @@ const modal = reactive({
   },
 });
 
-const timeRecordStore = useTimeRecordStore();
+const trStore = useTimeRecordStore();
+const { isDeleteFetch } = storeToRefs(trStore);
+
 const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 const router = useRouter();
 
@@ -56,20 +58,15 @@ const closeModal = () => {
   editTimeRecordObject.value = undefined;
 };
 
-const deleteFetch = ref(false);
-
 const deleteTimeRecord = async () => {
   if (!modal.confirmDelete.id) return;
 
-  deleteFetch.value = true;
-
   try {
-    await timeRecordStore.deleteTimeRecord(modal.confirmDelete.id);
+    await trStore.delete(modal.confirmDelete.id);
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
   } finally {
-    deleteFetch.value = false;
   }
 };
 </script>
@@ -92,7 +89,7 @@ const deleteTimeRecord = async () => {
         title: modal.confirmDelete.title,
       })
     "
-    :isFetch="deleteFetch"
+    :isFetch="isDeleteFetch"
     :disableConfirm="
       (refFormConfirm && refFormConfirm.errors.length > 0) ||
       !formConfirm.code ||

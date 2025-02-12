@@ -1,61 +1,60 @@
 import { format } from "date-fns";
 
-export const useTimeRecordStore = defineStore("TimeRecordStore", {
-  state: () => {
-    return {
-      paginationQuery: new PaginationQuery(),
-      _apiRes: {} as Pagination<TimeRecordMap>,
-      _fetch: false,
-      _deleteFetch: false,
-    };
-  },
+export const useTimeRecordStore = defineStore(
+  "time-record-store",
+  () => {
+    const {
+      query: paginationQuery,
+      setPage,
+      setPerPage,
+      setSearch,
+      addFilter,
+      removeFilter,
+      updateSort,
+      updateRouteQuery,
+    } = usePaginationQuery();
 
-  actions: {
-    async fetch() {
-      if (!this.paginationQuery) this.paginationQuery = new PaginationQuery();
+    const apiRes = ref<Pagination<TimeRecordMap>>();
+    const isPaginationFetch = ref(false);
 
+    const isDeleteFetch = ref(false);
+
+    async function fetchData() {
+      updateRouteQuery();
       try {
-        this._fetch = true;
-        const data = await getTimeRecords(this.paginationQuery);
-        if (data) this._apiRes = data;
+        isPaginationFetch.value = true;
+        const data = await timeRecordApi().get(paginationQuery.value);
+        if (data) apiRes.value = data;
       } catch (error) {
         ErrorToast(error);
       } finally {
-        this._fetch = false;
+        isPaginationFetch.value = false;
       }
-    },
+    }
 
-    async refetch() {
-      await this.fetch();
-    },
+    const refetchData = async () => {
+      await fetchData();
+    };
 
-    async deleteTimeRecord(id: number) {
+    async function deleteTimeRecord(id: number) {
       try {
-        this._deleteFetch = true;
-        await deleteTimeRecord(id);
-        await this.refetch();
+        isDeleteFetch.value = true;
+        await timeRecordApi().delete(id);
+        await refetchData();
       } finally {
-        this._deleteFetch = false;
+        isDeleteFetch.value = false;
       }
-    },
+    }
 
-    findTimeRecordById(id: number) {
-      return this._apiRes.data!.length
-        ? this._apiRes.data.find((r) => r.id == id)
-        : null;
-    },
-  },
+    const isFetch = computed(() => {
+      return isDeleteFetch.value || isPaginationFetch.value;
+    });
 
-  getters: {
-    timeRecords: (state) => state._apiRes,
-
-    apiRes: (state) => (state._apiRes!.data ? state._apiRes : null),
-
-    timeRecordsTableData: (state) => {
+    const tableData = computed(() => {
       const timeRecordsTable: TimeRecordTable[] = [];
 
-      if (state._apiRes!.data)
-        state._apiRes.data.forEach((timeRecord) => {
+      if (apiRes.value?.data)
+        apiRes.value.data.forEach((timeRecord) => {
           timeRecordsTable.push({
             ...timeRecord,
             lastTimePeriodDate:
@@ -74,10 +73,29 @@ export const useTimeRecordStore = defineStore("TimeRecordStore", {
         });
 
       return timeRecordsTable;
-    },
+    });
 
-    isFetch: (state) => state._fetch || state._deleteFetch,
+    return {
+      fetchData,
+      refetchData,
+      paginationQuery,
+      apiRes,
+      isPaginationFetch,
+      isFetch,
+      tableData,
+
+      setPage,
+      setPerPage,
+      setSearch,
+      addFilter,
+      removeFilter,
+      updateSort,
+
+      delete: deleteTimeRecord,
+      isDeleteFetch,
+    };
   },
-
-  persist: true,
-});
+  {
+    persist: true,
+  }
+);
