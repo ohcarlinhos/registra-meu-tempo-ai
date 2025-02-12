@@ -14,6 +14,8 @@ const props = defineProps<{
 
   paginationQuery?: IPaginationQuery;
   paginationQueryMethods?: IPaginationQueryMethods;
+
+  totalLabel?: string;
 }>();
 
 const computedPage = computed({
@@ -82,20 +84,57 @@ const computedPerPageList = computed(() => {
 </script>
 
 <template>
-  <div class="flex justify-between items-center mt-3">
-    <UBadge v-if="$props.totalItems" size="lg" color="white" variant="solid">
-      Total: {{ $props.totalItems }}
-    </UBadge>
-
-    <UPagination
+  <div
+    class="flex justify-between items-center mt-3 flex-col md:flex-row gap-5"
+  >
+    <Pagination
       v-if="totalPages && totalItems && totalItems > computedList[0]"
-      v-model="computedPage"
-      :page-count="perPage"
+      v-slot="{ page }"
+      v-model:page="computedPage"
       :total="totalItems"
-      :disabled="isPaginationFetch || isFetch"
-    />
+      :items-per-page="perPage"
+      show-edges
+    >
+      <PaginationList
+        :key="totalItems"
+        v-slot="{ items }"
+        class="flex items-center gap-1"
+      >
+        <PaginationFirst />
+        <PaginationPrev />
 
-    <section v-if="computedPerPageList.length" class="flex items-center gap-2">
+        <template v-for="(item, index) in items">
+          <PaginationListItem
+            v-if="item.type === 'page'"
+            :key="index"
+            :value="item.value"
+            as-child
+          >
+            <Button
+              class="w-10 h-10 p-0"
+              size="icon"
+              :variant="item.value === page ? 'default' : 'outline'"
+            >
+              {{ item.value }}
+            </Button>
+          </PaginationListItem>
+
+          <PaginationEllipsis v-else :key="item.type" :index="index" />
+        </template>
+
+        <PaginationNext />
+        <PaginationLast />
+      </PaginationList>
+    </Pagination>
+
+    <section
+      v-if="computedPerPageList.length"
+      class="flex items-center gap-2 gap-5"
+    >
+      <span v-if="$props.totalItems">
+        Total: {{ $props.totalItems }} {{ totalLabel }}
+      </span>
+
       <USelect
         v-model="computedPerPage"
         :options="computedPerPageList"

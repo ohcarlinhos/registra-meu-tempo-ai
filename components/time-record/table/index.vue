@@ -220,6 +220,7 @@ onMounted(() => {
           :pagination-query="paginationQuery"
           :pagination-query-methods="trStore"
           :is-pagination-fetch="isPaginationFetch"
+          total-label="Tarefas"
           using-store
         />
       </CardContent>
