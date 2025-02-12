@@ -20,13 +20,19 @@ export const useCategoryStore = defineStore(
       return allCategories.value.find((c) => c.id == id);
     };
 
-    const paginationQuery = ref(new PaginationQuery());
+    const {
+      query: paginationQuery,
+      setPage,
+      setPerPage,
+      setSearch,
+      addFilter,
+      removeFilter,
+      updateSort,
+    } = usePaginationQuery();
     const apiRes = ref<Pagination<CategoryMap>>();
     const isPaginationFetch = ref(false);
 
     const fetchData = async () => {
-      if (!paginationQuery.value) paginationQuery.value = new PaginationQuery();
-
       try {
         isPaginationFetch.value = true;
         const data = await categoryApi().get(paginationQuery.value);
@@ -78,12 +84,19 @@ export const useCategoryStore = defineStore(
       isFetch,
       categoryTableData,
 
+      setPage,
+      setPerPage,
+      setSearch,
+      addFilter,
+      removeFilter,
+      updateSort,
+
       fetchAllCategories,
       findCategoryById,
       allCategories,
       isAllCategoriesFetch,
 
-      deleteCategory,
+      delete: deleteCategory,
       isDeleteFetch,
     };
   },

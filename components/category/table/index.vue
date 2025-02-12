@@ -3,7 +3,7 @@ import { CirclePlus, EllipsisVertical } from "lucide-vue-next";
 import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
-const { deleteCategory, fetchData: fetchCategoryData } = categoryStore;
+const { fetchData: fetchCategoryData } = categoryStore;
 const { isPaginationFetch, paginationQuery, categoryTableData, apiRes } =
   storeToRefs(categoryStore);
 
@@ -54,7 +54,7 @@ const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
-    await deleteCategory(modal.confirmDelete.id);
+    await categoryStore.delete(modal.confirmDelete.id);
 
     closeConfirmDeleteModal();
   } catch (error) {
@@ -90,9 +90,10 @@ onMounted(() => {
       </section>
 
       <GSearchV2
+        v-if="paginationQuery"
         :pagination-query="paginationQuery"
         :is-pagination-fetch="isPaginationFetch"
-        :fetch-data="fetchCategoryData"
+        using-store
       />
     </CardHeader>
     <CardContent>
@@ -118,8 +119,8 @@ onMounted(() => {
         :totalPages="apiRes?.totalPages"
         :totalItems="apiRes?.totalItems"
         :pagination-query="paginationQuery"
+        :pagination-query-methods="categoryStore"
         :is-pagination-fetch="isPaginationFetch"
-        :fetch-data="fetchCategoryData"
         using-store
       />
     </CardContent>

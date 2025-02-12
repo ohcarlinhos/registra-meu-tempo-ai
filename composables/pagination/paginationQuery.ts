@@ -8,31 +8,34 @@ export const usePaginationQuery = () => {
 
   const _defaultPerPage = 10;
 
-  const page = computed({
-    get: () => _page.value,
-    set: (value?: number | string) => {
-      if (typeof value === "string") value = parseInt(value);
-      if (!value || value < 1) _page.value = 1;
-      else _page.value = value;
-    },
+  const page = computed(() => {
+    return _page.value;
   });
 
-  const perPage = computed({
-    get: () => _perPage.value,
-    set: (value?: number | string) => {
-      if (typeof value === "string") value = parseInt(value);
-      if (!value || value < 1) _perPage.value = _defaultPerPage;
-      else _perPage.value = value;
-    },
+  const setPage = (value?: number | string) => {
+    if (typeof value === "string") value = parseInt(value);
+    if (!value || value < 1) _page.value = 1;
+    else _page.value = value;
+  };
+
+  const perPage = computed(() => {
+    return _perPage.value;
   });
 
-  const search = computed({
-    get: () => _search.value,
-    set: (value: string) => {
-      if (!value) _search.value = "";
-      else _search.value = value;
-    },
+  const setPerPage = (value?: number | string) => {
+    if (typeof value === "string") value = parseInt(value);
+    if (!value || value < 1) _perPage.value = _defaultPerPage;
+    else _perPage.value = value;
+  };
+
+  const search = computed(() => {
+    return _search.value;
   });
+
+  const setSearch = (value: string) => {
+    if (!value) _search.value = "";
+    else _search.value = value;
+  };
 
   const filters = computed({ get: () => _filters.value, set: () => {} });
   const sort = computed({ get: () => _sort.value, set: () => {} });
@@ -52,10 +55,25 @@ export const usePaginationQuery = () => {
     _sortProp.value = prop;
   }
 
+  const query = computed(() => {
+    return {
+      page: page.value,
+      perPage: perPage.value,
+      search: search.value,
+      filters: filters.value,
+      sort: sort.value,
+      sortProp: sortProp.value,
+    };
+  });
+
   return {
+    query,
     page,
+    setPage,
     perPage,
+    setPerPage,
     search,
+    setSearch,
     filters,
     sort,
     sortProp,

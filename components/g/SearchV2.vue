@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  fetchData?: () => Promise<void>;
-  paginationQuery?: IPaginationQuery;
+  usingStore?: boolean;
   isPaginationFetch?: boolean;
+
+  paginationQuery?: IPaginationQuery;
+  paginationQueryMethods?: IPaginationQueryMethods;
 
   isFetch?: boolean;
 }>();
@@ -14,15 +16,13 @@ const setDebounce = async (value: string) => {
 
   search.value = value;
 
-  if (props.paginationQuery) {
-    props.paginationQuery.page = 1;
-    props.paginationQuery.search = value;
+  if (props.usingStore) {
+    props.paginationQueryMethods?.setPage(1);
+    props.paginationQueryMethods?.setSearch(value);
   }
 
   debounce.value = setTimeout(async () => {
-    if (props.fetchData) {
-      await props.fetchData();
-    }
+    await props.paginationQueryMethods?.fetchData();
   }, 1000);
 };
 

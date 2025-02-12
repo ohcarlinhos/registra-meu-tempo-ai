@@ -10,9 +10,10 @@ const props = defineProps<{
   isFetch?: boolean;
 
   usingStore?: boolean;
-  fetchData?: () => Promise<void>;
-  paginationQuery?: IPaginationQuery;
   isPaginationFetch?: boolean;
+
+  paginationQuery?: IPaginationQuery;
+  paginationQueryMethods?: IPaginationQueryMethods;
 }>();
 
 const computedPage = computed({
@@ -22,9 +23,9 @@ const computedPage = computed({
   set: (page: number) => {
     if (page == props.page) return;
 
-    if (props.usingStore && props.paginationQuery && props.fetchData) {
-      props.paginationQuery.page = page;
-      props.fetchData();
+    if (props.usingStore) {
+      props.paginationQueryMethods?.setPage(page);
+      props.paginationQueryMethods?.fetchData();
     } else {
       emit("update:page", page);
     }
@@ -47,9 +48,9 @@ const computedPerPage = computed({
   set: (perPage: number) => {
     if (perPage == props.perPage) return;
 
-    if (props.usingStore && props.paginationQuery && props.fetchData) {
-      props.paginationQuery.perPage = perPage;
-      props.fetchData();
+    if (props.usingStore) {
+      props.paginationQueryMethods?.setPerPage(perPage);
+      props.paginationQueryMethods?.fetchData();
     } else {
       emit("update:perPage", perPage);
     }
