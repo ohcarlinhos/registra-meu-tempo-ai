@@ -7,9 +7,9 @@ const router = useRouter();
 
 const trStore = useTimeRecordStore();
 
-const categoryStore = useCategoryStore();
-const { fetchAllCategories } = categoryStore;
-const { allCategories, isAllCategoriesFetch } = storeToRefs(categoryStore);
+const allCategoriesStore = useAllCategoriesStore();
+const { fetchData } = allCategoriesStore;
+const { data, isFetch: isAllCategoriesFetch } = storeToRefs(allCategoriesStore);
 
 const emit = defineEmits(["close", "refresh"]);
 
@@ -82,7 +82,7 @@ const isSyncMode = computed(() => {
 });
 
 const categories = computed(() => {
-  return [...newCategories.value, ...allCategories.value.map((c) => c.name)];
+  return [...newCategories.value, ...data.value.map((c) => c.name)];
 });
 
 const categoryValue = computed({
@@ -148,7 +148,7 @@ const handleCategory = async () => {
   }
 
   if (form.category) {
-    const category = allCategories.value.find(
+    const category = data.value.find(
       (category) => category.name === form.category
     );
 
@@ -256,7 +256,7 @@ onMounted(async () => {
   }
 
   if (!isSyncMode.value) {
-    fetchAllCategories(closeModal);
+    fetchData(closeModal);
   }
 });
 

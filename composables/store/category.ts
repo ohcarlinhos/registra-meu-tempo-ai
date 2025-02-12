@@ -1,25 +1,6 @@
 export const useCategoryStore = defineStore(
   "category-store",
   () => {
-    const allCategories = ref<CategoryMap[]>([]);
-    const isAllCategoriesFetch = ref(false);
-
-    const fetchAllCategories = async (errorCallback: Function) => {
-      try {
-        isAllCategoriesFetch.value = true;
-        allCategories.value = (await categoryApi().getAll()) || [];
-      } catch (error) {
-        ErrorToast(error);
-        errorCallback();
-      } finally {
-        isAllCategoriesFetch.value = false;
-      }
-    };
-
-    const findCategoryById = (id: number) => {
-      return allCategories.value.find((c) => c.id == id);
-    };
-
     const {
       query: paginationQuery,
       setPage,
@@ -90,11 +71,6 @@ export const useCategoryStore = defineStore(
       addFilter,
       removeFilter,
       updateSort,
-
-      fetchAllCategories,
-      findCategoryById,
-      allCategories,
-      isAllCategoriesFetch,
 
       delete: deleteCategory,
       isDeleteFetch,
