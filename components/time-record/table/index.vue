@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CirclePlus, Eye, EllipsisVertical } from "lucide-vue-next";
+import { CirclePlus, Eye, EllipsisVertical, Trash } from "lucide-vue-next";
 
 import { useDebounceFn } from "@vueuse/core";
 
@@ -149,7 +149,7 @@ onMounted(() => {
         </section>
 
         <div class="flex flex-col gap-5 md:flex-row items-start">
-          <section class="flex gap-2">
+          <section class="flex gap-2 items-center">
             <USelectMenu
               v-model="computedCategory"
               :options="categories"
@@ -159,13 +159,15 @@ onMounted(() => {
               :placeholder="_$t('category')"
             />
 
-            <UButton
-              :label="_$t('clear')"
+            <Button
               :disabled="!computedCategory || isFetch"
               variant="outline"
               :color="!computedCategory ? 'white' : 'red'"
               @click="computedCategory = ''"
-            />
+            >
+              <Trash />
+              {{ "Limpar" }}
+            </Button>
           </section>
 
           <GSearch :store="trStore" :is-fetch="isFetch" />
