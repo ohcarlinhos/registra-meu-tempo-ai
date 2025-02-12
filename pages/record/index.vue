@@ -2,9 +2,9 @@
 definePageMeta({
   middleware: ["auth"],
   name: "record.panel",
-  props: { breadcrumb: ["Tarefas"] },
 });
 useHead({ title: "Tarefas" });
+useConfigStore().setBreadcrumbPage([{ label: "Tarefas" }]);
 </script>
 
 <template>

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { UserFormPassword } from "#components";
-
 definePageMeta({
   middleware: ["auth"],
   name: "user.me",
-  props: { breadcrumb: ["Minha conta"] },
 });
 useHead({ title: "Minha conta" });
+
+useConfigStore().setBreadcrumbPage([{ label: "Minha conta" }]);
 </script>
 
 <template>

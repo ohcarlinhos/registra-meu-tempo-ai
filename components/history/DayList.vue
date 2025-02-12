@@ -50,6 +50,7 @@ ChartJS.register(
 
 const props = defineProps<{
   timeRecordId: number;
+  timeRecord?: TimeRecordMap;
   isFetch?: boolean;
   updatedOn?: Date;
   clearUpdatedOn?: () => void;
@@ -163,7 +164,15 @@ const isFetchNow = computed(() => {
   return dayStore.isFetch || props.isFetch;
 });
 
+watch(
+  () => props.timeRecord?.title,
+  () => {
+    updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
+  }
+);
+
 onMounted(async () => {
+  updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
   await getData();
 });
 

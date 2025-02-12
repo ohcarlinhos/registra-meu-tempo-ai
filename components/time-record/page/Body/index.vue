@@ -127,6 +127,7 @@ const refreshTimePeriodCallback = async () => {
             updatedOn,
             clearUpdatedOn,
             refreshTimePeriodCallback,
+            timeRecord,
           }"
         ></slot>
       </section>

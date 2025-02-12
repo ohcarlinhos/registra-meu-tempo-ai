@@ -2,8 +2,9 @@
 definePageMeta({
   middleware: ["auth"],
   name: "feedback.page",
-  props: { breadcrumb: ["Feedback"] },
 });
+useHead({ title: "Feedback e Dúvidas" });
+useConfigStore().setBreadcrumbPage([{ label: "Feedback e Dúvidas" }]);
 </script>
 
 <template>

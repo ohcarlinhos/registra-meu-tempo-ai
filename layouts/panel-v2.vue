@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { NuxtLink } from "#components";
 import {
   ChevronsUpDown,
   ClipboardList,
@@ -8,12 +9,9 @@ import {
   MessageCircle,
 } from "lucide-vue-next";
 
+const { breadcrumbPage } = storeToRefs(useConfigStore());
+
 const data = {
-  user: {
-    name: "Carlos Roberto",
-    email: "teste@email.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   products: [
     {
       name: "Registra meu tempo aí!",
@@ -64,12 +62,6 @@ const activeTeam = ref(data.products[0]);
 function setActiveTeam(team: (typeof data.products)[number]) {
   activeTeam.value = team;
 }
-
-const route = useRoute();
-
-const breadcrumbList = computed(() => {
-  return (route.meta.props as { breadcrumb?: string[] })?.breadcrumb || [];
-});
 </script>
 
 <template>
@@ -274,11 +266,19 @@ const breadcrumbList = computed(() => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
-                <template v-for="item in breadcrumbList">
+                <template v-for="item in breadcrumbPage">
                   <BreadcrumbSeparator class="hidden md:block" />
 
                   <BreadcrumbItem>
-                    <BreadcrumbPage>{{ item }}</BreadcrumbPage>
+                    <BreadcrumbPage v-if="item.pageName">
+                      <NuxtLink :to="{ name: item.pageName }">
+                        {{ item.label }}
+                      </NuxtLink>
+                    </BreadcrumbPage>
+
+                    <BreadcrumbPage v-else>
+                      {{ item.label }}
+                    </BreadcrumbPage>
                   </BreadcrumbItem>
                 </template>
               </BreadcrumbList>

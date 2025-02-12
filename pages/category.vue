@@ -2,9 +2,9 @@
 definePageMeta({
   middleware: ["auth"],
   name: "record.category",
-  props: { breadcrumb: ["Categorias"] },
 });
 useHead({ title: "Categorias" });
+useConfigStore().setBreadcrumbPage([{ label: "Categorias" }]);
 </script>
 
 <template>

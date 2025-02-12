@@ -14,6 +14,7 @@ type CardType = {
 
 const props = defineProps<{
   timeRecordId?: number;
+  timeRecord?: TimeRecordMap;
   isFetch?: boolean;
   updatedOn?: Date;
   clearUpdatedOn?: () => void;
@@ -34,6 +35,8 @@ const dayStatistic = ref<DayStatistic>();
 const isFetchStatistics = ref(false);
 
 onMounted(() => {
+  updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
+
   selectedDate.value = route.query.date
     ? startOfDay(new Date(route.query.date as string))
     : startOfDay(new Date());
@@ -46,6 +49,13 @@ watch(
   () => {
     pushQuery();
     init();
+  }
+);
+
+watch(
+  () => props.timeRecord?.title,
+  () => {
+    updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
   }
 );
 

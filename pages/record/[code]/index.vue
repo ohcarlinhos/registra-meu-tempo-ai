@@ -13,6 +13,7 @@ definePageMeta({
         updatedOn,
         clearUpdatedOn,
         refreshTimePeriodCallback,
+        timeRecord,
       }"
     >
       <ClientOnly>
@@ -20,6 +21,7 @@ definePageMeta({
           ref="historyTp"
           v-if="actualTimeRecordId"
           :time-record-id="actualTimeRecordId"
+          :time-record="timeRecord"
           :callback="refreshTimePeriodCallback"
           :updated-on="updatedOn"
           :clear-updated-on="clearUpdatedOn"

@@ -21,8 +21,18 @@ export const useConfigStore = defineStore("config-store", () => {
     return runtimeConfig.public.enableUserChallenge;
   });
 
+  const breadcrumbPage = ref<{ label: string; pageName?: string }[]>([]);
+
+  const setBreadcrumbPage = (
+    values: { label: string; pageName?: string }[]
+  ) => {
+    breadcrumbPage.value = values;
+  };
+
   return {
     baseURL,
+    breadcrumbPage,
+    setBreadcrumbPage,
     hasWarTools,
     oldUserToken,
     onlyGuestMode,

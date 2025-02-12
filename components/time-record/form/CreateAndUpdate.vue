@@ -6,7 +6,6 @@ import { vMaska } from "maska/vue";
 const router = useRouter();
 
 const trStore = useTimeRecordStore();
-const { isFetch: isFetchTrStore } = storeToRefs(trStore);
 
 const allCategoriesStore = useAllCategoriesStore();
 const { fetchData } = allCategoriesStore;
@@ -113,7 +112,7 @@ const categoryIsDisabled = computed(() => {
 
 const submitIsDisabled = computed(() => {
   if (form.isBind && !form.id) return true;
-  return isFetchTrStore.value || isFetch.value;
+  return isFetch.value;
 });
 
 /**
