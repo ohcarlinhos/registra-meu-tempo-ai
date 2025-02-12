@@ -4,7 +4,7 @@ import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
 const { fetchData: fetchCategoryData } = categoryStore;
-const { isPaginationFetch, paginationQuery, categoryTableData, apiRes } =
+const { isPaginationFetch, paginationQuery, tableData, apiRes } =
   storeToRefs(categoryStore);
 
 defineEmits<{
@@ -90,18 +90,14 @@ onMounted(() => {
       </section>
 
       <GSearchV2
-        v-if="paginationQuery"
         :pagination-query="paginationQuery"
+        :pagination-query-methods="categoryStore"
         :is-pagination-fetch="isPaginationFetch"
         using-store
       />
     </CardHeader>
     <CardContent>
-      <UTable
-        :columns="columns"
-        :rows="categoryTableData"
-        :loading="isPaginationFetch"
-      >
+      <UTable :columns="columns" :rows="tableData" :loading="isPaginationFetch">
         <template #actions-data="{ row }">
           <div class="flex justify-end">
             <UDropdown :items="items(row)">
@@ -115,9 +111,9 @@ onMounted(() => {
 
       <GPaginationV2
         :page="apiRes?.page"
-        :perPage="apiRes?.perPage"
-        :totalPages="apiRes?.totalPages"
-        :totalItems="apiRes?.totalItems"
+        :per-page="apiRes?.perPage"
+        :total-pages="apiRes?.totalPages"
+        :total-items="apiRes?.totalItems"
         :pagination-query="paginationQuery"
         :pagination-query-methods="categoryStore"
         :is-pagination-fetch="isPaginationFetch"
