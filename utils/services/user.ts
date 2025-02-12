@@ -14,7 +14,7 @@ export const userApi = () => ({
   },
   updatePassword: async (id: number, body: UpdateUserPasswordDto) => {
     return useCustomFetch(false)<boolean>(`user/password/${id}`, {
-      method: "POST",
+      method: "PUT",
       body,
     });
   },
@@ -27,8 +27,8 @@ export const userApi = () => ({
       body,
     });
   },
-  recoveryNewPassword: async (body: RecoveryPasswordDto) => {
-    return useCustomFetch(false, false)<boolean>("/user/recovery/password", {
+  recoveryPassword: async (body: RecoveryPasswordDto) => {
+    return useCustomFetch(false, false)<boolean>("/user/password/recovery", {
       method: "POST",
       body,
     });

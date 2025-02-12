@@ -24,7 +24,7 @@ const submitAction = async (dto: RecoveryPasswordDto) => {
   try {
     isFetch.value = true;
 
-    await userApi().recoveryNewPassword(dto);
+    await userApi().recoveryPassword(dto);
 
     OkToast(_$t("updatePasswordSuccess"));
     useRouter().push({ name: "login" });
