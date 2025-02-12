@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { CirclePlus, Eye, EllipsisVertical } from "lucide-vue-next";
+
 import { useDebounceFn } from "@vueuse/core";
 
 const trStore = useTimeRecordStore();
@@ -135,16 +137,15 @@ onMounted(() => {
   <div class="flex-1">
     <Card>
       <CardHeader class="flex-row gap-4 justify-between">
-        <section class="flex flex-row gap-4">
+        <section class="flex flex-row gap-4 items-center">
           <CardTitle>
             {{ "Tarefas" }}
           </CardTitle>
 
-          <UButton
-            :label="_$t('create')"
-            icon="i-icon-park-outline-add"
-            @click="emit('create')"
-          />
+          <Button variant="outline" @click="emit('create')">
+            <CirclePlus />
+            {{ "Criar Tarefa" }}
+          </Button>
         </section>
 
         <div class="flex flex-col gap-5 md:flex-row items-start">
@@ -181,18 +182,18 @@ onMounted(() => {
         >
           <template #actions-data="{ row }">
             <div class="flex justify-end gap-2">
-              <UButton
-                :label="_$t('access')"
-                color="gray"
+              <Button
+                variant="outline"
                 @click="() => emit('access', row.code!)"
-              />
+              >
+                <Eye />
+                {{ "Acessar" }}
+              </Button>
 
               <UDropdown :items="items(row)">
-                <UButton
-                  color="gray"
-                  variant="ghost"
-                  icon="i-icon-park-outline-more-one"
-                />
+                <Button variant="outline" size="icon">
+                  <EllipsisVertical />
+                </Button>
               </UDropdown>
             </div>
           </template>

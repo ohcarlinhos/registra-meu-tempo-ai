@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { CirclePlus, EllipsisVertical } from "lucide-vue-next";
 import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
@@ -77,57 +78,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <GPanelCol custom-class="w-full">
-    <div class="flex justify-between gap-10">
-      <GPanelTitle text="Categorias" />
+  <Card>
+    <CardHeader class="flex-row gap-4 justify-between">
+      <section class="flex flex-row gap-4 items-center">
+        <CardTitle>{{ "Categorias" }}</CardTitle>
 
-      <div class="flex gap-5">
-        <GSearchV2
-          :pagination-query="paginationQuery"
-          :is-pagination-fetch="isPaginationFetch"
-          :fetch-data="fetchCategoryData"
-        />
+        <Button variant="outline" @click="modal.category = true">
+          <CirclePlus />
+          {{ "Criar" }}
+        </Button>
+      </section>
 
-        <UButton
-          icon="i-icon-park-outline-add"
-          @click="modal.category = true"
-        />
-      </div>
-    </div>
+      <GSearchV2
+        :pagination-query="paginationQuery"
+        :is-pagination-fetch="isPaginationFetch"
+        :fetch-data="fetchCategoryData"
+      />
+    </CardHeader>
+    <CardContent>
+      <UTable
+        :columns="columns"
+        :rows="categoryTableData"
+        :loading="isPaginationFetch"
+      >
+        <template #actions-data="{ row }">
+          <div class="flex justify-end">
+            <UDropdown :items="items(row)">
+              <Button variant="outline" size="icon">
+                <EllipsisVertical />
+              </Button>
+            </UDropdown>
+          </div>
+        </template>
+      </UTable>
 
-    <Card>
-      <CardContent>
-        <UTable
-          :columns="columns"
-          :rows="categoryTableData"
-          :loading="isPaginationFetch"
-        >
-          <template #actions-data="{ row }">
-            <div class="flex justify-end">
-              <UDropdown :items="items(row)">
-                <UButton
-                  color="gray"
-                  variant="ghost"
-                  icon="i-icon-park-outline-more-one"
-                />
-              </UDropdown>
-            </div>
-          </template>
-        </UTable>
-
-        <GPaginationV2
-          :page="apiRes?.page"
-          :perPage="apiRes?.perPage"
-          :totalPages="apiRes?.totalPages"
-          :totalItems="apiRes?.totalItems"
-          :pagination-query="paginationQuery"
-          :is-pagination-fetch="isPaginationFetch"
-          :fetch-data="fetchCategoryData"
-          using-store
-        />
-      </CardContent>
-    </Card>
-  </GPanelCol>
+      <GPaginationV2
+        :page="apiRes?.page"
+        :perPage="apiRes?.perPage"
+        :totalPages="apiRes?.totalPages"
+        :totalItems="apiRes?.totalItems"
+        :pagination-query="paginationQuery"
+        :is-pagination-fetch="isPaginationFetch"
+        :fetch-data="fetchCategoryData"
+        using-store
+      />
+    </CardContent>
+  </Card>
 
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"

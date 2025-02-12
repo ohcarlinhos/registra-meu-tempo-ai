@@ -51,7 +51,7 @@ import { getTimeRecordQuery } from "./utils/actions";
 
 const links = computed(() => [
   {
-    label: "Histórico",
+    label: "Histórico de Registros",
     icon: "i-icon-park-outline-history",
     to: {
       name: "record",

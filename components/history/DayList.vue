@@ -180,7 +180,7 @@ defineExpose({
       <section class="flex md:flex-row justify-between gap-5 flex-col">
         <section>
           <h2 class="text-4xl font-bold">
-            {{ _$t("historyRecord") }}
+            {{ "Histórico de Registros" }}
 
             <GUpdatedOn
               v-if="updatedOn"

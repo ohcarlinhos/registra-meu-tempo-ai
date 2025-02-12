@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { CirclePlus } from "lucide-vue-next";
+
 const props = defineProps<{
   timeRecordId: number;
 }>();
@@ -14,10 +16,12 @@ const clickAction = () => {
 </script>
 
 <template>
-  <UButton
-    icon="i-icon-park-outline-add"
-    label="Registro Manual"
+  <Button
+    variant="outline"
     title="Adicione seu tempo registrado de forma manual, como por exemplo outro cronômetro ou um pomodoro físico."
     @click="clickAction"
-  />
+  >
+    <CirclePlus />
+    {{ "Registro de Tempo (Manual)" }}
+  </Button>
 </template>
