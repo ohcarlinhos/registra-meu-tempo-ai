@@ -9,11 +9,15 @@ export const useCategoryStore = defineStore(
       addFilter,
       removeFilter,
       updateSort,
+      updateRouteQuery,
     } = usePaginationQuery();
+
     const apiRes = ref<Pagination<CategoryMap>>();
     const isPaginationFetch = ref(false);
 
     const fetchData = async () => {
+      updateRouteQuery();
+
       try {
         isPaginationFetch.value = true;
         const data = await categoryApi().get(paginationQuery.value);
@@ -45,7 +49,7 @@ export const useCategoryStore = defineStore(
       return isDeleteFetch.value || isPaginationFetch.value;
     });
 
-    const categoryTableData = computed(() => {
+    const tableData = computed(() => {
       const table: CategoryMap[] = [];
 
       if (apiRes.value?.data)
@@ -63,7 +67,7 @@ export const useCategoryStore = defineStore(
       apiRes,
       isPaginationFetch,
       isFetch,
-      categoryTableData,
+      tableData,
 
       setPage,
       setPerPage,

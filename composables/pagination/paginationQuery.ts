@@ -1,12 +1,28 @@
-export const usePaginationQuery = () => {
+export const usePaginationQuery = (queryCopy?: IPaginationQuery) => {
+  const route = useRoute();
+  const router = useRouter();
+
   const _page = ref(1);
-  const _perPage = ref(10);
-  const _search = ref<string>("");
-  const _filters = ref<PaginationQueryFilter[]>([]);
-  const _sort = ref<"asc" | "desc">("asc");
-  const _sortProp = ref<string>("");
+  const _perPage = ref(queryCopy?.perPage || 10);
+  const _search = ref<string>(queryCopy?.search || "");
+  const _filters = ref<PaginationQueryFilter[]>(
+    queryCopy?.filters?.length ? queryCopy?.filters : []
+  );
+  const _sort = ref<"asc" | "desc">(queryCopy?.sort || "asc");
+  const _sortProp = ref<string>(queryCopy?.sortProp || "");
 
   const _defaultPerPage = 10;
+
+  const updateRouteQuery = () => {
+    router.replace({
+      query: {
+        ...route.query,
+        page: _page.value,
+        perPage: _perPage.value,
+        search: _search.value,
+      },
+    });
+  };
 
   const page = computed(() => {
     return _page.value;
@@ -16,6 +32,7 @@ export const usePaginationQuery = () => {
     if (typeof value === "string") value = parseInt(value);
     if (!value || value < 1) _page.value = 1;
     else _page.value = value;
+    updateRouteQuery();
   };
 
   const perPage = computed(() => {
@@ -26,6 +43,7 @@ export const usePaginationQuery = () => {
     if (typeof value === "string") value = parseInt(value);
     if (!value || value < 1) _perPage.value = _defaultPerPage;
     else _perPage.value = value;
+    updateRouteQuery();
   };
 
   const search = computed(() => {
@@ -35,6 +53,7 @@ export const usePaginationQuery = () => {
   const setSearch = (value: string) => {
     if (!value) _search.value = "";
     else _search.value = value;
+    updateRouteQuery();
   };
 
   const filters = computed({ get: () => _filters.value, set: () => {} });
@@ -53,6 +72,21 @@ export const usePaginationQuery = () => {
   function updateSort(direction: "asc" | "desc" = "asc", prop: string = "") {
     _sort.value = direction;
     _sortProp.value = prop;
+  }
+
+  const routePage = route.query["page"];
+  if (routePage) {
+    setPage(`${routePage}`);
+  }
+
+  const routePerPage = route.query["perPage"];
+  if (routePerPage) {
+    setPerPage(`${routePerPage}`);
+  }
+
+  const routeSearch = route.query["search"];
+  if (routeSearch) {
+    setSearch(`${routeSearch}`);
   }
 
   const query = computed(() => {
@@ -80,5 +114,6 @@ export const usePaginationQuery = () => {
     addFilter,
     removeFilter,
     updateSort,
+    updateRouteQuery,
   };
 };
