@@ -142,7 +142,7 @@ onMounted(() => {
 <template>
   <div class="flex-1">
     <Card>
-      <CardHeader class="flex-row gap-4 justify-between">
+      <CardHeader class="flex-col md:flex-row gap-3 md:gap-5 justify-between">
         <section class="flex flex-row gap-4 items-center">
           <CardTitle>
             {{ "Tarefas" }}
@@ -154,7 +154,15 @@ onMounted(() => {
           </Button>
         </section>
 
-        <div class="flex flex-col gap-5 md:flex-row items-start">
+        <div class="flex flex-col gap-3 md:gap-5 md:flex-row items-start">
+          <GSearchV2
+            class="w-full"
+            :pagination-query="paginationQuery"
+            :pagination-query-methods="trStore"
+            :is-pagination-fetch="isPaginationFetch"
+            using-store
+          />
+
           <section class="flex gap-2 items-center">
             <section class="w-[120px]">
               <Select
@@ -187,17 +195,10 @@ onMounted(() => {
               {{ "Limpar" }}
             </Button>
           </section>
-
-          <GSearchV2
-            :pagination-query="paginationQuery"
-            :pagination-query-methods="trStore"
-            :is-pagination-fetch="isPaginationFetch"
-            using-store
-          />
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent class="flex flex-col gap-5">
         <UTable
           :columns="columns"
           :rows="tableData"

@@ -86,7 +86,7 @@ const computedPerPageList = computed(() => {
 
 <template>
   <div
-    class="flex justify-between items-center mt-3 flex-col md:flex-row gap-5"
+    class="flex justify-between md:items-center mt-3 flex-col md:flex-row gap-3 md:gap-5"
   >
     <Pagination
       v-if="totalPages && totalItems && totalItems > computedList[0]"
@@ -128,10 +128,14 @@ const computedPerPageList = computed(() => {
       </PaginationList>
     </Pagination>
 
-    <section v-if="computedPerPageList.length" class="flex items-center gap-5">
-      <section v-if="$props.totalItems">
-        Total de {{ $props.totalItems }} {{ totalLabel || "itens" }}
+    <section
+      v-if="computedPerPageList.length"
+      class="flex justify-end items-center flex-row-reverse md:flex-row gap-5"
+    >
+      <section v-if="$props.totalItems" class="">
+        Total de {{ $props.totalItems }} {{ totalLabel || "Itens" }}
       </section>
+
       <section class="w-[80px]">
         <Select
           v-model="computedPerPage"
@@ -142,6 +146,7 @@ const computedPerPageList = computed(() => {
               :placeholder="(totalLabel || 'Itens') + ' por página'"
             />
           </SelectTrigger>
+
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Por página</SelectLabel>
