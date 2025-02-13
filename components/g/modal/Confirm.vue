@@ -23,6 +23,7 @@ const isOpen = computed({
 </script>
 
 <template>
+  <!-- TODO: trocar modal para shadcn -->
   <UModal
     v-model="isOpen"
     prevent-close
@@ -30,34 +31,33 @@ const isOpen = computed({
       width: customWidth ? customWidth : 'sm:w-72',
     }"
   >
-    <UCard>
-      <h3 class="text-xl pb-3">{{ title }}</h3>
+    <Card>
+      <CardHeader>
+        <CardTitle>{{ title }}</CardTitle>
+        <CardDescription v-if="text">
+          {{ text }}
+        </CardDescription>
+      </CardHeader>
 
-      <p v-if="text">
-        {{ text }}
-      </p>
+      <CardContent v-if="$slots.default">
+        <slot></slot>
+      </CardContent>
 
-      <slot></slot>
-
-      <template #footer>
-        <div class="grid grid-cols-2 gap-5">
-          <UButton
-            color="blue"
-            block
+      <CardFooter>
+        <div class="w-full grid grid-cols-2 gap-5">
+          <Button
+            variant="destructive"
             :disabled="isFetch"
-            :label="props.cancelText ? props.cancelText : $t('cancel')"
             @click="emit('cancel')"
-          />
+          >
+            {{ props.cancelText ? props.cancelText : $t("cancel") }}
+          </Button>
 
-          <UButton
-            block
-            :loading="isFetch"
-            :disabled="disableConfirm"
-            :label="props.confirmText ? props.confirmText : $t('confirm')"
-            @click="emit('confirm')"
-          />
+          <Button :disabled="disableConfirm" @click="emit('confirm')">
+            {{ props.confirmText ? props.confirmText : $t("confirm") }}
+          </Button>
         </div>
-      </template>
-    </UCard>
+      </CardFooter>
+    </Card>
   </UModal>
 </template>
