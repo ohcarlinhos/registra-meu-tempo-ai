@@ -23,41 +23,30 @@ const isOpen = computed({
 </script>
 
 <template>
-  <!-- TODO: trocar modal para shadcn -->
-  <UModal
-    v-model="isOpen"
-    prevent-close
-    :ui="{
-      width: customWidth ? customWidth : 'sm:w-72',
-    }"
-  >
-    <Card>
-      <CardHeader>
-        <CardTitle>{{ title }}</CardTitle>
-        <CardDescription v-if="text">
+  <AlertDialog v-bind:open="isOpen">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{ title }}</AlertDialogTitle>
+
+        <AlertDialogDescription>
           {{ text }}
-        </CardDescription>
-      </CardHeader>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
 
-      <CardContent v-if="$slots.default">
-        <slot></slot>
-      </CardContent>
+      <slot></slot>
 
-      <CardFooter>
-        <div class="w-full grid grid-cols-2 gap-5">
-          <Button
-            variant="destructive"
-            :disabled="isFetch"
-            @click="emit('cancel')"
-          >
-            {{ props.cancelText ? props.cancelText : $t("cancel") }}
-          </Button>
+      <AlertDialogFooter>
+        <AlertDialogCancel :disabled="isFetch" @click="emit('cancel')">
+          {{ props.cancelText ? props.cancelText : $t("cancel") }}
+        </AlertDialogCancel>
 
-          <Button :disabled="disableConfirm" @click="emit('confirm')">
-            {{ props.confirmText ? props.confirmText : $t("confirm") }}
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
-  </UModal>
+        <AlertDialogAction
+          :disabled="isFetch || disableConfirm"
+          @click="emit('confirm')"
+        >
+          {{ props.confirmText ? props.confirmText : $t("confirm") }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>

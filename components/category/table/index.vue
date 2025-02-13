@@ -17,6 +17,7 @@ const modal = reactive({
   category: false,
   confirmDelete: {
     open: false,
+    name: "",
     id: null as null | number,
   },
 });
@@ -35,7 +36,7 @@ const items = (row: CategoryMap) => [
     {
       label: _$t("delete"),
       icon: "i-icon-park-outline-delete-themes",
-      click: async () => openConfirmDeleteModal({ id: row.id }),
+      click: async () => openConfirmDeleteModal({ id: row.id, name: row.name }),
     },
   ],
 ];
@@ -50,26 +51,32 @@ const openEditCategoryModal = (category: CategoryMap) => {
   modal.category = true;
 };
 
+const isDeleteFetch = ref(false);
 const deleteCategoryAction = async () => {
   if (!modal.confirmDelete.id) return;
 
   try {
+    isDeleteFetch.value = true;
     await categoryStore.delete(modal.confirmDelete.id);
 
     closeConfirmDeleteModal();
   } catch (error) {
     ErrorToast(error);
+  } finally {
+    isDeleteFetch.value = false;
   }
 };
 
 const closeConfirmDeleteModal = () => {
   modal.confirmDelete.open = false;
   modal.confirmDelete.id = null;
+  modal.confirmDelete.name = "";
 };
 
 const openConfirmDeleteModal = async (payload: DeletePayloadEvent) => {
   modal.confirmDelete.open = true;
   modal.confirmDelete.id = payload.id;
+  modal.confirmDelete.name = payload.name;
 };
 
 onMounted(() => {
@@ -96,6 +103,7 @@ onMounted(() => {
         using-store
       />
     </CardHeader>
+
     <CardContent>
       <UTable :columns="columns" :rows="tableData" :loading="isPaginationFetch">
         <template #actions-data="{ row }">
@@ -124,8 +132,9 @@ onMounted(() => {
 
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
-    :text="_$t('confirmDeleteCategoryMessage')"
-    :isFetch="isPaginationFetch"
+    title="Deseja excluir essa categoria?"
+    :text="`Ao confirmar a exclusão da categoria com nome &quot;${modal.confirmDelete.name}&quot;, todas as tarefas vinculadas ficarão sem categoria.`"
+    :isFetch="isPaginationFetch || isDeleteFetch"
     @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"
   />
