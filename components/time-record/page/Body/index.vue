@@ -83,7 +83,7 @@ const refreshTimePeriodCallback = async () => {
 <template>
   <section class="min-h-svh">
     <section class="flex flex-col gap-10 md:gap-5 w-full">
-      <section class="flex gap-10 md:gap-5">
+      <section class="flex flex-col md:flex-row gap-10">
         <section class="w-full">
           <TimeRecordPageHeader :time-record="timeRecord" :is-fetch="isLoading">
             <template #button>
@@ -96,10 +96,7 @@ const refreshTimePeriodCallback = async () => {
           </TimeRecordPageHeader>
         </section>
 
-        <section
-          v-if="timeRecord"
-          class="max-w-[400px] col-span-1 md:col-span-6 lg:col-span-4"
-        >
+        <section v-if="timeRecord" class="max-md:w-full flex justify-center">
           <ClientOnly>
             <TimerDefault
               v-if="actualTimeRecordId && timeRecord"

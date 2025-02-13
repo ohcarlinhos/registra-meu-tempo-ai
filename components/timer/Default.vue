@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section v-if="timer" class="flex flex-col gap-3 items-center min-w-72">
+  <section v-if="timer" class="flex flex-col gap-5 items-center min-w-72">
     <section
       :class="[
         'flex flex-col justify-center align-middle relative',
@@ -316,9 +316,10 @@ onBeforeUnmount(() => {
 
     <p
       v-if="props.code"
+      class="flex flex-col"
       :class="['text-center text-sm', isDark && 'opacity-50']"
     >
-      Sincronizado com a tarefa:
+      <span> Sincronizado com a tarefa: </span>
 
       <UBadge :color="getButtonColor" variant="soft" size="md">
         {{ props.code }}
