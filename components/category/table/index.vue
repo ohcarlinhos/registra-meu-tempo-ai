@@ -139,10 +139,21 @@ onMounted(() => {
     @cancel="closeConfirmDeleteModal"
   />
 
-  <UModal v-model="modal.category" prevent-close>
-    <CategoryFormCreateAndUpdate
-      :edit-object="editCategoryObject"
-      @close="closeModal"
-    />
-  </UModal>
+  <Dialog v-bind:open="modal.category" @update:open="!$event && closeModal()">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>
+          {{ editCategoryObject?.id ? "Editar Categoria" : "Criar Categoria" }}
+        </DialogTitle>
+        <DialogDescription>
+          Make changes to your profile here. Click save when you're done.
+        </DialogDescription>
+      </DialogHeader>
+
+      <CategoryFormCreateAndUpdate
+        :edit-object="editCategoryObject"
+        @close="closeModal"
+      />
+    </DialogContent>
+  </Dialog>
 </template>

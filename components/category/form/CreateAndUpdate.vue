@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { toTypedSchema } from "@vee-validate/yup";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 const { refetchData } = useCategoryStore();
 
@@ -11,50 +13,43 @@ const props = withDefaults(
   {}
 );
 
-/**
- * States
- */
+const formCallback = ref<() => void>();
 
-const form = reactive<CategoryForm>({
-  id: undefined,
-  name: "",
-  callback: undefined,
+const formSchema = toTypedSchema(
+  yup.object({
+    id: yup.number(),
+    name: yup.string().required(),
+  })
+);
+
+const {
+  handleSubmit,
+  values: formValues,
+  setValues,
+} = useForm({
+  validationSchema: formSchema,
 });
-
-const submitIsDisabled = computed(() => {
-  return form.name.length === 0 || form.name === props.editObject?.name;
-});
-
-/**
- * Validations
- */
-
-const schema = yup.object({
-  name: yup.string(),
-});
-
-/**
- * Methods
- */
 
 const closeModal = (refresh = false) => {
   emit("close");
   if (refresh) refetchData();
 };
 
-const submit = async () => {
-  await schema.validate(await submitAction());
-};
+const submitIsDisabled = computed(() => {
+  return formValues.name === props.editObject?.name || isFetch.value;
+});
 
 const isFetch = ref(false);
 
-const createAction = async () => {
+const createAction = async (dto: CategoryDto) => {
   isFetch.value = true;
 
   try {
-    await categoryApi().post(form);
+    await categoryApi().post(dto);
 
-    if (form.callback) form.callback();
+    if (formCallback.value) {
+      formCallback.value();
+    }
 
     closeModal(true);
   } catch (error) {
@@ -64,13 +59,15 @@ const createAction = async () => {
   }
 };
 
-const editAction = async (id: number) => {
+const editAction = async (dto: CategoryDto) => {
   isFetch.value = true;
 
   try {
-    await categoryApi().put(id, form);
+    await categoryApi().put(dto.id!, dto);
 
-    if (form.callback) form.callback();
+    if (formCallback.value) {
+      formCallback.value();
+    }
 
     closeModal(true);
   } catch (error) {
@@ -80,73 +77,44 @@ const editAction = async (id: number) => {
   }
 };
 
-const submitAction = async () => {
-  return props.editObject?.id
-    ? editAction(props.editObject.id)
-    : createAction();
+const submitAction = async (value: CategoryDto) => {
+  return props.editObject?.id ? editAction(value) : createAction(value);
 };
 
-/**
- * Lifeclycle
- */
+const onSubmit = handleSubmit((value) => submitAction(value));
 
 onMounted(async () => {
   if (props.editObject) {
-    form.id = props.editObject.id;
-    form.name = props.editObject.name;
-    form.callback = props.editObject.callback;
+    setValues({
+      id: props.editObject.id,
+      name: props.editObject.name,
+    });
+
+    formCallback.value = props.editObject.callback;
   }
 });
-
-watch(
-  () => props.editObject,
-  (newObj) => {
-    if (newObj) {
-      form.id = newObj.id;
-      form.name = newObj.name;
-      form.callback = newObj.callback;
-    }
-  },
-  {
-    immediate: true,
-  }
-);
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <div class="flex items-center justify-between">
-        <h2>{{ _$t("category") }}</h2>
+  <form @submit="onSubmit" class="space-y-4">
+    <FormField v-slot="{ componentField }" name="name">
+      <FormItem>
+        <FormLabel>{{ _$t("name") }}</FormLabel>
+        <FormControl>
+          <Input
+            v-bind="componentField"
+            :disabled="isFetch"
+            maxlength="20"
+            autofocus
+          />
+        </FormControl>
+        <FormDescription />
+        <FormMessage />
+      </FormItem>
+    </FormField>
 
-        <UButton
-          color="gray"
-          variant="ghost"
-          icon="i-icon-park-outline-close-small"
-          class="-my-1"
-          @click="closeModal"
-        />
-      </div>
-    </template>
-
-    <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <UFormGroup :label="$t('name')" name="name">
-        <UInput
-          v-model="form.name"
-          :disabled="isFetch"
-          maxlength="20"
-          type="text"
-          autofocus
-        />
-      </UFormGroup>
-
-      <UButton
-        :loading="isFetch"
-        :disabled="submitIsDisabled"
-        :label="props.editObject?.id ? $t('save') : $t('create')"
-        type="submit"
-        block
-      />
-    </UForm>
-  </UCard>
+    <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+      {{ props.editObject?.id ? $t("save") : $t("create") }}
+    </Button>
+  </form>
 </template>
