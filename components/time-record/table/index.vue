@@ -156,14 +156,26 @@ onMounted(() => {
 
         <div class="flex flex-col gap-5 md:flex-row items-start">
           <section class="flex gap-2 items-center">
-            <USelectMenu
-              v-model="computedCategory"
-              :options="categories"
-              :disabled="isFetch"
-              value-attribute="id"
-              option-attribute="name"
-              :placeholder="_$t('category')"
-            />
+            <section class="w-[120px]">
+              <Select
+                v-model="computedCategory"
+                :disabled="isPaginationFetch || isFetch"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      v-for="item in categories"
+                      :value="item.id.toString()"
+                    >
+                      {{ item.name }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </section>
 
             <Button
               :disabled="!computedCategory || isFetch"
