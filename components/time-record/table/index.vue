@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CirclePlus, Eye, EllipsisVertical, Trash } from "lucide-vue-next";
+import { CirclePlus, Eye, EllipsisVertical, Trash2 } from "lucide-vue-next";
 
 import { useDebounceFn } from "@vueuse/core";
 
@@ -32,13 +32,11 @@ const columns = [
 ];
 
 const items = (row: TimeRecordMap) => [
-  [
-    {
-      label: _$t("delete"),
-      icon: "i-icon-park-outline-delete-themes",
-      click: async () => emit("delete", row),
-    },
-  ],
+  {
+    label: _$t("delete"),
+    icon: Trash2,
+    click: async () => emit("delete", row),
+  },
 ];
 
 const categories = ref<CategoryMap[]>([]);
@@ -191,7 +189,7 @@ onMounted(() => {
               :color="!computedCategory ? 'white' : 'red'"
               @click="computedCategory = ''"
             >
-              <Trash />
+              <Trash2 />
               {{ "Limpar" }}
             </Button>
           </section>
@@ -216,11 +214,25 @@ onMounted(() => {
                 {{ "Acessar" }}
               </Button>
 
-              <UDropdown :items="items(row)">
-                <Button variant="outline" size="icon">
-                  <EllipsisVertical />
-                </Button>
-              </UDropdown>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="outline" size="icon">
+                    <EllipsisVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    v-for="item in items(row)"
+                    @click="item.click"
+                  >
+                    <component :is="item.icon" />
+                    {{ item.label }}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </template>
         </UTable>
