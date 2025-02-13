@@ -45,10 +45,10 @@ watch(
 
 const computedPerPage = computed({
   get: () => {
-    return props.perPage || computedList.value[0];
+    return (props.perPage || computedList.value[0]).toString();
   },
-  set: (perPage: number) => {
-    if (perPage == props.perPage) return;
+  set: (perPage: string) => {
+    if (parseInt(perPage) == props.perPage) return;
 
     if (props.usingStore) {
       props.paginationQueryMethods?.setPerPage(perPage);
@@ -62,10 +62,11 @@ const computedPerPage = computed({
 watch(
   () => props.totalItems,
   (newTotalItems) => {
-    if (newTotalItems && computedPerPage.value > newTotalItems) {
-      computedPerPage.value =
+    if (newTotalItems && parseInt(computedPerPage.value) > newTotalItems) {
+      computedPerPage.value = (
         computedPerPageList.value.reverse().find((i) => i <= newTotalItems) ||
-        10;
+        10
+      ).toString();
     }
   }
 );
@@ -127,19 +128,33 @@ const computedPerPageList = computed(() => {
       </PaginationList>
     </Pagination>
 
-    <section
-      v-if="computedPerPageList.length"
-      class="flex items-center gap-2 gap-5"
-    >
-      <span v-if="$props.totalItems">
-        Total: {{ $props.totalItems }} {{ totalLabel }}
-      </span>
-
-      <USelect
-        v-model="computedPerPage"
-        :options="computedPerPageList"
-        :disabled="isPaginationFetch || isFetch"
-      />
+    <section v-if="computedPerPageList.length" class="flex items-center gap-5">
+      <section v-if="$props.totalItems">
+        Total de {{ $props.totalItems }} {{ totalLabel || "itens" }}
+      </section>
+      <section class="w-[80px]">
+        <Select
+          v-model="computedPerPage"
+          :disabled="isPaginationFetch || isFetch"
+        >
+          <SelectTrigger>
+            <SelectValue
+              :placeholder="(totalLabel || 'Itens') + ' por página'"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Por página</SelectLabel>
+              <SelectItem
+                v-for="item in computedPerPageList"
+                :value="item.toString()"
+              >
+                {{ item }}
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </section>
     </section>
   </div>
 </template>
