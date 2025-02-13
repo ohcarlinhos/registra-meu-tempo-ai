@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Search, X, LoaderCircle } from "lucide-vue-next";
+
 const props = defineProps<{
   usingStore?: boolean;
   isPaginationFetch?: boolean;
@@ -43,25 +45,31 @@ if (props.paginationQuery) {
 </script>
 
 <template>
-  <UInput
-    v-model="computedSearch"
-    name="search"
-    placeholder="Pesquisar"
-    icon="i-icon-park-outline-search"
-    autocomplete="off"
-    :disabled="isPaginationFetch || isFetch"
-    :loading="isPaginationFetch || isFetch"
-    :ui="{ icon: { trailing: { pointer: '' } } }"
-  >
-    <template #trailing>
-      <UButton
-        v-show="computedSearch !== ''"
-        color="gray"
-        variant="link"
-        icon="i-icon-park-outline-close-small"
-        :padded="false"
-        @click="computedSearch = ''"
+  <div class="relative w-full max-w-sm items-center">
+    <Input
+      v-model="computedSearch"
+      id="search"
+      type="text"
+      placeholder="Pesquisar"
+      class="pl-10 pr-10"
+    />
+    <span
+      class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+    >
+      <LoaderCircle
+        v-if="isPaginationFetch || isFetch"
+        class="size-4 text-muted-foreground animate-spin"
       />
-    </template>
-  </UInput>
+      <Search v-else class="size-4 text-muted-foreground" />
+    </span>
+
+    <span
+      v-show="computedSearch !== ''"
+      class="absolute end-0 inset-y-0 flex items-center justify-center"
+    >
+      <Button size="icon" variant="clean" @click="computedSearch = ''">
+        <X class="size-5 text-muted-foreground" />
+      </Button>
+    </span>
+  </div>
 </template>
