@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CirclePlus, EllipsisVertical } from "lucide-vue-next";
+import { CirclePlus, EllipsisVertical, Edit, Trash2 } from "lucide-vue-next";
 import type { DeletePayloadEvent } from "./types";
 
 const categoryStore = useCategoryStore();
@@ -27,20 +27,17 @@ const editCategoryObject = ref<CategoryForm>();
 const columns = [{ key: "name", label: "Nome" }, { key: "actions" }];
 
 const items = (row: CategoryMap) => [
-  [
-    {
-      label: _$t("edit"),
-      icon: "i-icon-park-outline-edit",
-      click: () => openEditCategoryModal(row),
-    },
-    {
-      label: _$t("delete"),
-      icon: "i-icon-park-outline-delete-themes",
-      click: async () => openConfirmDeleteModal({ id: row.id, name: row.name }),
-    },
-  ],
+  {
+    label: _$t("edit"),
+    icon: Edit,
+    click: () => openEditCategoryModal(row),
+  },
+  {
+    label: _$t("delete"),
+    icon: Trash2,
+    click: async () => openConfirmDeleteModal({ id: row.id, name: row.name }),
+  },
 ];
-
 const closeModal = () => {
   modal.category = false;
   editCategoryObject.value = undefined;
@@ -108,11 +105,25 @@ onMounted(() => {
       <UTable :columns="columns" :rows="tableData" :loading="isPaginationFetch">
         <template #actions-data="{ row }">
           <div class="flex justify-end">
-            <UDropdown :items="items(row)">
-              <Button variant="outline" size="icon">
-                <EllipsisVertical />
-              </Button>
-            </UDropdown>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="outline" size="icon">
+                  <EllipsisVertical />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  v-for="item in items(row)"
+                  @click="item.click"
+                >
+                  <component :is="item.icon" />
+                  {{ item.label }}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </template>
       </UTable>
