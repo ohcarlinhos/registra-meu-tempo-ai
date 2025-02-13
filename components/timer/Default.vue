@@ -410,7 +410,7 @@ onBeforeUnmount(() => {
       v-model:open="modal.confirmStopTimer.open"
       custom-width="sm:w-88"
       title="Deseja parar o cronômetro?"
-      text="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
+      description="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
       :cancel-text="$t('cancel')"
       :confirm-text="$t('confirm')"
       @cancel="modal.confirmStopTimer.open = false"

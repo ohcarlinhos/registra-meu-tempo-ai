@@ -507,7 +507,7 @@ defineExpose({
     v-model:open="deleteTsModal.open"
     :isFetch="deleteTsIsFetch"
     title="Tem certeza que deseja apagar essa sessão?"
-    text="Todos os períodos de tempo relacionados à essa sessão também serão excluídos."
+    description="Todos os períodos de tempo relacionados à essa sessão também serão excluídos."
     custom-width="w-96"
     @confirm="deleteTsAction"
     @cancel="closeDeleteTsModal"

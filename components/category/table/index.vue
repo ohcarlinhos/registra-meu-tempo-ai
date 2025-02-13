@@ -133,7 +133,7 @@ onMounted(() => {
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"
     title="Deseja excluir essa categoria?"
-    :text="`Ao confirmar a exclusão da categoria com nome &quot;${modal.confirmDelete.name}&quot;, todas as tarefas vinculadas ficarão sem categoria.`"
+    :description="`Ao confirmar a exclusão da categoria com nome &quot;${modal.confirmDelete.name}&quot;, todas as tarefas vinculadas ficarão sem categoria.`"
     :isFetch="isPaginationFetch || isDeleteFetch"
     @confirm="deleteCategoryAction"
     @cancel="closeConfirmDeleteModal"

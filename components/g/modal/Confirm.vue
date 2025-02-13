@@ -2,7 +2,7 @@
 const props = defineProps<{
   open: boolean;
   title?: string;
-  text?: string;
+  description?: string;
   confirmText?: string;
   cancelText?: string;
   customWidth?: string;
@@ -29,7 +29,7 @@ const isOpen = computed({
         <AlertDialogTitle>{{ title }}</AlertDialogTitle>
 
         <AlertDialogDescription>
-          {{ text }}
+          {{ description }}
         </AlertDialogDescription>
       </AlertDialogHeader>
 
