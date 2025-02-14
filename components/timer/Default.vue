@@ -321,9 +321,11 @@ onBeforeUnmount(() => {
     >
       <span> Sincronizado com a tarefa: </span>
 
-      <UBadge :color="getButtonColor" variant="soft" size="md">
-        {{ props.code }}
-      </UBadge>
+      <span class="pt-1">
+        <UBadge :color="getButtonColor" variant="soft" size="md">
+          {{ props.code }}
+        </UBadge>
+      </span>
     </p>
 
     <UButton
