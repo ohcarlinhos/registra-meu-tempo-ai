@@ -42,6 +42,7 @@ const isOpen = computed({
 
         <AlertDialogAction
           :disabled="isFetch || disableConfirm"
+          :loading="isFetch"
           @click="emit('confirm')"
         >
           {{ props.confirmText ? props.confirmText : $t("confirm") }}

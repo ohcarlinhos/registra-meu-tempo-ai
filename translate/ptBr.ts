@@ -78,7 +78,8 @@ const i18nObj = {
   codeIsWrong: "O código digitado é diferente do esperado.",
   codeIsRequired: "É obrigatório digitar o código.",
 
-  confirmCodeToDeleteRecord: "Confirme o código para apagar a tarefa:",
+  confirmCodeToDeleteRecord:
+    "Confirme o código da tarefa selecionada para apaga-la:",
 
   noPeriodRecorded: "Nenhum período registrado.",
   recordNotFound: "Tarefa não encontrado.",

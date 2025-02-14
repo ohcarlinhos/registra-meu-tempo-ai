@@ -89,6 +89,7 @@ const deleteTimeRecord = async () => {
         title: modal.confirmDelete.title,
       })
     "
+    :description="_$t('confirmCodeToDeleteRecord')"
     :isFetch="isDeleteFetch"
     :disableConfirm="
       (refFormConfirm && refFormConfirm.errors.length > 0) ||
@@ -99,13 +100,11 @@ const deleteTimeRecord = async () => {
     @confirm="deleteTimeRecord"
     @cancel="closeConfirmDeleteModal"
   >
-    <span class="block pb-1">{{ _$t("confirmCodeToDeleteRecord") }}</span>
-
-    <UBadge variant="subtle" size="xs" color="red">
-      {{ formConfirm.originalCode }}
-    </UBadge>
-
-    <UDivider class="py-2" />
+    <section>
+      <UBadge variant="subtle" size="xs" color="red">
+        {{ formConfirm.originalCode }}
+      </UBadge>
+    </section>
 
     <UForm
       :state="formConfirm"
