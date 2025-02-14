@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { toTypedSchema } from "@vee-validate/yup";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 const modal = reactive({
@@ -18,24 +20,28 @@ const router = useRouter();
 
 const refFormConfirm = ref();
 
-const formConfirm = reactive({
-  originalCode: "",
-  code: "",
-});
+const formConfirmSchema = toTypedSchema(
+  yup.object({
+    originalCode: yup.string(),
+    code: yup
+      .string()
+      .oneOf([yup.ref("originalCode")], _$t("codeIsWrong"))
+      .required(_$t("codeIsRequired")),
+  })
+);
 
-const formConfirmSchema = yup.object({
-  code: yup
-    .string()
-    .oneOf([yup.ref("originalCode")], _$t("codeIsWrong"))
-    .required(_$t("codeIsRequired")),
+const {
+  handleSubmit,
+  setFieldValue,
+  values: formValues,
+} = useForm({
+  validationSchema: formConfirmSchema,
+  keepValuesOnUnmount: false,
 });
 
 const closeConfirmDeleteModal = () => {
   modal.confirmDelete.id = null;
   modal.confirmDelete.open = false;
-
-  formConfirm.originalCode = "";
-  formConfirm.code = "";
 };
 
 const openConfirmDeleteModal = async (tr: TimeRecordMap) => {
@@ -43,7 +49,8 @@ const openConfirmDeleteModal = async (tr: TimeRecordMap) => {
   modal.confirmDelete.title = tr.title;
   modal.confirmDelete.open = true;
 
-  formConfirm.originalCode = tr.code;
+  setFieldValue("originalCode", tr.code, false);
+  setFieldValue("code", "", false);
 };
 
 const access = (code: string) => {
@@ -57,6 +64,8 @@ const closeModal = () => {
   modal.createOrUpdateTimeRecord = false;
   editTimeRecordObject.value = undefined;
 };
+
+const onSubmit = handleSubmit(() => deleteTimeRecord());
 
 const deleteTimeRecord = async () => {
   if (!modal.confirmDelete.id) return;
@@ -91,30 +100,28 @@ const deleteTimeRecord = async () => {
     "
     :description="_$t('confirmCodeToDeleteRecord')"
     :isFetch="isDeleteFetch"
-    :disableConfirm="
-      (refFormConfirm && refFormConfirm.errors.length > 0) ||
-      !formConfirm.code ||
-      formConfirm.code != formConfirm.originalCode
-    "
     custom-width="w-96"
-    @confirm="deleteTimeRecord"
+    @confirm="onSubmit"
     @cancel="closeConfirmDeleteModal"
   >
     <section>
       <UBadge variant="subtle" size="xs" color="red">
-        {{ formConfirm.originalCode }}
+        {{ formValues.originalCode }}
       </UBadge>
     </section>
 
-    <UForm
-      :state="formConfirm"
-      :schema="formConfirmSchema"
-      ref="refFormConfirm"
-    >
-      <UFormGroup :label="_$t('code')" name="code" required>
-        <UInput type="text" v-model="formConfirm.code" autofocus />
-      </UFormGroup>
-    </UForm>
+    <form ref="refFormConfirm">
+      <FormField v-slot="{ componentField }" name="code">
+        <FormItem>
+          <FormLabel>{{ _$t("code") }}</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" />
+          </FormControl>
+          <FormDescription />
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </form>
   </GModalConfirm>
 
   <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
