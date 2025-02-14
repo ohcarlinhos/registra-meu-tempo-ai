@@ -135,7 +135,12 @@ if (rfMockEnable.value) {
           <NuxtTurnstile v-model="_tokenUserChallenge" />
         </section>
 
-        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+        <Button
+          type="submit"
+          :disabled="submitIsDisabled"
+          :loading="isFetch"
+          class="w-full mt-2"
+        >
           {{ _$t("toRecord") }}
         </Button>
       </form>

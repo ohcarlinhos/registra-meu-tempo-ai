@@ -454,7 +454,12 @@ const searchTrSelectAction = async (q: string) => {
           </UFormGroup>
         </template>
 
-        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+        <Button
+          type="submit"
+          :disabled="submitIsDisabled"
+          :loading="isFetch"
+          class="w-full mt-2"
+        >
           {{
             isSyncMode ? (form.isBind ? _$t("bind") : _$t("sync")) : _$t("send")
           }}

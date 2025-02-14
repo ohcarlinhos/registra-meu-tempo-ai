@@ -70,7 +70,12 @@ const onSubmit = handleSubmit((value) => submitAction(value));
           </FormItem>
         </FormField>
 
-        <Button type="submit" :disabled="isFetch" class="w-full mt-2">
+        <Button
+          type="submit"
+          :disabled="isFetch"
+          :loading="isFetch"
+          class="w-full mt-2"
+        >
           {{ _$t("toRecovery") }}
         </Button>
       </form>

@@ -113,7 +113,12 @@ onMounted(async () => {
       </FormItem>
     </FormField>
 
-    <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+    <Button
+      type="submit"
+      :disabled="submitIsDisabled"
+      :loading="isFetch"
+      class="w-full mt-2"
+    >
       {{ props.editObject?.id ? $t("save") : $t("create") }}
     </Button>
   </form>

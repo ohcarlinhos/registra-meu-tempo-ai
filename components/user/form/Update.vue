@@ -101,7 +101,12 @@ onMounted(async () => {
             </FormItem>
           </FormField>
 
-          <Button type="submit" :disabled="isFetch" class="w-full mt-2">
+          <Button
+            type="submit"
+            :disabled="isFetch"
+            :loading="isFetch"
+            class="w-full mt-2"
+          >
             {{ "Atualizar dados do usuário" }}
           </Button>
         </form>

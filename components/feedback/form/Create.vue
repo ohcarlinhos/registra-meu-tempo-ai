@@ -105,7 +105,12 @@ const submitIsDisabled = computed(() => {
           <NuxtTurnstile v-model="_tokenUserChallenge" />
         </section>
 
-        <Button type="submit" :disabled="submitIsDisabled" class="w-full mt-2">
+        <Button
+          type="submit"
+          :disabled="submitIsDisabled"
+          :loading="isFetch"
+          class="w-full mt-2"
+        >
           {{ "Enviar feedback" }}
         </Button>
       </form>
