@@ -69,9 +69,9 @@ const activeClass = "text-primary font-bold";
         {{ "Início" }}
       </ULink>
 
-      <!-- <ULink :to="{ name: 'timer' }" :active-class="activeClass">
+      <ULink :to="{ name: 'timer.page' }" :active-class="activeClass">
         {{ _$t("timers") }}
-      </ULink> -->
+      </ULink>
 
       <ULink
         v-if="userIsAuth"
@@ -86,7 +86,7 @@ const activeClass = "text-primary font-bold";
         :to="{ name: 'login' }"
         :active-class="activeClass"
       >
-        {{ _$t("access") }}
+        {{ "Acesso" }}
       </ULink>
 
       <ULink
@@ -94,7 +94,7 @@ const activeClass = "text-primary font-bold";
         :to="{ name: 'register' }"
         :active-class="activeClass"
       >
-        {{ _$t("register") }}
+        {{ "Registro" }}
       </ULink>
 
       <UButton

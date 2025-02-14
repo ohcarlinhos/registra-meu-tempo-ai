@@ -70,7 +70,7 @@ const i18nObj = {
   confirmDeleteTimePeriodMessage: "Tem certeza que quer excluir esse período?",
 
   localRecordObs1:
-    "Sessões de tempo locais são salvos em seu dispositivo (navegador) e não contabilizam nos resumos diários e estatísticas.",
+    "Sessões de tempo locais são salvas em seu dispositivo (navegador) e não contabilizam nos resumos diários e estatísticas.",
 
   localRecordObs2:
     "Acesse ou crie uma conta para persistir ou vincula-las a uma tarefa.",

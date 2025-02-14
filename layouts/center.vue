@@ -22,12 +22,11 @@ const toggleDark = () => {
       />
     </section>
 
-    <section></section>
     <section
-      class="flex flex-col items-center justify-center py-5 w-full min-h-svh"
+      class="flex flex-col items-center justify-center p-4 w-full min-h-svh"
     >
       <section
-        class="flex flex-col items-center justify-center py-5 gap-10 w-full max-w-md"
+        class="flex flex-col items-center justify-center p-4 gap-10 w-full max-w-lg"
       >
         <GHeader center />
         <slot></slot>
