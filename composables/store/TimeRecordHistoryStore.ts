@@ -1,4 +1,4 @@
-import { eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval, format } from "date-fns";
 import { defineStore } from "pinia";
 
 export const useTimeRecordHistoryStore = defineStore({
@@ -64,7 +64,9 @@ export const useTimeRecordHistoryStore = defineStore({
 
       state.apiRes.data.forEach((d) => {
         const day = days.find(
-          (i) => new Date(i.date).getDate() == new Date(d.date).getDate()
+          (i) =>
+            format(new Date(i.date), "dd/MM/yyyy") ===
+            format(new Date(d.date), "dd/MM/yyyy")
         );
         if (!day) return;
 
