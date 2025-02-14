@@ -9,3 +9,10 @@ export type TimeRecordHistoryDayMap = {
   timeOnHours: number;
   formattedTime: string;
 };
+
+export type TimeRecordHistoryDayChart = {
+  date: string;
+  timeOnMinutes: number;
+  timeOnHours: number;
+  formattedTime: string;
+};

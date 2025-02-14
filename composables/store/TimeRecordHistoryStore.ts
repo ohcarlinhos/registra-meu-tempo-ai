@@ -1,3 +1,4 @@
+import { eachDayOfInterval } from "date-fns";
 import { defineStore } from "pinia";
 
 export const useTimeRecordHistoryStore = defineStore({
@@ -40,6 +41,39 @@ export const useTimeRecordHistoryStore = defineStore({
 
     setTimeRecordId(id: number) {
       this._timeRecordId = id;
+    },
+  },
+  getters: {
+    chartData: (state) => {
+      if (!state.apiRes.data) return [];
+
+      const firstDay = state.apiRes.data[0];
+      const lastDay = state.apiRes.data[state.apiRes.data.length - 1];
+
+      if (!firstDay || !lastDay) return [];
+
+      const days = eachDayOfInterval({
+        start: firstDay.date,
+        end: lastDay.date,
+      }).map<TimeRecordHistoryDayChart>((i) => ({
+        date: i.toISOString(),
+        timeOnHours: 0,
+        timeOnMinutes: 0,
+        formattedTime: "",
+      }));
+
+      state.apiRes.data.forEach((d) => {
+        const day = days.find(
+          (i) => new Date(i.date).getDate() == new Date(d.date).getDate()
+        );
+        if (!day) return;
+
+        day.formattedTime = d.formattedTime;
+        day.timeOnHours = d.timeOnHours;
+        day.timeOnMinutes = d.timeOnMinutes;
+      });
+
+      return days;
     },
   },
   persist: true,

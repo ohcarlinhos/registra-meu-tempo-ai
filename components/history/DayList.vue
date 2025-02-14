@@ -60,13 +60,13 @@ const props = defineProps<{
 const chartData = computed(() => {
   return {
     labels:
-      dayStore?.apiRes?.data?.map((i) => format(i.date, "dd/MM/yyyy"), {
+      dayStore.chartData.map((i) => format(i.date, "d/MM/yy"), {
         locale: ptBR,
       }) || [],
     datasets: [
       {
         label: "Horas",
-        data: dayStore?.apiRes?.data?.map((i) => i.timeOnHours) || [],
+        data: dayStore.chartData.map((i) => i.timeOnHours) || [],
         borderWidth: 2,
         pointBorderWidth: 5,
         fill: true,
@@ -104,10 +104,8 @@ const chartOptions = computed(() => ({
         label: function (tooltipItem: any) {
           const idx = tooltipItem.dataIndex;
           const value = tooltipItem.formattedValue;
-          return [
-            `${value} horas`,
-            `(${dayStore?.apiRes?.data[idx].formattedTime})`,
-          ];
+          const formattedTime = dayStore?.chartData[idx].formattedTime;
+          return [`${value} horas`, formattedTime && `(${formattedTime})`];
         },
       },
     },
