@@ -57,6 +57,8 @@ const props = defineProps<{
   callback?: () => Promise<void>;
 }>();
 
+const dayStore = useTimeRecordHistoryStore();
+
 const chartData = computed(() => {
   return {
     labels:
@@ -75,44 +77,48 @@ const chartData = computed(() => {
   };
 });
 
-const chartOptions = computed(() => ({
-  responsive: true,
-  scales: {
-    x: {
-      grid: {
-        color: isDark.value ? "#262626" : "#e5e5e5",
-      },
-    },
-    y: {
-      grid: {
-        color: isDark.value ? "#262626" : "#e5e5e5",
-      },
-    },
-  },
-  plugins: {
-    tooltip: {
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      titleColor: "#fff",
-      bodyColor: "#fff",
-      boxPadding: 5,
-      padding: 16,
-      borderWidth: 1,
-      callbacks: {
-        title: function (items: any) {
-          return `Dia ${items[0].label}`;
-        },
-        label: function (tooltipItem: any) {
-          const idx = tooltipItem.dataIndex;
-          const value = tooltipItem.formattedValue;
-          const formattedTime = dayStore?.chartData[idx].formattedTime;
-          return [`${value} horas`, formattedTime && `(${formattedTime})`];
-        },
-      },
-    },
-  },
-}));
+const chartOptions = computed(() => {
+  const dayChartDay = dayStore?.chartData;
 
-const dayStore = useTimeRecordHistoryStore();
+  var callbacks = {
+    title: function (items: any) {
+      return `Dia ${items[0].label}`;
+    },
+    label: function (tooltipItem: any) {
+      const idx = tooltipItem.dataIndex;
+      const value = tooltipItem.formattedValue;
+      const formattedTime = dayChartDay[idx].formattedTime;
+      return [`${value} horas`, formattedTime && `(${formattedTime})`];
+    },
+  };
+
+  return {
+    responsive: true,
+    scales: {
+      x: {
+        grid: {
+          color: isDark.value ? "#262626" : "#e5e5e5",
+        },
+      },
+      y: {
+        grid: {
+          color: isDark.value ? "#262626" : "#e5e5e5",
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        boxPadding: 5,
+        padding: 16,
+        borderWidth: 1,
+        callbacks,
+      },
+    },
+  };
+});
 
 const deleteTpAction = () => {
   return deleteTimePeriodAction(
