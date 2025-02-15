@@ -72,7 +72,7 @@ const computedCategory = computed({
 
 const sort = ref<{ column: string; direction: "asc" | "desc" }>({
   column: "lastTimePeriodDate",
-  direction: "asc",
+  direction: "desc",
 });
 
 const computedSort = computed({
@@ -100,7 +100,7 @@ const computedSort = computed({
 const isMounted = ref(false);
 
 const isLoading = computed(() => {
-  return categoriesIsFetch.value || trStore.isFetch || !isMounted.value;
+  return categoriesIsFetch.value || isPaginationFetch.value || !isMounted.value;
 });
 
 const configTableDataAndFetch = () => {
