@@ -129,14 +129,13 @@ const computedPerPageList = computed(() => {
     </Pagination>
 
     <section
-      v-if="computedPerPageList.length"
       class="flex justify-end items-center flex-row-reverse md:flex-row gap-5"
     >
-      <section v-if="$props.totalItems" class="">
-        Total de {{ $props.totalItems }} {{ totalLabel || "Itens" }}
+      <section v-if="totalItems" class="">
+        Total: {{ totalItems }} {{ totalLabel }}
       </section>
 
-      <section class="w-[80px]">
+      <section class="w-[80px]" v-if="computedPerPageList.length">
         <Select
           v-model="computedPerPage"
           :disabled="isPaginationFetch || isFetch"
