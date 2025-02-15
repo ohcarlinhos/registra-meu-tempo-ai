@@ -11,11 +11,6 @@ const user = computed(() => {
     avatarFallback: claim.value.name.split(" ")[0][0],
   };
 });
-
-const toggleDark = () => {
-  const colorMode = useColorMode();
-  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
-};
 </script>
 
 <template>
