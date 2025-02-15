@@ -31,17 +31,6 @@ const showNotVerifiedStatus = computed(() => {
       // showNotVerifiedStatus && 'bg-red-500 bg-opacity-50',
     ]"
   >
-    <UButton
-      :icon="
-        isDark ? 'i-icon-park-outline-sun-one' : 'i-icon-park-outline-moon'
-      "
-      :label="(!isDark && 'Experimente a noite...') || ''"
-      title="Na opinião dos desenvolvedores, o modo noturno é bem mais bonito e agradável."
-      color="gray"
-      variant="ghost"
-      @click="toggleDark"
-    />
-
     <section
       v-if="showNotVerifiedStatus"
       class="font-medium pt-1 dark:text-white text-gray-600"
