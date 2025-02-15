@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: [], name: "timer.page" });
 useHead({ title: "Cronômetros" });
+
+const authStore = useAuthStore();
+const { isAuth } = storeToRefs(authStore);
 </script>
 
 <template>
   <NuxtLayout name="center">
-    <section class="flex flex-col gap-2">
+    <section v-if="!isAuth" class="flex flex-col gap-2">
       <h2 class="text-2xl text-center">
         Fique à vontade para trabalhar com nossos timers, mas
         <b class="text-primary">não se limite a apenas eles!</b>
@@ -17,6 +20,16 @@ useHead({ title: "Cronômetros" });
         <br class="max-md:hidden" />
         tempo da forma que preferir!
       </p>
+    </section>
+
+    <section v-else class="flex flex-col gap-2">
+      <h2 class="text-2xl text-center">
+        Não se esqueça de
+        <b class="text-primary">
+          vincular <br class="max-md:hidden" />
+          seu tempo a tarefas!</b
+        >
+      </h2>
     </section>
 
     <ClientOnly>
