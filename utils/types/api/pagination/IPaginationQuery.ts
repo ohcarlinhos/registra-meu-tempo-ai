@@ -19,7 +19,7 @@ export interface IPaginationQueryMethods {
   addFilter: (filter: PaginationQueryFilter) => void;
   removeFilter: (tag: string) => void;
   updateSort: (direction: "asc" | "desc", prop: string) => void;
-  fetchData: () => Promise<void>;
+  fetchData: (updatePaginationQuery?: boolean) => Promise<void>;
   refetchData: () => Promise<void>;
   delete: (id: number) => Promise<void>;
 }

@@ -76,7 +76,14 @@ const openConfirmDeleteModal = async (payload: DeletePayloadEvent) => {
   modal.confirmDelete.name = payload.name;
 };
 
+const isMounted = ref(false);
+
+const isLoading = computed(() => {
+  return !isMounted.value || isPaginationFetch.value;
+});
+
 onMounted(() => {
+  isMounted.value = true;
   fetchCategoryData();
 });
 </script>
@@ -96,35 +103,45 @@ onMounted(() => {
       <GSearchV2
         :pagination-query="paginationQuery"
         :pagination-query-methods="categoryStore"
-        :is-pagination-fetch="isPaginationFetch"
+        :is-pagination-fetch="isLoading"
         using-store
       />
     </CardHeader>
 
     <CardContent>
-      <UTable :columns="columns" :rows="tableData" :loading="isPaginationFetch">
+      <UTable :columns="columns" :rows="tableData" :loading="isLoading">
         <template #actions-data="{ row }">
-          <div class="flex justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button variant="outline" size="icon">
+          <ClientOnly>
+            <div class="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="outline" size="icon">
+                    <EllipsisVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    v-for="item in items(row)"
+                    @click="item.click"
+                  >
+                    <component :is="item.icon" />
+                    {{ item.label }}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <template #fallback>
+              <div class="flex justify-end">
+                <Button variant="outline" size="icon" disabled>
                   <EllipsisVertical />
                 </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  v-for="item in items(row)"
-                  @click="item.click"
-                >
-                  <component :is="item.icon" />
-                  {{ item.label }}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+              </div>
+            </template>
+          </ClientOnly>
         </template>
       </UTable>
 
@@ -135,7 +152,7 @@ onMounted(() => {
         :total-items="apiRes?.totalItems"
         :pagination-query="paginationQuery"
         :pagination-query-methods="categoryStore"
-        :is-pagination-fetch="isPaginationFetch"
+        :is-pagination-fetch="isLoading"
         using-store
       />
     </CardContent>

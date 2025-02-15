@@ -27,7 +27,7 @@ const computedPage = computed({
 
     if (props.usingStore) {
       props.paginationQueryMethods?.setPage(page);
-      props.paginationQueryMethods?.fetchData();
+      props.paginationQueryMethods?.refetchData();
     } else {
       emit("update:page", page);
     }
@@ -52,7 +52,7 @@ const computedPerPage = computed({
 
     if (props.usingStore) {
       props.paginationQueryMethods?.setPerPage(perPage);
-      props.paginationQueryMethods?.fetchData();
+      props.paginationQueryMethods?.refetchData();
     } else {
       emit("update:perPage", perPage);
     }

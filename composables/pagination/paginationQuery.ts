@@ -1,4 +1,8 @@
-export const usePaginationQuery = (queryCopy?: IPaginationQuery) => {
+export const usePaginationQuery = (
+  prefix: string,
+  defaultPerPage = 10,
+  queryCopy?: IPaginationQuery
+) => {
   const route = useRoute();
   const router = useRouter();
 
@@ -11,83 +15,204 @@ export const usePaginationQuery = (queryCopy?: IPaginationQuery) => {
   const _sort = ref<"asc" | "desc">(queryCopy?.sort || "asc");
   const _sortProp = ref<string>(queryCopy?.sortProp || "");
 
-  const _defaultPerPage = 10;
+  const _defaultPerPage = defaultPerPage;
 
-  const updateRouteQuery = () => {
-    router.replace({
+  const page = computed(() => _page.value);
+  const perPage = computed(() => _perPage.value);
+  const search = computed(() => _search.value);
+  const sort = computed(() => _sort.value);
+  const sortProp = computed(() => _sortProp.value);
+  const filters = computed(() => _filters.value);
+
+  const setPage = (value?: number | string, skipRouterAction = false) => {
+    if (typeof value === "string") value = parseInt(value);
+    if (!value || value < 1) _page.value = 1;
+    else _page.value = value;
+
+    if (skipRouterAction) return;
+
+    router.push({
       query: {
-        ...route.query,
-        page: _page.value,
-        perPage: _perPage.value,
-        search: _search.value,
+        ...useRoute().query,
+        [prefix + "page"]: _page.value,
       },
     });
   };
 
-  const page = computed(() => {
-    return _page.value;
-  });
-
-  const setPage = (value?: number | string) => {
-    if (typeof value === "string") value = parseInt(value);
-    if (!value || value < 1) _page.value = 1;
-    else _page.value = value;
-    updateRouteQuery();
-  };
-
-  const perPage = computed(() => {
-    return _perPage.value;
-  });
-
-  const setPerPage = (value?: number | string) => {
+  const setPerPage = (value?: number | string, skipRouterAction = false) => {
     if (typeof value === "string") value = parseInt(value);
     if (!value || value < 1) _perPage.value = _defaultPerPage;
     else _perPage.value = value;
-    updateRouteQuery();
+
+    if (skipRouterAction) return;
+
+    router.push({
+      query: {
+        ...useRoute().query,
+        [prefix + "perPage"]: _perPage.value,
+      },
+    });
   };
 
-  const search = computed(() => {
-    return _search.value;
-  });
-
-  const setSearch = (value: string) => {
+  const setSearch = (value?: string, skipRouterAction = false) => {
     if (!value) _search.value = "";
     else _search.value = value;
-    updateRouteQuery();
+
+    if (skipRouterAction) return;
+
+    router.push({
+      query: {
+        ...useRoute().query,
+        [prefix + "search"]: _search.value,
+      },
+    });
   };
 
-  const filters = computed({ get: () => _filters.value, set: () => {} });
-  const sort = computed({ get: () => _sort.value, set: () => {} });
-  const sortProp = computed({ get: () => _sortProp.value, set: () => {} });
+  const setSort = (value?: string, skipRouterAction = false) => {
+    if (value && ["asc", "desc"].includes(value)) {
+      _sort.value = value as "asc" | "desc";
+    } else {
+      _sort.value = "asc";
+    }
+
+    if (skipRouterAction) return;
+
+    router.push({
+      query: {
+        ...useRoute().query,
+        [prefix + "sort"]: _sort.value,
+      },
+    });
+  };
+
+  const setSortProp = (value?: string, skipRouterAction = false) => {
+    if (!value) _sortProp.value = "";
+    else _sortProp.value = value;
+
+    if (skipRouterAction) return;
+
+    router.push({
+      query: {
+        ...useRoute().query,
+        [prefix + "sortProp"]: _sortProp.value,
+      },
+    });
+  };
+
+  const setFilters = (
+    filters: PaginationQueryFilter[] = [],
+    skipRouterAction = false
+  ) => {
+    _filters.value = filters;
+
+    if (skipRouterAction) return;
+
+    router.push({
+      query: {
+        ...useRoute().query,
+        [prefix + "filters"]: _filters.value.map((i) => i.tag + "::" + i.value),
+      },
+    });
+  };
 
   function addFilter(filter: PaginationQueryFilter) {
-    _filters.value = _filters.value.filter((e) => e.tag != filter.tag);
-    if (filter.value) _filters.value.push(filter);
+    var newFilters = _filters.value.filter((e) => e.tag != filter.tag);
+    if (filter.value) newFilters.push(filter);
+
+    setFilters(newFilters);
   }
 
   function removeFilter(tag: string) {
-    _filters.value = _filters.value.filter((e) => e.tag != tag);
+    setFilters(_filters.value.filter((e) => e.tag != tag));
   }
 
   function updateSort(direction: "asc" | "desc" = "asc", prop: string = "") {
-    _sort.value = direction;
-    _sortProp.value = prop;
+    setSort(direction, true);
+    setSortProp(prop, true);
+
+    router.push({
+      query: {
+        ...useRoute().query,
+        [prefix + "sort"]: _sort.value,
+        [prefix + "sortProp"]: _sortProp.value,
+      },
+    });
   }
 
-  const routePage = route.query["page"];
-  if (routePage) {
-    setPage(`${routePage}`);
-  }
+  const updatePaginationQueryWithRoute = () => {
+    const routePage = route.query[prefix + "page"];
+    if (routePage) {
+      setPage(`${routePage}`, true);
+    } else {
+      setPage(undefined, true);
+    }
 
-  const routePerPage = route.query["perPage"];
-  if (routePerPage) {
-    setPerPage(`${routePerPage}`);
-  }
+    const routePerPage = route.query[prefix + "perPage"];
+    if (routePerPage) {
+      setPerPage(`${routePerPage}`, true);
+    } else {
+      setPerPage(undefined, true);
+    }
 
-  const routeSearch = route.query["search"];
-  if (routeSearch) {
-    setSearch(`${routeSearch}`);
-  }
+    const routeSearch = route.query[prefix + "search"];
+    if (routeSearch) {
+      setSearch(`${routeSearch}`, true);
+    } else {
+      setSearch(undefined, true);
+    }
+
+    const routeSort = route.query[prefix + "sort"];
+    if (routeSort) {
+      setSort(`${routeSort}`, true);
+    } else {
+      setSort(undefined, true);
+    }
+
+    const routeSortProp = route.query[prefix + "sortProp"];
+    if (routeSortProp) {
+      setSortProp(`${routeSortProp}`, true);
+    } else {
+      setSortProp(undefined, true);
+    }
+
+    const routeFilters = route.query[prefix + "filters"];
+    if (Array.isArray(routeFilters)) {
+      const filters =
+        routeFilters?.map((i) => {
+          const keyValue = i?.split("::") || [];
+
+          if (keyValue[0] && keyValue[1]) {
+            return {
+              tag: keyValue[0],
+              value: keyValue[1],
+            };
+          }
+
+          return {
+            tag: "",
+            value: "",
+          };
+        }) || [];
+
+      setFilters(filters, true);
+    } else if (routeFilters) {
+      const keyValue = routeFilters?.split("::") || [];
+
+      if (keyValue[0] && keyValue[1]) {
+        setFilters(
+          [
+            {
+              tag: keyValue[0],
+              value: keyValue[1],
+            },
+          ],
+          true
+        );
+      }
+    } else {
+      setFilters(undefined, true);
+    }
+  };
 
   const query = computed(() => {
     return {
@@ -99,6 +224,8 @@ export const usePaginationQuery = (queryCopy?: IPaginationQuery) => {
       sortProp: sortProp.value,
     };
   });
+
+  updatePaginationQueryWithRoute();
 
   return {
     query,
@@ -114,6 +241,6 @@ export const usePaginationQuery = (queryCopy?: IPaginationQuery) => {
     addFilter,
     removeFilter,
     updateSort,
-    updateRouteQuery,
+    updatePaginationQueryWithRoute,
   };
 };

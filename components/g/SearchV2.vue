@@ -24,7 +24,7 @@ const setDebounce = async (value: string) => {
   }
 
   debounce.value = setTimeout(async () => {
-    await props.paginationQueryMethods?.fetchData();
+    await props.paginationQueryMethods?.refetchData();
   }, 1000);
 };
 

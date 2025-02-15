@@ -17,19 +17,24 @@ const emit = defineEmits<{
   create: [];
 }>();
 
-const columns = [
-  { key: "lastTimePeriodDate", label: "Iteração", sortable: true },
-  { key: "formattedTime", label: _$t("time"), sortable: true },
+const columns = computed(() => [
+  { key: "lastTimePeriodDate", label: "Iteração", sortable: !isLoading.value },
+  { key: "formattedTime", label: _$t("time"), sortable: !isLoading.value },
   {
     key: "title",
     label: _$t("title"),
-    sortable: true,
+    sortable: !isLoading.value,
     rowClass: "truncate",
   },
-  { key: "code", label: _$t("code"), sortable: true, rowClass: "truncate" },
+  {
+    key: "code",
+    label: _$t("code"),
+    sortable: !isLoading.value,
+    rowClass: "truncate",
+  },
   { key: "categoryName", label: _$t("category") },
   { key: "actions" },
-];
+]);
 
 const items = (row: TimeRecordMap) => [
   {
@@ -44,7 +49,7 @@ const categoriesIsFetch = ref(false);
 const categoryFilter = ref<string>();
 
 const debounceTrFetch = useDebounceFn(() => {
-  trStore.fetchData();
+  trStore.refetchData();
 }, 1000);
 
 const computedCategory = computed({
@@ -67,7 +72,7 @@ const computedCategory = computed({
 
 const sort = ref<{ column: string; direction: "asc" | "desc" }>({
   column: "lastTimePeriodDate",
-  direction: "desc",
+  direction: "asc",
 });
 
 const computedSort = computed({
@@ -77,7 +82,7 @@ const computedSort = computed({
 
   set: (newSort?: { column: string | null; direction: "asc" | "desc" }) => {
     sort.value = {
-      column: newSort?.column || "",
+      column: newSort?.column || "lastTimePeriodDate",
       direction: newSort?.direction || "desc",
     };
 
@@ -87,13 +92,15 @@ const computedSort = computed({
       column = "timeOnSeconds";
     }
 
-    trStore.updateSort(sort.value?.direction, column);
+    trStore.updateSort(sort.value.direction, column);
     debounceTrFetch();
   },
 });
 
-const isFetch = computed(() => {
-  return categoriesIsFetch.value || trStore.isFetch;
+const isMounted = ref(false);
+
+const isLoading = computed(() => {
+  return categoriesIsFetch.value || trStore.isFetch || !isMounted.value;
 });
 
 const configTableDataAndFetch = () => {
@@ -123,6 +130,7 @@ const configTableDataAndFetch = () => {
 };
 
 onMounted(() => {
+  isMounted.value = true;
   categoriesIsFetch.value = true;
 
   categoryApi()
@@ -157,7 +165,7 @@ onMounted(() => {
             class="w-full"
             :pagination-query="paginationQuery"
             :pagination-query-methods="trStore"
-            :is-pagination-fetch="isPaginationFetch"
+            :is-pagination-fetch="isLoading"
             using-store
           />
 
@@ -165,7 +173,7 @@ onMounted(() => {
             <section class="w-[120px]">
               <Select
                 v-model="computedCategory"
-                :disabled="isPaginationFetch || isFetch"
+                :disabled="!categories.length || isLoading"
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Categoria" />
@@ -184,7 +192,7 @@ onMounted(() => {
             </section>
 
             <Button
-              :disabled="!computedCategory || isFetch"
+              :disabled="!computedCategory || isLoading"
               variant="outline"
               :color="!computedCategory ? 'white' : 'red'"
               @click="computedCategory = ''"
@@ -200,7 +208,7 @@ onMounted(() => {
         <UTable
           :columns="columns"
           :rows="tableData"
-          :loading="isFetch"
+          :loading="isLoading"
           v-model:sort="computedSort"
           sort-mode="manual"
         >
@@ -214,25 +222,33 @@ onMounted(() => {
                 {{ "Acessar" }}
               </Button>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button variant="outline" size="icon">
+              <ClientOnly>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button variant="outline" size="icon">
+                      <EllipsisVertical />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      v-for="item in items(row)"
+                      @click="item.click"
+                    >
+                      <component :is="item.icon" />
+                      {{ item.label }}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <template #fallback>
+                  <Button variant="outline" size="icon" disabled>
                     <EllipsisVertical />
                   </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    v-for="item in items(row)"
-                    @click="item.click"
-                  >
-                    <component :is="item.icon" />
-                    {{ item.label }}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </template>
+              </ClientOnly>
             </div>
           </template>
         </UTable>
@@ -244,7 +260,7 @@ onMounted(() => {
           :total-items="apiRes?.totalItems"
           :pagination-query="paginationQuery"
           :pagination-query-methods="trStore"
-          :is-pagination-fetch="isPaginationFetch"
+          :is-pagination-fetch="isLoading"
           total-label="Tarefas"
           using-store
         />

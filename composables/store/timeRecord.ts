@@ -11,18 +11,21 @@ export const useTimeRecordStore = defineStore(
       addFilter,
       removeFilter,
       updateSort,
-      updateRouteQuery,
-    } = usePaginationQuery();
+      updatePaginationQueryWithRoute,
+    } = usePaginationQuery("tr_");
 
     const apiRes = ref<Pagination<TimeRecordMap>>();
     const isPaginationFetch = ref(false);
-
     const isDeleteFetch = ref(false);
 
-    async function fetchData() {
-      updateRouteQuery();
+    const fetchData = async (updatePaginationQuery = true) => {
+      if (updatePaginationQuery) {
+        updatePaginationQueryWithRoute();
+      }
+
+      isPaginationFetch.value = true;
+
       try {
-        isPaginationFetch.value = true;
         const data = await timeRecordApi().get(paginationQuery.value);
         if (data) apiRes.value = data;
       } catch (error) {
@@ -30,10 +33,10 @@ export const useTimeRecordStore = defineStore(
       } finally {
         isPaginationFetch.value = false;
       }
-    }
+    };
 
     const refetchData = async () => {
-      await fetchData();
+      await fetchData(false);
     };
 
     async function deleteTimeRecord(id: number) {
@@ -96,6 +99,6 @@ export const useTimeRecordStore = defineStore(
     };
   },
   {
-    persist: true,
+    persist: false,
   }
 );

@@ -9,17 +9,20 @@ export const useCategoryStore = defineStore(
       addFilter,
       removeFilter,
       updateSort,
-      updateRouteQuery,
-    } = usePaginationQuery();
+      updatePaginationQueryWithRoute,
+    } = usePaginationQuery("c_");
 
     const apiRes = ref<Pagination<CategoryMap>>();
     const isPaginationFetch = ref(false);
 
-    const fetchData = async () => {
-      updateRouteQuery();
+    const fetchData = async (updatePaginationQuery = true) => {
+      if (updatePaginationQuery) {
+        updatePaginationQueryWithRoute();
+      }
+
+      isPaginationFetch.value = true;
 
       try {
-        isPaginationFetch.value = true;
         const data = await categoryApi().get(paginationQuery.value);
         if (data) apiRes.value = data;
       } catch (error) {
@@ -30,7 +33,7 @@ export const useCategoryStore = defineStore(
     };
 
     const refetchData = async () => {
-      await fetchData();
+      await fetchData(false);
     };
 
     const isDeleteFetch = ref(false);
@@ -81,6 +84,6 @@ export const useCategoryStore = defineStore(
     };
   },
   {
-    persist: true,
+    persist: false,
   }
 );

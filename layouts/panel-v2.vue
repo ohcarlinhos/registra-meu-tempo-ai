@@ -147,7 +147,7 @@ function setActiveTeam(team: (typeof data.products)[number]) {
             <SidebarMenu>
               <SidebarMenuItem v-for="item in data.pages" :key="item.name">
                 <SidebarMenuButton as-child>
-                  <NuxtLink :to="{ name: item.name }" as="a">
+                  <NuxtLink :to="{ name: item.name, query: {} }" as="a">
                     <component :is="item.icon" />
                     <span>{{ item.title }}</span>
                   </NuxtLink>
