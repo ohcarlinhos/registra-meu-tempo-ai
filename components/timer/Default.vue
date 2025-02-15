@@ -87,6 +87,7 @@ const modal = reactive({
 const editTimeRecordObject = ref<TimeRecordForm>();
 
 const startTimer = () => {
+  if (!openFull.value) openFull.value = true;
   timerStore.noSleep?.enable();
   timerStore.startTimer(props.id);
   timerStore.playClick();
@@ -211,13 +212,30 @@ const isFetch = computed(() => {
   return submitIsFetch.value || timer.value.isFetch;
 });
 
+const openFull = ref(false);
+
 onBeforeUnmount(() => {
   timerStore.pauseTimer(props.id);
 });
 </script>
 
 <template>
-  <section v-if="timer" class="flex flex-col gap-5 items-center min-w-72">
+  <section
+    v-if="timer"
+    class="flex flex-col gap-5 items-center min-w-72 transition duration-300 ease-in-out"
+    :class="
+      openFull &&
+      'fixed top-0 left-0 bg-white dark:bg-black bg-opacity-90 w-svw h-svh z-50 flex justify-center items-center'
+    "
+  >
+    <Button
+      v-if="openFull"
+      variant="outline"
+      :disabled="timer.isRun"
+      @click="openFull = false"
+    >
+      Fechar Timer
+    </Button>
     <section
       :class="[
         'flex flex-col justify-center align-middle relative',
