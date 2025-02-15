@@ -397,16 +397,31 @@ onBeforeUnmount(() => {
   </UModal>
 
   <template v-if="modal">
-    <GModalConfirm
-      v-model:open="modal.confirmPersistMethod.open"
-      custom-width="sm:w-88"
-      :title="_$t('howDoYouPrefereSaveRecord')"
-      cancel-text="Manter no navegador"
-      confirm-text="Criar tarefa à partir do tempo"
-      :disable-confirm="!userIsVerified"
-      @confirm="persistOnServer"
-      @cancel="saveOnBrowser"
-    />
+    <Dialog
+      v-bind:open="modal.confirmPersistMethod.open"
+      @update:open="modal.confirmPersistMethod.open = $event"
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {{ _$t("howDoYouPrefereSaveRecord") }}
+          </DialogTitle>
+          <DialogDescription>
+            Escolha a forma que deseja salvar o seu tempo.
+          </DialogDescription>
+
+          <section class="flex flex-col gap-2 mt-5">
+            <Button disabled>Vincular a uma tarefa</Button>
+            <Button variant="secondary" @click="persistOnServer">
+              Criar tarefa a partir do tempo</Button
+            >
+            <Button variant="outline" @click="saveOnBrowser">
+              Salvar no navegador
+            </Button>
+          </section>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
 
     <GModalConfirm
       v-model:open="modal.confirmStopTimer.open"

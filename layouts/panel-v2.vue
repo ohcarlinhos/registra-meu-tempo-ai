@@ -40,6 +40,11 @@ const data = {
 
   pages: [
     {
+      title: "Cronômetros",
+      name: "timer.panel",
+      icon: Timer,
+    },
+    {
       title: "Tarefas",
       name: "record.panel",
       icon: ClipboardList,
@@ -48,12 +53,6 @@ const data = {
       title: "Categorias",
       name: "record.category",
       icon: Tag,
-    },
-
-    {
-      title: "Cronômetros",
-      name: "timer.page",
-      icon: Timer,
     },
     // {
     //   title: "Metas",

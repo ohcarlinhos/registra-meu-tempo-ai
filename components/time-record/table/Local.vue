@@ -193,6 +193,7 @@ const closeModal = () => {
   <GModalConfirm
     v-model:open="confirmDelete.open"
     :title="_$t('confirmDeleteLocalRecordMessage')"
+    description="Não será possível recuperar esse tempo depois."
     @confirm="deleteAction"
     @cancel="closeConfirmDeleteModal"
   />

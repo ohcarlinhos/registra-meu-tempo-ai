@@ -66,7 +66,7 @@ const i18nObj = {
   confirmDeleteTimeRecordMessage:
     'Tem certeza deseja excluir a tarefa "{title}"?',
   confirmDeleteLocalRecordMessage:
-    "Tem certeza que deseja excluir esse registro de tempo local?",
+    "Tem certeza que deseja excluir esse registro?",
   confirmDeleteTimePeriodMessage: "Tem certeza que quer excluir esse período?",
 
   localRecordObs1:

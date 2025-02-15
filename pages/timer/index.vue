@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: [], name: "timer.page" });
+definePageMeta({ middleware: ["auth-timer"], name: "timer.page" });
 useHead({ title: "Cronômetros" });
 
 const authStore = useAuthStore();
@@ -20,16 +20,6 @@ const { isAuth } = storeToRefs(authStore);
         <br class="max-md:hidden" />
         tempo da forma que preferir!
       </p>
-    </section>
-
-    <section v-else class="flex flex-col gap-2">
-      <h2 class="text-2xl text-center">
-        Não se esqueça de
-        <b class="text-primary">
-          vincular <br class="max-md:hidden" />
-          seu tempo a tarefas!</b
-        >
-      </h2>
     </section>
 
     <ClientOnly>
