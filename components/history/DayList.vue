@@ -67,8 +67,8 @@ const chartData = computed(() => {
       }) || [],
     datasets: [
       {
-        label: "Horas",
-        data: dayStore.chartData.map((i) => i.timeOnHours) || [],
+        label: "Minutos",
+        data: dayStore.chartData.map((i) => i.timeOnMinutes) || [],
         borderWidth: 2,
         pointBorderWidth: 5,
         fill: true,
@@ -88,7 +88,7 @@ const chartOptions = computed(() => {
       const idx = tooltipItem.dataIndex;
       const value = tooltipItem.formattedValue;
       const formattedTime = dayChartDay[idx].formattedTime;
-      return [`${value} horas`, formattedTime && `(${formattedTime})`];
+      return [`${value} minutos`, formattedTime && `(${formattedTime})`];
     },
   };
 
