@@ -12,7 +12,10 @@ export const useTimeRecordStore = defineStore(
       removeFilter,
       updateSort,
       updatePaginationQueryWithRoute,
-    } = usePaginationQuery("tr_");
+    } = usePaginationQuery("tr_", 10, {
+      sort: "desc",
+      sortProp: "lastTimePeriodDate",
+    });
 
     const apiRes = ref<Pagination<TimeRecordMap>>();
     const isPaginationFetch = ref(false);

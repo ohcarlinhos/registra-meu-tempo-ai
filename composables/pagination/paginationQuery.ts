@@ -1,12 +1,12 @@
 export const usePaginationQuery = (
   prefix: string,
   defaultPerPage = 10,
-  queryCopy?: IPaginationQuery
+  queryCopy?: ICopyPaginationQuery
 ) => {
   const route = useRoute();
   const router = useRouter();
 
-  const _page = ref(1);
+  const _page = ref(queryCopy?.page || 1);
   const _perPage = ref(queryCopy?.perPage || 10);
   const _search = ref<string>(queryCopy?.search || "");
   const _filters = ref<PaginationQueryFilter[]>(
@@ -126,53 +126,49 @@ export const usePaginationQuery = (
     setFilters(_filters.value.filter((e) => e.tag != tag));
   }
 
-  function updateSort(direction: "asc" | "desc" = "asc", prop: string = "") {
+  function updateSort(direction: string = "asc", prop: string = "") {
     setSort(direction, true);
     setSortProp(prop, true);
 
-    router.push({
-      query: {
-        ...useRoute().query,
-        [prefix + "sort"]: _sort.value,
-        [prefix + "sortProp"]: _sortProp.value,
-      },
-    });
+    const query = {
+      ...useRoute().query,
+    };
+
+    if (_sort.value) {
+      query[prefix + "sort"] = _sort.value;
+    }
+
+    if (_sortProp.value) {
+      query[prefix + "sortProp"] = _sortProp.value;
+    }
+
+    router.push({ query });
   }
 
   const updatePaginationQueryWithRoute = () => {
     const routePage = route.query[prefix + "page"];
     if (routePage) {
       setPage(`${routePage}`, true);
-    } else {
-      setPage(undefined, true);
     }
 
     const routePerPage = route.query[prefix + "perPage"];
     if (routePerPage) {
       setPerPage(`${routePerPage}`, true);
-    } else {
-      setPerPage(undefined, true);
     }
 
     const routeSearch = route.query[prefix + "search"];
     if (routeSearch) {
       setSearch(`${routeSearch}`, true);
-    } else {
-      setSearch(undefined, true);
     }
 
     const routeSort = route.query[prefix + "sort"];
     if (routeSort) {
       setSort(`${routeSort}`, true);
-    } else {
-      setSort(undefined, true);
     }
 
     const routeSortProp = route.query[prefix + "sortProp"];
     if (routeSortProp) {
       setSortProp(`${routeSortProp}`, true);
-    } else {
-      setSortProp(undefined, true);
     }
 
     const routeFilters = route.query[prefix + "filters"];
@@ -209,8 +205,6 @@ export const usePaginationQuery = (
           true
         );
       }
-    } else {
-      setFilters(undefined, true);
     }
   };
 

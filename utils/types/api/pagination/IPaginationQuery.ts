@@ -12,6 +12,15 @@ export interface IPaginationQuery {
   filters: PaginationQueryFilter[];
 }
 
+export interface ICopyPaginationQuery {
+  page?: number;
+  perPage?: number;
+  search?: string;
+  sort?: "asc" | "desc";
+  sortProp?: string;
+  filters?: PaginationQueryFilter[];
+}
+
 export interface IPaginationQueryMethods {
   setPage: (value?: number | string) => void;
   setPerPage: (value?: number | string) => void;

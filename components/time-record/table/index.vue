@@ -83,7 +83,7 @@ const computedSort = computed({
   set: (newSort?: { column: string | null; direction: "asc" | "desc" }) => {
     sort.value = {
       column: newSort?.column || "lastTimePeriodDate",
-      direction: newSort?.direction || "desc",
+      direction: !newSort?.column ? "desc" : newSort?.direction || "desc",
     };
 
     let column = sort.value?.column || "";
