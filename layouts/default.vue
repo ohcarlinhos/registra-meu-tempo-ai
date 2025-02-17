@@ -2,7 +2,7 @@
 const { hasWarTools } = storeToRefs(useConfigStore());
 
 const authStore = useAuthStore();
-const { setExpiredToken } = authStore;
+const { setExpiredToken, closeAuthModal } = authStore;
 const { authModal, isAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
@@ -13,6 +13,7 @@ const feedbackModal = reactive({
 });
 
 const router = useRouter();
+const route = useRoute();
 
 const setOldToken = () => {
   setExpiredToken();
@@ -20,6 +21,23 @@ const setOldToken = () => {
 
 const showNotVerifiedStatus = computed(() => {
   return isAuth.value && !mySelfIsFetch.value && !isVerified.value;
+});
+
+onMounted(() => {
+  if (
+    route.name &&
+    [
+      "home",
+      "timer.page",
+      "register",
+      "login",
+      "recovery",
+      "recovery.password",
+      "verify.page.code",
+    ].includes(route.name.toString())
+  ) {
+    closeAuthModal();
+  }
 });
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: [], name: "timer.panel" });
+definePageMeta({ middleware: ["auth"], name: "timer.panel" });
 useHead({ title: "Cronômetros" });
 </script>
 

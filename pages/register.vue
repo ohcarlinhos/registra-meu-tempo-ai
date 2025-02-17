@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["guest"], name: "register" });
 useHead({ title: "Criar conta" });
-
-onMounted(() => {
-  useAuthStore().closeAuthModal();
-});
 </script>
 
 <template>
