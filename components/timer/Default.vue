@@ -38,15 +38,19 @@ const timerDoNotHasMilliseconds = computed(
 
 const timerLabelText = ref("");
 
+const updateTimerLabelText = () => {
+  timerLabelText.value = millisecondsToString(
+    timer.value.type == "pomodoro" || timer.value.type == "break"
+      ? timerStore.getRegressiveMillisecondsNecessary(props.id) -
+          timerStore.getTotalMillisecondsPast(props.id)
+      : timerStore.getTotalMillisecondsPast(props.id)
+  );
+};
+
 watch(
   () => timer.value.currentPeriod.end,
   (_) => {
-    timerLabelText.value = millisecondsToString(
-      timer.value.type == "pomodoro" || timer.value.type == "break"
-        ? timerStore.getRegressiveMillisecondsNecessary(props.id) -
-            timerStore.getTotalMillisecondsPast(props.id)
-        : timerStore.getTotalMillisecondsPast(props.id)
-    );
+    updateTimerLabelText();
   }
 );
 
@@ -214,8 +218,12 @@ const isFetch = computed(() => {
 
 const openFull = ref(false);
 
-onBeforeUnmount(() => {
-  timerStore.pauseTimer(props.id);
+onMounted(() => {
+  updateTimerLabelText();
+
+  if (timer.value.isRun) {
+    openFull.value = true;
+  }
 });
 </script>
 
@@ -236,6 +244,7 @@ onBeforeUnmount(() => {
     >
       Fechar Timer
     </Button>
+
     <section
       :class="[
         'flex flex-col justify-center align-middle relative',
@@ -350,6 +359,7 @@ onBeforeUnmount(() => {
       v-if="modal && timer.localRecords.length >= 1"
       color="black"
       variant="link"
+      :disabled="timer.isRun"
       @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
     >
       <template v-if="!props.id">

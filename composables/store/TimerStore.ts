@@ -47,7 +47,13 @@ export const useTimerStore = defineStore("TimerStore", {
 
       timer.showOptions = false;
 
-      this.pauseTimer(id);
+      if (timer.isRun) {
+        if (timer.type === "pomodoro" || timer.type === "break") {
+          this.pauseTimer(id);
+        } else {
+          this.defineIntervalTimer(id);
+        }
+      }
     },
 
     // getters
@@ -272,6 +278,7 @@ export const useTimerStore = defineStore("TimerStore", {
     resetTimer(id: number | null = null) {
       const timeNow = Date.now();
       const timer = this.getTimer(id);
+
       timer.currentPeriod.start = timeNow;
       timer.currentPeriod.end = timeNow;
     },
@@ -313,14 +320,18 @@ export const useTimerStore = defineStore("TimerStore", {
 
       if (this.audioObject) {
         this.audioObject.src = "/audio/click.mp3";
-        this.audioObject.play();
+        if (this.audioObject.play) this.audioObject.play();
       }
     },
 
     playAlarm() {
+      if (!this.audioObject?.play) {
+        this.createAudioObject();
+      }
+
       if (this.audioObject) {
         this.audioObject.src = "/audio/alarm.mp3";
-        this.audioObject.play();
+        if (this.audioObject.play) this.audioObject.play();
       }
     },
   },
