@@ -64,7 +64,7 @@ watch(
 );
 
 const computedList = computed(() => {
-  return props.perPageList || [10, 20, 30];
+  return props.perPageList || [12, 24, 36];
 });
 
 const computedPerPageList = computed(() => {
