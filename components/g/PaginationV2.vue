@@ -65,7 +65,7 @@ watch(
     if (newTotalItems && parseInt(computedPerPage.value) > newTotalItems) {
       computedPerPage.value = (
         computedPerPageList.value.reverse().find((i) => i <= newTotalItems) ||
-        10
+        12
       ).toString();
     }
   }

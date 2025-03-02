@@ -29,7 +29,7 @@ export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
       _timerList: [] as TimerStoreItem[],
-      _perPage: 10,
+      _perPage: 12,
       _postTPCallback: null as null | PostTimePeriodCallback,
 
       noSleep: null as null | NoSleep,
