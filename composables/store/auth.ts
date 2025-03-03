@@ -8,7 +8,6 @@ export const useAuthStore = defineStore(
     const needRefresh = ref(false);
 
     const { oldUserToken } = storeToRefs(useConfigStore());
-    const { clearMySelf } = useUserStore();
 
     const isAuth = computed(() => {
       return Boolean(jwt.value?.token);
@@ -53,7 +52,6 @@ export const useAuthStore = defineStore(
 
     const clearSession = () => {
       clearJwt();
-      clearMySelf();
     };
 
     return {

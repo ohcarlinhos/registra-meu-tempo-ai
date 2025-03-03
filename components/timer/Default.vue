@@ -24,8 +24,6 @@ const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
-const { isVerified: userIsVerified } = storeToRefs(userStore);
-
 const timerStore = useTimerStore();
 
 const timer = computed(() => timerStore.getTimer(props.id));

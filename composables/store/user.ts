@@ -52,5 +52,5 @@ export const useUserStore = defineStore(
       clearMySelf,
     };
   },
-  { persist: true }
+  { persist: false }
 );
