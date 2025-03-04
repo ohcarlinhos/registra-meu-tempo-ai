@@ -54,18 +54,18 @@ const data = {
       name: "record.category",
       icon: Tag,
     },
-    // {
-    //   title: "Metas",
-    //   name: "record.panel",
-    //   icon: Target,
-    // },
+    {
+      title: "Enviar Feedback",
+      name: "feedback.page",
+      icon: MessageCircle,
+    },
   ],
 };
 
-const activeTeam = ref(data.products[0]);
+const activeProduct = ref(data.products[0]);
 
-function setActiveTeam(team: (typeof data.products)[number]) {
-  activeTeam.value = team;
+function setActiveProduct(team: (typeof data.products)[number]) {
+  activeProduct.value = team;
 }
 </script>
 
@@ -85,15 +85,18 @@ function setActiveTeam(team: (typeof data.products)[number]) {
                     <div
                       class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
                     >
-                      <component :is="activeTeam.logo" class="size-4" />
+                      <component :is="activeProduct.logo" class="size-4" />
                     </div>
 
                     <div class="grid flex-1 text-left text-sm leading-tight">
-                      <span class="truncate font-semibold">
-                        {{ activeTeam.name }}
+                      <span class="truncate font-bold">
+                        <span
+                          class="text-transparent bg-gradient-to-r from-blue-500 to-primary bg-clip-text"
+                          >{{ activeProduct.name }}</span
+                        >
                       </span>
                       <span class="truncate text-xs">
-                        {{ activeTeam.type }}
+                        {{ activeProduct.type }}
                       </span>
                     </div>
                     <ChevronsUpDown class="ml-auto" />
@@ -114,7 +117,7 @@ function setActiveTeam(team: (typeof data.products)[number]) {
                     v-for="(product, index) in data.products"
                     :key="product.name"
                     class="gap-2 p-2"
-                    @click="setActiveTeam(product)"
+                    @click="setActiveProduct(product)"
                   >
                     <div
                       class="flex size-6 items-center justify-center rounded-sm border"
@@ -152,7 +155,11 @@ function setActiveTeam(team: (typeof data.products)[number]) {
             <SidebarMenu>
               <SidebarMenuItem v-for="item in data.pages" :key="item.name">
                 <SidebarMenuButton as-child>
-                  <NuxtLink :to="{ name: item.name }" as="a">
+                  <NuxtLink
+                    :to="{ name: item.name }"
+                    as="a"
+                    active-class="text-primary font-bold"
+                  >
                     <component :is="item.icon" />
                     <span>{{ item.title }}</span>
                   </NuxtLink>
@@ -238,14 +245,14 @@ function setActiveTeam(team: (typeof data.products)[number]) {
                 </SidebarMenu>
               </SidebarGroup> -->
 
-              <SidebarMenuItem>
+              <!-- <SidebarMenuItem>
                 <SidebarMenuButton as-child>
                   <NuxtLink :to="{ name: 'feedback.page' }" as="a">
                     <component :is="MessageCircle" />
                     <span>Enviar Feedback</span>
                   </NuxtLink>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> -->
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
