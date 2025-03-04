@@ -253,7 +253,7 @@ onMounted(() => {
     <section
       :class="[
         'flex flex-col justify-center align-middle relative',
-        'w-[320px] h-[320px] ring-4 shadow-md rounded-full',
+        'w-[280px] md:w-[320px] h-[280px] md:h-[320px] ring-4 shadow-md rounded-full',
         'ring-black ring-opacity-40 border-[12px] dark:ring-white dark:ring-opacity-10',
         'border-[10px] border-opacity-70 bg-white text-gray-700 ',
         'dark:border-[10px] dark:border-opacity-80 dark:bg-gray-800 dark:text-white',

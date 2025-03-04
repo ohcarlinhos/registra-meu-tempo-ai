@@ -105,6 +105,16 @@ const refreshTimePeriodCallback = async () => {
               :title="timeRecord.title"
               :post-time-period-callback="refreshTimePeriodCallback"
             />
+
+            <template #fallback>
+              <div
+                class="flex gap-5 flex-col w-[280px] md:w-[320px] items-center"
+              >
+                <Skeleton
+                  class="w-[280px] md:w-[320px] h-[280px] md:h-[320px] rounded-full"
+                />
+              </div>
+            </template>
           </ClientOnly>
         </section>
       </section>

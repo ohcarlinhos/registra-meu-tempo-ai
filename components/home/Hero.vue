@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-vue-next";
 <template>
   <section class="container">
     <div
-      class="grid place-items-center lg:max-w-screen-xl gap-8 mx-auto py-20 md:py-32"
+      class="grid place-items-center lg:max-w-screen-xl gap-8 mx-auto py-12 md:py-32"
     >
       <div class="text-center space-y-8">
         <!-- <Badge variant="outline" class="text-sm py-2">
@@ -16,7 +16,7 @@ import { ArrowRight } from "lucide-vue-next";
         </Badge> -->
 
         <div
-          class="max-w-screen-md mx-auto text-center text-5xl md:text-5xl font-bold"
+          class="max-w-screen-md mx-auto text-center text-4xl md:text-5xl font-bold"
         >
           <h1>
             Gerencie seu tempo de uma forma
