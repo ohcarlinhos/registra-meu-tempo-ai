@@ -3,9 +3,6 @@ import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
-const authStore = useAuthStore();
-const { authModal } = storeToRefs(authStore);
-const { closeAuthModal, setJwt } = authStore;
 const { enableUserChallenge } = storeToRefs(useConfigStore());
 
 const v = useUserValidation();
@@ -19,6 +16,10 @@ const _tokenUserChallenge = ref();
 const isFetch = ref(false);
 
 const submitAction = async (dto: LoginDto) => {
+  const authStore = useAuthStore();
+  const { authModal } = storeToRefs(authStore);
+  const { closeAuthModal, setJwt } = authStore;
+
   try {
     isFetch.value = true;
 

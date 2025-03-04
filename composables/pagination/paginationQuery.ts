@@ -1,13 +1,13 @@
 export const usePaginationQuery = (
   prefix: string,
-  defaultPerPage = 10,
+  defaultPerPage = 12,
   queryCopy?: ICopyPaginationQuery
 ) => {
   const route = useRoute();
   const router = useRouter();
 
   const _page = ref(queryCopy?.page || 1);
-  const _perPage = ref(queryCopy?.perPage || 10);
+  const _perPage = ref(queryCopy?.perPage || 12);
   const _search = ref<string>(queryCopy?.search || "");
   const _filters = ref<PaginationQueryFilter[]>(
     queryCopy?.filters?.length ? queryCopy?.filters : []

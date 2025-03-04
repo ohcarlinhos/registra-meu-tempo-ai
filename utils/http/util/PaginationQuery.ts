@@ -1,7 +1,7 @@
 export class PaginationQuery implements IPaginationQuery {
   private _page: number = 1;
-  private _perPage: number = 10;
-  private _defaultPerPage = 10;
+  private _perPage: number = 12;
+  private _defaultPerPage = 12;
   private _search: string = "";
   private _filters: PaginationQueryFilter[] = [];
   private _sort: "asc" | "desc" = "asc";

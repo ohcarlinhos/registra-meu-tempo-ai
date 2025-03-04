@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import NoSleep from "nosleep.js";
+
 const props = defineProps({
   id: {
     type: Number,
@@ -22,8 +24,6 @@ const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
-const { isVerified: userIsVerified } = storeToRefs(userStore);
-
 const timerStore = useTimerStore();
 
 const timer = computed(() => timerStore.getTimer(props.id));
@@ -88,23 +88,28 @@ const modal = reactive({
   },
 });
 
+const noSleepObject = ref(new NoSleep());
+
 const editTimeRecordObject = ref<TimeRecordForm>();
 
 const startTimer = () => {
   if (!openFull.value) openFull.value = true;
-  timerStore.noSleep?.enable();
+
+  noSleepObject.value = new NoSleep();
+  noSleepObject.value.enable();
+
   timerStore.startTimer(props.id);
   timerStore.playClick();
 };
 
 const pauseTimer = () => {
-  timerStore.noSleep?.disable();
+  noSleepObject.value?.disable();
   timerStore.pauseTimer(props.id);
   timerStore.playClick();
 };
 
 const stopTimer = () => {
-  timerStore.noSleep?.disable();
+  noSleepObject.value?.disable();
   timerStore.pauseTimer(props.id);
   timerStore.playClick();
 
@@ -124,7 +129,7 @@ const stopTimerAction = () => {
 const submitIsFetch = ref(false);
 
 const endTimer = async () => {
-  timerStore.noSleep?.disable();
+  noSleepObject.value?.disable();
   timerStore.playClick();
 
   if (!userIsAuth.value) {

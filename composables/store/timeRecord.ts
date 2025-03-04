@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 export const useTimeRecordStore = defineStore(
-  "time-record-store",
+  "time-record-store-0001",
   () => {
     const {
       query: paginationQuery,
@@ -12,7 +12,7 @@ export const useTimeRecordStore = defineStore(
       removeFilter,
       updateSort,
       updatePaginationQueryWithRoute,
-    } = usePaginationQuery("tr_", 10, {
+    } = usePaginationQuery("tr_", 12, {
       sort: "desc",
       sortProp: "lastTimePeriodDate",
     });

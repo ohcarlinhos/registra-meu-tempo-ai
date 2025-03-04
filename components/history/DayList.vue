@@ -486,7 +486,6 @@ defineExpose({
         :totalItems="dayStore.apiRes?.totalItems"
         :store="dayStore"
         :is-fetch="isFetch"
-        :perPageList="[9, 18]"
       />
     </section>
   </section>

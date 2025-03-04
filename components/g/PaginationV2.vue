@@ -65,14 +65,14 @@ watch(
     if (newTotalItems && parseInt(computedPerPage.value) > newTotalItems) {
       computedPerPage.value = (
         computedPerPageList.value.reverse().find((i) => i <= newTotalItems) ||
-        10
+        12
       ).toString();
     }
   }
 );
 
 const computedList = computed(() => {
-  return props.perPageList || [10, 20, 30];
+  return props.perPageList || [12, 24, 36];
 });
 
 const computedPerPageList = computed(() => {

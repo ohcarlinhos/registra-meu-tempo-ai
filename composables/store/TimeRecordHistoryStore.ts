@@ -17,7 +17,7 @@ export const useTimeRecordHistoryStore = defineStore({
       }
 
       if (this._first) {
-        this.paginationQuery.setDefaultPerPage(9);
+        this.paginationQuery.setDefaultPerPage(12);
         this._first = false;
       }
 

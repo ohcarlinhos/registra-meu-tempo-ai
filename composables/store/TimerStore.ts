@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import NoSleep from "nosleep.js";
 
 export type PostTimePeriodCallback = (code: string) => Promise<void>;
 
@@ -29,18 +28,15 @@ export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
       _timerList: [] as TimerStoreItem[],
-      _perPage: 10,
+      _perPage: 12,
       _postTPCallback: null as null | PostTimePeriodCallback,
 
-      noSleep: null as null | NoSleep,
       audioObject: null as null | HTMLAudioElement,
     };
   },
 
   actions: {
     initTimerConfig(id: number | null = null, code = "") {
-      this.noSleep = new NoSleep();
-
       const timer = this.getTimer(id);
       timer.code = code;
       timer.isFetch = false;
@@ -184,7 +180,6 @@ export const useTimerStore = defineStore("TimerStore", {
         this.getTotalMillisecondsPast(id) >=
         this.getRegressiveMillisecondsNecessary(id)
       ) {
-        this.noSleep?.disable();
         this.playAlarm();
         this.endTimer(id);
       }
