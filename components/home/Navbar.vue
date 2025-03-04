@@ -98,10 +98,7 @@ const isOpen = ref<boolean>(false);
           <Menu @click="isOpen = true" class="cursor-pointer" />
         </SheetTrigger>
 
-        <SheetContent
-          side="left"
-          class="flex flex-col justify-between rounded-tr-2xl rounded-br-2xl bg-card"
-        >
+        <SheetContent side="left" class="flex flex-col justify-between bg-card">
           <div>
             <SheetHeader class="mb-4 ml-4">
               <SheetTitle class="flex items-center">
