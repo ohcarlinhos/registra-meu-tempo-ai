@@ -21,7 +21,7 @@ import { ArrowRight } from "lucide-vue-next";
           <h1>
             Gerencie seu tempo de uma forma
             <span
-              class="text-transparent bg-gradient-to-r from-[#D247BF] to-primary bg-clip-text"
+              class="text-transparent bg-gradient-to-r from-blue-500 to-primary bg-clip-text"
             >
               mais inteligente!
             </span>
