@@ -8,20 +8,6 @@ const { isAuth } = storeToRefs(authStore);
 
 <template>
   <NuxtLayout name="center">
-    <section v-if="!isAuth" class="flex flex-col gap-2">
-      <h2 class="text-2xl text-center">
-        Fique à vontade para trabalhar com nossos timers, mas
-        <b class="text-primary">não se limite a apenas eles!</b>
-        <br class="max-md:hidden" />
-      </h2>
-
-      <p class="text-lg text-center">
-        Com uma conta você pode registrar seu
-        <br class="max-md:hidden" />
-        tempo da forma que preferir!
-      </p>
-    </section>
-
     <ClientOnly>
       <TimerDefault title="Cronômetros" />
 
