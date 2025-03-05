@@ -4,10 +4,6 @@ import { ref } from "vue";
 const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
-import { useColorMode } from "@vueuse/core";
-const mode = useColorMode();
-mode.value = "dark";
-
 import { Menu } from "lucide-vue-next";
 
 interface RouteProps {
@@ -76,8 +72,8 @@ const isOpen = ref<boolean>(false);
 <template>
   <header
     :class="{
-      'shadow-light': mode === 'light',
-      'shadow-dark': mode === 'dark',
+      'shadow-light': !isDark,
+      'shadow-dark': isDark,
       'w-[90%] md:w-[70%] lg:w-[75%] lg:max-w-screen-xl top-5 mx-auto sticky border z-40 rounded-2xl flex justify-between items-center p-2 bg-card shadow-md': true,
     }"
   >
