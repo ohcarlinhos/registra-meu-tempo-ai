@@ -186,12 +186,10 @@ defineExpose({
 </script>
 
 <template>
-  <section
-    class="w-full grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
-  >
-    <section class="w-full md:col-span-12">
-      <section class="flex md:flex-row justify-between gap-5 flex-col">
-        <section>
+  <section class="w-full grid grid-cols-12 items-start gap-5">
+    <section class="w-full col-span-12">
+      <section class="flex flex-col md:flex-row justify-between gap-5">
+        <section class="w-full">
           <h2 class="text-4xl font-bold">
             {{ "Histórico de Registros" }}
 
@@ -215,11 +213,8 @@ defineExpose({
       </section>
     </section>
 
-    <section
-      v-if="isFetchNow"
-      class="w-full col-span-12 grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
-    >
-      <USkeleton class="h-[260px] w-full col-span-12" />
+    <section v-if="isFetchNow" class="col-span-12 flex gap-5">
+      <USkeleton class="h-[260px] w-full" />
     </section>
 
     <section
@@ -236,7 +231,7 @@ defineExpose({
 
     <section
       v-if="isFetchNow"
-      class="w-full col-span-12 grid grid-cols-1 items-start md:grid-cols-12 gap-5 md:gap-5"
+      class="w-full col-span-12 grid items-start grid-cols-12 gap-5"
     >
       <USkeleton class="h-44 w-full col-span-1 md:col-span-6 lg:col-span-4" />
       <USkeleton class="h-48 w-full col-span-1 md:col-span-6 lg:col-span-4" />
@@ -246,7 +241,7 @@ defineExpose({
     <Card
       v-else-if="dayStore.apiRes?.data?.length"
       v-for="day in dayStore.apiRes.data"
-      class="w-full col-span-1 md:col-span-6 lg:col-span-4"
+      class="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
     >
       <CardContent>
         <h3 class="text-xl inline-flex gap-2 items-center pt-5">
