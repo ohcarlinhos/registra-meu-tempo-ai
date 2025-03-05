@@ -190,8 +190,10 @@ const isOpen = ref<boolean>(false);
       </NavigationMenuList>
     </NavigationMenu>
 
-    <div class="hidden lg:flex">
-      <HomeToggleTheme />
+    <div class="hidden lg:flex lg:min-w-[197px] justify-end">
+      <div>
+        <HomeToggleTheme />
+      </div>
     </div>
   </header>
 </template>
