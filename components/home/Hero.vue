@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { ArrowRight } from "lucide-vue-next";
+
+const carouselImages = computed(() => {
+  return isDark.value
+    ? ["img/record-b.png", "img/panel-b.png"]
+    : ["img/record-w.png", "img/panel-w.png"];
+});
 </script>
 
 <template>
@@ -55,21 +61,25 @@ import { ArrowRight } from "lucide-vue-next";
         </div>
       </div>
 
-      <div class="relative group mt-40 py-12">
+      <div class="relative group mt-14">
         <!-- gradient shadow -->
         <div
           class="absolute -top-6 right-12 w-[90%] h-12 lg:h-[80%] bg-primary/50 blur-3xl rounded-full img-shadow-animation"
         ></div>
 
-        <!-- <img
-          class="w-full md:w-[1200px] mx-auto rounded-lg relative rouded-lg leading-none flex items-center border border-t-2 border-t-primary/30 img-border-animation"
-          :src="
-            mode == 'light' ? 'hero-image-light.jpg' : 'hero-image-dark.jpg'
-          "
-          alt="dashboard using shadcn-vue"
-        /> -->
-
-        <slot></slot>
+        <Carousel>
+          <CarouselContent>
+            <CarouselItem v-for="image in carouselImages" :key="image">
+              <Card class="border-t-2 border-t-primary/30 img-border-animation">
+                <CardContent class="p-6">
+                  <img :src="image" />
+                </CardContent>
+              </Card>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
 
         <!-- gradient effect img -->
         <div
