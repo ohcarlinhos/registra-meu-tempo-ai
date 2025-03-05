@@ -132,7 +132,7 @@ const computedPerPageList = computed(() => {
       class="flex justify-end items-center flex-row-reverse md:flex-row gap-5"
     >
       <section v-if="totalItems" class="">
-        Total: {{ totalItems }} {{ totalLabel }}
+        {{ totalItems }} {{ totalLabel }}
       </section>
 
       <section class="w-[80px]" v-if="computedPerPageList.length">
