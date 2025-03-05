@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { ArrowRight } from "lucide-vue-next";
 
-const carouselImages = computed(() => {
-  return isDark.value
-    ? ["img/record-b.png", "img/panel-b.png"]
-    : ["img/record-w.png", "img/panel-w.png"];
-});
+const carouselImages = ["img/record", "img/panel"];
+const colorMode = useColorMode();
 </script>
 
 <template>
@@ -61,31 +58,42 @@ const carouselImages = computed(() => {
         </div>
       </div>
 
-      <div class="relative group mt-14">
-        <!-- gradient shadow -->
-        <div
-          class="absolute -top-6 right-12 w-[90%] h-12 lg:h-[80%] bg-primary/50 blur-3xl rounded-full img-shadow-animation"
-        ></div>
+      <ClientOnly>
+        <div class="relative group mt-14">
+          <!-- gradient shadow -->
+          <div
+            class="absolute -top-6 right-12 w-[90%] h-12 lg:h-[80%] bg-primary/50 blur-3xl rounded-full img-shadow-animation"
+          ></div>
 
-        <Carousel>
-          <CarouselContent>
-            <CarouselItem v-for="image in carouselImages" :key="image">
-              <Card class="border-t-2 border-t-primary/30 img-border-animation">
-                <CardContent class="p-6">
-                  <img :src="image" />
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          <Carousel>
+            <CarouselContent>
+              <CarouselItem v-for="image in carouselImages" :key="image">
+                <Card
+                  class="w-full border-t-2 border-t-primary/30 img-border-animation"
+                >
+                  <CardContent class="p-6 w-full">
+                    <NuxtImg
+                      class="w-full"
+                      :src="image + (isDark ? '-b.png' : '-w.png')"
+                    />
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
 
-        <!-- gradient effect img -->
-        <div
-          class="absolute bottom-0 left-0 w-full h-20 md:h-28 bg-gradient-to-b from-background/0 via-background/50 to-background rounded-lg"
-        ></div>
-      </div>
+          <!-- gradient effect img -->
+          <div
+            class="absolute bottom-0 left-0 w-full h-20 md:h-28 bg-gradient-to-b from-background/0 via-background/50 to-background rounded-lg"
+          ></div>
+        </div>
+
+        <template #fallback>
+          <Skeleton class="mt-14 w-full h-[200px] md:h-[380px] lg:h-[530px]" />
+        </template>
+      </ClientOnly>
     </div>
   </section>
 </template>

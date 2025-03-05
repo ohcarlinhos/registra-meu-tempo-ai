@@ -1,6 +1,6 @@
 export const isDark = computed(() => {
   const colorMode = useColorMode();
-  return colorMode && colorMode.value === "dark";
+  return colorMode.value === "dark";
 });
 
 export const toggleDark = () => {

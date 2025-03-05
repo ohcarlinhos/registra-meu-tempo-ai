@@ -9,7 +9,7 @@ import { Moon, Sun } from "lucide-vue-next";
     variant="ghost"
     class="w-full justify-start"
   >
-    <div v-if="isDark" class="flex gap-2">
+    <div v-if="!isDark" class="flex gap-2">
       <Moon class="size-5" />
       <span class="block lg:hidden"> Escuro </span>
     </div>
