@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const props = defineProps<{}>();
+import { CircleHelp } from "lucide-vue-next";
 
 const emit = defineEmits<{
   open: [value: boolean];
@@ -11,11 +11,11 @@ const clickAction = () => {
 </script>
 
 <template>
-  <UButton
-    icon="i-icon-park-outline-help"
-    variant="ghost"
-    size="xl"
+  <button
+    class="text-primary hover:text-black dark:hover:text-white"
     title="Deixe seu feedback ou dúvida sobre a ferramenta."
     @click="clickAction"
-  />
+  >
+    <CircleHelp :size="24" />
+  </button>
 </template>

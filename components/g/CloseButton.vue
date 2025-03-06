@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 defineEmits(["close"]);
+import { X } from "lucide-vue-next";
 </script>
 
 <template>
-  <UButton
-    color="gray"
-    variant="ghost"
-    icon="i-icon-park-outline-close-small"
-    :ui="{ base: 'absolute top-3 right-3' }"
+  <button
+    class="hover:dark:text-primary hover:text-primary text-black dark:text-white absolute top-3 right-3"
+    title="Fechar"
     @click="$emit('close')"
-  />
+  >
+    <X :size="18" />
+  </button>
 </template>
