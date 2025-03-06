@@ -11,13 +11,6 @@ const colorMode = useColorMode();
       class="grid place-items-center lg:max-w-screen-xl gap-8 mx-auto py-12 md:py-32"
     >
       <div class="text-center space-y-8">
-        <!-- <Badge variant="outline" class="text-sm py-2">
-          <span class="mr-2">
-            <Badge>New</Badge>
-          </span>
-          <span> Design is out now! </span>
-        </Badge> -->
-
         <div
           class="max-w-screen-md mx-auto text-center text-4xl md:text-5xl font-bold"
         >
