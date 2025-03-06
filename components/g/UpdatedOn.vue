@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { RefreshCw } from "lucide-vue-next";
 import { format } from "date-fns";
 
 const props = defineProps<{
-  disabled?: boolean;
+  loading?: boolean;
   updatedOn?: Date;
   clickAction?: () => Promise<void>;
 }>();
@@ -13,14 +14,11 @@ const updatedOnFormatted = computed(() => {
 </script>
 
 <template>
-  <UButton
-    icon="i-icon-park-outline-refresh"
+  <button
     :title="`Existem atualizações de ${updatedOnFormatted}`"
-    :disabled
-    color="gray"
-    variant="ghost"
+    class="hover:dark:text-primary hover:text-primary text-black dark:text-white"
     @click="clickAction"
   >
-    Atualizar
-  </UButton>
+    <RefreshCw :size="18" :class="{ 'animate-spin': loading }" />
+  </button>
 </template>

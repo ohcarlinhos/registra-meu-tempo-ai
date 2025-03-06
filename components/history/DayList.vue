@@ -190,12 +190,12 @@ defineExpose({
     <section class="w-full col-span-12">
       <section class="flex flex-col md:flex-row justify-between gap-5">
         <section class="w-full">
-          <h2 class="text-4xl font-bold">
+          <h2 class="text-4xl font-bold flex items-center gap-5">
             {{ "Histórico de Registros" }}
 
             <GUpdatedOn
               v-if="updatedOn"
-              :disabled="isFetchNow"
+              :loading="isFetchNow"
               :updated-on="updatedOn"
               :click-action="getData"
             />

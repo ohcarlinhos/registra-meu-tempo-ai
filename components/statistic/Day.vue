@@ -202,7 +202,7 @@ var maxDate = ref(new Date(Date.now()));
         class="flex items-center justify-between gap-5 max-sm:flex-col max-sm:items-start"
       >
         <section>
-          <h3 class="text-4xl font-bold">
+          <h2 class="text-4xl font-bold flex items-center gap-5">
             {{
               !timeRecordId && !hasFetch
                 ? "Resumo Diário (Geral)"
@@ -211,11 +211,11 @@ var maxDate = ref(new Date(Date.now()));
 
             <GUpdatedOn
               v-if="updatedOn"
-              :disabled="hasFetch"
+              :loading="hasFetch"
               :updated-on="updatedOn"
               :click-action="init"
             />
-          </h3>
+          </h2>
           <span>Estatísticas referentes ao dia selecionado.</span>
         </section>
 
