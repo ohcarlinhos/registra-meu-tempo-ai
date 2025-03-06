@@ -6,7 +6,6 @@ type CardType = {
   value: string | number;
   obs?: string;
   textStyle?: string;
-  cardBackgroundStyle?: string;
   cardRingStyle?: string;
   customClass?: string;
   valueStyle?: string;
@@ -103,39 +102,34 @@ const mountInfoCardList = () => {
     obs: "Soma de todo tempo diário registrado.",
     customClass: "col-span-2 row-span-2 h-full",
     valueStyle: "text-5xl font-bold",
-    cardRingStyle: `ring-2 dark:ring-gray-500 ring-gray-500`,
   });
 
   hourCards.push({
     title: "Cronômetros",
     value: statistic.totalTimerHours,
     obs: `Sessões: ${statistic.timerCount}`,
-    cardBackgroundStyle: "dark:bg-primary-950 dark:bg-opacity-70",
-    cardRingStyle: `ring-2 dark:ring-primary-500 ring-primary-500`,
+    cardRingStyle: `ring-1 dark:ring-primary-500 ring-primary-500`,
   });
 
   hourCards.push({
     title: "Pomodoros",
     value: statistic.totalPomodoroHours,
     obs: `Sessões: ${statistic.pomodoroCount}`,
-    cardBackgroundStyle: "dark:bg-red-950 dark:bg-opacity-70",
-    cardRingStyle: `ring-2 dark:ring-red-500 ring-red-500`,
+    cardRingStyle: `ring-1 dark:ring-red-500 ring-red-500`,
   });
 
   hourCards.push({
     title: "Break (Descanso)",
     value: statistic.totalBreakHours,
     obs: `Sessões: ${statistic.breakCount}`,
-    cardBackgroundStyle: "dark:bg-blue-950 dark:bg-opacity-70",
-    cardRingStyle: `ring-2 dark:ring-blue-500 ring-2 ring-blue-500`,
+    cardRingStyle: `ring-1 dark:ring-blue-500 ring-1 ring-blue-500`,
   });
 
   hourCards.push({
     title: "Manuais",
     value: statistic.totalIsolatedPeriodHours,
     obs: `Quantidade: ${statistic.isolatedPeriodCount}`,
-    cardBackgroundStyle: "dark:bg-yellow-500 dark:bg-opacity-30",
-    cardRingStyle: `ring-2 dark:ring-yellow-500 ring-yellow-500`,
+    cardRingStyle: `ring-1 dark:ring-yellow-500 ring-yellow-500`,
   });
 
   infoCardList.value.push({
@@ -247,34 +241,32 @@ var maxDate = ref(new Date(Date.now()));
         </h3>
 
         <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
-          <UCard
-            :ui="{
-              background: card.cardBackgroundStyle,
-              ring: card.cardRingStyle,
-            }"
-            class="min-h-44 flex items-center justify-center"
-            :class="[card.customClass]"
+          <Card
             v-for="card in section.cards"
+            class="min-h-44 flex items-center justify-center"
+            :class="[card.customClass, card.cardRingStyle]"
             :key="card.title"
           >
-            <section class="flex flex-col gap-2 items-center w-full h-full">
-              <h3
-                class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
-              >
-                {{ card.title }}
-              </h3>
+            <CardContent>
+              <section class="flex flex-col gap-2 items-center w-full h-full">
+                <h3
+                  class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
+                >
+                  {{ card.title }}
+                </h3>
 
-              <span class="text-3xl font-bold" :class="[card.valueStyle]">{{
-                card.value
-              }}</span>
+                <span class="text-3xl font-bold" :class="[card.valueStyle]">{{
+                  card.value
+                }}</span>
 
-              <span
-                class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
-              >
-                {{ card.obs }}
-              </span>
-            </section>
-          </UCard>
+                <span
+                  class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
+                >
+                  {{ card.obs }}
+                </span>
+              </section>
+            </CardContent>
+          </Card>
         </section>
 
         <UDivider class="pt-10" v-if="index + 1 < infoCardList.length" />

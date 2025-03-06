@@ -214,7 +214,7 @@ defineExpose({
     </section>
 
     <section v-if="isFetchNow" class="col-span-12 flex gap-5">
-      <USkeleton class="h-[260px] w-full" />
+      <Skeleton class="h-[260px] w-full" />
     </section>
 
     <section
@@ -233,9 +233,10 @@ defineExpose({
       v-if="isFetchNow"
       class="w-full col-span-12 grid items-start grid-cols-12 gap-5"
     >
-      <USkeleton class="h-44 w-full col-span-1 md:col-span-6 lg:col-span-4" />
-      <USkeleton class="h-48 w-full col-span-1 md:col-span-6 lg:col-span-4" />
-      <USkeleton class="h-32 w-full col-span-1 md:col-span-6 lg:col-span-4" />
+      <Skeleton class="h-44 w-full col-span-full md:col-span-4 lg:col-span-3" />
+      <Skeleton class="h-48 w-full col-span-full md:col-span-4 lg:col-span-3" />
+      <Skeleton class="h-32 w-full col-span-full md:col-span-4 lg:col-span-3" />
+      <Skeleton class="h-48 w-full col-span-full md:col-span-4 lg:col-span-3" />
     </section>
 
     <Card

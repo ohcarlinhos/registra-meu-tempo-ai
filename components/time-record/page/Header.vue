@@ -8,12 +8,13 @@ defineProps<{
 <template>
   <div v-if="isFetch" class="w-full flex flex-col gap-3 mt-2">
     <div class="flex flex-row w-full gap-3">
-      <USkeleton class="h-9 w-[220px]" />
-      <USkeleton class="h-9 w-[90px]" />
+      <Skeleton class="h-9 w-[220px]" />
+      <Skeleton class="h-9 w-[90px]" />
     </div>
-    <USkeleton class="h-7 w-[180px]" />
-    <USkeleton class="mt-4 h-7 w-full max-w-[400px]" />
-    <USkeleton class="mt-4 h-20 w-full" />
+
+    <Skeleton class="h-7 w-[180px]" />
+    <Skeleton class="mt-4 h-7 w-full max-w-[400px]" />
+    <Skeleton class="mt-4 h-20 w-full" />
   </div>
 
   <section v-else-if="timeRecord" class="w-full">
