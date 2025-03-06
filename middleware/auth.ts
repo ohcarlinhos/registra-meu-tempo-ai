@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // }
 
   if (!isAuth.value) {
-    return navigateTo({ name: "home" });
+    return navigateTo({ name: "login" });
   }
 
   const userStore = useUserStore();

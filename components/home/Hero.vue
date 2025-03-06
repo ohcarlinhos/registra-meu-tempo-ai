@@ -51,9 +51,9 @@ const colorMode = useColorMode();
           <Button
             variant="secondary"
             class="w-5/6 md:w-1/4 font-bold"
-            @click="$router.push({ name: 'timer.page' })"
+            @click="$router.push({ name: 'record.panel' })"
           >
-            Acessar Timer
+            Acessar Painel
           </Button>
         </div>
       </div>
