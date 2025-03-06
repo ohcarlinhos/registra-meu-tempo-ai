@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-defineEmits(["close"]);
 import { X } from "lucide-vue-next";
+defineEmits(["close"]);
 </script>
 
 <template>
