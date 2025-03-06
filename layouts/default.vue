@@ -36,7 +36,7 @@ onMounted(() => {
       <FeedbackFormCreate @close="feedbackModal.open = false" />
     </UModal>
 
-    <section class="fixed bottom-0 right-0 p-2">
+    <section class="fixed bottom-0 right-0 p-2 z-50">
       <FeedbackButtonNew @open="feedbackModal.open = true" />
     </section>
   </template>
