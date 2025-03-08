@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Line } from "vue-chartjs";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Trash2, Info } from "lucide-vue-next";
 
 import {
@@ -59,28 +58,15 @@ const props = defineProps<{
 }>();
 
 const dayStore = useTimeRecordHistoryStore();
-
-const chartData = computed(() => {
-  return {
-    labels:
-      dayStore.chartData.map((i) => format(i.date, "d/MM/yy"), {
-        locale: ptBR,
-      }) || [],
-    datasets: [
-      {
-        label: "Minutos",
-        data: dayStore.chartData.map((i) => i.timeOnMinutes) || [],
-        borderWidth: 2,
-        pointBorderWidth: 5,
-        fill: true,
-      },
-    ],
-  };
-});
+const {
+  apiRes,
+  chartData,
+  chartDataFormat,
+  paginationQuery,
+  isFetch: isDayStoreFetch,
+} = storeToRefs(dayStore);
 
 const chartOptions = computed(() => {
-  const dayChartDay = dayStore?.chartData;
-
   var callbacks = {
     title: function (items: any) {
       return `Dia ${items[0].label}`;
@@ -88,7 +74,7 @@ const chartOptions = computed(() => {
     label: function (tooltipItem: any) {
       const idx = tooltipItem.dataIndex;
       const value = tooltipItem.formattedValue;
-      const formattedTime = dayChartDay[idx].formattedTime;
+      const formattedTime = chartData.value[idx].formattedTime;
       return [`${value} minutos`, formattedTime && `(${formattedTime})`];
     },
   };
@@ -150,7 +136,7 @@ const getData = () => {
     props.clearUpdatedOn();
   }
 
-  return dayStore.fetch();
+  return dayStore.refetchData();
 };
 
 const getSessionColor = (type: string) => {
@@ -166,7 +152,7 @@ const getSessionLabel = (type: string) => {
 };
 
 const isFetchNow = computed(() => {
-  return dayStore.isFetch || props.isFetch;
+  return isDayStoreFetch.value || props.isFetch;
 });
 
 watch(
@@ -218,14 +204,11 @@ defineExpose({
       <Skeleton class="h-[260px] w-full" />
     </section>
 
-    <section
-      v-else-if="dayStore.apiRes?.data?.length"
-      class="w-full col-span-12 flex"
-    >
+    <section v-else-if="apiRes?.data?.length" class="w-full col-span-12 flex">
       <Line
         id="my-chart-id"
         :options="chartOptions"
-        :data="chartData"
+        :data="chartDataFormat"
         style="max-height: 280px"
       />
     </section>
@@ -241,8 +224,8 @@ defineExpose({
     </section>
 
     <Card
-      v-else-if="dayStore.apiRes?.data?.length"
-      v-for="day in dayStore.apiRes.data"
+      v-else-if="apiRes?.data?.length"
+      v-for="day in apiRes.data"
       class="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
     >
       <CardContent>
@@ -457,19 +440,22 @@ defineExpose({
     </section>
 
     <section class="col-span-full">
-      <GPagination
-        :page="dayStore.apiRes?.page"
-        :perPage="dayStore.apiRes?.perPage"
-        :totalPages="dayStore.apiRes?.totalPages"
-        :totalItems="dayStore.apiRes?.totalItems"
-        :store="dayStore"
-        :is-fetch="isFetch"
+      <GPaginationV2
+        total-label="Registros (Dias)"
+        :page="apiRes?.page"
+        :per-page="apiRes?.perPage"
+        :total-pages="apiRes?.totalPages"
+        :total-items="apiRes?.totalItems"
+        :pagination-query="paginationQuery"
+        :pagination-query-methods="dayStore"
+        :is-pagination-fetch="isFetchNow"
+        using-store
       />
     </section>
   </section>
 
   <Dialog v-bind:open="tpModal.open" @update:open="tpModal.open = $event">
-    <DialogContent>
+    <DialogContent @interact-outside="$event.preventDefault()">
       <DialogHeader>
         <DialogTitle> Registro de Tempo </DialogTitle>
 

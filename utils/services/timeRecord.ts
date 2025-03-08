@@ -18,18 +18,6 @@ export const getTimeRecordByCode = async (code: string) => {
   });
 };
 
-export const getTimeRecordHistory = async (
-  pagQuery: IPaginationQuery,
-  timeRecordId: number
-) => {
-  return useCustomFetch()<Pagination<TimeRecordHistoryDayMap>>(
-    `/record/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
-    {
-      method: "GET",
-    }
-  );
-};
-
 export const postTimeRecord = async (body: CreateTimeRecordDto) => {
   if (body.categoryId == null) delete body.categoryId;
 
@@ -63,5 +51,13 @@ export const timeRecordApi = () => ({
     return useCustomFetch(false)<boolean>(`/record/${id}`, {
       method: "DELETE",
     });
+  },
+  getHistory: async (pagQuery: IPaginationQuery, timeRecordId: number) => {
+    return useCustomFetch()<Pagination<TimeRecordHistoryDayMap>>(
+      `/record/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
+      {
+        method: "GET",
+      }
+    );
   },
 });

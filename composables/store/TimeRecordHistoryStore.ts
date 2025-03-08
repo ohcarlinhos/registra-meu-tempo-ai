@@ -1,54 +1,75 @@
 import { eachDayOfInterval, format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
 import { defineStore } from "pinia";
 
-export const useTimeRecordHistoryStore = defineStore({
-  id: "TimeRecordHistoryStore",
-  state: () => ({
-    paginationQuery: new PaginationQuery(),
-    apiRes: {} as Pagination<TimeRecordHistoryDayMap>,
-    isFetch: false,
-    _timeRecordId: 0,
-    _first: true,
-  }),
-  actions: {
-    async fetch() {
-      if (!this.paginationQuery) {
-        this.paginationQuery = new PaginationQuery();
+export const useTimeRecordHistoryStore = defineStore(
+  "time-record-history-store",
+  () => {
+    const {
+      query: paginationQuery,
+      setPage,
+      setPerPage,
+      setSearch,
+      addFilter,
+      removeFilter,
+      updateSort,
+      updatePaginationQueryWithRoute,
+    } = usePaginationQuery("trh_");
+
+    const apiRes = ref<Pagination<TimeRecordHistoryDayMap>>();
+    const isPaginationFetch = ref(false);
+    const timeRecordId = ref<number>();
+
+    const setTimeRecordId = (value: number) => {
+      timeRecordId.value = value;
+    };
+
+    const fetchData = async (updatePaginationQuery = true) => {
+      if (updatePaginationQuery) {
+        updatePaginationQueryWithRoute();
       }
 
-      if (this._first) {
-        this.paginationQuery.setDefaultPerPage(12);
-        this._first = false;
-      }
+      isPaginationFetch.value = true;
 
       try {
-        this.isFetch = true;
-        const data = await getTimeRecordHistory(
-          this.paginationQuery,
-          this._timeRecordId
+        const data = await timeRecordApi().getHistory(
+          paginationQuery.value,
+          timeRecordId.value!
         );
-        if (data) this.apiRes = data;
+        if (data) apiRes.value = data;
       } catch (error) {
         ErrorToast(error);
       } finally {
-        this.isFetch = false;
+        isPaginationFetch.value = false;
       }
-    },
+    };
 
-    async refetch() {
-      await this.fetch();
-    },
+    const refetchData = async () => {
+      await fetchData(false);
+    };
 
-    setTimeRecordId(id: number) {
-      this._timeRecordId = id;
-    },
-  },
-  getters: {
-    chartData: (state) => {
-      if (!state.apiRes.data) return [];
+    const isDeleteFetch = ref(false);
 
-      const firstDay = state.apiRes.data[0];
-      const lastDay = state.apiRes.data[state.apiRes.data.length - 1];
+    const deleteTimeRecord = async (id: number) => {
+      try {
+        isDeleteFetch.value = true;
+        await categoryApi().delete(id);
+        await refetchData();
+      } finally {
+        isDeleteFetch.value = false;
+      }
+    };
+
+    const isFetch = computed(() => {
+      return isDeleteFetch.value || isPaginationFetch.value;
+    });
+
+    const chartData = computed(() => {
+      if (!apiRes.value?.data) return [];
+
+      const firstDay = apiRes.value.data[0];
+      const lastDay = apiRes.value.data[apiRes.value.data.length - 1];
 
       if (!firstDay || !lastDay) return [];
 
@@ -62,7 +83,7 @@ export const useTimeRecordHistoryStore = defineStore({
         formattedTime: "",
       }));
 
-      state.apiRes.data.forEach((d) => {
+      apiRes.value.data.forEach((d) => {
         const day = days.find(
           (i) =>
             format(new Date(i.date), "dd/MM/yyyy") ===
@@ -76,7 +97,50 @@ export const useTimeRecordHistoryStore = defineStore({
       });
 
       return days;
-    },
+    });
+
+    const chartDataFormat = computed(() => {
+      return {
+        labels:
+          chartData.value.map((i) => format(i.date, "d/MM/yy"), {
+            locale: ptBR,
+          }) || [],
+        datasets: [
+          {
+            label: "Minutos",
+            data: chartData.value.map((i) => i.timeOnMinutes) || [],
+            borderWidth: 2,
+            pointBorderWidth: 5,
+            fill: true,
+          },
+        ],
+      };
+    });
+
+    return {
+      fetchData,
+      refetchData,
+      paginationQuery,
+      apiRes,
+      isPaginationFetch,
+      isFetch,
+      chartData,
+      chartDataFormat,
+
+      setTimeRecordId,
+
+      setPage,
+      setPerPage,
+      setSearch,
+      addFilter,
+      removeFilter,
+      updateSort,
+
+      delete: deleteTimeRecord,
+      isDeleteFetch,
+    };
   },
-  persist: true,
-});
+  {
+    persist: false,
+  }
+);

@@ -8,14 +8,14 @@ export const deleteTimePeriodAction = async (
 ) => {
   deleteTpIsFetch.value = true;
 
-  const dayStore = useTimeRecordHistoryStore();
+  const { refetchData } = useTimeRecordHistoryStore();
 
   try {
     await deleteTimePeriod(timePeriodId);
 
     OkToast(useNuxtApp().$i18n.t("deleteTimePeriodSuccess"));
 
-    await dayStore.refetch();
+    await refetchData();
     if (callback) await callback();
 
     closeModalMethod();
@@ -35,14 +35,14 @@ export const deleteTimerSessionAction = async (
 ) => {
   deleteTsIsFetch.value = true;
 
-  const dayStore = useTimeRecordHistoryStore();
+  const { refetchData } = useTimeRecordHistoryStore();
 
   try {
     await deleteTimerSession(timerSessionId);
 
     OkToast("Sessão excluída com sucesso.");
 
-    await dayStore.refetch();
+    await refetchData();
     if (callback) await callback();
 
     closeModalMethod();
