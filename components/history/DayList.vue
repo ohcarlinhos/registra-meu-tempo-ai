@@ -2,6 +2,7 @@
 import { Line } from "vue-chartjs";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Trash2, Info } from "lucide-vue-next";
 
 import {
   tpModal,
@@ -253,46 +254,44 @@ defineExpose({
           <span class="flex gap-1 content-center">
             Total: {{ day.formattedTime }}
 
-            <UPopover mode="hover">
-              <UIcon
-                name="i-icon-park-outline-attention"
-                class="w-3 h-3 -translate-y-1"
-              />
+            <Popover>
+              <PopoverTrigger>
+                <Info class="w-3 h-3 -translate-y-1" />
+              </PopoverTrigger>
 
-              <template #panel>
-                <section class="p-2 max-w-96 leading-none">
+              <PopoverContent>
+                <section class="max-w-96 leading-none">
                   <span class="text-xs">
                     O "Total" é a soma de todos os períodos de tempo e sessões
                     que iniciaram entre 00:00:00 e 23:59:59, mesmo que finalizem
                     depois desse horário (próximo dia).
                   </span>
                 </section>
-              </template>
-            </UPopover>
+              </PopoverContent>
+            </Popover>
           </span>
         </p>
 
         <template v-if="day.timerSessions.length">
-          <UDivider class="py-2" />
+          <Separator class="my-2" />
 
           <p class="text-lg flex gap-1">
             Sessões
 
-            <UPopover mode="hover">
-              <UIcon
-                name="i-icon-park-outline-attention"
-                class="w-3 h-3 -translate-y-1"
-              />
+            <Popover>
+              <PopoverTrigger>
+                <Info class="w-3 h-3 -translate-y-1" />
+              </PopoverTrigger>
 
-              <template #panel>
-                <section class="p-2 max-w-96 leading-none">
+              <PopoverContent>
+                <section class="max-w-96 leading-none">
                   <span class="text-xs">
                     Sessões iniciadas entre 00:00:00 e 23:59:59. O cálculo de
                     horas considera períodos finalizados no próximo dia.
                   </span>
                 </section>
-              </template>
-            </UPopover>
+              </PopoverContent>
+            </Popover>
           </p>
 
           <p class="text-sm">
@@ -304,87 +303,91 @@ defineExpose({
             v-if="day.timerSessions.length"
             class="flex flex-row gap-2 flex-wrap py-2"
           >
-            <UPopover
+            <Popover
               v-for="timerSession in day.timerSessions"
               :key="timerSession.id"
-              mode="hover"
             >
-              <Badge
-                variant="outline"
-                :class="getSessionColor(timerSession.type)"
-              >
-                {{ timerSession.formattedTime || "0s" }}
-              </Badge>
+              <PopoverTrigger>
+                <Badge
+                  variant="outline"
+                  :class="getSessionColor(timerSession.type)"
+                >
+                  {{ timerSession.formattedTime || "0s" }}
+                </Badge>
+              </PopoverTrigger>
 
-              <template #panel>
-                <div class="p-2 pt-1 flex flex-col items-center gap-2">
+              <PopoverContent>
+                <div class="flex flex-col items-center gap-2">
                   <p class="text-sm">
                     {{ getSessionLabel(timerSession.type) }}
                   </p>
 
-                  <UDivider />
+                  <Separator class="mb-1" />
 
                   <section
                     v-for="tp in timerSession.timePeriods"
                     :key="tp.id"
-                    class="flex w-full justify-around gap-2"
+                    class="flex justify-around items-center gap-2"
                   >
                     <Badge variant="outline">
                       {{ format(tp.start, "HH:mm:ss") }} até
                       {{ format(tp.end, "HH:mm:ss") }}
                     </Badge>
 
-                    <section class="flex gap-2">
+                    <section class="flex items-center gap-2">
                       <Badge variant="outline">
                         {{ tp.formattedTime }}
                       </Badge>
 
-                      <UButton
-                        color="gray"
+                      <Button
                         variant="ghost"
-                        size="2xs"
-                        icon="i-icon-park-outline-delete-themes"
+                        size="icon"
+                        class="h-6 w-6"
                         @click="openDeleteTpModal(tp.id)"
-                      />
+                      >
+                        <Trash2 />
+                      </Button>
                     </section>
                   </section>
 
+                  <Separator class="my-2" label="Ações" />
+
                   <section>
-                    <UButton
-                      :label="_$t('delete')"
-                      color="gray"
+                    <Button
                       variant="ghost"
-                      icon="i-icon-park-outline-delete-themes"
+                      size="sm"
                       @click="openDeleteTsModal(timerSession.id)"
-                    />
+                    >
+                      <Trash2 />
+                      {{ _$t("delete") }}
+                    </Button>
                   </section>
                 </div>
-              </template>
-            </UPopover>
+              </PopoverContent>
+            </Popover>
           </section>
         </template>
 
         <template v-if="day.timePeriods.length">
-          <UDivider class="py-2" />
+          <Separator class="my-2" />
 
           <p class="text-lg flex gap-1">
             Períodos
 
-            <UPopover mode="hover">
-              <UIcon
-                name="i-icon-park-outline-attention"
-                class="w-3 h-3 -translate-y-1"
-              />
+            <Popover>
+              <PopoverTrigger>
+                <Info class="w-3 h-3 -translate-y-1" />
+              </PopoverTrigger>
 
-              <template #panel>
-                <section class="p-2 max-w-96 leading-none">
+              <PopoverContent>
+                <section class="max-w-96 leading-none">
                   <span class="text-xs">
                     Períodos criados entre 00:00:00 e 23:59:59. O cálculo de
                     horas considera períodos finalizados no próximo dia.
                   </span>
                 </section>
-              </template>
-            </UPopover>
+              </PopoverContent>
+            </Popover>
           </p>
 
           <p class="text-sm">
@@ -393,17 +396,18 @@ defineExpose({
           </p>
 
           <section class="flex flex-row gap-2 flex-wrap py-2">
-            <UPopover
+            <Popover
               v-for="(period, index) in day.timePeriods"
               :key="period.id"
-              mode="hover"
             >
-              <Badge variant="outline" class="border-yellow-500/80">
-                {{ period.formattedTime || "0s" }}
-              </Badge>
+              <PopoverTrigger>
+                <Badge variant="outline" class="border-yellow-500/80">
+                  {{ period.formattedTime || "0s" }}
+                </Badge>
+              </PopoverTrigger>
 
-              <template #panel>
-                <div class="p-2 pt-4 flex flex-col items-center gap-2">
+              <PopoverContent>
+                <div class="flex flex-col items-center gap-2">
                   <section class="flex items-center gap-2">
                     <Badge variant="outline">
                       {{ format(period.start, "HH:mm:ss") }}
@@ -414,23 +418,26 @@ defineExpose({
                     </Badge>
                   </section>
 
+                  <Separator class="my-2" label="Ações" />
+
                   <section>
                     <TimePeriodButtonEdit
                       :time-period="period"
                       @open="editTimePeriod"
                     />
 
-                    <UButton
-                      :label="_$t('delete')"
-                      color="gray"
+                    <Button
                       variant="ghost"
-                      icon="i-icon-park-outline-delete-themes"
+                      size="sm"
                       @click="openDeleteTpModal(period.id!)"
-                    />
+                    >
+                      <Trash2 />
+                      {{ _$t("delete") }}
+                    </Button>
                   </section>
                 </div>
-              </template>
-            </UPopover>
+              </PopoverContent>
+            </Popover>
           </section>
         </template>
       </CardContent>

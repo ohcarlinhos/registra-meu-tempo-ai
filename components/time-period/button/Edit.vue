@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Edit } from "lucide-vue-next";
+
 const props = defineProps<{
   timePeriod: TimePeriodMap;
 }>();
@@ -29,11 +31,8 @@ const clickAction = async () => {
 </script>
 
 <template>
-  <UButton
-    :label="_$t('edit')"
-    color="gray"
-    variant="ghost"
-    icon="i-icon-park-outline-edit"
-    @click="clickAction"
-  />
+  <Button variant="ghost" size="sm" @click="clickAction">
+    <Edit />
+    {{ _$t("edit") }}
+  </Button>
 </template>
