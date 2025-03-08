@@ -3,7 +3,6 @@ import { addMinutes, isBefore } from "date-fns";
 import * as yup from "yup";
 
 const emit = defineEmits(["close", "refresh"]);
-const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -115,37 +114,29 @@ var dateNow = ref(addMinutes(Date.now(), 10));
 </script>
 
 <template>
-  <UCard>
-    <template #header>
-      <h2>{{ "Registro de Tempo" }}</h2>
+  <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
+    <div class="flex gap-4 relative">
+      <UFormGroup :label="_$t('startOfPeriod')" name="start">
+        <GDatePicker
+          v-model="form.start"
+          :disabled="isFetch"
+          :max="dateNow"
+          class="py-1"
+          @change="changeStart"
+        />
+      </UFormGroup>
 
-      <GCloseButton @close="closeModal" />
-    </template>
+      <UFormGroup :label="_$t('endOfPeriod')" name="end">
+        <GDatePicker
+          v-model="form.end"
+          :min="form.start"
+          :max="dateNow"
+          :disabled="isFetch"
+          class="py-1"
+        />
+      </UFormGroup>
+    </div>
 
-    <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-      <div class="flex gap-4 relative">
-        <UFormGroup :label="_$t('startOfPeriod')" name="start">
-          <GDatePicker
-            v-model="form.start"
-            :disabled="isFetch"
-            :max="dateNow"
-            class="py-1"
-            @change="changeStart"
-          />
-        </UFormGroup>
-
-        <UFormGroup :label="_$t('endOfPeriod')" name="end">
-          <GDatePicker
-            v-model="form.end"
-            :min="form.start"
-            :max="dateNow"
-            :disabled="isFetch"
-            class="py-1"
-          />
-        </UFormGroup>
-      </div>
-
-      <UButton :loading="isFetch" :label="$t('send')" block type="submit" />
-    </UForm>
-  </UCard>
+    <UButton :loading="isFetch" :label="$t('send')" block type="submit" />
+  </UForm>
 </template>

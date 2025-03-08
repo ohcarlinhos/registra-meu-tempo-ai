@@ -468,13 +468,23 @@ defineExpose({
     </section>
   </section>
 
-  <UModal v-model="tpModal.open" prevent-close>
-    <TimePeriodFormCreateAndUpdate
-      :time-record-id="tpModal.timeRecordId"
-      :edit-object="tpModal.form"
-      @close="closeTimePeriodCallback"
-    />
-  </UModal>
+  <Dialog v-bind:open="tpModal.open" @update:open="tpModal.open = $event">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle> Registro de Tempo </DialogTitle>
+
+        <DialogDescription>
+          Crie ou atualize seus registros de tempo que possuem início e fim.
+        </DialogDescription>
+      </DialogHeader>
+
+      <TimePeriodFormCreateAndUpdate
+        :time-record-id="tpModal.timeRecordId"
+        :edit-object="tpModal.form"
+        @close="closeTimePeriodCallback"
+      />
+    </DialogContent>
+  </Dialog>
 
   <GModalConfirm
     v-model:open="deleteTpModal.open"
