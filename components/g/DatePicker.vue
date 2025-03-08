@@ -52,7 +52,6 @@ watch(model, (value) => {
     :max-date="max || ''"
     :time-picker="time"
     :enable-time-picker="disableTimePicker === false"
-    :teleport="true"
     :format="disableTimePicker ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'"
     :name="name"
     :dark="isDark"
