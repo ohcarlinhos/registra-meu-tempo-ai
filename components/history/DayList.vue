@@ -153,9 +153,9 @@ const getData = () => {
 };
 
 const getSessionColor = (type: string) => {
-  if (type === "break") return "blue";
-  if (type === "pomodoro") return "red";
-  return "primary";
+  if (type === "break") return "border-blue-500/80";
+  if (type === "pomodoro") return "border-red-500/80";
+  return "border-green-500/80";
 };
 
 const getSessionLabel = (type: string) => {
@@ -305,17 +305,16 @@ defineExpose({
             class="flex flex-row gap-2 flex-wrap py-2"
           >
             <UPopover
-              v-for="(timerSession, index) in day.timerSessions"
+              v-for="timerSession in day.timerSessions"
               :key="timerSession.id"
               mode="hover"
             >
-              <UBadge
-                :color="getSessionColor(timerSession.type)"
-                :variant="index % 2 == 0 ? 'subtle' : 'soft'"
-                size="md"
+              <Badge
+                variant="outline"
+                :class="getSessionColor(timerSession.type)"
               >
                 {{ timerSession.formattedTime || "0s" }}
-              </UBadge>
+              </Badge>
 
               <template #panel>
                 <div class="p-2 pt-1 flex flex-col items-center gap-2">
@@ -330,27 +329,15 @@ defineExpose({
                     :key="tp.id"
                     class="flex w-full justify-around gap-2"
                   >
-                    <UBadge
-                      color="gray"
-                      variant="solid"
-                      :title="
-                        format(tp.start, 'HH:mm:ss dd/MM/yyyy') +
-                        ' até ' +
-                        format(tp.end, 'HH:mm:ss dd/MM/yyyy')
-                      "
-                    >
+                    <Badge variant="outline">
                       {{ format(tp.start, "HH:mm:ss") }} até
                       {{ format(tp.end, "HH:mm:ss") }}
-                    </UBadge>
+                    </Badge>
 
                     <section class="flex gap-2">
-                      <UBadge
-                        color="yellow"
-                        variant="subtle"
-                        :title="tp.formattedTime"
-                      >
+                      <Badge variant="outline">
                         {{ tp.formattedTime }}
-                      </UBadge>
+                      </Badge>
 
                       <UButton
                         color="gray"
@@ -411,32 +398,20 @@ defineExpose({
               :key="period.id"
               mode="hover"
             >
-              <UBadge
-                color="yellow"
-                :variant="index % 2 == 0 ? 'subtle' : 'soft'"
-                size="md"
-              >
+              <Badge variant="outline" class="border-yellow-500/80">
                 {{ period.formattedTime || "0s" }}
-              </UBadge>
+              </Badge>
 
               <template #panel>
                 <div class="p-2 pt-4 flex flex-col items-center gap-2">
                   <section class="flex items-center gap-2">
-                    <UBadge
-                      color="gray"
-                      variant="solid"
-                      :title="format(period.start, 'HH:mm:ss dd/MM/yyyy')"
-                    >
+                    <Badge variant="outline">
                       {{ format(period.start, "HH:mm:ss") }}
-                    </UBadge>
+                    </Badge>
                     até
-                    <UBadge
-                      color="gray"
-                      variant="solid"
-                      :title="format(period.end, 'HH:mm:ss dd/MM/yyyy')"
-                    >
+                    <Badge variant="outline">
                       {{ format(period.end, "HH:mm:ss") }}
-                    </UBadge>
+                    </Badge>
                   </section>
 
                   <section>

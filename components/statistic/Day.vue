@@ -108,28 +108,28 @@ const mountInfoCardList = () => {
     title: "Cronômetros",
     value: statistic.totalTimerHours,
     obs: `Sessões: ${statistic.timerCount}`,
-    cardRingStyle: `ring-1 dark:ring-primary-500 ring-primary-500`,
+    cardRingStyle: `ring-1 dark:ring-primary-500/80 ring-primary-500/80`,
   });
 
   hourCards.push({
     title: "Pomodoros",
     value: statistic.totalPomodoroHours,
     obs: `Sessões: ${statistic.pomodoroCount}`,
-    cardRingStyle: `ring-1 dark:ring-red-500 ring-red-500`,
+    cardRingStyle: `ring-1 dark:ring-red-500/80 ring-red-500/80`,
   });
 
   hourCards.push({
     title: "Break (Descanso)",
     value: statistic.totalBreakHours,
     obs: `Sessões: ${statistic.breakCount}`,
-    cardRingStyle: `ring-1 dark:ring-blue-500 ring-1 ring-blue-500`,
+    cardRingStyle: `ring-1 dark:ring-blue-500/80 ring-1 ring-blue-500/80`,
   });
 
   hourCards.push({
     title: "Manuais",
     value: statistic.totalIsolatedPeriodHours,
     obs: `Quantidade: ${statistic.isolatedPeriodCount}`,
-    cardRingStyle: `ring-1 dark:ring-yellow-500 ring-yellow-500`,
+    cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
   });
 
   infoCardList.value.push({
