@@ -131,9 +131,9 @@ const computedPerPageList = computed(() => {
     <section
       class="flex justify-end items-center flex-row-reverse md:flex-row gap-5"
     >
-      <section v-if="totalItems" class="">
+      <Badge v-if="totalItems" variant="outline" class="p-2 px-3">
         {{ totalItems }} {{ totalLabel }}
-      </section>
+      </Badge>
 
       <section class="w-[80px]" v-if="computedPerPageList.length">
         <Select
