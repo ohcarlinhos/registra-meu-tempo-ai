@@ -40,14 +40,14 @@ const data = {
 
   pages: [
     {
-      title: "Cronômetros",
-      name: "timer.panel",
-      icon: Timer,
-    },
-    {
       title: "Tarefas",
       name: "record.panel",
       icon: ClipboardList,
+    },
+    {
+      title: "Cronômetros",
+      name: "timer.panel",
+      icon: Timer,
     },
     {
       title: "Categorias",
