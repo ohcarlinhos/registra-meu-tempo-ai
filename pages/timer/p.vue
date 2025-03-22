@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "timer.panel" });
 useHead({ title: "Cronômetros" });
+useConfigStore().setBreadcrumbPage([{ label: "Cronômetros" }]);
 </script>
 
 <template>

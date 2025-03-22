@@ -272,14 +272,14 @@ function setActiveProduct(team: (typeof data.products)[number]) {
 
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem class="hidden md:block">
+                <!-- <BreadcrumbItem class="hidden md:block">
                   <BreadcrumbLink href="/">
                     Registra meu tempo aí!
                   </BreadcrumbLink>
-                </BreadcrumbItem>
+                </BreadcrumbItem> -->
 
-                <template v-for="item in breadcrumbPage">
-                  <BreadcrumbSeparator class="hidden md:block" />
+                <template v-for="(item, index) in breadcrumbPage">
+                  <BreadcrumbSeparator v-if="index" class="hidden md:block" />
 
                   <BreadcrumbItem>
                     <BreadcrumbPage v-if="item.pageName">
