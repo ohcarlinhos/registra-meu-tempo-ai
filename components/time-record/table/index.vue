@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { CirclePlus, Eye, EllipsisVertical, Trash2 } from "lucide-vue-next";
+import { columns as tableColumns } from "./columns";
 
 import { useDebounceFn } from "@vueuse/core";
+import type { ColumnSort, SortingState } from "@tanstack/vue-table";
 
 const trStore = useTimeRecordStore();
 const {
@@ -16,33 +18,6 @@ const emit = defineEmits<{
   delete: [value: TimeRecordMap];
   create: [];
 }>();
-
-const columns = computed(() => [
-  { key: "lastTimePeriodDate", label: "Iteração", sortable: !isLoading.value },
-  { key: "formattedTime", label: _$t("time"), sortable: !isLoading.value },
-  {
-    key: "title",
-    label: _$t("title"),
-    sortable: !isLoading.value,
-    rowClass: "truncate",
-  },
-  {
-    key: "code",
-    label: _$t("code"),
-    sortable: !isLoading.value,
-    rowClass: "truncate",
-  },
-  { key: "categoryName", label: _$t("category") },
-  { key: "actions" },
-]);
-
-const items = (row: TimeRecordMap) => [
-  {
-    label: _$t("delete"),
-    icon: Trash2,
-    click: async () => emit("delete", row),
-  },
-];
 
 const categories = ref<CategoryMap[]>([]);
 const categoriesIsFetch = ref(false);
@@ -70,37 +45,31 @@ const computedCategory = computed({
   },
 });
 
-const sort = ref<{ column: string; direction: "asc" | "desc" }>({
-  column: "lastTimePeriodDate",
-  direction: "desc",
-});
+const handleSort = (value: SortingState) => {
+  let s = value[0];
 
-const computedSort = computed({
-  get: () => {
-    return sort.value;
-  },
+  sort.value.id = s?.id || "lastTimePeriodDate";
+  sort.value.desc = s?.desc;
 
-  set: (newSort?: { column: string | null; direction: "asc" | "desc" }) => {
-    sort.value = {
-      column: newSort?.column || "lastTimePeriodDate",
-      direction: !newSort?.column ? "desc" : newSort?.direction || "desc",
-    };
+  let column = sort.value.id;
 
-    let column = sort.value?.column || "";
+  if (column == "formattedTime") {
+    column = "timeOnSeconds";
+  }
 
-    if (column == "formattedTime") {
-      column = "timeOnSeconds";
-    }
-
-    trStore.updateSort(sort.value.direction, column);
-    debounceTrFetch();
-  },
-});
+  trStore.updateSort(sort.value.desc ? "desc" : "asc", column);
+  debounceTrFetch();
+};
 
 const isMounted = ref(false);
 
 const isLoading = computed(() => {
   return categoriesIsFetch.value || isPaginationFetch.value || !isMounted.value;
+});
+
+const sort = ref<ColumnSort>({
+  id: "lastTimePeriodDate",
+  desc: true,
 });
 
 const configTableDataAndFetch = () => {
@@ -119,15 +88,14 @@ const configTableDataAndFetch = () => {
       column = "formattedTime";
     }
 
-    sort.value = {
-      column,
-      direction: paginationQuery.value.sort,
-    };
+    sort.value.id = column;
+    sort.value.desc = paginationQuery.value.sort == "desc";
   }
 
-  trStore.updateSort(sort.value.direction, sort.value.column);
-  return trStore.fetchData();
+  trStore.updateSort(sort.value.desc ? "desc" : "asc", sort.value.id);
 };
+
+configTableDataAndFetch();
 
 onMounted(() => {
   isMounted.value = true;
@@ -137,7 +105,7 @@ onMounted(() => {
     .getAll(true)
     .then((result) => {
       if (result) categories.value = result;
-      return configTableDataAndFetch();
+      trStore.fetchData();
     })
     .finally(() => {
       categoriesIsFetch.value = false;
@@ -205,53 +173,13 @@ onMounted(() => {
       </CardHeader>
 
       <CardContent class="flex flex-col gap-5">
-        <UTable
-          :columns="columns"
-          :rows="tableData"
+        <GDataTable
+          :columns="tableColumns"
+          :data="tableData"
+          :sort="sort"
           :loading="isLoading"
-          v-model:sort="computedSort"
-          sort-mode="manual"
-        >
-          <template #actions-data="{ row }">
-            <div class="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                @click="() => emit('access', row.code!)"
-              >
-                <Eye />
-                {{ "Acessar" }}
-              </Button>
-
-              <ClientOnly>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button variant="outline" size="icon">
-                      <EllipsisVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      v-for="item in items(row)"
-                      @click="item.click"
-                    >
-                      <component :is="item.icon" />
-                      {{ item.label }}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <template #fallback>
-                  <Button variant="outline" size="icon" disabled>
-                    <EllipsisVertical />
-                  </Button>
-                </template>
-              </ClientOnly>
-            </div>
-          </template>
-        </UTable>
+          @updated-sort="handleSort"
+        />
 
         <GPaginationV2
           :page="apiRes?.page"

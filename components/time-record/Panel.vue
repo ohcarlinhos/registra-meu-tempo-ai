@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { toTypedSchema } from "@vee-validate/yup";
+import { useEventBus } from "@vueuse/core";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
@@ -44,7 +45,7 @@ const closeConfirmDeleteModal = () => {
   modal.confirmDelete.open = false;
 };
 
-const openConfirmDeleteModal = async (tr: TimeRecordMap) => {
+const openConfirmDeleteModal = async (tr: TimeRecordTable) => {
   modal.confirmDelete.id = tr.id;
   modal.confirmDelete.title = tr.title;
   modal.confirmDelete.open = true;
@@ -78,6 +79,13 @@ const deleteTimeRecord = async () => {
   } finally {
   }
 };
+
+const deleteBus = useEventBus<TimeRecordTable>("tr-table:delete");
+deleteBus.on(openConfirmDeleteModal);
+
+onBeforeUnmount(() => {
+  deleteBus.off(openConfirmDeleteModal);
+});
 </script>
 
 <template>
@@ -86,7 +94,6 @@ const deleteTimeRecord = async () => {
       <TimeRecordTable
         @access="access"
         @create="modal.createOrUpdateTimeRecord = true"
-        @delete="openConfirmDeleteModal"
       />
     </section>
   </section>
