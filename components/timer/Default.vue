@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { CloudOff } from "lucide-vue-next";
 import NoSleep from "nosleep.js";
 
 const props = defineProps({
@@ -132,6 +133,17 @@ const endTimer = async () => {
   noSleepObject.value?.disable();
   timerStore.playClick();
 
+  if (!navigator.onLine) {
+    timerStore.endTimer(props.id);
+    SimpleErrorToast({
+      title: "Seu navegador está sem acesso a Internet.",
+      description:
+        "Mas não se preocupe! Salvamos seu tempo localmente (navegador).",
+      color: "red",
+    });
+    return;
+  }
+
   if (!userIsAuth.value) {
     timerStore.endTimer(props.id);
     return;
@@ -221,6 +233,12 @@ const isFetch = computed(() => {
   return submitIsFetch.value || timer.value.isFetch;
 });
 
+const isOffline = ref<boolean>(!navigator.onLine);
+
+const offlineCheck = setInterval(() => {
+  isOffline.value = !navigator.onLine;
+}, 60000);
+
 const openFull = ref(false);
 
 onMounted(() => {
@@ -229,6 +247,10 @@ onMounted(() => {
   if (timer.value.isRun) {
     openFull.value = true;
   }
+});
+
+onBeforeUnmount(() => {
+  clearInterval(offlineCheck);
 });
 </script>
 
@@ -249,6 +271,18 @@ onMounted(() => {
     >
       Fechar Timer
     </Button>
+
+    <template v-if="isOffline">
+      <div class="text-muted-foreground flex flex-col items-center mb-2">
+        <span class="inline-flex gap-1 items-center text-md">
+          <CloudOff class="size-4" />
+          Estamos sem acesso a internet...
+        </span>
+        <span class="text-sm">
+          Mas não se preocupe! Vamos salvar tudo no navegador.
+        </span>
+      </div>
+    </template>
 
     <section
       :class="[
