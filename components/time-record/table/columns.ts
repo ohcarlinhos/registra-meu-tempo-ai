@@ -9,7 +9,6 @@ import {
   ClockArrowDownIcon,
   CalendarArrowUpIcon,
   CalendarArrowDownIcon,
-  CalendarIcon,
 } from "lucide-vue-next";
 
 export const columns: ColumnDef<TimeRecordTable>[] = [
@@ -22,10 +21,10 @@ export const columns: ColumnDef<TimeRecordTable>[] = [
           variant: "ghost",
           onClick: () => column.toggleSorting(),
         },
-        [
+        () => [
           column.getIsSorted() === "asc" && h(CalendarArrowUpIcon),
           column.getIsSorted() === "desc" && h(CalendarArrowDownIcon),
-          "Iteração",
+          h("span", ["Iteração"]),
         ]
       ),
   },
@@ -38,10 +37,10 @@ export const columns: ColumnDef<TimeRecordTable>[] = [
           variant: "ghost",
           onClick: () => column.toggleSorting(),
         },
-        [
+        () => [
           column.getIsSorted() === "asc" && h(AArrowUpIcon),
           column.getIsSorted() === "desc" && h(AArrowDownIcon),
-          "Título",
+          h("span", ["Título"]),
         ]
       ),
     cell: ({ row }) =>
@@ -54,7 +53,7 @@ export const columns: ColumnDef<TimeRecordTable>[] = [
           },
           class: "hover:text-primary hover:underline",
         },
-        row.getValue("title")
+        () => [row.getValue("title")]
       ),
   },
   {
@@ -66,10 +65,10 @@ export const columns: ColumnDef<TimeRecordTable>[] = [
           variant: "ghost",
           onClick: () => column.toggleSorting(),
         },
-        [
+        () => [
           column.getIsSorted() === "asc" && h(AArrowUpIcon),
           column.getIsSorted() === "desc" && h(AArrowDownIcon),
-          "Código",
+          h("span", ["Código"]),
         ]
       ),
   },
@@ -86,10 +85,10 @@ export const columns: ColumnDef<TimeRecordTable>[] = [
           variant: "ghost",
           onClick: () => column.toggleSorting(),
         },
-        [
+        () => [
           column.getIsSorted() === "asc" && h(ClockArrowUpIcon),
           column.getIsSorted() === "desc" && h(ClockArrowDownIcon),
-          "Tempo",
+          h("span", ["Tempo"]),
         ]
       ),
   },
