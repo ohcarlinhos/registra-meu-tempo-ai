@@ -6,7 +6,7 @@ definePageMeta({
 </script>
 
 <template>
-  <NuxtLayout name="panel-v2">
+  <NuxtLayout name="panel">
     <TimeRecordPageBody
       #default="{
         actualTimeRecordId,

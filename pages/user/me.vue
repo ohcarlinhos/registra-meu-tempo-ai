@@ -9,7 +9,7 @@ useConfigStore().setBreadcrumbPage([{ label: "Minha conta" }]);
 </script>
 
 <template>
-  <NuxtLayout name="panel-v2">
+  <NuxtLayout name="panel">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-5 w-full">
       <div class="w-full md:col-span-6 lg:col-span-4">
         <UserFormUpdate />

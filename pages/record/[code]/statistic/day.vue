@@ -4,7 +4,7 @@ useHead({ title: "Resumos Diários" });
 </script>
 
 <template>
-  <NuxtLayout name="panel-v2">
+  <NuxtLayout name="panel">
     <TimeRecordPageBody
       #default="{ actualTimeRecordId, updatedOn, clearUpdatedOn, timeRecord }"
     >

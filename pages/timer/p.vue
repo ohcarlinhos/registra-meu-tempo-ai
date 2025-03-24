@@ -5,7 +5,7 @@ useConfigStore().setBreadcrumbPage([{ label: "Cronômetros" }]);
 </script>
 
 <template>
-  <NuxtLayout name="panel-v2">
+  <NuxtLayout name="panel">
     <section
       class="h-full w-full flex flex-col items-center justify-center gap-10"
     >
