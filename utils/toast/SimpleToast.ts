@@ -1,11 +1,11 @@
 import type colors from "#ui-colors";
 
-interface SimpleToast {
+interface SimpleToastPayload {
   title: string;
   description?: string;
   color?: (typeof colors)[number];
 }
 
-export const SimpleErrorToast = (payload: SimpleToast) => {
+export const SimpleToast = (payload: SimpleToastPayload) => {
   return useToast().add(payload);
 };

@@ -135,7 +135,7 @@ const endTimer = async () => {
 
   if (!navigator.onLine) {
     timerStore.endTimer(props.id);
-    SimpleErrorToast({
+    SimpleToast({
       title: "Seu navegador está sem acesso a Internet.",
       description:
         "Mas não se preocupe! Salvamos seu tempo localmente (navegador).",
