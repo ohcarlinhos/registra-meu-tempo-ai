@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CirclePlus, Eye, EllipsisVertical, Trash2 } from "lucide-vue-next";
+import { CirclePlus, Trash2 } from "lucide-vue-next";
 import { columns as tableColumns } from "./columns";
 
 import { useDebounceFn } from "@vueuse/core";

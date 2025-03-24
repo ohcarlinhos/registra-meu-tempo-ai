@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { CirclePlus, EllipsisVertical, Edit, Trash2 } from "lucide-vue-next";
 import type { DeletePayloadEvent } from "./types";
+import { useEventBus } from "@vueuse/core";
+import { columns as tableColumns } from "./columns";
 
 const categoryStore = useCategoryStore();
 const { fetchData: fetchCategoryData } = categoryStore;
@@ -24,20 +26,6 @@ const modal = reactive({
 
 const editCategoryObject = ref<CategoryForm>();
 
-const columns = [{ key: "name", label: "Nome" }, { key: "actions" }];
-
-const items = (row: CategoryMap) => [
-  {
-    label: _$t("edit"),
-    icon: Edit,
-    click: () => openEditCategoryModal(row),
-  },
-  {
-    label: _$t("delete"),
-    icon: Trash2,
-    click: async () => openConfirmDeleteModal({ id: row.id, name: row.name }),
-  },
-];
 const closeModal = () => {
   modal.category = false;
   editCategoryObject.value = undefined;
@@ -86,6 +74,26 @@ onMounted(() => {
   isMounted.value = true;
   fetchCategoryData();
 });
+
+const bus = useEventBus<CategoryTableBusEvent>(CATEGORY_TABLE_BUS_NAME);
+
+const handleWithBus = (event: CategoryTableBusEvent) => {
+  let category = event.data;
+
+  if (event.action == "edit") {
+    openEditCategoryModal(category);
+  }
+
+  if (event.action == "delete") {
+    openConfirmDeleteModal({ id: category.id, name: category.name });
+  }
+};
+
+bus.on(handleWithBus);
+
+onBeforeUnmount(() => {
+  bus.off(handleWithBus);
+});
 </script>
 
 <template>
@@ -109,41 +117,11 @@ onMounted(() => {
     </CardHeader>
 
     <CardContent>
-      <UTable :columns="columns" :rows="tableData" :loading="isLoading">
-        <template #actions-data="{ row }">
-          <ClientOnly>
-            <div class="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button variant="outline" size="icon">
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    v-for="item in items(row)"
-                    @click="item.click"
-                  >
-                    <component :is="item.icon" />
-                    {{ item.label }}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <template #fallback>
-              <div class="flex justify-end">
-                <Button variant="outline" size="icon" disabled>
-                  <EllipsisVertical />
-                </Button>
-              </div>
-            </template>
-          </ClientOnly>
-        </template>
-      </UTable>
+      <GDataTable
+        :columns="tableColumns"
+        :data="tableData"
+        :loading="isLoading"
+      />
 
       <GPaginationV2
         :page="apiRes?.page"
@@ -153,6 +131,7 @@ onMounted(() => {
         :pagination-query="paginationQuery"
         :pagination-query-methods="categoryStore"
         :is-pagination-fetch="isLoading"
+        total-label="Categorias"
         using-store
       />
     </CardContent>

@@ -1,16 +1,29 @@
 <script lang="ts" setup>
+import { Trash2, EllipsisVertical, Edit } from "lucide-vue-next";
 import { useEventBus } from "@vueuse/core";
-import { Trash2, EllipsisVertical } from "lucide-vue-next";
 
-defineProps<{ row: TimeRecordTable }>();
+defineProps<{ row: CategoryMap }>();
 
-const bus = useEventBus<TimeRecordTableBusEvent>(TR_TABLE_BUS_NAME);
+const bus = useEventBus<CategoryTableBusEvent>(CATEGORY_TABLE_BUS_NAME);
 
-const items = (row: TimeRecordTable) => [
+const items = (row: CategoryMap) => [
+  {
+    label: _$t("edit"),
+    icon: Edit,
+    click: () =>
+      bus.emit({
+        action: "edit",
+        data: row,
+      }),
+  },
   {
     label: _$t("delete"),
     icon: Trash2,
-    click: () => bus.emit({ action: "delete", data: row }),
+    click: () =>
+      bus.emit({
+        action: "delete",
+        data: row,
+      }),
   },
 ];
 </script>
@@ -27,7 +40,6 @@ const items = (row: TimeRecordTable) => [
       <DropdownMenuContent>
         <DropdownMenuLabel>Opções</DropdownMenuLabel>
         <DropdownMenuSeparator />
-
         <DropdownMenuItem v-for="item in items(row)" @click="item.click">
           <component :is="item.icon" />
           {{ item.label }}
@@ -36,7 +48,7 @@ const items = (row: TimeRecordTable) => [
     </DropdownMenu>
 
     <template #fallback>
-      <Button variant="ghost" size="icon" disabled>
+      <Button variant="ghost" size="icon">
         <EllipsisVertical />
       </Button>
     </template>

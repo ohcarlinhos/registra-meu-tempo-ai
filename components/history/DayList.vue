@@ -441,7 +441,6 @@ defineExpose({
 
     <section class="col-span-full">
       <GPaginationV2
-        total-label="Registros (Dias)"
         :page="apiRes?.page"
         :per-page="apiRes?.perPage"
         :total-pages="apiRes?.totalPages"
@@ -449,6 +448,7 @@ defineExpose({
         :pagination-query="paginationQuery"
         :pagination-query-methods="dayStore"
         :is-pagination-fetch="isFetchNow"
+        total-label="Registros (Dias)"
         using-store
       />
     </section>

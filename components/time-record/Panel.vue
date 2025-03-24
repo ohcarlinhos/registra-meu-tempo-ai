@@ -45,7 +45,9 @@ const closeConfirmDeleteModal = () => {
   modal.confirmDelete.open = false;
 };
 
-const openConfirmDeleteModal = async (tr: TimeRecordTable) => {
+const openConfirmDeleteModal = async (event: TimeRecordTableBusEvent) => {
+  let tr = event.data;
+
   modal.confirmDelete.id = tr.id;
   modal.confirmDelete.title = tr.title;
   modal.confirmDelete.open = true;
@@ -80,11 +82,11 @@ const deleteTimeRecord = async () => {
   }
 };
 
-const deleteBus = useEventBus<TimeRecordTable>("tr-table:delete");
-deleteBus.on(openConfirmDeleteModal);
+const bus = useEventBus<TimeRecordTableBusEvent>(TR_TABLE_BUS_NAME);
+bus.on(openConfirmDeleteModal);
 
 onBeforeUnmount(() => {
-  deleteBus.off(openConfirmDeleteModal);
+  bus.off(openConfirmDeleteModal);
 });
 </script>
 
