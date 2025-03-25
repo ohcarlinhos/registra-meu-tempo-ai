@@ -153,7 +153,7 @@ onBeforeUnmount(() => {
           {{ editCategoryObject?.id ? "Editar Categoria" : "Criar Categoria" }}
         </DialogTitle>
         <DialogDescription>
-          Make changes to your profile here. Click save when you're done.
+          Utilize categorias para filtrar mais facilidade suas tarefas.
         </DialogDescription>
       </DialogHeader>
 
