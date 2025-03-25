@@ -83,10 +83,26 @@ const deleteTimeRecord = async () => {
 };
 
 const bus = useEventBus<TimeRecordTableBusEvent>(TR_TABLE_BUS_NAME);
-bus.on(openConfirmDeleteModal);
+
+const handleWithBus = (event: TimeRecordTableBusEvent) => {
+  let category = event.data;
+
+  if (event.action == "access") {
+    router.push({
+      name: "record",
+      params: { code: event.data.code },
+    });
+  }
+
+  if (event.action == "delete") {
+    openConfirmDeleteModal(event);
+  }
+};
+
+bus.on(handleWithBus);
 
 onBeforeUnmount(() => {
-  bus.off(openConfirmDeleteModal);
+  bus.off(handleWithBus);
 });
 </script>
 

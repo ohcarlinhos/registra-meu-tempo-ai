@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import { useEventBus } from "@vueuse/core";
-import { Trash2, EllipsisVertical } from "lucide-vue-next";
+import { Trash2, EllipsisVertical, Link } from "lucide-vue-next";
 
 defineProps<{ row: TimeRecordTable }>();
 
 const bus = useEventBus<TimeRecordTableBusEvent>(TR_TABLE_BUS_NAME);
 
 const items = (row: TimeRecordTable) => [
+  {
+    label: _$t("access"),
+    icon: Link,
+    click: () => bus.emit({ action: "access", data: row }),
+  },
   {
     label: _$t("delete"),
     icon: Trash2,

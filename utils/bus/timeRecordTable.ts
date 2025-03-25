@@ -1,5 +1,5 @@
 export interface TimeRecordTableBusEvent {
-  action: "delete" | "edit";
+  action: "delete" | "edit" | "access";
   data: TimeRecordTable;
 }
 
