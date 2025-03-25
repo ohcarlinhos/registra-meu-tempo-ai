@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { CloudOff } from "lucide-vue-next";
+import {
+  Timer,
+  CloudOff,
+  Play,
+  Pause,
+  Save,
+  X,
+  Loader2,
+} from "lucide-vue-next";
 import NoSleep from "nosleep.js";
 
 const props = defineProps({
@@ -24,7 +32,6 @@ const props = defineProps({
 const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
-const userStore = useUserStore();
 const timerStore = useTimerStore();
 
 const timer = computed(() => timerStore.getTimer(props.id));
@@ -289,7 +296,7 @@ onBeforeUnmount(() => {
         'flex flex-col justify-center align-middle relative',
         'w-[280px] md:w-[320px] h-[280px] md:h-[320px] ring-4 shadow-md rounded-full',
         'ring-black ring-opacity-40 border-[12px] dark:ring-white dark:ring-opacity-10',
-        'border-[10px] border-opacity-70 bg-white text-gray-700 ',
+        'border-[10px] border-opacity-70 bg-white text-gray-700',
         'dark:border-[10px] dark:border-opacity-80 dark:bg-gray-800 dark:text-white',
         timer.type == 'pomodoro' && 'border-red-500',
         timer.type == 'timer' && 'border-green-500',
@@ -297,16 +304,16 @@ onBeforeUnmount(() => {
       ]"
     >
       <section class="flex mb-2 justify-center">
-        <UButton
-          title="Selecione entre Cronômetro, Pomodoro ou Descanso."
-          color="white"
-          variant="ghost"
+        <Button
           :disabled="timerHasMilliseconds"
-          icon="i-icon-park-outline-timer"
+          title="Selecione entre Cronômetro, Pomodoro ou Descanso."
+          variant="ghost"
+          class="opacity-60 hover:opacity-100"
           @click="timerStore.toggleOptions(props.id)"
         >
+          <Timer />
           Exibir Modos
-        </UButton>
+        </Button>
       </section>
 
       <section class="flex flex-col gap-5 justify-center items-center relative">
@@ -327,51 +334,51 @@ onBeforeUnmount(() => {
         </section>
 
         <div class="flex gap-4">
-          <UButton
+          <GIconButton
             v-if="!timer.isRun"
             :title="
               timer.currentPeriodList.length ? $t('continue') : $t('doStart')
             "
-            class="rounded-full"
             :disabled="timer.isRun || isFetch"
-            color="blue"
-            icon="i-icon-park-outline-play-one"
-            size="lg"
+            class="bg-blue-500 hover:bg-blue-600"
             @click="startTimer"
-          />
+          >
+            <Play class="size-5 opacity-80 text-black" />
+          </GIconButton>
 
-          <UButton
+          <GIconButton
             v-if="timer.isRun"
-            class="rounded-full"
             :disabled="!timer.isRun || isFetch"
             :title="$t('pause')"
-            color="yellow"
-            icon="i-icon-park-outline-pause"
-            size="lg"
+            class="bg-yellow-500 hover:bg-yellow-600"
             @click="pauseTimer"
-          />
+          >
+            <Pause class="size-5 opacity-80 text-black" />
+          </GIconButton>
 
-          <UButton
+          <GIconButton
             v-if="timer.type !== 'break'"
-            class="rounded-full"
             :disabled="timerDoNotHasMilliseconds || isFetch"
             :loading="isFetch"
             :title="$t('finish')"
-            color="green"
-            icon="i-icon-park-outline-hard-disk-one"
-            size="lg"
+            class="bg-green-500 hover:bg-green-600"
             @click="endTimer"
-          />
+          >
+            <Loader2
+              v-if="isFetch"
+              class="size-5 opacity-80 text-black animate-spin"
+            />
+            <Save v-else class="size-5 opacity-80 text-black" />
+          </GIconButton>
 
-          <UButton
-            class="rounded-full"
+          <GIconButton
             :disabled="timerDoNotHasMilliseconds || isFetch"
             :title="$t('stop')"
-            color="red"
-            icon="i-icon-park-outline-close-small"
-            size="lg"
+            class="bg-red-500 hover:bg-red-600"
             @click="stopTimer"
-          />
+          >
+            <X class="size-5 opacity-80 text-black" />
+          </GIconButton>
         </div>
 
         <section class="text-sm opacity-30 -mt-2">
@@ -383,7 +390,7 @@ onBeforeUnmount(() => {
     <p
       v-if="props.code"
       class="flex flex-col"
-      :class="['text-center text-sm', isDark && 'opacity-50']"
+      :class="['text-center text-sm', isDark && 'opacity-80']"
     >
       <span> Sincronizado com a tarefa: </span>
 
