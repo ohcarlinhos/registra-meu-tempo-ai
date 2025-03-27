@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
     :class="cn(buttonVariants({ variant, size }), props.class)"
     :disabled="disabled"
   >
-    <section class="relative">
+    <section v-if="$slots['with-loading']" class="relative">
       <span v-if="loading" class="absolute -left-5 top-[2px] animate-spin">
         <component :is="LoaderCircle" />
       </span>
@@ -34,8 +34,10 @@ const props = withDefaults(defineProps<Props>(), {
       <section
         class="inline-flex items-center justify-center gap-2 whitespace-nowrap"
       >
-        <slot />
+        <slot name="with-loading"></slot>
       </section>
     </section>
+
+    <slot></slot>
   </Primitive>
 </template>
