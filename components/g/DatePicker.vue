@@ -67,5 +67,6 @@ watch(model, (value) => {
 <style>
 .dp__input {
   background-color: transparent;
+  @apply h-11;
 }
 </style>

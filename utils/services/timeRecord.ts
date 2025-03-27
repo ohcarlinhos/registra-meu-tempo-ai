@@ -19,8 +19,6 @@ export const getTimeRecordByCode = async (code: string) => {
 };
 
 export const postTimeRecord = async (body: CreateTimeRecordDto) => {
-  if (body.categoryId == null) delete body.categoryId;
-
   return useCustomFetch(false)<TimeRecordMap>("/record", {
     method: "POST",
     body,
@@ -28,8 +26,6 @@ export const postTimeRecord = async (body: CreateTimeRecordDto) => {
 };
 
 export const putTimeRecord = async (body: UpdateTimeRecordDto) => {
-  if (body.categoryId == null) delete body.categoryId;
-
   return useCustomFetch(false)<TimeRecordMap>(`/record/${body.id}`, {
     method: "PUT",
     body,

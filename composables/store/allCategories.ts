@@ -2,17 +2,17 @@ export const useAllCategoriesStore = defineStore(
   "all-categories-store",
   () => {
     const data = ref<CategoryMap[]>([]);
-    const isFetch = ref(false);
+    const isFetching = ref(false);
 
     const fetchData = async (errorCallback: Function) => {
       try {
-        isFetch.value = true;
+        isFetching.value = true;
         data.value = (await categoryApi().getAll()) || [];
       } catch (error) {
         ErrorToast(error);
         errorCallback();
       } finally {
-        isFetch.value = false;
+        isFetching.value = false;
       }
     };
 
@@ -24,7 +24,7 @@ export const useAllCategoriesStore = defineStore(
       fetchData,
       findCategoryById,
       data,
-      isFetch,
+      isFetching,
     };
   },
   {

@@ -1,16 +1,17 @@
-export type CreateTimeRecordDto = {
-  description: string;
-  timePeriods: { start: Date | string; end: Date | string }[];
-  categoryId?: number | null;
+export interface TimeRecordSharedDto {
+  title?: string;
+  description?: string;
   code?: string;
-  timerSessionType?: string;
-  timerSessionFrom?: string;
-};
-
-export type UpdateTimeRecordDto = {
-  id: number;
-  description: string;
   categoryId?: number | null;
   externalLink?: string;
-  code?: string;
-};
+  timerSessionType?: string;
+  timerSessionFrom?: string;
+}
+
+export interface CreateTimeRecordDto extends TimeRecordSharedDto {
+  timePeriods: { start: Date | string; end: Date | string }[];
+}
+
+export interface UpdateTimeRecordDto extends TimeRecordSharedDto {
+  id: number;
+}

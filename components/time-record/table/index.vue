@@ -122,7 +122,11 @@ onMounted(() => {
             {{ "Tarefas" }}
           </CardTitle>
 
-          <Button variant="outline" @click="emit('create')">
+          <Button
+            variant="outline"
+            :disabled="isLoading"
+            @click="emit('create')"
+          >
             <CirclePlus />
             {{ "Criar Tarefa" }}
           </Button>

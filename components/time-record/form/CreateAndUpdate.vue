@@ -1,15 +1,11 @@
 <script lang="ts" setup>
 import * as yup from "yup";
+import { toTypedSchema } from "@vee-validate/yup";
 import { addMinutes } from "date-fns";
 import { vMaska } from "maska/vue";
-
-const router = useRouter();
-
-const trStore = useTimeRecordStore();
-
-const allCategoriesStore = useAllCategoriesStore();
-const { fetchData } = allCategoriesStore;
-const { data, isFetch: isAllCategoriesFetch } = storeToRefs(allCategoriesStore);
+import { useDebounceFn } from "@vueuse/core";
+import { useForm } from "vee-validate";
+import { X, Check, Search, ChevronsUpDown, PenLine } from "lucide-vue-next";
 
 const emit = defineEmits(["close", "refresh"]);
 
@@ -22,50 +18,250 @@ const props = withDefaults(
   {}
 );
 
-/**
- * States
- */
+const router = useRouter();
+const trStore = useTimeRecordStore();
 
-const form = reactive<TimeRecordForm>({
-  id: undefined,
-  title: "",
-  description: "",
-  category: "",
-  code: "",
-  externalLink: "",
-  categoryId: undefined,
-  timePeriods: [],
+const allCategoriesStore = useAllCategoriesStore();
+const { fetchData } = allCategoriesStore;
+const { data: allCategories, isFetching: isAllCategoriesFetching } =
+  storeToRefs(allCategoriesStore);
+
+const formOptions = reactive<{
+  isSync?: boolean;
+  isBind?: boolean;
+  callback?: (code?: string) => void;
+}>({
   callback: undefined,
   isSync: false,
   isBind: false,
-  timerSessionType: "manual",
-  timerSessionFrom: "browser",
 });
 
-const searchTrList = ref<SearchTimeRecordItem[]>([]);
-const newCategories = ref<string[]>([]);
+const formSchema = toTypedSchema(
+  yup.object({
+    id: yup.number(),
+    title: yup.string(),
+    timePeriods: yup
+      .array(
+        yup.object({
+          start: yup.date().required(),
+          end: yup.date().required(),
+        })
+      )
+      .required(),
+    description: yup.string(),
+    externalLink: yup.string().url(),
+    code: yup.string().when("id", {
+      is: (val: string) => {
+        console.log("id", val);
+        return !!val;
+      },
+      then: (s) => s.required("Código não é um campo opcional."),
+      otherwise: (s) => s,
+    }),
+    category: yup.string(),
+    timerSessionType: yup.string(),
+    timerSessionFrom: yup.string(),
+  })
+);
+
+const {
+  handleSubmit,
+  values: formValues,
+  errors,
+  setValues,
+} = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    title: "",
+    description: "",
+    timerSessionType: "manual",
+    timerSessionFrom: "browser",
+    timePeriods: [],
+  },
+});
 
 watch(
-  () => form.code,
+  () => formValues.code,
   (newValue) => {
-    form.code = newValue.replace(" ", "");
+    setValues({
+      code: newValue?.replace(" ", "") || "",
+    });
   }
 );
 
 /**
- * Validations
+ * start: Category
  */
 
-// TODO: finalizar validações
-const schema = yup.object({
-  description: yup.string(),
-  externalLink: yup.string(),
-  code: yup.string(),
+const categorySelectSearch = ref("");
+const categorySelectIsOpen = ref(false);
+const newCategories = ref<string[]>([]);
+
+const categories = computed(() => {
+  return [
+    ...newCategories.value.map((c) => ({ name: c, id: -1 })),
+    ...allCategories.value,
+  ];
 });
 
+const isNewCategoryOnSelectSearch = computed(() => {
+  return categories.value.every((c) => c.name != categorySelectSearch.value);
+});
+
+const categoryValue = computed({
+  get: () => formValues.category,
+
+  set: async (name) => {
+    if (name == undefined) return;
+
+    const search = categories.value.find((category) => category.name === name);
+
+    if (!search) {
+      newCategories.value = [name];
+    }
+
+    setValues({ category: name });
+  },
+});
+
+const categoryIsDisabled = computed(() => {
+  return isAllCategoriesFetching.value;
+});
+
+const handleCategory = async () => {
+  if (
+    (newCategories.value.length && formValues.category,
+    formValues.category === newCategories.value[0])
+  ) {
+    const category = await categoryApi().post({ name: newCategories.value[0] });
+    return category!.id;
+  }
+
+  if (formValues.category) {
+    const category = allCategories.value.find(
+      (category) => category.name === formValues.category
+    );
+
+    if (category) return category.id;
+  }
+
+  return null;
+};
+
+const clearCategoryIfClickAgain = (value: string) => {
+  if (value === categoryValue.value) {
+    setValues({ category: "" });
+  }
+};
+
 /**
- * Computeds
+ * end: Category
  */
+
+/**
+ * start: Time Period
+ */
+
+const addButtonIsDisabled = computed(() => {
+  const initialValue = true;
+
+  const allHasValue = formValues.timePeriods?.reduce((acc, current) => {
+    return !!current.start && !!current.end && acc;
+  }, initialValue);
+
+  return allHasValue === false;
+});
+
+const addTimePeriodToForm = () => {
+  const start =
+    formValues?.timePeriods?.length === 0
+      ? new Date()
+      : addMinutes(
+          formValues.timePeriods![formValues.timePeriods!.length - 1].end,
+          15
+        );
+
+  const end = addMinutes(start, 25);
+
+  const timePeriods = [...(formValues.timePeriods ?? []), { start, end }];
+  setValues({ timePeriods });
+};
+
+const deleteTimePeriodFromForm = (index: number) => {
+  const timePeriods = formValues.timePeriods ? [...formValues.timePeriods] : [];
+  timePeriods.splice(index, 1);
+  setValues({ timePeriods });
+};
+
+/**
+ * end: Time Period
+ */
+
+/**
+ * start: Time Record
+ */
+
+const searchTrList = ref<SearchTimeRecordItem[]>([]);
+const selectedTr = ref<SearchTimeRecordItem>();
+const isTrSearch = ref<boolean>(false);
+
+const searchTr = async (q: string = "") => {
+  try {
+    isTrSearch.value = true;
+    const result = await searchTimeRecord(q);
+
+    if (result) {
+      searchTrList.value = result.map((item) => {
+        item.title = item.title ? `${item.title} (${item.code})` : item.code;
+        return item;
+      });
+    }
+
+    return result;
+  } finally {
+    isTrSearch.value = false;
+  }
+};
+
+const searchTrSelectAction = useDebounceFn(async (q: string = "") => {
+  if (!searchTrList.value.some((tr) => tr.code == q)) {
+    await searchTr(q);
+  }
+}, 1000);
+
+/**
+ * end: Time Record
+ */
+
+/**
+ * start: Form
+ */
+
+const isFetching = ref(false);
+
+const disableInputs = computed(() => {
+  return isFetching.value;
+});
+
+const submitIsDisabled = computed(() => {
+  if (formOptions.isBind && !formValues.id) return true;
+  return isFetching.value;
+});
+
+const onSubmit = handleSubmit((value) => {
+  const dto: TimeRecordSharedDto = {
+    title: value.title || "",
+    description: value.description || "",
+    code: value.code,
+    externalLink: value.externalLink,
+    timerSessionType: value.timerSessionType,
+    timerSessionFrom: value.timerSessionFrom,
+  };
+
+  value.id && isEditMode.value
+    ? updateAction({ ...dto, id: value.id })
+    : createAction({ ...dto, timePeriods: value.timePeriods });
+});
 
 const isEditMode = computed(() => {
   return Boolean(
@@ -81,98 +277,23 @@ const isSyncMode = computed(() => {
   );
 });
 
-const categories = computed(() => {
-  return [...newCategories.value, ...data.value.map((c) => c.name)];
-});
-
-const categoryValue = computed({
-  get: () => form.category,
-
-  set: async (label) => {
-    const search = categories.value.find((category) => category === label);
-    if (!search) newCategories.value.push(label);
-
-    form.category = label;
-  },
-});
-
-const addButtonIsDisabled = computed(() => {
-  const initialValue = true;
-
-  const allHasValue = form.timePeriods.reduce((acc, current) => {
-    return !!current.start && !!current.end && acc;
-  }, initialValue);
-
-  return allHasValue === false;
-});
-
-const categoryIsDisabled = computed(() => {
-  return isAllCategoriesFetch.value;
-});
-
-const submitIsDisabled = computed(() => {
-  if (form.isBind && !form.id) return true;
-  return isFetch.value;
-});
-
 /**
- * Methods
+ * start: End
  */
 
-const closeModal = (refresh = false) => {
-  emit("close");
-  if (refresh) trStore.refetchData();
-};
+/**
+ * start: Http
+ */
 
-const addTimePeriodToForm = () => {
-  const start =
-    form.timePeriods.length === 0
-      ? new Date()
-      : addMinutes(form.timePeriods[form.timePeriods.length - 1].end, 15);
-
-  const end = addMinutes(start, 25);
-
-  form.timePeriods.push({ start, end });
-};
-
-const deleteTimePeriodFromForm = (index: number) => {
-  form.timePeriods.splice(index, 1);
-};
-
-const handleCategory = async () => {
-  if (newCategories.value.length && form.category === newCategories.value[0]) {
-    const category = await categoryApi().post({ name: newCategories.value[0] });
-    newCategories.value.splice(0, 1);
-
-    return category!.id;
-  }
-
-  if (form.category) {
-    const category = data.value.find(
-      (category) => category.name === form.category
-    );
-
-    if (category) return category.id;
-  }
-
-  return undefined;
-};
-
-const isFetch = ref(false);
-
-const submit = async () => {
-  await schema.validate(await submitAction());
-};
-
-const createAction = async () => {
+const createAction = async (dto: CreateTimeRecordDto) => {
   try {
-    isFetch.value = true;
+    isFetching.value = true;
     const result = await postTimeRecord({
-      ...form,
+      ...dto,
       categoryId: await handleCategory(),
     });
 
-    if (form.callback) form.callback(result?.code);
+    if (formOptions.callback) formOptions.callback(result?.code);
 
     closeModal(props.refreshTimeRecords);
     OkToast(_$t("createTimeRecordSuccess"));
@@ -181,33 +302,34 @@ const createAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    isFetch.value = false;
+    isFetching.value = false;
   }
 };
 
-const updateAction = async () => {
+const updateAction = async (dto: UpdateTimeRecordDto) => {
   try {
-    isFetch.value = true;
+    isFetching.value = true;
 
-    if (isSyncMode.value) {
-      await postTimePeriodList(form.id!, {
-        timePeriods: form.timePeriods.map((tp) => ({
-          start: new Date(tp.start),
-          end: new Date(tp.end),
-        })),
-        type: form.timerSessionType!,
-        from: form.timerSessionFrom!,
+    if (isSyncMode.value && formValues.id) {
+      await postTimePeriodList(formValues.id, {
+        timePeriods:
+          formValues.timePeriods?.map((tp) => ({
+            start: new Date(tp.start),
+            end: new Date(tp.end),
+          })) || [],
+        type: formValues.timerSessionType!,
+        from: formValues.timerSessionFrom!,
       });
 
-      if (form.callback) form.callback();
+      if (formOptions.callback) formOptions.callback();
     } else {
       const result = await putTimeRecord({
-        ...form,
-        id: form.id!,
+        ...dto,
+        id: formValues.id!,
         categoryId: await handleCategory(),
       });
 
-      if (form.callback) form.callback(result?.code);
+      if (formOptions.callback) formOptions.callback(result?.code);
     }
 
     closeModal(props.refreshTimeRecords);
@@ -216,42 +338,60 @@ const updateAction = async () => {
   } catch (error) {
     ErrorToast(error);
   } finally {
-    isFetch.value = false;
+    isFetching.value = false;
   }
 };
 
-const submitAction = async () => {
-  return isEditMode.value ? updateAction() : createAction();
+/**
+ * end: Http
+ */
+
+/**
+ * start: Modal
+ */
+
+const closeModal = (refresh = false) => {
+  emit("close");
+  if (refresh) {
+    trStore.refetchData();
+  }
 };
 
 /**
- * Lifeclycle
+ * end: Modal
  */
-
-const disableInputs = computed(() => {
-  return isFetch.value;
-});
 
 onMounted(async () => {
   if (props.editObject) {
-    form.id = props.editObject.id;
-    form.title = props.editObject.title;
-    form.description = props.editObject.description;
-    form.category = props.editObject.category;
-    form.categoryId = props.editObject.categoryId;
-    form.code = props.editObject.code;
-    form.externalLink = props.editObject.externalLink;
-    form.callback = props.editObject.callback;
-    form.isSync = props.editObject.isSync;
-    form.isBind = props.editObject.isBind;
+    setValues({
+      id: props.editObject.id,
+      title: props.editObject.title,
+      description: props.editObject.description,
+      category: props.editObject.category,
+      code: props.editObject.code,
+      externalLink: props.editObject.externalLink,
+    });
+
+    formOptions.callback = props.editObject.callback;
+    formOptions.isSync = props.editObject.isSync;
+    formOptions.isBind = props.editObject.isBind;
 
     if (!props.hideTimePeriods) {
-      form.timePeriods = props.editObject.timePeriods;
+      setValues({
+        timePeriods: props.editObject.timePeriods.map((tp) => ({
+          start: new Date(tp.start),
+          end: new Date(tp.end),
+        })),
+      });
     }
 
     if (isSyncMode) {
-      form.timerSessionType = props.editObject?.timerSessionType;
-      form.timerSessionFrom = props.editObject?.timerSessionFrom;
+      setValues({
+        timerSessionType: props.editObject?.timerSessionType,
+        timerSessionFrom: props.editObject?.timerSessionFrom,
+      });
+
+      await searchTrSelectAction();
     }
   }
 
@@ -259,29 +399,6 @@ onMounted(async () => {
     fetchData(closeModal);
   }
 });
-
-const isTrSearch = ref<boolean>(false);
-
-const searchTr = async (q: string = "") => {
-  try {
-    isTrSearch.value = true;
-    const result = await searchTimeRecord(q);
-    if (result) {
-      searchTrList.value = result.map((item) => {
-        item.title = item.title ? `${item.title} (${item.code})` : item.code;
-        return item;
-      });
-    }
-    return result;
-  } finally {
-    isTrSearch.value = false;
-  }
-};
-
-const searchTrSelectAction = async (q: string) => {
-  const result = await searchTr(q);
-  return result ?? [];
-};
 </script>
 
 <template>
@@ -306,165 +423,341 @@ const searchTrSelectAction = async (q: string) => {
     </CardHeader>
 
     <CardContent>
-      <UForm :schema="schema" :state="form" @submit="submit" class="space-y-4">
-        <section v-if="form.isBind">
-          <UFormGroup label="Tarefa existente" name="time-record-bind-id">
-            <USelectMenu
-              v-model="form.id"
-              :options="searchTrList"
-              :clear-search-on-close="true"
-              :ui-menu="{ height: 'max-h-40' }"
-              :disabled="disableInputs || isTrSearch"
-              value-attribute="id"
-              option-attribute="title"
-              placeholder="Selecione uma Terafa"
-              searchable-placeholder="Pesquisar..."
-              :loading="isTrSearch"
-              :searchable="searchTrSelectAction"
-              :debounce="1000"
-            >
-            </USelectMenu>
-          </UFormGroup>
-        </section>
+      <form @submit="onSubmit" class="space-y-4">
+        <template v-if="formOptions.isBind">
+          <FormField name="id">
+            <FormItem>
+              <FormLabel>Tarefa</FormLabel>
 
-        <div v-if="!hideTimePeriods" class="flex justify-between">
+              <FormControl>
+                <Combobox v-model="selectedTr">
+                  <FormControl>
+                    <ComboboxAnchor as-child>
+                      <ComboboxTrigger as-child>
+                        <Button
+                          variant="outline"
+                          type="button"
+                          class="w-full"
+                          :disabled="isTrSearch || disableInputs"
+                        >
+                          <section class="flex w-full justify-between">
+                            {{ selectedTr?.title || selectedTr?.code }}
+
+                            <ChevronsUpDown
+                              class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                            />
+                          </section>
+                        </Button>
+                      </ComboboxTrigger>
+                    </ComboboxAnchor>
+                  </FormControl>
+
+                  <ComboboxList class="w-full">
+                    <div class="relative w-full items-center">
+                      <ComboboxInput
+                        :display-value="(val) => val.code"
+                        class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
+                        maxlength="20"
+                        placeholder="Buscar..."
+                        @update:modelValue="searchTrSelectAction($event)"
+                      />
+
+                      <span
+                        class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                      >
+                        <Search class="size-4 text-muted-foreground" />
+                      </span>
+                    </div>
+
+                    <ComboboxEmpty> Nada encontrado. </ComboboxEmpty>
+
+                    <ComboboxGroup>
+                      <ComboboxItem
+                        v-for="tr in searchTrList"
+                        :key="tr.id"
+                        :value="tr"
+                        @click="setValues({ id: tr.id })"
+                      >
+                        {{ tr.title }}
+
+                        <ComboboxItemIndicator>
+                          <Check :class="cn('ml-auto h-4 w-4')" />
+                        </ComboboxItemIndicator>
+                      </ComboboxItem>
+                    </ComboboxGroup>
+                  </ComboboxList>
+                </Combobox>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </template>
+
+        <section v-if="!hideTimePeriods" class="flex justify-between">
           <h3>{{ _$t("periods") }}</h3>
 
-          <UButton
+          <Button
             v-if="!isSyncMode"
-            :label="_$t('add')"
             :disabled="addButtonIsDisabled || disableInputs"
             size="sm"
             type="button"
             @click="addTimePeriodToForm"
-          />
-        </div>
+          >
+            {{ _$t("add") }}
+          </Button>
+        </section>
 
-        <div
-          v-if="!hideTimePeriods"
-          v-for="(_, index) in form.timePeriods"
-          class="flex flex-row gap-4 relative dark:border-gray-800 border-b-2 pb-3"
+        <section
+          v-if="!hideTimePeriods && formValues.timePeriods"
+          v-for="(_, index) in formValues.timePeriods"
+          class="flex flex-row items-end gap-4 relative dark:border-gray-800 border-b-2 pb-3"
         >
-          <UFormGroup :label="_$t('startOfPeriod')" :name="'start-' + index">
-            <GDatePicker
-              v-model="form.timePeriods[index].start"
-              :min="index !== 0 ? form.timePeriods[index - 1].end : ''"
-              :disabled="disableInputs || isSyncMode"
-              class="py-1"
-              @change="form.timePeriods[index].end = $event"
-            />
-          </UFormGroup>
+          <FormField
+            v-slot="{ componentField }"
+            :name="`timePeriods[${index}].start`"
+          >
+            <FormItem>
+              <FormLabel>{{ _$t("startOfPeriod") }}</FormLabel>
+              <FormControl>
+                <GDatePicker
+                  v-bind="componentField"
+                  :min="
+                    index !== 0 ? formValues.timePeriods[index - 1].end : ''
+                  "
+                  :disabled="disableInputs || isSyncMode"
+                  class="py-1"
+                  @change="formValues.timePeriods[index].end = $event"
+                />
+              </FormControl>
+            </FormItem>
+            <FormMessage />
+          </FormField>
 
-          <UFormGroup :label="_$t('endOfPeriod')" :name="'end-' + index">
-            <GDatePicker
-              v-model="form.timePeriods[index].end"
-              :min="form.timePeriods[index].start"
-              :disabled="disableInputs || isSyncMode"
-              class="py-1"
-            />
-          </UFormGroup>
+          <FormField
+            v-slot="{ componentField }"
+            :name="`timePeriods[${index}].start`"
+          >
+            <FormItem>
+              <FormLabel>{{ _$t("endOfPeriod") }}</FormLabel>
+              <FormControl>
+                <GDatePicker
+                  v-bind="componentField"
+                  :min="formValues.timePeriods[index].start"
+                  :disabled="disableInputs || isSyncMode"
+                  class="py-1"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <UButton
+          <Button
             v-if="!isSyncMode"
             :disabled="disableInputs"
-            icon="i-icon-park-outline-close-small"
-            color="white"
-            variant="solid"
+            type="button"
+            variant="outline"
+            class="h-11 pb-1 mb-1"
             @click="deleteTimePeriodFromForm(index)"
-          />
-        </div>
+          >
+            <X />
+          </Button>
+        </section>
 
         <template v-if="!isSyncMode">
-          <UFormGroup :label="_$t('title')" name="title">
-            <UInput
-              v-model="form.title"
-              :disabled="disableInputs"
-              type="text"
-              maxlength="120"
-            />
-          </UFormGroup>
+          <FormField v-slot="{ componentField }" name="title">
+            <FormItem>
+              <FormLabel>{{ _$t("title") }}</FormLabel>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  :disabled="disableInputs"
+                  type="text"
+                  maxlength="120"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <UFormGroup
-            :label="_$t('code')"
-            :required="isEditMode"
-            :description="_$t('codeFormDescription')"
-            name="code"
-          >
-            <UInput
-              type="text"
-              v-model="form.code"
-              v-maska="{
-								mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-								tokens: {
-									X: {
-										pattern: /[a-zA-Z0-9-]/,
-										transform: (v: string) => v.toLowerCase(),
-									},
-								},
-							}"
-              :required="isEditMode"
-              :disabled="disableInputs"
-            />
-          </UFormGroup>
+          <FormField v-slot="{ componentField }" name="code">
+            <FormItem>
+              <FormLabel>{{ _$t("code") }}</FormLabel>
 
-          <UFormGroup
-            :label="$t('category')"
-            name="category"
-            class="z-100 relative"
-          >
-            <USelectMenu
-              v-model="categoryValue"
-              :options="categories"
-              :clear-search-on-close="true"
-              :ui-menu="{ height: 'max-h-40' }"
-              :disabled="categoryIsDisabled || disableInputs"
-              show-create-option-when="always"
-              searchable
-              creatable
-            >
-              <template #option-create="{ option }">
-                <span class="flex-shrink-0">
-                  {{ _$t("create") }}
-                </span>
+              <FormDescription>
+                {{ _$t("codeFormDescription") }}
+              </FormDescription>
 
-                <span class="block truncate">{{ option }}</span>
-              </template>
-            </USelectMenu>
-          </UFormGroup>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  type="text"
+                  v-maska="{
+										mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+										tokens: {
+											X: {
+												pattern: /[a-zA-Z0-9-]/,
+												transform: (v: string) => v.toLowerCase(),
+											},
+										},
+									}"
+                  :disabled="disableInputs"
+                />
+              </FormControl>
 
-          <UFormGroup :label="_$t('description')" name="description">
-            <UTextarea
-              v-model="form.description"
-              :disabled="disableInputs"
-              maxlength="240"
-            />
-          </UFormGroup>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <UFormGroup
-            :label="_$t('externalLink')"
-            name="externalLink"
-            description="Link externo para sua tarefa ou algo que queira fixar."
-            maxlength="120"
-          >
-            <UInput
-              v-model="form.externalLink"
-              :disabled="disableInputs"
-              type="text"
-            />
-          </UFormGroup>
+          <FormField v-slot="{ componentField }" name="category">
+            <FormItem>
+              <FormLabel>{{ _$t("category") }}</FormLabel>
+
+              <FormControl>
+                <Combobox
+                  v-bind="componentField"
+                  v-model="categoryValue"
+                  :open="categorySelectIsOpen"
+                  class="w-full"
+                  by="label"
+                  @update:open="categorySelectIsOpen = $event"
+                >
+                  <ComboboxAnchor as-child>
+                    <ComboboxTrigger as-child>
+                      <Button
+                        variant="outline"
+                        type="button"
+                        class="w-full"
+                        :disabled="categoryIsDisabled || disableInputs"
+                      >
+                        <section class="flex w-full justify-between">
+                          {{ categoryValue || "Selecionar" }}
+
+                          <ChevronsUpDown
+                            class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                          />
+                        </section>
+                      </Button>
+                    </ComboboxTrigger>
+                  </ComboboxAnchor>
+
+                  <ComboboxList class="w-full">
+                    <div class="relative w-full items-center">
+                      <ComboboxInput
+                        v-model="categorySelectSearch"
+                        maxlength="20"
+                        class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
+                        placeholder="Buscar..."
+                      />
+
+                      <span
+                        class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                      >
+                        <Search class="size-4 text-muted-foreground" />
+                      </span>
+                    </div>
+
+                    <ComboboxEmpty>
+                      <section class="flex flex-col gap-2 items-center">
+                        <span>
+                          Nenhuma categoria... <br />
+                          Clique abaixo para criar:
+                        </span>
+
+                        <Button
+                          type="button"
+                          variant="link"
+                          @click="
+                            categorySelectIsOpen = false;
+                            categoryValue = categorySelectSearch;
+                          "
+                        >
+                          "{{ categorySelectSearch }}"
+                        </Button>
+                      </section>
+                    </ComboboxEmpty>
+
+                    <ComboboxGroup>
+                      <ComboboxItem
+                        v-for="category in categories"
+                        :key="category.name"
+                        :value="category.name"
+                        @click="clearCategoryIfClickAgain(category.name)"
+                      >
+                        {{ category.name }}
+
+                        <ComboboxItemIndicator>
+                          <Check :class="cn('ml-auto h-4 w-4')" />
+                        </ComboboxItemIndicator>
+                      </ComboboxItem>
+
+                      <ComboboxItem
+                        v-if="
+                          isNewCategoryOnSelectSearch && categorySelectSearch
+                        "
+                        :value="categorySelectSearch"
+                      >
+                        <span class="flex gap-2">
+                          <PenLine /> Criar: "{{ categorySelectSearch }}"
+                        </span>
+                      </ComboboxItem>
+                    </ComboboxGroup>
+                  </ComboboxList>
+                </Combobox>
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="description">
+            <FormItem>
+              <FormLabel>{{ _$t("description") }}</FormLabel>
+              <FormControl>
+                <Textarea
+                  v-bind="componentField"
+                  :disabled="disableInputs"
+                  maxlength="240"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="externalLink">
+            <FormItem>
+              <FormLabel>{{ _$t("externalLink") }}</FormLabel>
+              <FormDescription>
+                {{ "Da sua tarefa ou alguma url que queira fixar." }}
+              </FormDescription>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  :disabled="disableInputs"
+                  type="text"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </template>
 
         <Button
-          type="submit"
           :disabled="submitIsDisabled"
-          :loading="isFetch"
+          :loading="isFetching"
           class="w-full mt-2"
+          type="submit"
         >
-          {{
-            isSyncMode ? (form.isBind ? _$t("bind") : _$t("sync")) : _$t("send")
-          }}
+          <template #with-loading>
+            {{
+              isSyncMode
+                ? formOptions.isBind
+                  ? _$t("bind")
+                  : _$t("sync")
+                : _$t("send")
+            }}
+          </template>
         </Button>
-      </UForm>
+      </form>
     </CardContent>
   </Card>
 </template>
