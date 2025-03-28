@@ -6,6 +6,7 @@ import { vMaska } from "maska/vue";
 import { useDebounceFn } from "@vueuse/core";
 import { useForm } from "vee-validate";
 import { X, Check, Search, ChevronsUpDown, PenLine } from "lucide-vue-next";
+import { v4 as uuidv4 } from "uuid";
 
 const emit = defineEmits(["close", "refresh"]);
 
@@ -27,8 +28,8 @@ const { data: allCategories, isFetching: isAllCategoriesFetching } =
   storeToRefs(allCategoriesStore);
 
 const formOptions = reactive<{
-  isSync?: boolean;
-  isBind?: boolean;
+  isSync?: boolean; // Quando os tp já possuem um id para vincular.
+  isBind?: boolean; // Quando há a seleção de uma tarefa para enviar os tp.
   callback?: (code?: string) => void;
 }>({
   callback: undefined,
@@ -40,20 +41,18 @@ const formSchema = toTypedSchema(
   yup.object({
     id: yup.number(),
     title: yup.string(),
-    timePeriods: yup
-      .array(
-        yup.object({
-          start: yup.date().required(),
-          end: yup.date().required(),
-        })
-      )
-      .required(),
+    timePeriods: yup.array(
+      yup.object({
+        id: yup.string().required(),
+        start: yup.date().required(),
+        end: yup.date().required(),
+      })
+    ),
     description: yup.string(),
     externalLink: yup.string().url(),
     code: yup.string().when("id", {
       is: (val: string) => {
-        console.log("id", val);
-        return !!val;
+        return Boolean(val) && !props.editObject?.isBind;
       },
       then: (s) => s.required("Código não é um campo opcional."),
       otherwise: (s) => s,
@@ -183,7 +182,10 @@ const addTimePeriodToForm = () => {
 
   const end = addMinutes(start, 25);
 
-  const timePeriods = [...(formValues.timePeriods ?? []), { start, end }];
+  const timePeriods = [
+    ...(formValues.timePeriods ?? []),
+    { start, end, id: uuidv4() },
+  ];
   setValues({ timePeriods });
 };
 
@@ -260,7 +262,14 @@ const onSubmit = handleSubmit((value) => {
 
   value.id && isEditMode.value
     ? updateAction({ ...dto, id: value.id })
-    : createAction({ ...dto, timePeriods: value.timePeriods });
+    : createAction({
+        ...dto,
+        timePeriods:
+          value.timePeriods?.map(({ start, end }) => ({
+            start,
+            end,
+          })) || [],
+      });
 });
 
 const isEditMode = computed(() => {
@@ -379,6 +388,7 @@ onMounted(async () => {
     if (!props.hideTimePeriods) {
       setValues({
         timePeriods: props.editObject.timePeriods.map((tp) => ({
+          id: uuidv4(),
           start: new Date(tp.start),
           end: new Date(tp.end),
         })),
@@ -391,7 +401,7 @@ onMounted(async () => {
         timerSessionFrom: props.editObject?.timerSessionFrom,
       });
 
-      await searchTrSelectAction();
+      await searchTr();
     }
   }
 
@@ -402,196 +412,177 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
-        {{ "Tarefa" }}
-        <Badge
-          v-if="(isEditMode || isSyncMode) && props.editObject?.code"
-          variant="outline"
-        >
-          {{ props.editObject?.code }}
-        </Badge>
-      </CardTitle>
+  <form @submit="onSubmit" class="space-y-4">
+    <template v-if="formOptions.isBind">
+      <FormField name="id">
+        <FormItem>
+          <FormLabel>Tarefa</FormLabel>
 
-      <CardDescription>
-        Você pode agrupar e sincronizar o tempo registrado em nossos cronômetros
-        em tarefas personalizadas.
-      </CardDescription>
+          <Combobox v-model="selectedTr">
+            <FormControl>
+              <ComboboxAnchor as-child>
+                <ComboboxTrigger as-child>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    class="w-full"
+                    :disabled="isTrSearch || disableInputs"
+                  >
+                    <section class="flex w-full justify-between">
+                      {{
+                        selectedTr?.title || selectedTr?.code || "Selecionar"
+                      }}
 
-      <GCloseButton @close="closeModal" />
-    </CardHeader>
-
-    <CardContent>
-      <form @submit="onSubmit" class="space-y-4">
-        <template v-if="formOptions.isBind">
-          <FormField name="id">
-            <FormItem>
-              <FormLabel>Tarefa</FormLabel>
-
-              <FormControl>
-                <Combobox v-model="selectedTr">
-                  <FormControl>
-                    <ComboboxAnchor as-child>
-                      <ComboboxTrigger as-child>
-                        <Button
-                          variant="outline"
-                          type="button"
-                          class="w-full"
-                          :disabled="isTrSearch || disableInputs"
-                        >
-                          <section class="flex w-full justify-between">
-                            {{ selectedTr?.title || selectedTr?.code }}
-
-                            <ChevronsUpDown
-                              class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                            />
-                          </section>
-                        </Button>
-                      </ComboboxTrigger>
-                    </ComboboxAnchor>
-                  </FormControl>
-
-                  <ComboboxList class="w-full">
-                    <div class="relative w-full items-center">
-                      <ComboboxInput
-                        :display-value="(val) => val.code"
-                        class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
-                        maxlength="20"
-                        placeholder="Buscar..."
-                        @update:modelValue="searchTrSelectAction($event)"
+                      <ChevronsUpDown
+                        class="ml-2 h-4 w-4 shrink-0 opacity-50"
                       />
+                    </section>
+                  </Button>
+                </ComboboxTrigger>
+              </ComboboxAnchor>
+            </FormControl>
 
-                      <span
-                        class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
-                      >
-                        <Search class="size-4 text-muted-foreground" />
-                      </span>
-                    </div>
-
-                    <ComboboxEmpty> Nada encontrado. </ComboboxEmpty>
-
-                    <ComboboxGroup>
-                      <ComboboxItem
-                        v-for="tr in searchTrList"
-                        :key="tr.id"
-                        :value="tr"
-                        @click="setValues({ id: tr.id })"
-                      >
-                        {{ tr.title }}
-
-                        <ComboboxItemIndicator>
-                          <Check :class="cn('ml-auto h-4 w-4')" />
-                        </ComboboxItemIndicator>
-                      </ComboboxItem>
-                    </ComboboxGroup>
-                  </ComboboxList>
-                </Combobox>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </template>
-
-        <section v-if="!hideTimePeriods" class="flex justify-between">
-          <h3>{{ _$t("periods") }}</h3>
-
-          <Button
-            v-if="!isSyncMode"
-            :disabled="addButtonIsDisabled || disableInputs"
-            size="sm"
-            type="button"
-            @click="addTimePeriodToForm"
-          >
-            {{ _$t("add") }}
-          </Button>
-        </section>
-
-        <section
-          v-if="!hideTimePeriods && formValues.timePeriods"
-          v-for="(_, index) in formValues.timePeriods"
-          class="flex flex-row items-end gap-4 relative dark:border-gray-800 border-b-2 pb-3"
-        >
-          <FormField
-            v-slot="{ componentField }"
-            :name="`timePeriods[${index}].start`"
-          >
-            <FormItem>
-              <FormLabel>{{ _$t("startOfPeriod") }}</FormLabel>
-              <FormControl>
-                <GDatePicker
-                  v-bind="componentField"
-                  :min="
-                    index !== 0 ? formValues.timePeriods[index - 1].end : ''
-                  "
-                  :disabled="disableInputs || isSyncMode"
-                  class="py-1"
-                  @change="formValues.timePeriods[index].end = $event"
+            <ComboboxList class="w-full">
+              <div class="relative w-full items-center">
+                <ComboboxInput
+                  :display-value="(val) => val?.code"
+                  class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
+                  maxlength="20"
+                  placeholder="Buscar..."
+                  @update:modelValue="searchTrSelectAction($event)"
                 />
-              </FormControl>
-            </FormItem>
-            <FormMessage />
-          </FormField>
 
-          <FormField
-            v-slot="{ componentField }"
-            :name="`timePeriods[${index}].start`"
-          >
-            <FormItem>
-              <FormLabel>{{ _$t("endOfPeriod") }}</FormLabel>
-              <FormControl>
-                <GDatePicker
-                  v-bind="componentField"
-                  :min="formValues.timePeriods[index].start"
-                  :disabled="disableInputs || isSyncMode"
-                  class="py-1"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+                <span
+                  class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                >
+                  <Search class="size-4 text-muted-foreground" />
+                </span>
+              </div>
 
-          <Button
-            v-if="!isSyncMode"
-            :disabled="disableInputs"
-            type="button"
-            variant="outline"
-            class="h-11 pb-1 mb-1"
-            @click="deleteTimePeriodFromForm(index)"
-          >
-            <X />
-          </Button>
-        </section>
+              <ComboboxEmpty> Nada encontrado. </ComboboxEmpty>
 
-        <template v-if="!isSyncMode">
-          <FormField v-slot="{ componentField }" name="title">
-            <FormItem>
-              <FormLabel>{{ _$t("title") }}</FormLabel>
-              <FormControl>
-                <Input
-                  v-bind="componentField"
-                  :disabled="disableInputs"
-                  type="text"
-                  maxlength="120"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+              <ComboboxGroup>
+                <ComboboxItem
+                  v-for="tr in searchTrList"
+                  :key="tr.id"
+                  :value="tr"
+                  @click="setValues({ id: tr.id })"
+                >
+                  {{ tr.title }}
 
-          <FormField v-slot="{ componentField }" name="code">
-            <FormItem>
-              <FormLabel>{{ _$t("code") }}</FormLabel>
+                  <ComboboxItemIndicator>
+                    <Check :class="cn('ml-auto h-4 w-4')" />
+                  </ComboboxItemIndicator>
+                </ComboboxItem>
+              </ComboboxGroup>
+            </ComboboxList>
+          </Combobox>
 
-              <FormDescription>
-                {{ _$t("codeFormDescription") }}
-              </FormDescription>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
 
-              <FormControl>
-                <Input
-                  v-bind="componentField"
-                  type="text"
-                  v-maska="{
+    <section v-if="!hideTimePeriods" class="flex justify-between">
+      <h3>{{ _$t("periods") }}</h3>
+
+      <Button
+        v-if="!isSyncMode"
+        :disabled="addButtonIsDisabled || disableInputs"
+        size="sm"
+        type="button"
+        @click="addTimePeriodToForm"
+      >
+        {{ _$t("add") }}
+      </Button>
+    </section>
+
+    <section
+      v-if="
+        !hideTimePeriods &&
+        formValues.timePeriods &&
+        formValues.timePeriods.length
+      "
+      v-for="(tp, index) in formValues.timePeriods"
+      :key="tp.id"
+      class="flex flex-row items-end gap-4 relative dark:border-gray-800 border-b-2 pb-3"
+    >
+      <FormField
+        v-slot="{ componentField }"
+        :name="`timePeriods[${index}].start`"
+      >
+        <FormItem>
+          <FormLabel>{{ _$t("startOfPeriod") }}</FormLabel>
+          <FormControl>
+            <GDatePicker
+              v-bind="componentField"
+              :min="index !== 0 ? formValues.timePeriods[index - 1].end : ''"
+              :disabled="disableInputs || isSyncMode"
+              class="py-1"
+              @change="formValues.timePeriods[index].end = $event"
+            />
+          </FormControl>
+        </FormItem>
+      </FormField>
+
+      <FormField
+        v-slot="{ componentField }"
+        :name="`timePeriods[${index}].end`"
+      >
+        <FormItem>
+          <FormLabel>{{ _$t("endOfPeriod") }}</FormLabel>
+          <FormControl>
+            <GDatePicker
+              v-bind="componentField"
+              :min="formValues.timePeriods[index].start"
+              :disabled="disableInputs || isSyncMode"
+              class="py-1"
+            />
+          </FormControl>
+        </FormItem>
+      </FormField>
+
+      <Button
+        v-if="!isSyncMode"
+        :disabled="disableInputs"
+        type="button"
+        variant="outline"
+        class="h-11 pb-1 mb-1"
+        @click="deleteTimePeriodFromForm(index)"
+      >
+        <X />
+      </Button>
+    </section>
+
+    <template v-if="!isSyncMode">
+      <FormField v-slot="{ componentField }" name="title">
+        <FormItem>
+          <FormLabel>{{ _$t("title") }}</FormLabel>
+          <FormControl>
+            <Input
+              v-bind="componentField"
+              :disabled="disableInputs"
+              type="text"
+              maxlength="120"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ componentField }" name="code">
+        <FormItem>
+          <FormLabel>{{ _$t("code") }}</FormLabel>
+
+          <FormDescription>
+            {{ _$t("codeFormDescription") }}
+          </FormDescription>
+
+          <FormControl>
+            <Input
+              v-bind="componentField"
+              type="text"
+              v-maska="{
 										mask: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
 										tokens: {
 											X: {
@@ -600,164 +591,161 @@ onMounted(async () => {
 											},
 										},
 									}"
-                  :disabled="disableInputs"
-                />
-              </FormControl>
+              :disabled="disableInputs"
+            />
+          </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          </FormField>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-          <FormField v-slot="{ componentField }" name="category">
-            <FormItem>
-              <FormLabel>{{ _$t("category") }}</FormLabel>
+      <FormField v-slot="{ componentField }" name="category">
+        <FormItem>
+          <FormLabel>{{ _$t("category") }}</FormLabel>
 
-              <FormControl>
-                <Combobox
-                  v-bind="componentField"
-                  v-model="categoryValue"
-                  :open="categorySelectIsOpen"
-                  class="w-full"
-                  by="label"
-                  @update:open="categorySelectIsOpen = $event"
-                >
-                  <ComboboxAnchor as-child>
-                    <ComboboxTrigger as-child>
-                      <Button
-                        variant="outline"
-                        type="button"
-                        class="w-full"
-                        :disabled="categoryIsDisabled || disableInputs"
-                      >
-                        <section class="flex w-full justify-between">
-                          {{ categoryValue || "Selecionar" }}
+          <Combobox
+            v-bind="componentField"
+            v-model="categoryValue"
+            :open="categorySelectIsOpen"
+            class="w-full"
+            by="label"
+            @update:open="categorySelectIsOpen = $event"
+          >
+            <FormControl>
+              <ComboboxAnchor as-child>
+                <ComboboxTrigger as-child>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    class="w-full"
+                    :disabled="categoryIsDisabled || disableInputs"
+                  >
+                    <section class="flex w-full justify-between">
+                      {{ categoryValue || "Selecionar" }}
 
-                          <ChevronsUpDown
-                            class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                          />
-                        </section>
-                      </Button>
-                    </ComboboxTrigger>
-                  </ComboboxAnchor>
-
-                  <ComboboxList class="w-full">
-                    <div class="relative w-full items-center">
-                      <ComboboxInput
-                        v-model="categorySelectSearch"
-                        maxlength="20"
-                        class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
-                        placeholder="Buscar..."
+                      <ChevronsUpDown
+                        class="ml-2 h-4 w-4 shrink-0 opacity-50"
                       />
+                    </section>
+                  </Button>
+                </ComboboxTrigger>
+              </ComboboxAnchor>
+            </FormControl>
 
-                      <span
-                        class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
-                      >
-                        <Search class="size-4 text-muted-foreground" />
-                      </span>
-                    </div>
-
-                    <ComboboxEmpty>
-                      <section class="flex flex-col gap-2 items-center">
-                        <span>
-                          Nenhuma categoria... <br />
-                          Clique abaixo para criar:
-                        </span>
-
-                        <Button
-                          type="button"
-                          variant="link"
-                          @click="
-                            categorySelectIsOpen = false;
-                            categoryValue = categorySelectSearch;
-                          "
-                        >
-                          "{{ categorySelectSearch }}"
-                        </Button>
-                      </section>
-                    </ComboboxEmpty>
-
-                    <ComboboxGroup>
-                      <ComboboxItem
-                        v-for="category in categories"
-                        :key="category.name"
-                        :value="category.name"
-                        @click="clearCategoryIfClickAgain(category.name)"
-                      >
-                        {{ category.name }}
-
-                        <ComboboxItemIndicator>
-                          <Check :class="cn('ml-auto h-4 w-4')" />
-                        </ComboboxItemIndicator>
-                      </ComboboxItem>
-
-                      <ComboboxItem
-                        v-if="
-                          isNewCategoryOnSelectSearch && categorySelectSearch
-                        "
-                        :value="categorySelectSearch"
-                      >
-                        <span class="flex gap-2">
-                          <PenLine /> Criar: "{{ categorySelectSearch }}"
-                        </span>
-                      </ComboboxItem>
-                    </ComboboxGroup>
-                  </ComboboxList>
-                </Combobox>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="description">
-            <FormItem>
-              <FormLabel>{{ _$t("description") }}</FormLabel>
-              <FormControl>
-                <Textarea
-                  v-bind="componentField"
-                  :disabled="disableInputs"
-                  maxlength="240"
+            <ComboboxList class="w-full">
+              <div class="relative w-full items-center">
+                <ComboboxInput
+                  v-model="categorySelectSearch"
+                  maxlength="20"
+                  class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
+                  placeholder="Buscar..."
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
 
-          <FormField v-slot="{ componentField }" name="externalLink">
-            <FormItem>
-              <FormLabel>{{ _$t("externalLink") }}</FormLabel>
-              <FormDescription>
-                {{ "Da sua tarefa ou alguma url que queira fixar." }}
-              </FormDescription>
-              <FormControl>
-                <Input
-                  v-bind="componentField"
-                  :disabled="disableInputs"
-                  type="text"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </template>
+                <span
+                  class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                >
+                  <Search class="size-4 text-muted-foreground" />
+                </span>
+              </div>
 
-        <Button
-          :disabled="submitIsDisabled"
-          :loading="isFetching"
-          class="w-full mt-2"
-          type="submit"
-        >
-          <template #with-loading>
-            {{
-              isSyncMode
-                ? formOptions.isBind
-                  ? _$t("bind")
-                  : _$t("sync")
-                : _$t("send")
-            }}
-          </template>
-        </Button>
-      </form>
-    </CardContent>
-  </Card>
+              <ComboboxEmpty>
+                <section class="flex flex-col gap-2 items-center">
+                  <span>
+                    Nenhuma categoria... <br />
+                    Clique abaixo para criar:
+                  </span>
+
+                  <Button
+                    type="button"
+                    variant="link"
+                    @click="
+                      categorySelectIsOpen = false;
+                      categoryValue = categorySelectSearch;
+                    "
+                  >
+                    "{{ categorySelectSearch }}"
+                  </Button>
+                </section>
+              </ComboboxEmpty>
+
+              <ComboboxGroup>
+                <ComboboxItem
+                  v-for="category in categories"
+                  :key="category.name"
+                  :value="category.name"
+                  @click="clearCategoryIfClickAgain(category.name)"
+                >
+                  {{ category.name }}
+
+                  <ComboboxItemIndicator>
+                    <Check :class="cn('ml-auto h-4 w-4')" />
+                  </ComboboxItemIndicator>
+                </ComboboxItem>
+
+                <ComboboxItem
+                  v-if="isNewCategoryOnSelectSearch && categorySelectSearch"
+                  :value="categorySelectSearch"
+                >
+                  <span class="flex gap-2">
+                    <PenLine /> Criar: "{{ categorySelectSearch }}"
+                  </span>
+                </ComboboxItem>
+              </ComboboxGroup>
+            </ComboboxList>
+          </Combobox>
+
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ componentField }" name="description">
+        <FormItem>
+          <FormLabel>{{ _$t("description") }}</FormLabel>
+          <FormControl>
+            <Textarea
+              v-bind="componentField"
+              :disabled="disableInputs"
+              maxlength="240"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ componentField }" name="externalLink">
+        <FormItem>
+          <FormLabel>{{ _$t("externalLink") }}</FormLabel>
+          <FormDescription>
+            {{ "Da sua tarefa ou alguma url que queira fixar." }}
+          </FormDescription>
+          <FormControl>
+            <Input
+              v-bind="componentField"
+              :disabled="disableInputs"
+              type="text"
+            />
+          </FormControl>
+
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+
+    <Button
+      :disabled="submitIsDisabled"
+      :loading="isFetching"
+      class="w-full mt-2"
+      type="submit"
+    >
+      <template #with-loading>
+        {{
+          isSyncMode
+            ? formOptions.isBind
+              ? _$t("bind")
+              : _$t("sync")
+            : _$t("send")
+        }}
+      </template>
+    </Button>
+  </form>
 </template>

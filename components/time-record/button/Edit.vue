@@ -23,7 +23,6 @@ const openTimeRecordModal = () => {
     title: tr.title,
     description: tr.description,
     category: tr.categoryName || "",
-    categoryId: tr.categoryId,
     code: tr.code || "",
     externalLink: tr.externalLink || "",
     timePeriods: [],
@@ -44,11 +43,29 @@ const closeTimeRecordModal = () => {
     @click="openTimeRecordModal"
   />
 
-  <UModal v-model="modal.updateTimeRecord.open" prevent-close>
-    <TimeRecordFormCreateAndUpdate
-      :edit-object="editTimeRecordObject"
-      hide-time-periods
-      @close="closeTimeRecordModal"
-    />
-  </UModal>
+  <Dialog
+    v-bind:open="modal.updateTimeRecord.open"
+    @update:open="!$event && closeTimeRecordModal()"
+  >
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <DialogHeader>
+        <DialogTitle>
+          <span class="mr-2"> {{ _$t("task") }} </span>
+          <Badge v-if="editTimeRecordObject?.code" variant="outline">
+            {{ editTimeRecordObject?.code }}
+          </Badge>
+        </DialogTitle>
+
+        <DialogDescription>
+          {{ _$t("taskModalDescription") }}
+        </DialogDescription>
+      </DialogHeader>
+
+      <TimeRecordFormCreateAndUpdate
+        :edit-object="editTimeRecordObject"
+        hide-time-periods
+        @close="closeTimeRecordModal"
+      />
+    </DialogContent>
+  </Dialog>
 </template>

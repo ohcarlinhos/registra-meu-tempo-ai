@@ -29,7 +29,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
 <template>
-  <ComboboxPortal>
+  <ComboboxPortal disabled>
     <ComboboxContent
       v-bind="forwarded"
       :class="

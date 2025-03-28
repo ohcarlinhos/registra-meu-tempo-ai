@@ -9,6 +9,7 @@ import {
   Loader2,
 } from "lucide-vue-next";
 import NoSleep from "nosleep.js";
+import { useInterval } from "@vueuse/core";
 
 const props = defineProps({
   id: {
@@ -244,7 +245,7 @@ const isOffline = ref<boolean>(!navigator.onLine);
 
 const offlineCheck = setInterval(() => {
   isOffline.value = !navigator.onLine;
-}, 60000);
+}, 10000);
 
 const openFull = ref(false);
 

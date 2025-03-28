@@ -149,7 +149,23 @@ onBeforeUnmount(() => {
     </form>
   </GModalConfirm>
 
-  <UModal v-model="modal.createOrUpdateTimeRecord" prevent-close>
-    <TimeRecordFormCreateAndUpdate @close="closeModal" />
-  </UModal>
+  <Dialog
+    v-bind:open="modal.createOrUpdateTimeRecord"
+    @update:open="!$event && closeModal()"
+  >
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <DialogHeader>
+        <DialogTitle>
+          {{ "Tarefa" }}
+        </DialogTitle>
+
+        <DialogDescription>
+          Você pode agrupar e sincronizar o tempo registrado em nossos
+          cronômetros em tarefas personalizadas.
+        </DialogDescription>
+      </DialogHeader>
+
+      <TimeRecordFormCreateAndUpdate @close="closeModal" />
+    </DialogContent>
+  </Dialog>
 </template>

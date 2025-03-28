@@ -61,6 +61,16 @@ const i18nObj = {
 
   sync: "Sincronizar",
   title: "Título",
+  task: "Tarefa",
+  taskModalDescription:
+    "Você pode agrupar e sincronizar o tempo registrado em nossos cronômetros em tarefas personalizadas.",
+
+  warningLostTime: "Não será possível recuperar esse tempo depois.",
+
+  deleteLocalSession: "Apagar sessão do navegador",
+  syncSessionWithTask: "Sincronizar sessão com tarefa",
+  bindSessionWithTask: "Vincular sessão à tarefa existente",
+  createTaskFromSession: "Criar tarefa a partir de sessão",
 
   confirmDeleteCategoryMessage: "Tem certeza deseja excluir essa categoria?",
   confirmDeleteTimeRecordMessage:

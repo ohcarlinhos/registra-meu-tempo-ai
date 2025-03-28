@@ -79,7 +79,7 @@ const items = (row: TimeRecordLocal) => {
   const actions = [
     [
       {
-        label: "Apagar sessão do navegador",
+        label: _$t("deleteLocalSession"),
         icon: "i-icon-park-outline-delete-themes",
         disabled: false,
         click: () => openConfirmDeleteModal(row.localUuid, row.id),
@@ -90,20 +90,20 @@ const items = (row: TimeRecordLocal) => {
   if (userIsAuth.value) {
     if (row.id) {
       actions[0].unshift({
-        label: "Sincronizar sessão com tarefa",
+        label: _$t("syncSessionWithTask"),
         icon: "i-icon-park-outline-refresh-one",
         disabled: !userIsVerified.value,
         click: async () => openModal(row, true),
       });
     } else {
       actions[0].unshift({
-        label: "Vincular sessão à tarefa existente",
+        label: _$t("bindSessionWithTask"),
         icon: "i-icon-park-outline-refresh-one",
         disabled: !userIsVerified.value,
         click: async () => openModal(row, true, true),
       });
       actions[0].unshift({
-        label: "Criar tarefa a partir de sessão",
+        label: _$t("createTaskFromSession"),
         icon: "i-icon-park-outline-save-one",
         disabled: !userIsVerified.value,
         click: async () => openModal(row),
@@ -183,17 +183,27 @@ const closeModal = () => {
     @update:perPage="(value) => (timerStore._perPage = value)"
   />
 
-  <UModal v-model="modal.open" prevent-close>
-    <TimeRecordFormCreateAndUpdate
-      :edit-object="editTimeRecordObject"
-      @close="closeModal"
-    />
-  </UModal>
+  <Dialog v-bind:open="modal.open" @update:open="!$event && closeModal()">
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <DialogHeader>
+        <DialogTitle> {{ _$t("task") }} </DialogTitle>
+
+        <DialogDescription>
+          {{ editTimeRecordObject?.code }}
+        </DialogDescription>
+      </DialogHeader>
+
+      <TimeRecordFormCreateAndUpdate
+        :edit-object="editTimeRecordObject"
+        @close="closeModal"
+      />
+    </DialogContent>
+  </Dialog>
 
   <GModalConfirm
     v-model:open="confirmDelete.open"
     :title="_$t('confirmDeleteLocalRecordMessage')"
-    description="Não será possível recuperar esse tempo depois."
+    :description="_$t('warningLostTime')"
     @confirm="deleteAction"
     @cancel="closeConfirmDeleteModal"
   />
