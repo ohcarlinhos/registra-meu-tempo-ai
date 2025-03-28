@@ -47,7 +47,7 @@ defineEmits<{
   delete: [value: number];
 }>();
 
-import { getTimeRecordQuery } from "./utils/actions";
+import { getTimeRecordQuery } from "./body/actions";
 
 const links = computed(() => [
   {
