@@ -6,8 +6,6 @@ const timerStore = useTimerStore();
 const authStore = useAuthStore();
 const { isAuth: userIsAuth } = storeToRefs(authStore);
 
-const userStore = useUserStore();
-
 const props = withDefaults(
   defineProps<{
     id: number | null;
@@ -80,7 +78,6 @@ const items = (row: TimeRecordLocal) => {
       {
         label: _$t("deleteLocalSession"),
         icon: "i-icon-park-outline-delete-themes",
-        // disabled: false,
         click: () => openConfirmDeleteModal(row.localUuid, row.id),
       },
     ],
@@ -91,20 +88,17 @@ const items = (row: TimeRecordLocal) => {
       actions[0].unshift({
         label: _$t("syncSessionWithTask"),
         icon: "i-icon-park-outline-refresh-one",
-        // disabled: !userIsVerified.value,
         click: async () => openModal(row, true),
       });
     } else {
       actions[0].unshift({
         label: _$t("bindSessionWithTask"),
         icon: "i-icon-park-outline-refresh-one",
-        // disabled: !userIsVerified.value,
         click: async () => openModal(row, true, true),
       });
       actions[0].unshift({
         label: _$t("createTaskFromSession"),
         icon: "i-icon-park-outline-save-one",
-        // disabled: !userIsVerified.value,
         click: async () => openModal(row),
       });
     }
