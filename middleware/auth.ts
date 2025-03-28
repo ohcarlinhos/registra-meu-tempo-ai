@@ -1,28 +1,15 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const { isAuth } = storeToRefs(useAuthStore());
 
-  // if (import.meta.server) {
-  //   return;
-  // }
-
   if (!isAuth.value) {
     return navigateTo({ name: "login" });
   }
 
   const userStore = useUserStore();
   const { checkIfIsVerified } = userStore;
-  const { isVerified, mySelf } = storeToRefs(userStore);
+  const { mySelf } = storeToRefs(userStore);
 
   if (!mySelf.value) {
     await checkIfIsVerified();
-  }
-
-  if (
-    isAuth.value &&
-    !isVerified.value &&
-    to.name !== "need.verify" &&
-    !isVerifiedPage(to.name as string)
-  ) {
-    return navigateTo({ name: "need.verify" });
   }
 });

@@ -218,7 +218,7 @@ const persistOnServer = () => {
 const bindWithRecord = () => {
   modal.confirmPersistMethod.open = false;
   editTimeRecordObject.value!.isBind = true;
-  editTimeRecordObject.value!.isSync = false;
+  editTimeRecordObject.value!.isSync = true;
   modal.createTimeRecord.open = true;
 };
 

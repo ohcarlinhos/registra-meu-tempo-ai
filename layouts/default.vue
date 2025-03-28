@@ -4,7 +4,6 @@ const { closeAuthModal } = authStore;
 const { authModal, isAuth } = storeToRefs(authStore);
 
 const userStore = useUserStore();
-const { isVerified } = storeToRefs(userStore);
 
 const feedbackModal = reactive({
   open: false,
@@ -31,7 +30,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="isAuth && isVerified">
+  <template v-if="isAuth">
     <UModal v-model="feedbackModal.open" prevent-close>
       <FeedbackFormCreate @close="feedbackModal.open = false" />
     </UModal>

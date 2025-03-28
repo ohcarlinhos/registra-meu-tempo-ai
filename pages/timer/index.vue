@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth-timer"], name: "timer.page" });
 useHead({ title: "Cronômetros" });
-
-const authStore = useAuthStore();
-const { isAuth } = storeToRefs(authStore);
 </script>
 
 <template>

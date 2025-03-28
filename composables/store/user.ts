@@ -29,7 +29,7 @@ export const useUserStore = defineStore(
     });
 
     const isActive = computed(() => {
-      return Boolean(mySelf.value?.isVerified);
+      return Boolean(mySelf.value?.isActive);
     });
 
     const checkIfIsVerified = async () => {
