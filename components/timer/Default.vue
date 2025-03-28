@@ -215,6 +215,13 @@ const persistOnServer = () => {
   modal.createTimeRecord.open = true;
 };
 
+const bindWithRecord = () => {
+  modal.confirmPersistMethod.open = false;
+  editTimeRecordObject.value!.isBind = true;
+  editTimeRecordObject.value!.isSync = false;
+  modal.createTimeRecord.open = true;
+};
+
 const saveOnBrowser = () => {
   timerStore.endTimer(props.id);
   modal.confirmPersistMethod.open = false;
@@ -486,10 +493,12 @@ onBeforeUnmount(() => {
           </DialogDescription>
 
           <section class="flex flex-col gap-2 mt-5">
-            <Button disabled>Vincular a uma tarefa</Button>
+            <Button @click="bindWithRecord">Vincular a uma tarefa</Button>
+
             <Button variant="secondary" @click="persistOnServer">
               Criar tarefa a partir do tempo</Button
             >
+
             <Button variant="outline" @click="saveOnBrowser">
               Salvar no navegador
             </Button>
@@ -509,11 +518,29 @@ onBeforeUnmount(() => {
       @confirm="stopTimerAction"
     />
 
-    <UModal v-model="modal.createTimeRecord.open" prevent-close>
-      <TimeRecordFormCreateAndUpdate
-        :edit-object="editTimeRecordObject"
-        @close="closeTimeRecordModal"
-      />
-    </UModal>
+    <Dialog
+      v-bind:open="modal.createTimeRecord.open"
+      @update:open="!$event && closeTimeRecordModal()"
+    >
+      <DialogContent @interact-outside="$event.preventDefault()">
+        <DialogHeader>
+          <DialogTitle>
+            <span class="mr-2"> {{ _$t("task") }} </span>
+            <Badge v-if="editTimeRecordObject?.code" variant="outline">
+              {{ editTimeRecordObject?.code }}
+            </Badge>
+          </DialogTitle>
+
+          <DialogDescription>
+            {{ _$t("taskModalDescription") }}
+          </DialogDescription>
+        </DialogHeader>
+
+        <TimeRecordFormCreateAndUpdate
+          :edit-object="editTimeRecordObject"
+          @close="closeTimeRecordModal"
+        />
+      </DialogContent>
+    </Dialog>
   </template>
 </template>
