@@ -156,12 +156,11 @@ onBeforeUnmount(() => {
     <DialogContent @interact-outside="$event.preventDefault()">
       <DialogHeader>
         <DialogTitle>
-          {{ "Tarefa" }}
+          {{ _$t("task") }}
         </DialogTitle>
 
         <DialogDescription>
-          Você pode agrupar e sincronizar o tempo registrado em nossos
-          cronômetros em tarefas personalizadas.
+          {{ _$t("taskModalDescription") }}
         </DialogDescription>
       </DialogHeader>
 
