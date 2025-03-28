@@ -211,14 +211,18 @@ const endTimer = async () => {
 };
 
 const persistOnServer = () => {
+  editTimeRecordObject.value!.isBind = false;
+  editTimeRecordObject.value!.isSync = false;
+
   modal.confirmPersistMethod.open = false;
   modal.createTimeRecord.open = true;
 };
 
 const bindWithRecord = () => {
-  modal.confirmPersistMethod.open = false;
   editTimeRecordObject.value!.isBind = true;
   editTimeRecordObject.value!.isSync = true;
+
+  modal.confirmPersistMethod.open = false;
   modal.createTimeRecord.open = true;
 };
 
@@ -227,9 +231,14 @@ const saveOnBrowser = () => {
   modal.confirmPersistMethod.open = false;
 };
 
-const closeTimeRecordModal = () => {
+const closeTimeRecordModal = (reopenPersistModal = false) => {
   modal.createTimeRecord.open = false;
-  editTimeRecordObject.value = undefined;
+
+  if (reopenPersistModal) {
+    modal.confirmPersistMethod.open = true;
+  } else {
+    editTimeRecordObject.value = undefined;
+  }
 };
 
 const getButtonColor = computed(() => {
@@ -520,7 +529,7 @@ onBeforeUnmount(() => {
 
     <Dialog
       v-bind:open="modal.createTimeRecord.open"
-      @update:open="!$event && closeTimeRecordModal()"
+      @update:open="!$event && closeTimeRecordModal(true)"
     >
       <DialogContent @interact-outside="$event.preventDefault()">
         <DialogHeader>
