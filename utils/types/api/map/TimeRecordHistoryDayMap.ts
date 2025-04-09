@@ -5,6 +5,8 @@ export type TimeRecordHistoryDayMap = {
   timePeriodsFormattedTime: string;
   timerSessions: TimerSessionMap[];
   timerSessionsFormattedTime: string;
+  timeMinutes: TimeMinutesMap[];
+  timeMinutesFormattedTime: string;
   timeOnMinutes: number;
   timeOnHours: number;
   formattedTime: string;

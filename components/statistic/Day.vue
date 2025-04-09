@@ -105,6 +105,13 @@ const mountInfoCardList = () => {
   });
 
   hourCards.push({
+    title: "Manuais",
+    value: statistic.totalTimeManual,
+    obs: `Quantidade: ${statistic.manualCount}`,
+    cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
+  });
+
+  hourCards.push({
     title: "Cronômetros",
     value: statistic.totalTimerHours,
     obs: `Sessões: ${statistic.timerCount}`,
@@ -125,19 +132,18 @@ const mountInfoCardList = () => {
     cardRingStyle: `ring-1 dark:ring-blue-500/80 ring-1 ring-blue-500/80`,
   });
 
-  hourCards.push({
-    title: "Manuais",
-    value: statistic.totalIsolatedPeriodHours,
-    obs: `Quantidade: ${statistic.isolatedPeriodCount}`,
-    cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
-  });
-
   infoCardList.value.push({
     title: "Horas",
     cards: hourCards,
   });
 
   const quantityCards: CardType[] = [];
+
+  quantityCards.push({
+    title: "Minutos",
+    value: statistic.timePeriodCount,
+    obs: "Tempo registrado contendo apenas a quantidade de minutos e dia.",
+  });
 
   quantityCards.push({
     title: "Sessões",
@@ -214,14 +220,14 @@ var maxDate = ref(new Date(Date.now()));
         </section>
 
         <div class="max-w-44">
-          <UFormGroup label="Dia selecionado" name="date">
+          <UFormGroup label="Referência" name="date">
             <GDatePicker
               :modelValue="selectedDate"
               :disabled="hasFetch"
               :max-date="maxDate"
               disableTimePicker
               utc
-              @update:modelValue="(e: string | Date) => selectedDate = startOfDay(e)"
+              @update:modelValue="(e: string | Date | undefined) => e != undefined && (selectedDate = startOfDay(e))"
             />
           </UFormGroup>
         </div>

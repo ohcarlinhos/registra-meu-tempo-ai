@@ -55,3 +55,17 @@ export const openDeleteTsModal = (id: number) => {
 export const closeDeleteTsModal = () => {
   deleteTsModal.open = false;
 };
+
+export const deleteTmModal = reactive({
+  open: false,
+  id: 0,
+});
+
+export const openDeleteTmModal = (id: number) => {
+  deleteTmModal.open = true;
+  deleteTmModal.id = id;
+};
+
+export const closeDeleteTmModal = () => {
+  deleteTmModal.open = false;
+};

@@ -14,6 +14,9 @@ import {
   deleteTsModal,
   openDeleteTsModal,
   closeDeleteTsModal,
+  deleteTmModal,
+  closeDeleteTmModal,
+  openDeleteTmModal,
 } from "./day-list/modal";
 
 import {
@@ -21,6 +24,8 @@ import {
   deleteTpIsFetch,
   deleteTsIsFetch,
   deleteTimerSessionAction,
+  deleteTmIsFetch,
+  deleteTimeMinuteAction,
 } from "./day-list/actions";
 
 import {
@@ -119,6 +124,14 @@ const deleteTsAction = () => {
   return deleteTimerSessionAction(
     deleteTsModal.id,
     closeDeleteTsModal,
+    props.callback
+  );
+};
+
+const deleteTmAction = () => {
+  return deleteTimeMinuteAction(
+    deleteTmModal.id,
+    closeDeleteTmModal,
     props.callback
   );
 };
@@ -423,6 +436,51 @@ defineExpose({
             </Popover>
           </section>
         </template>
+
+        <template v-if="day.timeMinutes.length">
+          <Separator class="my-2" />
+
+          <p class="text-lg flex gap-1">
+            Minutos
+
+            <Popover>
+              <PopoverTrigger>
+                <Info class="w-3 h-3 -translate-y-1" />
+              </PopoverTrigger>
+
+              <PopoverContent>
+                <section class="max-w-96 leading-none">
+                  <span class="text-xs">
+                    Tempo registrado manualmente sem início ou fim, ou seja,
+                    pertencente apenas ao dia.
+                  </span>
+                </section>
+              </PopoverContent>
+            </Popover>
+          </p>
+
+          <p class="text-sm">
+            {{ day.timeMinutesFormattedTime }}, {{ day.timeMinutes.length }}
+            {{ day.timeMinutes.length > 1 ? "registros" : "registro" }}
+          </p>
+
+          <section class="flex flex-row gap-2 flex-wrap py-2">
+            <DropdownMenu v-for="item in day.timeMinutes" :key="item.id">
+              <DropdownMenuTrigger>
+                <Badge variant="outline" class="border-yellow-500/80">
+                  {{ item.minutes || "0s" }}
+                </Badge>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent>
+                <DropdownMenuItem @click="openDeleteTmModal(item.id)">
+                  <Trash2 />
+                  {{ _$t("delete") }}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </section>
+        </template>
       </CardContent>
     </Card>
 
@@ -457,10 +515,10 @@ defineExpose({
   <Dialog v-bind:open="tpModal.open" @update:open="tpModal.open = $event">
     <DialogContent @interact-outside="$event.preventDefault()">
       <DialogHeader>
-        <DialogTitle> Registro de Tempo </DialogTitle>
+        <DialogTitle> Período de Tempo </DialogTitle>
 
         <DialogDescription>
-          Crie ou atualize seus registros de tempo que possuem início e fim.
+          Crie ou atualize períodos de tempo que possuem início e fim.
         </DialogDescription>
       </DialogHeader>
 
@@ -488,5 +546,14 @@ defineExpose({
     custom-width="w-96"
     @confirm="deleteTsAction"
     @cancel="closeDeleteTsModal"
+  />
+
+  <GModalConfirm
+    v-model:open="deleteTmModal.open"
+    :isFetch="deleteTmIsFetch"
+    title="Tem certeza que deseja apagar esses minutos?"
+    description="Não será possível recuperar posteriormente esse registro."
+    @confirm="deleteTmAction"
+    @cancel="closeDeleteTmModal"
   />
 </template>

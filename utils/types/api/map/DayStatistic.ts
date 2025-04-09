@@ -7,12 +7,14 @@ export type DayStatistic = {
   totalPomodoroHours: string;
   totalBreakHours: string;
   isolatedPeriodCount: number;
+  totalTimeManual: string;
   timerCount: number;
   pomodoroCount: number;
   breakCount: number;
   sessionCount: number;
   timePeriodCount: number;
   interruptionCount: number;
+  manualCount: number;
   createdTimeRecordCount: number;
   updatedTimeRecordCount: number;
 };

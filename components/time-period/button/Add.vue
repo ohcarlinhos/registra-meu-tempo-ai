@@ -22,6 +22,6 @@ const clickAction = () => {
     @click="clickAction"
   >
     <CirclePlus />
-    {{ "Registro de Tempo (Manual)" }}
+    {{ "Registrar Período" }}
   </Button>
 </template>
