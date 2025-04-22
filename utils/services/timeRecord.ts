@@ -1,56 +1,56 @@
 export const getTimeRecords = async (pagQuery: IPaginationQuery) => {
   return useCustomFetch()<Pagination<TimeRecordMap>>(
-    `/record${paginationQueryHandle(pagQuery)}`,
+    `/records${paginationQueryHandle(pagQuery)}`,
     { method: "GET" }
   );
 };
 
 export const searchTimeRecord = async (search: string = "") => {
   return useCustomFetch()<SearchTimeRecordItem[]>(
-    `/record/search?value=${search}`,
+    `/records/search?value=${search}`,
     { method: "GET" }
   );
 };
 
 export const getTimeRecordByCode = async (code: string) => {
-  return useCustomFetch()<TimeRecordMap>(`/record/${code}`, {
+  return useCustomFetch()<TimeRecordMap>(`/records/${code}`, {
     method: "GET",
   });
 };
 
 export const postTimeRecord = async (body: CreateTimeRecordDto) => {
-  return useCustomFetch(false)<TimeRecordMap>("/record", {
+  return useCustomFetch(false)<TimeRecordMap>("/records", {
     method: "POST",
     body,
   });
 };
 
 export const putTimeRecord = async (body: UpdateTimeRecordDto) => {
-  return useCustomFetch(false)<TimeRecordMap>(`/record/${body.id}`, {
+  return useCustomFetch(false)<TimeRecordMap>(`/records/${body.id}`, {
     method: "PUT",
     body,
   });
 };
 
 export const deleteTimeRecord = async (id: number) => {
-  return useCustomFetch(false)<boolean>(`/record/${id}`, { method: "DELETE" });
+  return useCustomFetch(false)<boolean>(`/records/${id}`, { method: "DELETE" });
 };
 
 export const timeRecordApi = () => ({
   get: async (pagQuery: IPaginationQuery) => {
     return useCustomFetch()<Pagination<TimeRecordMap>>(
-      `/record${paginationQueryHandle(pagQuery)}`,
+      `/records${paginationQueryHandle(pagQuery)}`,
       { method: "GET" }
     );
   },
   delete: async (id: number) => {
-    return useCustomFetch(false)<boolean>(`/record/${id}`, {
+    return useCustomFetch(false)<boolean>(`/records/${id}`, {
       method: "DELETE",
     });
   },
   getHistory: async (pagQuery: IPaginationQuery, timeRecordId: number) => {
     return useCustomFetch()<Pagination<TimeRecordHistoryDayMap>>(
-      `/record/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
+      `/records/history/${timeRecordId}${paginationQueryHandle(pagQuery)}`,
       {
         method: "GET",
       }

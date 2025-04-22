@@ -3,7 +3,7 @@ export const getDayStatistic = async (
   timeRecordId: number | undefined = undefined
 ) => {
   return useCustomFetch()<DayStatistic>(
-    `/statistic${
+    `/statistics${
       timeRecordId ? "/" + timeRecordId : ""
     }/day?date=${date?.toISOString()}`,
     { method: "GET" }

@@ -1,6 +1,6 @@
 export const timeMinuteApi = () => ({
   delete: async (id: number) => {
-    return useCustomFetch(false)<boolean>(`/minute/${id}`, {
+    return useCustomFetch(false)<boolean>(`/minutes/${id}`, {
       method: "DELETE",
     });
   },
