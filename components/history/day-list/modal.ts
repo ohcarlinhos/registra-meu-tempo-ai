@@ -69,3 +69,25 @@ export const openDeleteTmModal = (id: number) => {
 export const closeDeleteTmModal = () => {
   deleteTmModal.open = false;
 };
+
+export const tmModal = reactive<{
+  open: boolean;
+  timeRecordId?: number;
+  form?: TimePeriodForm;
+}>({
+  open: false,
+  timeRecordId: undefined,
+});
+
+export const createTimeMinute = (timeRecordId: number) => {
+  tmModal.open = true;
+  tmModal.timeRecordId = timeRecordId;
+};
+
+export const closeTimeMinuteModal = async (
+  callback: () => Promise<void>,
+  refresh = false
+) => {
+  tmModal.open = false;
+  if (refresh) await callback();
+};

@@ -149,6 +149,9 @@ const i18nObj = {
   createTimePeriodSuccess: "Período criado com sucesso.",
   updateTimePeriodSuccess: "Período atualizado com sucesso.",
 
+  deleteTimeMinuteSuccess: "Minuto excluído com sucesso.",
+  createTimeMinuteSuccess: "Minutos criados com sucesso.",
+
   historyRecord: "Histórico",
   timerType: "Cronômetro",
 

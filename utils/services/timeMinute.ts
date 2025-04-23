@@ -4,4 +4,10 @@ export const timeMinuteApi = () => ({
       method: "DELETE",
     });
   },
+  post: async (dto: CreateTimeMinuteListDto, timeRecordId: number) => {
+    return useCustomFetch(false)<boolean>(`/minutes/list/${timeRecordId}`, {
+      method: "POST",
+      body: dto,
+    });
+  },
 });

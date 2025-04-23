@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import "@vuepic/vue-datepicker/dist/main.css";
-import VDatePicker from "@vuepic/vue-datepicker";
+import VueDatePicker from "@vuepic/vue-datepicker";
 
 const model = defineModel<Date | string>();
 
@@ -25,6 +25,11 @@ defineProps({
     default: false,
   },
 
+  enableSeconds: {
+    type: Boolean,
+    default: false,
+  },
+
   name: {
     type: String,
     default: "",
@@ -44,7 +49,7 @@ watch(model, (value) => {
 </script>
 
 <template>
-  <VDatePicker
+  <VueDatePicker
     v-model="model"
     :is24="true"
     :action-row="{ showNow: true }"
@@ -55,12 +60,12 @@ watch(model, (value) => {
     :format="disableTimePicker ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'"
     :name="name"
     :dark="isDark"
+    :enable-seconds
     :utc
     locale="pt-BR"
     select-text="Selecionar"
     cancel-text="Fechar"
     now-button-label="Agora"
-    enable-seconds
   />
 </template>
 

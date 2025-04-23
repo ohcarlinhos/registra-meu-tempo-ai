@@ -17,6 +17,9 @@ import {
   deleteTmModal,
   closeDeleteTmModal,
   openDeleteTmModal,
+  tmModal,
+  createTimeMinute,
+  closeTimeMinuteModal,
 } from "./day-list/modal";
 
 import {
@@ -142,6 +145,12 @@ const closeTimePeriodCallback = async (refresh = false) => {
   await closeTimePeriodModal(() => getData(), refresh);
 };
 
+const closeTimeMinuteCallback = async (refresh = false) => {
+  if (props.callback) await props.callback();
+
+  await closeTimeMinuteModal(() => getData(), refresh);
+};
+
 const getData = () => {
   dayStore.setTimeRecordId(props.timeRecordId);
 
@@ -204,6 +213,12 @@ defineExpose({
         </section>
 
         <div v-if="timeRecordId" class="flex gap-5 flex-row items-start mt-1">
+          <TimeMinuteButtonAdd
+            :time-record-id="timeRecordId"
+            :disabled="isFetchNow"
+            @open="createTimeMinute"
+          />
+
           <TimePeriodButtonAdd
             :time-record-id="timeRecordId"
             :disabled="isFetchNow"
@@ -468,7 +483,7 @@ defineExpose({
             <DropdownMenu v-for="item in day.timeMinutes" :key="item.id">
               <DropdownMenuTrigger>
                 <Badge variant="outline" class="border-yellow-500/80">
-                  {{ item.minutes || "0s" }}
+                  {{ item.minutes ? item.minutes + "m" : "0m" }}
                 </Badge>
               </DropdownMenuTrigger>
 
@@ -493,7 +508,7 @@ defineExpose({
     >
       <h4 class="text-3xl">Não há nada por aqui...</h4>
       <span class="text-lg">
-        Adicione um período de tempo ou utilize o cronômetro.
+        Adicione um período de tempo, minutos ou utilize o cronômetro.
       </span>
     </section>
 
@@ -515,10 +530,10 @@ defineExpose({
   <Dialog v-bind:open="tpModal.open" @update:open="tpModal.open = $event">
     <DialogContent @interact-outside="$event.preventDefault()">
       <DialogHeader>
-        <DialogTitle> Período de Tempo </DialogTitle>
+        <DialogTitle> Períodos de Tempo </DialogTitle>
 
         <DialogDescription>
-          Crie ou atualize períodos de tempo que possuem início e fim.
+          Períodos são registros de tempos exatos com início e fim.
         </DialogDescription>
       </DialogHeader>
 
@@ -526,6 +541,25 @@ defineExpose({
         :time-record-id="tpModal.timeRecordId"
         :edit-object="tpModal.form"
         @close="closeTimePeriodCallback"
+      />
+    </DialogContent>
+  </Dialog>
+
+  <Dialog v-bind:open="tmModal.open" @update:open="tmModal.open = $event">
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <DialogHeader>
+        <DialogTitle> Minutos </DialogTitle>
+
+        <DialogDescription>
+          Registrar seu tempo por minutos te da a liberdade de deixar o
+          computador ou celular de lado e focar em suas tarefas.
+        </DialogDescription>
+      </DialogHeader>
+
+      <TimeMinuteFormCreateAndUpdate
+        :time-record-id="tmModal.timeRecordId"
+        :callback
+        @close="closeTimeMinuteCallback"
       />
     </DialogContent>
   </Dialog>

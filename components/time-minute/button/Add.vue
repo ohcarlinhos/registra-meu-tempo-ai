@@ -17,11 +17,11 @@ const clickAction = () => {
 
 <template>
   <Button
-    variant="outline"
-    title="Ideal para registrar seu tempo de forma exata, considerando a hora de início e fim da sua tarefa."
+    variant="default"
+    title="Ideal para pessoas que preferem focar longe dos computadores e celulares."
     @click="clickAction"
   >
     <CirclePlus />
-    {{ "Registrar Período" }}
+    {{ "Registrar Minutos" }}
   </Button>
 </template>

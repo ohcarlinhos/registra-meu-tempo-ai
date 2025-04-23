@@ -110,7 +110,7 @@ watch(
   }
 );
 
-var dateNow = ref(addMinutes(Date.now(), 10));
+var dateMax = ref(addMinutes(Date.now(), 10));
 </script>
 
 <template>
@@ -120,7 +120,7 @@ var dateNow = ref(addMinutes(Date.now(), 10));
         <GDatePicker
           v-model="form.start"
           :disabled="isFetch"
-          :max="dateNow"
+          :max="dateMax"
           class="py-1"
           @change="changeStart"
         />
@@ -130,7 +130,7 @@ var dateNow = ref(addMinutes(Date.now(), 10));
         <GDatePicker
           v-model="form.end"
           :min="form.start"
-          :max="dateNow"
+          :max="dateMax"
           :disabled="isFetch"
           class="py-1"
         />
