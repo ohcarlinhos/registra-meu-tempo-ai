@@ -19,7 +19,7 @@ const props = withDefaults(
 const formSchema = toTypedSchema(
   yup.object({
     minutes: yup.array(yup.number().required()).required(),
-    date: yup.date().required("O dia dos registros é obrigatório."),
+    date: yup.date().required('O campo "Dia dos registros" é obrigatório.'),
     minutesToAdd: yup.number(),
   })
 );

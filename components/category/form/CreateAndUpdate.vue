@@ -18,7 +18,7 @@ const formCallback = ref<() => void>();
 const formSchema = toTypedSchema(
   yup.object({
     id: yup.number(),
-    name: yup.string().required(),
+    name: yup.string().required('O campo "Nome" é obrigatório.'),
   })
 );
 
