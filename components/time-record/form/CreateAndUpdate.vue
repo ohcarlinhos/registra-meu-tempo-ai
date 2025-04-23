@@ -442,7 +442,7 @@ onMounted(async () => {
               </ComboboxAnchor>
             </FormControl>
 
-            <ComboboxList class="w-full">
+            <ComboboxList align="start">
               <div class="relative w-full items-center">
                 <ComboboxInput
                   :display-value="(val) => val?.code"
@@ -632,7 +632,7 @@ onMounted(async () => {
               </ComboboxAnchor>
             </FormControl>
 
-            <ComboboxList class="w-full">
+            <ComboboxList align="start">
               <div class="relative w-full items-center">
                 <ComboboxInput
                   v-model="categorySelectSearch"
