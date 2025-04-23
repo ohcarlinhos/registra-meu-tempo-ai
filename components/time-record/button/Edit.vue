@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Edit } from "lucide-vue-next";
 const editTimeRecordObject = ref<TimeRecordForm>();
 
 const props = defineProps<{
@@ -37,11 +38,10 @@ const closeTimeRecordModal = () => {
 </script>
 
 <template>
-  <UButton
-    icon="i-icon-park-outline-edit"
-    :label="_$t('edit')"
-    @click="openTimeRecordModal"
-  />
+  <Button @click="openTimeRecordModal">
+    <Edit />
+    {{ _$t("edit") }}
+  </Button>
 
   <Dialog
     v-bind:open="modal.updateTimeRecord.open"

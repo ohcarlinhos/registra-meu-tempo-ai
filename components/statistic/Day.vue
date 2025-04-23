@@ -220,16 +220,18 @@ var maxDate = ref(new Date(Date.now()));
         </section>
 
         <div class="max-w-44">
-          <UFormGroup label="Referência" name="date">
-            <GDatePicker
-              :modelValue="selectedDate"
-              :disabled="hasFetch"
-              :max-date="maxDate"
-              disableTimePicker
-              utc
-              @update:modelValue="(e: string | Date | undefined) => e != undefined && (selectedDate = startOfDay(e))"
-            />
-          </UFormGroup>
+          <p class="text-sm font-medium leading-none pb-2">
+            {{ "Referência" }}
+          </p>
+
+          <GDatePicker
+            :modelValue="selectedDate"
+            :disabled="hasFetch"
+            :max-date="maxDate"
+            disableTimePicker
+            utc
+            @update:modelValue="(e: string | Date | undefined) => e != undefined && (selectedDate = startOfDay(e))"
+          />
         </div>
       </section>
     </section>
