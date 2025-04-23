@@ -147,7 +147,7 @@ const endTimer = async () => {
       title: "Seu navegador está sem acesso a Internet.",
       description:
         "Mas não se preocupe! Salvamos seu tempo localmente (navegador).",
-      color: "red",
+      variant: "destructive",
     });
     return;
   }
@@ -240,12 +240,6 @@ const closeTimeRecordModal = (reopenPersistModal = false) => {
     editTimeRecordObject.value = undefined;
   }
 };
-
-const getButtonColor = computed(() => {
-  if (timer.value.type === "pomodoro") return "red";
-  if (timer.value.type == "break") return "blue";
-  return "green";
-});
 
 const getLabel = computed(() => {
   if (timer.value.type === "pomodoro") return "Pomodoro";
@@ -412,9 +406,9 @@ onBeforeUnmount(() => {
       <span> Sincronizado com a tarefa: </span>
 
       <span class="pt-1">
-        <UBadge :color="getButtonColor" variant="soft" size="md">
+        <Badge variant="outline" size="md">
           {{ props.code }}
-        </UBadge>
+        </Badge>
       </span>
     </p>
 
@@ -477,7 +471,7 @@ onBeforeUnmount(() => {
           }}
         </p>
 
-        <UDivider class="pt-4" />
+        <Separator class="mt-4" />
 
         <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
         <p v-if="!userIsAuth" class="pt-2 text-xs">

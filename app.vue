@@ -41,7 +41,7 @@ useSeoMeta({
 </script>
 
 <template>
+  <Toaster />
   <NuxtLoadingIndicator />
   <NuxtPage />
-  <UNotifications />
 </template>
