@@ -9,6 +9,7 @@ const ErrorTranslateList = [
 
   ["email_already_in_use", "emailInUse"],
   ["user_not_found", "userNotFound"],
+  ["password_not_allowed", "passwordNotAllowed"],
 ];
 
 export const TranslateErrorHandle = (tag: string) => {

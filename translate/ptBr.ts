@@ -118,6 +118,7 @@ const i18nObj = {
   recoveryPassword: "Recuperar senha",
 
   userNotFound: "Usuário não encontrado.",
+  passwordNotAllowed: "Não foi possível fazer a autenticação por esse método.",
 
   emailIsInvalid: "Digite um e-mail válido.",
   emailIsRequired: "E-mail é obrigatório.",
