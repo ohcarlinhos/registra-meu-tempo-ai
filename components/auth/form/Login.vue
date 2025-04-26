@@ -85,8 +85,9 @@ if (rfMockEnable.value) {
       <CardTitle>
         {{ _$t("access") }}
       </CardTitle>
+
       <CardDescription>
-        Informe suas credenciais para acessar a ferramenta.
+        Utilize suas credenciais, ou acesse por uma de suas rede sociais.
       </CardDescription>
     </CardHeader>
 
@@ -131,7 +132,11 @@ if (rfMockEnable.value) {
         </Button>
       </form>
 
-      <Separator label="Redes Sociais" class="mt-6 mb-6" />
+      <Separator label="Redes Sociais" class="mt-6 mb-4" />
+
+      <p class="text-xs text-center mb-4">
+        Uma conta será criada automaticamente caso seja seu primeiro acesso.
+      </p>
 
       <Button
         @click="openInPopup('/auth/github')"
@@ -154,23 +159,5 @@ if (rfMockEnable.value) {
         Acessar com GitHub
       </Button>
     </CardContent>
-
-    <CardFooter>
-      <!-- <section class="flex gap-5 justify-center w-full">
-        <NuxtLink
-          :to="{ name: 'register' }"
-          class="hover:text-primary hover:underline text-sm"
-        >
-          {{ _$t("createAccount") }}
-        </NuxtLink>
-
-        <NuxtLink
-          :to="{ name: 'recovery' }"
-          class="hover:text-primary hover:underline text-sm"
-        >
-          {{ _$t("recoveryPassword") }}
-        </NuxtLink>
-      </section> -->
-    </CardFooter>
   </Card>
 </template>
