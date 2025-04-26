@@ -24,16 +24,10 @@ const routeList = computed<RouteProps[]>(() => {
   ];
 
   if (!loggedIn.value) {
-    routes.push(
-      {
-        name: "login",
-        label: "Acessar",
-      },
-      {
-        name: "register",
-        label: "Registrar",
-      }
-    );
+    routes.push({
+      name: "login",
+      label: "Acessar",
+    });
   } else {
     routes.unshift({
       name: "record.panel",
