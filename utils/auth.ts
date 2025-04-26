@@ -1,9 +1,4 @@
-export const logout = () => {
-  const router = useRouter();
-
-  const authStore = useAuthStore();
-  const { clearSession } = authStore;
-
-  clearSession();
-  router.push({ name: "login" });
+export const logout = async () => {
+  await useUserSession().clear();
+  useRouter().push({ name: "login" });
 };

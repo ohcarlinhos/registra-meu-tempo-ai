@@ -90,11 +90,7 @@ onMounted(async () => {
             <FormItem>
               <FormLabel>{{ _$t("email") }}</FormLabel>
               <FormControl>
-                <Input
-                  v-bind="componentField"
-                  type="email"
-                  :disabled="isFetch"
-                />
+                <Input v-bind="componentField" type="email" :disabled="true" />
               </FormControl>
               <FormDescription />
               <FormMessage />

@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["guest"], name: "register" });
+definePageMeta({
+  middleware: [
+    "disabled",
+    // "guest"
+  ],
+  name: "register",
+});
 useHead({ title: "Criar conta" });
 </script>
 

@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["guest"], name: "recovery.password" });
+definePageMeta({
+  middleware: [
+    "disabled",
+    // "guest"
+  ],
+  name: "recovery.password",
+});
 useHead({ title: "Nova senha" });
 </script>
 

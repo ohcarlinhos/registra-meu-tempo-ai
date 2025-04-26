@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-const authStore = useAuthStore();
-const { isAuth: userIsAuth } = storeToRefs(authStore);
+const { loggedIn } = useUserSession();
 
 import { Menu } from "lucide-vue-next";
 
@@ -24,7 +23,7 @@ const routeList = computed<RouteProps[]>(() => {
     },
   ];
 
-  if (!userIsAuth.value) {
+  if (!loggedIn.value) {
     routes.push(
       {
         name: "login",

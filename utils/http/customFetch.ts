@@ -1,31 +1,34 @@
 const clearSession = (needRefresh = false) => {
-  const { clearSession, openAuthModal } = useAuthStore();
+  const { clear } = useUserSession();
+  const { openAuthModal } = useAuthStore();
   const { $i18n } = useNuxtApp();
 
-  clearSession();
+  clear();
   openAuthModal(needRefresh);
 
   throw new Error($i18n.t("sessionExpiredError"));
 };
 
 export const useCustomFetch = (needRefresh = true, stopIfNotAuth = true) => {
-  const { baseURL } = storeToRefs(useConfigStore());
+  const runtime = useRuntimeConfig();
   const { $i18n } = useNuxtApp();
 
-  const authStore = useAuthStore();
-  const { isAuth, jwt } = storeToRefs(authStore);
+  const { loggedIn, session } = useUserSession();
 
   return $fetch.create({
-    baseURL: baseURL.value,
+    baseURL: runtime.public.externalBaseURL,
 
     onRequest({ options }) {
-      if (isAuth.value) {
-        options.headers.append("Authorization", `Bearer ${jwt.value?.token}`);
+      if (loggedIn.value) {
+        options.headers.append(
+          "Authorization",
+          `Bearer ${session.value?.token}`
+        );
       }
     },
 
     onResponseError({ response }) {
-      if (stopIfNotAuth && !isAuth.value) {
+      if (stopIfNotAuth && !loggedIn.value) {
         clearSession(needRefresh);
         return;
       }

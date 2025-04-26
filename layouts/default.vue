@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 const authStore = useAuthStore();
 const { closeAuthModal } = authStore;
-const { authModal, isAuth } = storeToRefs(authStore);
 
-const userStore = useUserStore();
+const { authModal } = storeToRefs(authStore);
+const { loggedIn } = useUserSession();
 
 const feedbackModal = reactive({
   open: false,
@@ -30,7 +30,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="isAuth">
+  <template v-if="loggedIn">
     <UModal v-model="feedbackModal.open" prevent-close>
       <FeedbackFormCreate @close="feedbackModal.open = false" />
     </UModal>

@@ -37,6 +37,7 @@ export default defineNuxtConfig({
     "@nuxtjs/seo",
     "@nuxtjs/tailwindcss",
     "shadcn-nuxt",
+    "nuxt-auth-utils",
   ],
 
   shadcn: {
@@ -76,20 +77,21 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      baseURL: process.env.BASE_URL || "http://localhost:5051/api",
+      externalBaseURL: "",
 
-      onlyGuestMode: process.env.ONLY_GUEST_MODE || "0",
-      enableWarTools: process.env.ENABLE_WAR_TOOLS || "",
-      oldUserToken: process.env.OLD_USER_TOKEN || "",
+      onlyGuestMode: "0",
+      enableWarTools: "",
+      oldUserToken: "",
 
-      rfmEnable: process.env.REGISTER_FORM_MOCK_ENABLE || "0",
-      rfmName: process.env.REGISTER_FORM_MOCK_NAME || "",
-      rfmEmail: process.env.REGISTER_FORM_MOCK_EMAIL || "",
-      rfmCode: process.env.REGISTER_FORM_MOCK_CODE || "",
-      rfmPassword: process.env.REGISTER_FORM_MOCK_PASSWORD || "",
+      registerFormMockEnable: "0",
+      registerFormMockName: "",
+      registerFormMockEmail: "",
+      registerFormMockCode: "",
+      registerFormMockPassword: "",
 
       enableUserChallenge: process.env.NODE_ENV === "production",
     },
+    externalBaseURL: "",
   },
 
   compatibilityDate: "2024-10-09",

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ name: "verify.page.code" });
+definePageMeta({ name: "verify.page.code", middleware: ["disabled"] });
 useHead({ title: "Verificar conta" });
 
 const isFetch = ref(false);

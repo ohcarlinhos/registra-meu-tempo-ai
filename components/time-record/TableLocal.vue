@@ -2,9 +2,7 @@
 import { watch } from "vue";
 
 const timerStore = useTimerStore();
-
-const authStore = useAuthStore();
-const { isAuth: userIsAuth } = storeToRefs(authStore);
+const { loggedIn } = useUserSession();
 
 const props = withDefaults(
   defineProps<{
@@ -83,7 +81,7 @@ const items = (row: TimeRecordLocal) => {
     ],
   ];
 
-  if (userIsAuth.value) {
+  if (loggedIn.value) {
     if (row.id) {
       actions[0].unshift({
         label: _$t("syncSessionWithTask"),

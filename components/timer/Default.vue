@@ -30,8 +30,7 @@ const props = defineProps({
   },
 });
 
-const authStore = useAuthStore();
-const { isAuth: userIsAuth } = storeToRefs(authStore);
+const { loggedIn } = useUserSession();
 
 const timerStore = useTimerStore();
 
@@ -152,7 +151,7 @@ const endTimer = async () => {
     return;
   }
 
-  if (!userIsAuth.value) {
+  if (!loggedIn.value) {
     timerStore.endTimer(props.id);
     return;
   }
@@ -474,7 +473,7 @@ onBeforeUnmount(() => {
         <Separator class="mt-4" />
 
         <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
-        <p v-if="!userIsAuth" class="pt-2 text-xs">
+        <p v-if="!loggedIn" class="pt-2 text-xs">
           {{ _$t("localRecordObs2") }}
         </p>
       </CardContent>

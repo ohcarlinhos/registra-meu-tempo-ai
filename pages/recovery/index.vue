@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["guest"], name: "recovery" });
+definePageMeta({
+  middleware: [
+    "disabled",
+    // "guest"
+  ],
+  name: "recovery",
+});
 useHead({ title: "Recuperar conta" });
 </script>
 

@@ -1,19 +1,19 @@
 import { defineStore } from "pinia";
 
 export const useMockStore = defineStore("mock-store", () => {
-  const { public: p } = useRuntimeConfig();
+  const runtime = useRuntimeConfig();
 
   const rfMock = computed(() => {
     return {
-      name: p.rfmName,
-      email: p.rfmEmail,
-      password: p.rfmPassword,
-      confirmPassword: p.rfmPassword,
+      name: runtime.public.registerFormMockName,
+      email: runtime.public.registerFormMockEmail,
+      password: runtime.public.registerFormMockPassword,
+      confirmPassword: runtime.public.registerFormMockPassword,
     };
   });
 
   const rfMockEnable = computed(() => {
-    return p.rfmEnable === "1";
+    return runtime.public.registerFormMockEnable.toString() === "1";
   });
 
   return {

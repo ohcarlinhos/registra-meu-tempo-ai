@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { BadgeCheck, ChevronsUpDown, LogOut, Sun, Moon } from "lucide-vue-next";
 
-const authStore = useAuthStore();
-const { claim } = storeToRefs(authStore);
+const { user: userFromSession } = useUserSession();
 
 const user = computed(() => {
   return {
-    name: claim.value.name,
-    email: claim.value.email,
-    avatarFallback: claim.value.name.split(" ")[0][0],
+    name: userFromSession.value?.name,
+    email: userFromSession.value?.email,
+    avatarFallback: userFromSession.value?.name?.split(" ")[0][0],
   };
 });
 </script>
@@ -102,7 +101,7 @@ const user = computed(() => {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem @select="logout">
+            <DropdownMenuItem @select="navigateTo({ name: 'logout' })">
               <LogOut />
               Sair
             </DropdownMenuItem>

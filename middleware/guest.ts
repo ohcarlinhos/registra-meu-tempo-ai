@@ -1,4 +1,13 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const { isAuth } = storeToRefs(useAuthStore());
-  if (isAuth.value) return navigateTo({ name: "record.panel" });
+  const { loggedIn } = useUserSession();
+  if (loggedIn.value) return navigateTo({ name: "record.panel" });
+
+  watch(
+    () => loggedIn.value,
+    (newValue) => {
+      if (newValue) {
+        return navigateTo({ name: "record.panel" });
+      }
+    }
+  );
 });

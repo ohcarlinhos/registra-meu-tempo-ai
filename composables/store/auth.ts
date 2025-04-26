@@ -9,10 +9,6 @@ export const useAuthStore = defineStore(
 
     const { oldUserToken } = storeToRefs(useConfigStore());
 
-    const isAuth = computed(() => {
-      return Boolean(jwt.value?.token);
-    });
-
     const claim = computed(() => {
       const payload = jwt.value ? jose.decodeJwt(jwt.value.token) : null;
 
@@ -32,10 +28,6 @@ export const useAuthStore = defineStore(
       if (jwt.value) jwt.value.token = oldUserToken.value;
     };
 
-    const clearJwt = () => {
-      jwt.value = undefined;
-    };
-
     const openAuthModal = (_needRefresh = false) => {
       needRefresh.value = _needRefresh;
       authModal.open = true;
@@ -50,22 +42,15 @@ export const useAuthStore = defineStore(
       }
     };
 
-    const clearSession = () => {
-      clearJwt();
-    };
-
     return {
       jwt,
       authModal,
       needRefresh,
-      isAuth,
       claim,
       setJwt,
-      clearJwt,
       setExpiredToken,
       openAuthModal,
       closeAuthModal,
-      clearSession,
     };
   },
   { persist: true }

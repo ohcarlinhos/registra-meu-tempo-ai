@@ -1,4 +1,6 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ["auth"], name: "logout" });
+definePageMeta({ name: "logout" });
 logout();
 </script>
+
+<template></template>
