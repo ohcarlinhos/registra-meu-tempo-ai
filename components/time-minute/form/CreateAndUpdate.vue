@@ -31,6 +31,7 @@ const {
 } = useForm({
   validationSchema: formSchema,
   initialValues: {
+    date: new Date(Date.now()),
     minutes: [],
     minutesToAdd: 0,
   },
