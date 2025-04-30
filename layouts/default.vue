@@ -30,19 +30,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="loggedIn">
-    <UModal v-model="feedbackModal.open" prevent-close>
-      <FeedbackFormCreate @close="feedbackModal.open = false" />
-    </UModal>
+  <Dialog
+    v-bind:open="authModal.open"
+    @update:open="!$event && (authModal.open = false)"
+  >
+    <DialogContent @interact-outside="$event.preventDefault()" hide-close>
+      <DialogHeader>
+        <DialogTitle>
+          {{ _$t("access") }}
+        </DialogTitle>
+      </DialogHeader>
 
-    <section class="fixed bottom-0 right-0 p-2 z-50">
-      <FeedbackButtonNew @open="feedbackModal.open = true" />
-    </section>
-  </template>
-
-  <UModal v-model="authModal.open" prevent-close>
-    <AuthFormLogin v-if="authModal.open" />
-  </UModal>
+      <AuthFormLogin v-if="authModal.open" />
+    </DialogContent>
+  </Dialog>
 
   <slot></slot>
 </template>

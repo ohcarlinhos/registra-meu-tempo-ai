@@ -5,6 +5,20 @@ useHead({ title: "Acessar ferramenta" });
 
 <template>
   <NuxtLayout name="center">
-    <AuthFormLogin />
+    <Card class="w-full">
+      <CardHeader>
+        <CardTitle>
+          {{ _$t("access") }}
+        </CardTitle>
+
+        <CardDescription>
+          Utilize suas credenciais, ou acesse por um provedor.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <AuthFormLogin />
+      </CardContent>
+    </Card>
   </NuxtLayout>
 </template>
