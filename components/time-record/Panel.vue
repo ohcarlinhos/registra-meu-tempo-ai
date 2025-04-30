@@ -19,21 +19,16 @@ const { isDeleteFetch } = storeToRefs(trStore);
 const editTimeRecordObject = ref<TimeRecordForm | undefined>(undefined);
 const router = useRouter();
 
-const refFormConfirm = ref();
-
 const formConfirmSchema = toTypedSchema(
   yup.object({
     originalCode: yup.string(),
-    code: yup
-      .string()
-      .oneOf([yup.ref("originalCode")], _$t("codeIsWrong"))
-      .required(_$t("codeIsRequired")),
+    code: yup.string().oneOf([yup.ref("originalCode")], _$t("codeIsWrong")),
   })
 );
 
 const {
   handleSubmit,
-  setFieldValue,
+  setValues,
   values: formValues,
 } = useForm({
   validationSchema: formConfirmSchema,
@@ -46,14 +41,15 @@ const closeConfirmDeleteModal = () => {
 };
 
 const openConfirmDeleteModal = async (event: TimeRecordTableBusEvent) => {
-  let tr = event.data;
+  const tr = event.data;
 
   modal.confirmDelete.id = tr.id;
   modal.confirmDelete.title = tr.title;
   modal.confirmDelete.open = true;
 
-  setFieldValue("originalCode", tr.code, false);
-  setFieldValue("code", "", false);
+  setValues({
+    originalCode: tr.code,
+  });
 };
 
 const access = (code: string) => {
@@ -85,8 +81,6 @@ const deleteTimeRecord = async () => {
 const bus = useEventBus<TimeRecordTableBusEvent>(TR_TABLE_BUS_NAME);
 
 const handleWithBus = (event: TimeRecordTableBusEvent) => {
-  let category = event.data;
-
   if (event.action == "access") {
     router.push({
       name: "record",
@@ -125,17 +119,18 @@ onBeforeUnmount(() => {
     "
     :description="_$t('confirmCodeToDeleteRecord')"
     :isFetch="isDeleteFetch"
+    :disable-confirm="!formValues.code"
     custom-width="w-96"
     @confirm="onSubmit"
     @cancel="closeConfirmDeleteModal"
   >
     <section>
-      <UBadge variant="subtle" size="xs" color="red">
+      <Badge variant="outlineDestructive">
         {{ formValues.originalCode }}
-      </UBadge>
+      </Badge>
     </section>
 
-    <form ref="refFormConfirm">
+    <form>
       <FormField v-slot="{ componentField }" name="code">
         <FormItem>
           <FormLabel>{{ _$t("code") }}</FormLabel>
