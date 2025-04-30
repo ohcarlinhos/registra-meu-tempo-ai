@@ -16,6 +16,11 @@ export default defineOAuthGitHubEventHandler({
           accessToken: tokens.access_token,
           tokenType: tokens.token_type,
         },
+        headers: {
+          "User-Agent": event.headers.get("User-Agent")?.toString() || "",
+          "X-Forwarded-For":
+            event.node.req.headers["x-forwarded-for"]?.toString() || "",
+        },
       });
 
       const claim = decodeJwtToken(result.token);

@@ -19,10 +19,14 @@ export default defineEventHandler(async (event) => {
     const result = await $fetch<JwtData>("/auth/login", {
       baseURL: externalBaseURL,
       method: "POST",
-      headers: { UserChallengeToken: body.token || "" },
+      headers: {
+        UserChallengeToken: body.token || "",
+        "User-Agent": event.headers.get("User-Agent")?.toString() || "",
+        "X-Forwarded-For":
+          event.node.req.headers["x-forwarded-for"]?.toString() || "",
+      },
       body,
     });
-
     const claim = decodeJwtToken(result.token);
 
     await setUserSession(event, {
