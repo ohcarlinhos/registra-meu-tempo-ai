@@ -9,7 +9,7 @@ import {
   Loader2,
 } from "lucide-vue-next";
 import NoSleep from "nosleep.js";
-import { useInterval } from "@vueuse/core";
+import { VisuallyHidden } from "reka-ui";
 
 const props = defineProps({
   id: {
@@ -411,11 +411,11 @@ onBeforeUnmount(() => {
       </span>
     </p>
 
-    <UButton
+    <Button
       v-if="modal && timer.localRecords.length >= 1"
-      color="black"
       variant="link"
       :disabled="timer.isRun"
+      class="text-foreground"
       @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
     >
       <template v-if="!props.id">
@@ -430,55 +430,70 @@ onBeforeUnmount(() => {
       </template>
 
       <template v-else> Há registro de tempo não sincronizados.</template>
-    </UButton>
+    </Button>
   </section>
 
-  <UModal
-    v-if="timer && timer.showOptions"
-    :modelValue="timer.showOptions"
-    @update:modelValue="(e) => (timer.showOptions = e)"
+  <Dialog
+    v-bind:open="timer.showOptions"
+    @update:open="timerStore.toggleOptions(props.id)"
   >
-    <h3 class="text-xl text-center pt-6">Qual modo deseja ativar?</h3>
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <VisuallyHidden>
+        <DialogHeader>
+          <DialogTitle>Qual modo deseja ativar?</DialogTitle>
 
-    <GCloseButton @close="timerStore.toggleOptions(props.id)" />
+          <DialogDescription>
+            Modos modificam o comportamento do cronômetro.
+          </DialogDescription>
+        </DialogHeader>
+      </VisuallyHidden>
 
-    <TimerOptions :id="props.id" />
-  </UModal>
+      <section class="flex flex-col gap-4">
+        <h3 class="text-xl text-center">Qual modo deseja ativar?</h3>
+        <TimerOptions :id="props.id" />
+      </section>
+    </DialogContent>
+  </Dialog>
 
-  <UModal v-if="modal" v-model="modal.timeRecordsTable.open">
-    <Card v-if="modal.timeRecordsTable.open">
-      <CardHeader>
-        <CardTitle>Sessões</CardTitle>
-        <GCloseButton @close="modal.timeRecordsTable.open = false" />
-        <CardDescription>
+  <Dialog
+    v-bind:open="modal.timeRecordsTable.open"
+    @update:open="!$event && (modal.timeRecordsTable.open = false)"
+  >
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <DialogHeader>
+        <DialogTitle> Sessões </DialogTitle>
+
+        <DialogDescription>
           Sessões que aparecem nessa lista estão salvas apenas no navegador.
-        </CardDescription>
-      </CardHeader>
+        </DialogDescription>
+      </DialogHeader>
 
-      <CardContent>
-        <TimeRecordTableLocal
-          v-if="timer.localRecords.length"
-          :id="props.id"
-          :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
-        />
+      <TimeRecordTableLocal
+        v-if="timer.localRecords.length"
+        :id="props.id"
+        :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
+      />
 
-        <p v-else class="py-3">
-          {{
-            props.id
-              ? "Os períodos de tempo da sua tarefa estão sincronizados."
-              : "Não há mais nenhum registro de tempo local."
-          }}
-        </p>
+      <p v-else class="py-3">
+        {{
+          props.id
+            ? "Os períodos de tempo da sua tarefa estão sincronizados."
+            : "Não há mais nenhum registro de tempo local."
+        }}
+      </p>
 
-        <Separator class="mt-4" />
+      <Separator class="mt-1" />
 
-        <p class="pt-3 text-sm">{{ _$t("localRecordObs1") }}</p>
-        <p v-if="!loggedIn" class="pt-2 text-xs">
-          {{ _$t("localRecordObs2") }}
-        </p>
-      </CardContent>
-    </Card>
-  </UModal>
+      <DialogFooter>
+        <section class="w-full flex flex-col gap-2">
+          <p class="text-sm">{{ _$t("localRecordObs1") }}</p>
+          <p v-if="!loggedIn || true" class="pt-2 text-xs">
+            {{ _$t("localRecordObs2") }}
+          </p>
+        </section>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 
   <template v-if="modal">
     <Dialog

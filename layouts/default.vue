@@ -1,13 +1,7 @@
 <script lang="ts" setup>
 const authStore = useAuthStore();
 const { closeAuthModal } = authStore;
-
 const { authModal } = storeToRefs(authStore);
-const { loggedIn } = useUserSession();
-
-const feedbackModal = reactive({
-  open: false,
-});
 
 const route = useRoute();
 
@@ -36,9 +30,11 @@ onMounted(() => {
   >
     <DialogContent @interact-outside="$event.preventDefault()" hide-close>
       <DialogHeader>
-        <DialogTitle>
-          {{ _$t("access") }}
-        </DialogTitle>
+        <DialogTitle>{{ _$t("access") }}</DialogTitle>
+
+        <DialogDescription>
+          Forneça suas credenciais para acessar a ferramenta.
+        </DialogDescription>
       </DialogHeader>
 
       <AuthFormLogin v-if="authModal.open" />

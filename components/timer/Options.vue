@@ -49,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="flex flex-col items-center mb-5 pt-6">
+  <section class="flex flex-col items-center">
     <section class="flex gap-3 mb-3 justify-center">
       <Button
         :variant="
