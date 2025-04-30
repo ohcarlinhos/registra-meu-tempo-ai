@@ -277,7 +277,7 @@ var maxDate = ref(new Date(Date.now()));
           </Card>
         </section>
 
-        <UDivider class="pt-10" v-if="index + 1 < infoCardList.length" />
+        <Separator class="mt-10" v-if="index + 1 < infoCardList.length" />
       </section>
     </section>
   </section>
