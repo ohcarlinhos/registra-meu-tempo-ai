@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ name: "home" });
-useHead({ title: "Cronômetros" });
+useHead({ title: "Gerencie seu tempo de uma forma mais inteligente!" });
 </script>
 
 <template>
