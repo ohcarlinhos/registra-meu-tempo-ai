@@ -92,7 +92,7 @@ const i18nObj = {
     "Confirme o código da tarefa selecionada para apaga-la:",
 
   noPeriodRecorded: "Nenhum período registrado.",
-  recordNotFound: "Tarefa não encontrado.",
+  recordNotFound: "Tarefa não encontrada.",
   backToRecordList: "Voltar para Tarefas",
   emptyRecordDescription: "Nenhuma descrição fornecida para a tarefa.",
   pomodoro: "Pomodoro",

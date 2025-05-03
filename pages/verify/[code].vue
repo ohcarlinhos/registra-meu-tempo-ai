@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-definePageMeta({ name: "verify.page.code", middleware: ["disabled"] });
+import { LoaderCircle } from "lucide-vue-next";
+
+definePageMeta({
+  name: "verify.page.code",
+  middleware: ["disabled"],
+});
 useHead({ title: "Verificar conta" });
 
 const isFetch = ref(false);
@@ -60,15 +65,13 @@ const verifyCode = async () => {
 
 <template>
   <NuxtLayout name="center">
-    <UCard :ui="{ base: 'w-full' }">
-      <section class="flex justify-center">
-        <UIcon
-          v-if="isFetch"
-          name="i-svg-spinners-180-ring-with-bg"
-          class="w-7 h-7 opacity-40"
-        />
-        <p v-else>Se não foi redirecionado, atualize a tela.</p>
-      </section>
-    </UCard>
+    <Card class="w-full">
+      <CardContent>
+        <section class="flex justify-center mt-5">
+          <Component v-if="isFetch" class="animate-spin" :is="LoaderCircle" />
+          <p v-else>Caso não seja redirecionado, atualize a tela.</p>
+        </section>
+      </CardContent>
+    </Card>
   </NuxtLayout>
 </template>

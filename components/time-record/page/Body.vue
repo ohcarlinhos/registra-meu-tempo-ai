@@ -168,13 +168,13 @@ const refreshTimePeriodCallback = async () => {
     </section>
 
     <section class="w-full" v-if="!timeRecord && !isLoading">
-      <h2 class="text-2xl text-primary font-bold pb-3">
+      <h2 class="text-2xl font-bold pb-3">
         {{ _$t("recordNotFound") }}
       </h2>
 
-      <UButton @click="router.push({ name: 'record.panel' })" variant="soft">
-        {{ _$t("backToRecordList") }}
-      </UButton>
+      <Button @click="router.push({ name: 'record.panel' })" variant="outline">
+        ← {{ _$t("backToRecordList") }}
+      </Button>
     </section>
   </section>
 </template>
