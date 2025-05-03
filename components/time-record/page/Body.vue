@@ -2,6 +2,10 @@
 const router = useRouter();
 const route = useRoute();
 
+import { History, Flame } from "lucide-vue-next";
+
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+
 const { state, isLoading, refresh } = getTimeRecordQuery();
 
 const timeRecord = computed(() => {
@@ -52,7 +56,7 @@ import { getTimeRecordQuery } from "./body/actions";
 const links = computed(() => [
   {
     label: "Histórico de Registros",
-    icon: "i-icon-park-outline-history",
+    icon: History,
     to: {
       name: "record",
       params: {
@@ -63,7 +67,7 @@ const links = computed(() => [
   },
   {
     label: "Resumo Diário",
-    icon: "i-icon-park-outline-fire",
+    icon: Flame,
     to: {
       name: "record.statistic.day",
       params: {
@@ -119,11 +123,34 @@ const refreshTimePeriodCallback = async () => {
         </section>
       </section>
 
-      <section id="page-nav" class="w-full md:col-span-12 md:mb-5 pt-12">
-        <UHorizontalNavigation
-          :links="links"
-          class="border-b border-gray-200 dark:border-gray-800"
-        />
+      <section
+        id="page-nav"
+        class="w-full md:col-span-12 md:mb-5 pt-12 border-b border-gray-200 dark:border-gray-800"
+      >
+        <NavigationMenu>
+          <NavigationMenuList class="flex gap-2">
+            <NavigationMenuItem v-for="link in links">
+              <NuxtLink
+                v-slot="{ isActive, href, navigate }"
+                :to="link.to"
+                custom
+              >
+                <NavigationMenuLink
+                  :active="isActive"
+                  :href
+                  :class="[
+                    navigationMenuTriggerStyle(),
+                    'data-[active]:border-b-2 data-[active]:border-green-400 rounded-b-none',
+                  ]"
+                  @click="navigate"
+                >
+                  <Component :is="link.icon" class="pr-1" />
+                  {{ link.label }}
+                </NavigationMenuLink>
+              </NuxtLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </section>
 
       <section v-if="timeRecord" class="w-full md:col-span-12 md:mb-5">
