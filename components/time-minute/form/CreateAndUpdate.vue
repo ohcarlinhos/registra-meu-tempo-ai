@@ -155,18 +155,18 @@ var dateMax = ref(addMinutes(Date.now(), 10));
 
     <Separator label="Minutos" />
 
-    <section class="flex gap-2 pb-2">
+    <section class="flex gap-2 pb-4">
       <Badge
         v-if="formValues.minutes?.length"
         v-for="(value, index) in formValues.minutes"
         variant="outline"
-        class="border-yellow-500/80 py-1"
+        class="py-1"
       >
         {{ value }}m
 
         <X
-          :size="13"
-          class="hover:cursor-pointer relative top-[1px] left-[3px]"
+          :size="12"
+          class="hover:cursor-pointer relative top-[1px] left-[4px]"
           @click="removeMinutes(index)"
         />
       </Badge>
