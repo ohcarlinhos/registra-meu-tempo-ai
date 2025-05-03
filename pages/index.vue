@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 definePageMeta({ name: "home" });
-useHead({ title: "Gerencie seu tempo de uma forma mais inteligente!" });
+useHead({ title: "Cronômetros, Pomodoro e Estatísticas" });
 </script>
 
 <template>
   <NuxtLayout name="home">
     <HomeHero />
 
-    <section class="flex flex-col max-md:gap-8 gap-16 pb-20">
+    <!-- <section class="flex flex-col max-md:gap-8 gap-16 pb-20">
       <section class="max-md:flex-col flex gap-16">
         <ClientOnly>
           <TimerDefault title="Cronômetros" />
@@ -48,6 +48,6 @@ useHead({ title: "Gerencie seu tempo de uma forma mais inteligente!" });
           </p>
         </section>
       </section>
-    </section>
+    </section> -->
   </NuxtLayout>
 </template>
