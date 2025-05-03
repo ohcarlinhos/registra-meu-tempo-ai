@@ -32,7 +32,7 @@ export default defineOAuthGoogleEventHandler({
       console.log(err);
     }
 
-    return sendRedirect(event, "/");
+    return sendRedirect(event, "/login/success?provider=google");
   },
 
   onError(event, error) {

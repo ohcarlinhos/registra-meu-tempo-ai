@@ -36,7 +36,7 @@ export default defineOAuthGitHubEventHandler({
       console.log(err);
     }
 
-    return sendRedirect(event, "/");
+    return sendRedirect(event, "/login/success?provider=github");
   },
 
   // Optional, will return a json error and 401 status code by default
