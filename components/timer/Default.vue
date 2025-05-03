@@ -146,7 +146,6 @@ const endTimer = async () => {
       title: "Seu navegador está sem acesso a Internet.",
       description:
         "Mas não se preocupe! Salvamos seu tempo localmente (navegador).",
-      variant: "destructive",
     });
     return;
   }
@@ -295,8 +294,8 @@ onBeforeUnmount(() => {
           <CloudOff class="size-4" />
           Estamos sem acesso a internet...
         </span>
-        <span class="text-sm">
-          Mas não se preocupe! Vamos salvar tudo no navegador.
+        <span class="text-sm text-center">
+          Mas não se preocupe! Vamos salvar seu tempo no navegador.
         </span>
       </div>
     </template>
