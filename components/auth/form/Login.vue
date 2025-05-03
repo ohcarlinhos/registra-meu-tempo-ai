@@ -150,13 +150,13 @@ if (rfMockEnable.value) {
       @click="openInPopup('/auth/github')"
       variant="outline"
       class="w-full"
+      type="button"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="32"
         height="32"
         viewBox="0 0 32 32"
-        type="button"
       >
         <path
           fill="currentColor"
