@@ -16,6 +16,8 @@ const props = defineProps<{
   paginationQueryMethods?: IPaginationQueryMethods;
 
   totalLabel?: string;
+  hideLastFirst?: boolean;
+  hidePerPage?: boolean;
 }>();
 
 const computedPage = computed({
@@ -101,7 +103,7 @@ const computedPerPageList = computed(() => {
         v-slot="{ items }"
         class="flex items-center gap-1"
       >
-        <PaginationFirst />
+        <PaginationFirst v-if="!hideLastFirst" />
         <PaginationPrev />
 
         <template v-for="(item, index) in items">
@@ -124,7 +126,7 @@ const computedPerPageList = computed(() => {
         </template>
 
         <PaginationNext />
-        <PaginationLast />
+        <PaginationLast v-if="!hideLastFirst" />
       </PaginationList>
     </Pagination>
 
@@ -135,7 +137,10 @@ const computedPerPageList = computed(() => {
         {{ totalItems }} {{ totalLabel }}
       </Badge>
 
-      <section class="w-[80px]" v-if="computedPerPageList.length">
+      <section
+        class="w-[80px]"
+        v-if="computedPerPageList.length && !hidePerPage"
+      >
         <Select
           v-model="computedPerPage"
           :disabled="isPaginationFetch || isFetch"

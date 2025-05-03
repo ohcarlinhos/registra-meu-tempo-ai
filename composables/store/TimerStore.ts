@@ -3,32 +3,11 @@ import { v4 as uuidv4 } from "uuid";
 
 export type PostTimePeriodCallback = (code: string) => Promise<void>;
 
-export type TimerStoreItem = {
-  id: number | null;
-  code?: string;
-
-  currentPeriodList: TimePeriodTimer[];
-  currentPeriod: TimePeriodTimer;
-
-  isRun: boolean;
-  isFetch: boolean;
-  interval: NodeJS.Timeout | null;
-  type: TimerTypes;
-
-  showOptions: boolean;
-  pomodoroPeriod: number;
-  breakPeriod: number;
-
-  page: number;
-
-  localRecords: TimeRecordLocal[];
-};
-
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
       _timerList: [] as TimerStoreItem[],
-      _perPage: 12,
+      _perPage: 6,
       _postTPCallback: null as null | PostTimePeriodCallback,
 
       audioObject: null as null | HTMLAudioElement,

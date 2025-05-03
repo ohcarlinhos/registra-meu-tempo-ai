@@ -6,26 +6,27 @@ defineProps<{
 </script>
 
 <template>
-  <div v-if="timePeriods.length === 0">
+  <section v-if="timePeriods.length === 0">
     <span>{{ label }}</span>
-  </div>
+  </section>
 
-  <div v-else class="flex">
-    <UPopover mode="hover">
-      <span>{{ label }}</span>
+  <section v-else class="flex">
+    <HoverCard :open-delay="0" :close-delay="0">
+      <HoverCardTrigger>
+        {{ label }}
+      </HoverCardTrigger>
 
-      <template #panel>
-        <div class="p-2 flex justify-center gap-2 max-w-40 flex-wrap">
-          <UBadge
+      <HoverCardContent align="center">
+        <div class="flex gap-2">
+          <Badge
             v-for="timePeriod in timePeriods"
             :title="formatTimePeriodPopper(timePeriod).date"
-            color="gray"
-            variant="solid"
+            variant="outline"
           >
             {{ formatTimePeriodPopper(timePeriod).formatted }}
-          </UBadge>
+          </Badge>
         </div>
-      </template>
-    </UPopover>
-  </div>
+      </HoverCardContent>
+    </HoverCard>
+  </section>
 </template>

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { watch } from "vue";
+import { useEventBus } from "@vueuse/core";
+import { columns } from "./table-local/columns";
 
 const timerStore = useTimerStore();
-const { loggedIn } = useUserSession();
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +18,9 @@ const props = withDefaults(
 
 const timer = computed(() => timerStore.getTimer(props.id));
 
-const timeRecords = computed(() => timerStore.getTimeRecords(props.id));
+const timeRecords = computed<TimeRecordLocalTable[]>(() =>
+  timerStore.getTimeRecords(props.id)
+);
 
 const totalPages = computed(() =>
   Math.ceil(timer.value.localRecords.length / timerStore._perPage)
@@ -63,48 +66,6 @@ const deleteAction = () => {
   closeConfirmDeleteModal();
 };
 
-const columns = [
-  { key: "timeRecordDate", label: "Data" },
-  { key: "timePeriods", label: "Períodos" },
-  { key: "formattedTime", label: "Tempo" },
-  { key: "actions" },
-];
-
-const items = (row: TimeRecordLocal) => {
-  const actions = [
-    [
-      {
-        label: _$t("deleteLocalSession"),
-        icon: "i-icon-park-outline-delete-themes",
-        click: () => openConfirmDeleteModal(row.localUuid, row.id),
-      },
-    ],
-  ];
-
-  if (loggedIn.value) {
-    if (row.id) {
-      actions[0].unshift({
-        label: _$t("syncSessionWithTask"),
-        icon: "i-icon-park-outline-refresh-one",
-        click: async () => openModal(row, true),
-      });
-    } else {
-      actions[0].unshift({
-        label: _$t("bindSessionWithTask"),
-        icon: "i-icon-park-outline-refresh-one",
-        click: async () => openModal(row, true, true),
-      });
-      actions[0].unshift({
-        label: _$t("createTaskFromSession"),
-        icon: "i-icon-park-outline-save-one",
-        click: async () => openModal(row),
-      });
-    }
-  }
-
-  return actions;
-};
-
 const openModal = (
   timeRecord: TimeRecordLocal,
   isSync = false,
@@ -132,46 +93,42 @@ const closeModal = () => {
     }
   }, 500);
 };
+
+const bus = useEventBus<TimeRecordLocalTableBusEvent>(TRL_TABLE_BUS_NAME);
+
+const handleWithBus = (event: TimeRecordLocalTableBusEvent) => {
+  if (event.action == "delete") {
+    openConfirmDeleteModal(event.data.localUuid, event.data.id);
+  } else if (event.action == "sync") {
+    openModal(event.data, true);
+  } else if (event.action == "bind") {
+    openModal(event.data, true, true);
+  } else if (event.action == "createFrom") {
+    openModal(event.data);
+  }
+};
+
+bus.on(handleWithBus);
+
+onBeforeUnmount(() => {
+  bus.off(handleWithBus);
+});
 </script>
 
 <template>
-  <UTable :columns="columns" :rows="timeRecords">
-    <template #timePeriods-data="{ row }">
-      <TimeRecordTableLocalCol
-        :time-periods="(row as TimeRecordLocal).timePeriods"
-        :label="timePeriodLabel((row as TimeRecordLocal).timePeriods.length)"
-      />
-    </template>
+  <GDataTable :columns="columns" :data="timeRecords" />
 
-    <template #code-data="{ row }">
-      {{ row.code || "-" }}
-    </template>
-
-    <template #actions-data="{ row }">
-      <div class="flex justify-end">
-        <UDropdown
-          :items="items(row)"
-          :ui="{
-            width: 'max-w-80 w-auto',
-          }"
-        >
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-icon-park-outline-more-one"
-          />
-        </UDropdown>
-      </div>
-    </template>
-  </UTable>
-
-  <GPagination
+  <GPaginationV2
     :page="timer.page"
-    :perPage="timerStore._perPage"
-    :totalItems="timer.localRecords.length"
-    :totalPages="totalPages"
-    @update:page="(value) => (timer.page = value)"
-    @update:perPage="(value) => (timerStore._perPage = value)"
+    :per-page="timerStore._perPage"
+    :total-pages="totalPages"
+    :total-items="timer.localRecords.length"
+    :per-page-list="[6]"
+    hide-last-first
+    hide-per-page
+    total-label="Sessões"
+    @update:page="(value) => (timer.page = parseInt(value))"
+    @update:perPage="(value) => (timerStore._perPage = parseInt(value))"
   />
 
   <Dialog v-bind:open="modal.open" @update:open="!$event && closeModal()">
