@@ -263,9 +263,9 @@ var maxDate = ref(new Date(Date.now()));
                   {{ card.title }}
                 </h3>
 
-                <span class="text-3xl font-bold" :class="[card.valueStyle]">{{
-                  card.value
-                }}</span>
+                <span class="text-3xl font-bold" :class="[card.valueStyle]">
+                  {{ card.value }}
+                </span>
 
                 <span
                   class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
