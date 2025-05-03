@@ -36,7 +36,11 @@ const closeModal = (refresh = false) => {
 };
 
 const submitIsDisabled = computed(() => {
-  return formValues.name === props.editObject?.name || isFetch.value;
+  return (
+    formValues.name === props.editObject?.name ||
+    isFetch.value ||
+    !formValues.name?.trim()
+  );
 });
 
 const isFetch = ref(false);
@@ -78,7 +82,11 @@ const editAction = async (dto: CategoryDto) => {
 };
 
 const submitAction = async (value: CategoryDto) => {
-  return props.editObject?.id ? editAction(value) : createAction(value);
+  const dto = {
+    ...value,
+    name: value.name.trim(),
+  };
+  return props.editObject?.id ? editAction(dto) : createAction(dto);
 };
 
 const onSubmit = handleSubmit((value) => submitAction(value));
