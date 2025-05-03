@@ -595,31 +595,10 @@
   dependencies:
     "@iconify/types" "*"
 
-"@iconify-json/heroicons@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@iconify-json/heroicons/-/heroicons-1.2.2.tgz#8e03d91655ea6a2d7e1283ba13df13eda50d8bd8"
-  integrity sha512-qoW4pXr5kTTL6juEjgTs83OJIwpePu7q1tdtKVEdj+i0zyyVHgg/dd9grsXJQnpTpBt6/VwNjrXBvFjRsKPENg==
-  dependencies:
-    "@iconify/types" "*"
-
-"@iconify-json/icon-park-outline@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@iconify-json/icon-park-outline/-/icon-park-outline-1.2.2.tgz#382945d5e58f5f9488561614ff480c9fa04674d4"
-  integrity sha512-7VkMWOZTIMNkC9+oAL4I5kVlVC5Pq3nQpruZ4E3cLyKaeV95gaUrEilUkvGW71fgsFYCBWAmOZ3KpM4ux0j0zA==
-  dependencies:
-    "@iconify/types" "*"
-
 "@iconify-json/logos@^1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@iconify-json/logos/-/logos-1.2.4.tgz#1591937349a487da360fb10000d5e7ab0601bfd7"
   integrity sha512-XC4If5D/hbaZvUkTV8iaZuGlQCyG6CNOlaAaJaGa13V5QMYwYjgtKk3vPP8wz3wtTVNVEVk3LRx1fOJz+YnSMw==
-  dependencies:
-    "@iconify/types" "*"
-
-"@iconify-json/octicon@1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@iconify-json/octicon/-/octicon-1.2.3.tgz#d1284145ab285acec74a56924bf52ab588822f78"
-  integrity sha512-u5DkMUsfFCcEPbmjuXSJJhDCoNso6mVHOXNz45zV5r3IWE0jcGw+4/rt4KrF3XWL3t9vzzECxisZH7q7h/RaZg==
   dependencies:
     "@iconify/types" "*"
 
