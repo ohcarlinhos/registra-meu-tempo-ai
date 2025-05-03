@@ -28,12 +28,14 @@ const user = computed(() => {
                   {{ user.avatarFallback }}
                 </AvatarFallback>
               </Avatar>
+
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">
                   {{ user.name }}
                 </span>
                 <span class="truncate text-xs">{{ user.email }}</span>
               </div>
+
               <ChevronsUpDown class="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>

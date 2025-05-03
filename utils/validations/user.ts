@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import * as z from "zod";
 
 export const useUserValidation = () => {
   const { $i18n } = useNuxtApp();

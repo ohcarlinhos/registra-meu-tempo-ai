@@ -22,8 +22,6 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "@nuxt/ui",
-    "@nuxt/icon",
     "@pinia/nuxt",
     "@nuxt/image",
     "@pinia/colada-nuxt",
@@ -35,6 +33,7 @@ export default defineNuxtConfig({
     "@nuxtjs/turnstile",
     "@nuxtjs/seo",
     "@nuxtjs/tailwindcss",
+    "@nuxtjs/color-mode",
     "shadcn-nuxt",
     "nuxt-auth-utils",
   ],
@@ -59,6 +58,7 @@ export default defineNuxtConfig({
 
   colorMode: {
     preference: "dark",
+    classSuffix: "",
   },
 
   i18n: {
