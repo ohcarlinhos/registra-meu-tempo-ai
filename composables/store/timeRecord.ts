@@ -14,7 +14,7 @@ export const useTimeRecordStore = defineStore(
       updatePaginationQueryWithRoute,
     } = usePaginationQuery("tr_", 12, {
       sort: "desc",
-      sortProp: "lastTimePeriodDate",
+      sortProp: "lastTimeDate",
     });
 
     const apiRes = ref<Pagination<TimeRecordMap>>();
@@ -63,18 +63,16 @@ export const useTimeRecordStore = defineStore(
         apiRes.value.data.forEach((timeRecord) => {
           timeRecordsTable.push({
             ...timeRecord,
-            lastTimePeriodDate:
-              (timeRecord.meta?.lastTimePeriodDate &&
-                format(timeRecord.meta.lastTimePeriodDate, "dd/MM/yyyy")) ||
+            lastTimeDate:
+              (timeRecord.meta?.lastTimeDate &&
+                format(timeRecord.meta.lastTimeDate, "dd/MM/yyyy")) ||
               "-",
             description: timeRecord.description || "-",
             code: timeRecord.code || "-",
             title: timeRecord.title || "-",
             categoryName: timeRecord.categoryName || "-",
             formattedTime: timeRecord.meta?.formattedTime || "Nenhum",
-            timePeriodCountText: timePeriodLabel(
-              timeRecord.meta?.timePeriodCount!
-            ),
+            timeCountText: timePeriodLabel(timeRecord.meta?.timeCount!),
           });
         });
 

@@ -13,7 +13,7 @@ import {
 
 export const columns: ColumnDef<TimeRecordTable>[] = [
   {
-    accessorKey: "lastTimePeriodDate",
+    accessorKey: "lastTimeDate",
     header: ({ column }) =>
       h(
         Button,

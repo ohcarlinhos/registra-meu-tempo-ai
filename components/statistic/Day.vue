@@ -141,7 +141,7 @@ const mountInfoCardList = () => {
 
   quantityCards.push({
     title: "Minutos",
-    value: statistic.timePeriodCount,
+    value: statistic.timeMinuteCount,
     obs: "Tempo registrado contendo apenas a quantidade de minutos e dia.",
   });
 

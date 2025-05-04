@@ -48,7 +48,7 @@ const computedCategory = computed({
 const handleSort = (value: SortingState) => {
   let s = value[0];
 
-  sort.value.id = s?.id || "lastTimePeriodDate";
+  sort.value.id = s?.id || "lastTimeDate";
   sort.value.desc = s?.desc;
 
   let column = sort.value.id;
@@ -68,7 +68,7 @@ const isLoading = computed(() => {
 });
 
 const sort = ref<ColumnSort>({
-  id: "lastTimePeriodDate",
+  id: "lastTimeDate",
   desc: true,
 });
 

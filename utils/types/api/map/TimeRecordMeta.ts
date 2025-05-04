@@ -1,6 +1,6 @@
 export type TimeRecordMeta = {
   formattedTime: string;
-  timePeriodCount: number;
+  timeCount: number;
   timeRecordDate: string;
-  lastTimePeriodDate: string;
+  lastTimeDate: string;
 };

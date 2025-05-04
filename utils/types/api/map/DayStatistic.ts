@@ -13,6 +13,7 @@ export type DayStatistic = {
   breakCount: number;
   sessionCount: number;
   timePeriodCount: number;
+  timeMinuteCount: number;
   interruptionCount: number;
   manualCount: number;
   createdTimeRecordCount: number;
