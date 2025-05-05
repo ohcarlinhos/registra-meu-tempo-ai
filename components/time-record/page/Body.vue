@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import { History, Flame } from "lucide-vue-next";
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { getTimeRecordQuery } from "./body/actions";
+
 const router = useRouter();
 const route = useRoute();
-
-import { History, Flame } from "lucide-vue-next";
-
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 
 const { state, isLoading, refresh } = getTimeRecordQuery();
 
@@ -50,8 +50,6 @@ const setUpdatedOn = () => {
 defineEmits<{
   delete: [value: number];
 }>();
-
-import { getTimeRecordQuery } from "./body/actions";
 
 const links = computed(() => [
   {
