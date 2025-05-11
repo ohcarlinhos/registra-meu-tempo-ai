@@ -144,7 +144,7 @@ export const useTimerStore = defineStore("TimerStore", {
         } else {
           this.clearInterval(id);
         }
-      }, 200);
+      }, 1000);
     },
 
     clearInterval(id: number | null = null) {
