@@ -1,57 +1,25 @@
-import * as jose from "jose";
+export const useAuthStore = defineStore("AuthStore", () => {
+  const authModal = reactive({ open: false });
+  const needRefresh = ref(false);
 
-export const useAuthStore = defineStore(
-  "auth-store",
-  () => {
-    const jwt = ref<JwtData>();
-    const authModal = reactive({ open: false });
-    const needRefresh = ref(false);
+  const openAuthModal = (_needRefresh = false) => {
+    needRefresh.value = _needRefresh;
+    authModal.open = true;
+  };
 
-    const { oldUserToken } = storeToRefs(useConfigStore());
+  const closeAuthModal = () => {
+    authModal.open = false;
 
-    const claim = computed(() => {
-      const payload = jwt.value ? jose.decodeJwt(jwt.value.token) : null;
+    if (needRefresh.value) {
+      needRefresh.value = false;
+      location.reload();
+    }
+  };
 
-      return {
-        ...payload,
-        isVerified: payload?.isVerified == "True" || false,
-        name: (payload?.unique_name as string) || "-",
-        email: (payload?.email as string) || "-",
-      };
-    });
-
-    const setJwt = (value: JwtData) => {
-      jwt.value = value;
-    };
-
-    const setExpiredToken = () => {
-      if (jwt.value) jwt.value.token = oldUserToken.value;
-    };
-
-    const openAuthModal = (_needRefresh = false) => {
-      needRefresh.value = _needRefresh;
-      authModal.open = true;
-    };
-
-    const closeAuthModal = () => {
-      authModal.open = false;
-
-      if (needRefresh.value) {
-        needRefresh.value = false;
-        location.reload();
-      }
-    };
-
-    return {
-      jwt,
-      authModal,
-      needRefresh,
-      claim,
-      setJwt,
-      setExpiredToken,
-      openAuthModal,
-      closeAuthModal,
-    };
-  },
-  { persist: true }
-);
+  return {
+    authModal,
+    needRefresh,
+    openAuthModal,
+    closeAuthModal,
+  };
+});

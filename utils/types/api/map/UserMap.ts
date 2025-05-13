@@ -3,6 +3,5 @@ export type UserMap = {
   name: string;
   email: string;
   isActive: boolean;
-  isVerified: boolean;
   userRoleLabel: string;
 };

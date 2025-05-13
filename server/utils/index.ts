@@ -7,5 +7,7 @@ export const decodeJwtToken = (token: string) => {
     ...payload,
     name: (payload?.unique_name as string) || "",
     email: (payload?.email as string) || "",
+    isAdmin: (payload?.isAdmin as string) == "True" || false,
+    isActive: (payload?.isActive as string) == "True" || false,
   };
 };
