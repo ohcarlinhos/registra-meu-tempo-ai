@@ -9,9 +9,9 @@ useHead({ title: "Verificar conta" });
 
 const isFetch = ref(false);
 
-const userStore = useUserStore();
-const { checkIfIsVerified } = userStore;
-const { isVerified } = storeToRefs(userStore);
+// const userStore = useUserStore();
+// const { checkIfIsVerified } = userStore;
+// const { isVerified } = storeToRefs(userStore);
 
 const route = useRoute();
 const router = useRouter();
@@ -21,9 +21,9 @@ onMounted(async () => {
 });
 
 const initCode = async () => {
-  if (isVerified.value) {
-    return router.push({ name: "record.panel" });
-  }
+  // if (isVerified.value) {
+  //   return router.push({ name: "record.panel" });
+  // }
 
   await verifyCode();
 };
@@ -37,10 +37,10 @@ const verifyCode = async () => {
     const result = await userApi().verifyUser(route.params.code as string);
     if (!result) return;
 
-    const isVerified = await checkIfIsVerified();
-    if (!isVerified) {
-      return;
-    }
+    // const isVerified = await checkIfIsVerified();
+    // if (!isVerified) {
+    //   return;
+    // }
 
     OkToast(
       "Conta verificada com sucesso, por favor acesse sua conta novamente."

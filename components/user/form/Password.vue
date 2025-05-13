@@ -3,7 +3,7 @@ import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
-const { mySelf } = storeToRefs(useUserStore());
+const { mySelf } = storeToRefs(useMySelfStore());
 const v = useUserValidation();
 
 const isFetch = ref(false);

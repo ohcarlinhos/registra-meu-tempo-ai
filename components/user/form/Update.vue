@@ -3,8 +3,9 @@ import { toTypedSchema } from "@vee-validate/yup";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
-const { mySelf } = storeToRefs(useUserStore());
-const { fetchMySelf } = useUserStore();
+const mySelfStore = useMySelfStore();
+const { mySelf } = storeToRefs(mySelfStore);
+const { fetchMySelf } = mySelfStore;
 
 const v = useUserValidation();
 

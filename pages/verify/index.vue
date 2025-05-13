@@ -16,17 +16,17 @@ const disableRequestCodeButton = ref(false);
 
 const verifyCodeInfo = ref<RegisterCodeInfo>();
 
-const userStore = useUserStore();
-const { isVerified, mySelf } = storeToRefs(userStore);
+// const userStore = useUserStore();
+// const { isVerified, mySelf } = storeToRefs(userStore);
 
 const router = useRouter();
 
-watch(
-  () => isVerified.value,
-  (newValue) => {
-    if (newValue) router.push({ name: "record.panel" });
-  }
-);
+// watch(
+//   () => isVerified.value,
+//   (newValue) => {
+//     if (newValue) router.push({ name: "record.panel" });
+//   }
+// );
 
 const getRegisterCodeInfoAction = async () => {
   try {
@@ -76,9 +76,9 @@ const requestVerifyUserCodeEmail = async () => {
 };
 
 onMounted(async () => {
-  if (isVerified.value) {
-    return router.push({ name: "record.panel" });
-  }
+  // if (isVerified.value) {
+  //   return router.push({ name: "record.panel" });
+  // }
 
   await getRegisterCodeInfoAction();
 });
@@ -108,16 +108,16 @@ onMounted(async () => {
             {{ "E-mail do cadastro" }}
           </p>
 
-          <Input :model-value="mySelf?.email" class="mb-2" disabled />
+          <!-- <Input :model-value="mySelf?.email" class="mb-2" disabled /> -->
 
-          <Button
+          <!-- <Button
             class="mt-4 w-full"
             :disabled="disableRequestCodeButton || isVerified"
             :loading="isFetch"
             @click="requestVerifyUserCodeEmail"
           >
             Solicitar código de verificação
-          </Button>
+          </Button> -->
         </template>
 
         <template v-else-if="verifyCodeInfo">
@@ -127,9 +127,9 @@ onMounted(async () => {
             }}
           </p>
 
-          <p class="pt-4">
+          <!-- <p class="pt-4">
             {{ `E-mail: ${mySelf?.email}` }}
-          </p>
+          </p> -->
 
           <p>
             {{ `Data de expiração: ${verifyCodeInfo.formattedExpireDate}` }}

@@ -5,11 +5,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo({ name: "login" });
   }
 
-  const userStore = useUserStore();
-  const { checkIfIsVerified } = userStore;
-  const { mySelf } = storeToRefs(userStore);
+  const mySelfStore = useMySelfStore();
+  const { fetchMySelf } = mySelfStore;
+  const { mySelf } = storeToRefs(mySelfStore);
 
   if (!mySelf.value) {
-    await checkIfIsVerified();
+    await fetchMySelf();
   }
 });
