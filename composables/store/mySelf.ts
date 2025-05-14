@@ -22,6 +22,10 @@ export const useMySelfStore = defineStore("MySelfStore", () => {
     return Boolean(mySelf.value?.isActive);
   });
 
+  const isAdmin = computed(() => {
+    return mySelf.value?.isAdmin;
+  });
+
   const clearMySelf = () => {
     mySelf.value = undefined;
   };
@@ -30,6 +34,7 @@ export const useMySelfStore = defineStore("MySelfStore", () => {
     mySelf,
     isFetch,
     isActive,
+    isAdmin,
     fetchMySelf,
     clearMySelf,
   };

@@ -43,4 +43,15 @@ export const userApi = () => ({
       method: "POST",
     });
   },
+  get: async (pagQuery: IPaginationQuery) => {
+    return useCustomFetch()<Pagination<UserMap>>(
+      `/users${paginationQueryHandle(pagQuery)}`,
+      { method: "GET" }
+    );
+  },
+  delete: async (id: number) => {
+    return useCustomFetch(false)<boolean>(`/users/${id}`, {
+      method: "DELETE",
+    });
+  },
 });

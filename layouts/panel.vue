@@ -7,9 +7,11 @@ import {
   Plus,
   Timer,
   MessageCircle,
+  Users,
 } from "lucide-vue-next";
 
 const { breadcrumbPage } = storeToRefs(useConfigStore());
+const { isAdmin } = storeToRefs(useMySelfStore());
 
 const data = {
   products: [
@@ -40,6 +42,14 @@ const data = {
       title: "Enviar Feedback",
       name: "feedback.page",
       icon: MessageCircle,
+    },
+  ],
+
+  adminPages: [
+    {
+      title: "Usuários",
+      name: "users",
+      icon: Users,
     },
   ],
 };
@@ -133,6 +143,28 @@ function setActiveProduct(team: (typeof data.products)[number]) {
 
             <SidebarMenu>
               <SidebarMenuItem v-for="item in data.pages" :key="item.name">
+                <SidebarMenuButton as-child>
+                  <NuxtLink
+                    :to="{ name: item.name }"
+                    as="a"
+                    active-class="text-primary font-bold"
+                  >
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+
+          <SidebarGroup
+            v-if="isAdmin"
+            class="group-data-[collapsible=icon]:hidden"
+          >
+            <SidebarGroupLabel>Administração</SidebarGroupLabel>
+
+            <SidebarMenu>
+              <SidebarMenuItem v-for="item in data.adminPages" :key="item.name">
                 <SidebarMenuButton as-child>
                   <NuxtLink
                     :to="{ name: item.name }"
