@@ -271,7 +271,7 @@ const updateTimerInterval = () => {
     timerStore.defineIntervalTimer(props.id, 1000, true);
   } else if (document.visibilityState === "hidden") {
     visibilityStateLabel.value =
-      " — Modo lento, contado de 15 em 15 segundos...";
+      " — Modo lento, atualizando de 15 em 15 segundos... Clique na aba para visualizar o tempo real.";
     timerStore.defineIntervalTimer(props.id, 15000, true);
   }
 };
