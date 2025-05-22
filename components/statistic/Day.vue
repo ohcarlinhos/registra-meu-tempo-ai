@@ -137,59 +137,59 @@ const mountInfoCardList = () => {
     cards: hourCards,
   });
 
-  const quantityCards: CardType[] = [];
+  // const quantityCards: CardType[] = [];
 
-  quantityCards.push({
-    title: "Minutos",
-    value: statistic.timeMinuteCount,
-    obs: "Tempo registrado contendo apenas a quantidade de minutos e dia.",
-  });
+  // quantityCards.push({
+  //   title: "Minutos",
+  //   value: statistic.timeMinuteCount,
+  //   obs: "Tempo registrado contendo apenas a quantidade de minutos e dia.",
+  // });
 
-  quantityCards.push({
-    title: "Sessões",
-    value: statistic.sessionCount,
-    obs: 'Cada uso do "timer" é considerado como uma sessão.',
-  });
+  // quantityCards.push({
+  //   title: "Sessões",
+  //   value: statistic.sessionCount,
+  //   obs: 'Cada uso do "timer" é considerado como uma sessão.',
+  // });
 
-  quantityCards.push({
-    title: "Períodos",
-    value: statistic.timePeriodCount,
-    obs: "Gerados a cada clique em início e pausa.",
-  });
+  // quantityCards.push({
+  //   title: "Períodos",
+  //   value: statistic.timePeriodCount,
+  //   obs: "Gerados a cada clique em início e pausa.",
+  // });
 
-  quantityCards.push({
-    title: "Interrupções",
-    value: statistic.interruptionCount,
-    obs: "Soma do total de pausas durante sessões.",
-  });
+  // quantityCards.push({
+  //   title: "Interrupções",
+  //   value: statistic.interruptionCount,
+  //   obs: "Soma do total de pausas durante sessões.",
+  // });
 
-  infoCardList.value.push({
-    title: "Quantitativo",
-    cards: quantityCards,
-  });
+  // infoCardList.value.push({
+  //   title: "Quantitativo",
+  //   cards: quantityCards,
+  // });
 
-  if (props.timeRecordId) {
-    return;
-  }
+  // if (props.timeRecordId) {
+  //   return;
+  // }
 
-  const recordCards: CardType[] = [];
+  // const recordCards: CardType[] = [];
 
-  recordCards.push({
-    title: "Criadas",
-    value: statistic.createdTimeRecordCount,
-    obs: "",
-  });
+  // recordCards.push({
+  //   title: "Criadas",
+  //   value: statistic.createdTimeRecordCount,
+  //   obs: "",
+  // });
 
-  recordCards.push({
-    title: "Atualizadas",
-    value: statistic.updatedTimeRecordCount,
-    obs: "",
-  });
+  // recordCards.push({
+  //   title: "Atualizadas",
+  //   value: statistic.updatedTimeRecordCount,
+  //   obs: "",
+  // });
 
-  infoCardList.value.push({
-    title: "Tarefas",
-    cards: recordCards,
-  });
+  // infoCardList.value.push({
+  //   title: "Tarefas",
+  //   cards: recordCards,
+  // });
 };
 
 var maxDate = ref(new Date(Date.now()));
@@ -244,9 +244,9 @@ var maxDate = ref(new Date(Date.now()));
         :key="section.title"
         class="pb-4"
       >
-        <h3 class="text-2xl font-semibold pb-5">
+        <!-- <h3 class="text-2xl font-semibold pb-5">
           {{ section.title }}
-        </h3>
+        </h3> -->
 
         <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
           <Card

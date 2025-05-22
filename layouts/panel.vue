@@ -8,6 +8,7 @@ import {
   Timer,
   MessageCircle,
   Users,
+  Flame,
 } from "lucide-vue-next";
 
 const { breadcrumbPage } = storeToRefs(useConfigStore());
@@ -27,6 +28,11 @@ const data = {
       title: "Tarefas",
       name: "record.panel",
       icon: ClipboardList,
+    },
+    {
+      title: "Estatísticas",
+      name: "statistic.day",
+      icon: Flame,
     },
     {
       title: "Cronômetros",
