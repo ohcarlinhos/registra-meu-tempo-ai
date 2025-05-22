@@ -131,8 +131,16 @@ export const useTimerStore = defineStore("TimerStore", {
 
     // Interval
 
-    defineIntervalTimer(id: number | null = null) {
+    defineIntervalTimer(
+      id: number | null = null,
+      interval = 1000,
+      clearInterval = false
+    ) {
       const timer = this.getTimer(id);
+
+      if (clearInterval) {
+        this.clearInterval(id);
+      }
 
       timer.interval = setInterval(() => {
         if (timer.isRun) {
@@ -144,7 +152,7 @@ export const useTimerStore = defineStore("TimerStore", {
         } else {
           this.clearInterval(id);
         }
-      }, 1000);
+      }, interval);
     },
 
     clearInterval(id: number | null = null) {

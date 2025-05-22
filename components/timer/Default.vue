@@ -62,9 +62,15 @@ watch(
   }
 );
 
+const visibilityStateLabel = ref("");
+
 const titlePage = computed(() => {
   if (timer.value.isRun) {
-    return timerLabelText.value + (props.title ? " — " + props.title : "");
+    return (
+      timerLabelText.value +
+      visibilityStateLabel.value +
+      (props.title ? " — " + props.title : "")
+    );
   }
   return props.title ? props.title : "";
 });
@@ -257,8 +263,22 @@ const offlineCheck = setInterval(() => {
 
 const openFull = ref(false);
 
+const updateTimerInterval = () => {
+  if (!timer.value.isRun) return;
+
+  if (document.visibilityState === "visible") {
+    visibilityStateLabel.value = "";
+    timerStore.defineIntervalTimer(props.id, 1000, true);
+  } else if (document.visibilityState === "hidden") {
+    visibilityStateLabel.value =
+      " — Modo lento, contado de 15 em 15 segundos...";
+    timerStore.defineIntervalTimer(props.id, 15000, true);
+  }
+};
+
 onMounted(() => {
   updateTimerLabelText();
+  document.addEventListener("visibilitychange", updateTimerInterval);
 
   if (timer.value.isRun) {
     openFull.value = true;
@@ -267,6 +287,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearInterval(offlineCheck);
+  document.removeEventListener("visibilitychange", updateTimerInterval);
 });
 </script>
 
