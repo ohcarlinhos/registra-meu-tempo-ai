@@ -18,4 +18,10 @@ export type DayStatistic = {
   manualCount: number;
   createdTimeRecordCount: number;
   updatedTimeRecordCount: number;
+  timeRecordRangeProgress: TimeRecordRangeProgress[] | null;
+};
+
+export type TimeRecordRangeProgress = {
+  totalHours: string;
+  timeRecord: TimeRecordMap;
 };

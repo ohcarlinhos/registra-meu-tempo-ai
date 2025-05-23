@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtLink } from "#components";
+import type { ColumnDef } from "@tanstack/vue-table";
 import { startOfDay } from "date-fns";
 
 type CardType = {
@@ -136,63 +138,64 @@ const mountInfoCardList = () => {
     title: "Horas",
     cards: hourCards,
   });
-
-  // const quantityCards: CardType[] = [];
-
-  // quantityCards.push({
-  //   title: "Minutos",
-  //   value: statistic.timeMinuteCount,
-  //   obs: "Tempo registrado contendo apenas a quantidade de minutos e dia.",
-  // });
-
-  // quantityCards.push({
-  //   title: "Sessões",
-  //   value: statistic.sessionCount,
-  //   obs: 'Cada uso do "timer" é considerado como uma sessão.',
-  // });
-
-  // quantityCards.push({
-  //   title: "Períodos",
-  //   value: statistic.timePeriodCount,
-  //   obs: "Gerados a cada clique em início e pausa.",
-  // });
-
-  // quantityCards.push({
-  //   title: "Interrupções",
-  //   value: statistic.interruptionCount,
-  //   obs: "Soma do total de pausas durante sessões.",
-  // });
-
-  // infoCardList.value.push({
-  //   title: "Quantitativo",
-  //   cards: quantityCards,
-  // });
-
-  // if (props.timeRecordId) {
-  //   return;
-  // }
-
-  // const recordCards: CardType[] = [];
-
-  // recordCards.push({
-  //   title: "Criadas",
-  //   value: statistic.createdTimeRecordCount,
-  //   obs: "",
-  // });
-
-  // recordCards.push({
-  //   title: "Atualizadas",
-  //   value: statistic.updatedTimeRecordCount,
-  //   obs: "",
-  // });
-
-  // infoCardList.value.push({
-  //   title: "Tarefas",
-  //   cards: recordCards,
-  // });
 };
 
 var maxDate = ref(new Date(Date.now()));
+
+const tableColumns: ColumnDef<unknown>[] = [
+  {
+    accessorKey: "formattedTime",
+    header: () => h("span", ["Tempo"]),
+  },
+  {
+    accessorKey: "title",
+    header: () => h("span", ["Título"]),
+
+    cell: ({ row }) =>
+      h(
+        NuxtLink,
+        {
+          to: {
+            name: "record",
+            params: { code: row.getValue("code") as string },
+          },
+          class: "hover:text-primary hover:underline",
+        },
+        () => [row.getValue("title")]
+      ),
+  },
+  {
+    accessorKey: "categoryName",
+    header: () => h("span", ["Categoria"]),
+  },
+  {
+    accessorKey: "code",
+    header: () => h("span", ["Código"]),
+    cell: ({ cell }) => {
+      const value = cell.getValue() as string;
+      return h("div", { class: "truncate max-w-[100px]", title: value }, [
+        value,
+      ]);
+    },
+  },
+];
+
+const tableData = computed(() => {
+  const timeRecordsTable: unknown[] = [];
+
+  if (dayStatistic.value?.timeRecordRangeProgress)
+    dayStatistic.value?.timeRecordRangeProgress.forEach((trp) => {
+      timeRecordsTable.push({
+        ...trp,
+        code: trp.timeRecord.code || "-",
+        title: trp.timeRecord.title || "Sem título",
+        categoryName: trp.timeRecord.categoryName || "-",
+        formattedTime: trp.totalHours || "Nenhum",
+      });
+    });
+
+  return timeRecordsTable;
+});
 </script>
 
 <template>
@@ -203,11 +206,7 @@ var maxDate = ref(new Date(Date.now()));
       >
         <section>
           <h2 class="text-4xl font-bold flex items-center gap-5">
-            {{
-              !timeRecordId && !hasFetch
-                ? "Resumo Diário (Geral)"
-                : "Resumo Diário"
-            }}
+            {{ !timeRecordId && !hasFetch ? "Progresso" : "Resumo Diário" }}
 
             <GUpdatedOn
               v-if="updatedOn"
@@ -239,45 +238,69 @@ var maxDate = ref(new Date(Date.now()));
     <StatisticSkeleton v-if="hasFetch" />
 
     <section v-else class="w-full grid grid-cols-1 items-start gap-5">
-      <section
+      <Card
         v-for="(section, index) in infoCardList"
         :key="section.title"
         class="pb-4"
       >
-        <!-- <h3 class="text-2xl font-semibold pb-5">
-          {{ section.title }}
-        </h3> -->
+        <CardHeader>
+          <CardTitle>
+            {{ section.title }}
+          </CardTitle>
+        </CardHeader>
 
-        <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
-          <Card
-            v-for="card in section.cards"
-            class="min-h-44 flex items-center justify-center"
-            :class="[card.customClass, card.cardRingStyle]"
-            :key="card.title"
+        <CardContent>
+          <section
+            class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4"
           >
-            <CardContent>
-              <section class="flex flex-col gap-2 items-center w-full h-full">
-                <h3
-                  class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
-                >
-                  {{ card.title }}
-                </h3>
+            <Card
+              v-for="card in section.cards"
+              class="min-h-44 flex items-center justify-center"
+              :class="[card.customClass, card.cardRingStyle]"
+              :key="card.title"
+            >
+              <CardContent>
+                <section class="flex flex-col gap-2 items-center w-full h-full">
+                  <h3
+                    class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
+                  >
+                    {{ card.title }}
+                  </h3>
 
-                <span class="text-3xl font-bold" :class="[card.valueStyle]">
-                  {{ card.value }}
-                </span>
+                  <span class="text-3xl font-bold" :class="[card.valueStyle]">
+                    {{ card.value }}
+                  </span>
 
-                <span
-                  class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
-                >
-                  {{ card.obs }}
-                </span>
-              </section>
-            </CardContent>
-          </Card>
-        </section>
+                  <span
+                    class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
+                  >
+                    {{ card.obs }}
+                  </span>
+                </section>
+              </CardContent>
+            </Card>
+          </section>
 
-        <Separator class="mt-10" v-if="index + 1 < infoCardList.length" />
+          <Separator class="mt-10" v-if="index + 1 < infoCardList.length" />
+        </CardContent>
+      </Card>
+
+      <section v-if="!timeRecordId" class="flex">
+        <Card class="w-full">
+          <CardHeader>
+            <CardTitle>
+              {{ "Tarefas" }}
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent class="flex flex-col gap-5">
+            <GDataTable
+              :columns="tableColumns"
+              :data="tableData"
+              :loading="isFetchStatistics"
+            />
+          </CardContent>
+        </Card>
       </section>
     </section>
   </section>

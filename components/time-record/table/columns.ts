@@ -71,6 +71,12 @@ export const columns: ColumnDef<TimeRecordTable>[] = [
           h("span", ["Código"]),
         ]
       ),
+    cell: ({ cell }) => {
+      const value = cell.getValue() as string;
+      return h("div", { class: "truncate max-w-[100px]", title: value }, [
+        value,
+      ]);
+    },
   },
   {
     accessorKey: "categoryName",
