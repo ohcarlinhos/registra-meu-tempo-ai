@@ -31,12 +31,12 @@ const submitAction = async (dto: UpdateUserDto) => {
   try {
     await userApi().update(mySelf.value!.id, dto);
 
-    if (oldEmail.value != dto.email) {
-      OkToast(_$t("updateUserSuccessAndLogin"));
-      return logout();
-    } else {
-      OkToast(_$t("updateUserSuccess"));
-    }
+    // if (oldEmail.value != dto.email) {
+    //   OkToast(_$t("updateUserSuccessAndLogin"));
+    //   return logout();
+    // } else {
+    //   OkToast(_$t("updateUserSuccess"));
+    // }
   } catch (error) {
     ErrorToast(error);
   } finally {
@@ -104,7 +104,7 @@ onMounted(async () => {
             :loading="isFetch"
             class="w-full mt-2"
           >
-            {{ "Atualizar dados do usuário" }}
+            {{ "Atualizar dados" }}
           </Button>
         </form>
       </CardContent>

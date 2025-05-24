@@ -15,9 +15,9 @@ useConfigStore().setBreadcrumbPage([{ label: "Minha conta" }]);
         <UserFormUpdate />
       </div>
 
-      <div class="w-full md:col-span-6 lg:col-span-4">
+      <!-- <div class="w-full md:col-span-6 lg:col-span-4">
         <UserFormPassword />
-      </div>
+      </div> -->
     </div>
   </NuxtLayout>
 </template>

@@ -6,7 +6,7 @@ export type CreateUserDto = {
 
 export type UpdateUserDto = {
   name: string;
-  email: string;
+  // email: string;
 };
 
 export type UpdateUserPasswordDto = {

@@ -107,7 +107,11 @@ if (rfMockEnable.value) {
       v-if="enableUserChallenge && formValues.email && formValues.password"
       class="flex justify-center pt-1"
     >
-      <NuxtTurnstile v-model="_tokenUserChallenge" />
+      <NuxtTurnstile
+        class="flex-1"
+        v-model="_tokenUserChallenge"
+        :options="{ size: 'flexible' }"
+      />
     </section>
 
     <Button
@@ -125,7 +129,7 @@ if (rfMockEnable.value) {
       Uma conta será criada automaticamente caso seja seu primeiro acesso.
     </p>
 
-    <!-- <Button
+    <Button
       @click="openInPopup('/auth/google')"
       variant="outline"
       class="w-full"
@@ -144,7 +148,7 @@ if (rfMockEnable.value) {
       </svg>
 
       Acessar com Google
-    </Button> -->
+    </Button>
 
     <Button
       @click="openInPopup('/auth/github')"
