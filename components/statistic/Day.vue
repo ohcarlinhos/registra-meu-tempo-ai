@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { NuxtLink } from "#components";
 import type { ColumnDef } from "@tanstack/vue-table";
-import { startOfDay } from "date-fns";
+import { format, startOfDay } from "date-fns";
 
 type CardType = {
   title: string;
@@ -135,7 +135,7 @@ const mountInfoCardList = () => {
   });
 
   infoCardList.value.push({
-    title: "Horas",
+    title: "Horas Dedicadas",
     cards: hourCards,
   });
 };
@@ -196,6 +196,12 @@ const tableData = computed(() => {
 
   return timeRecordsTable;
 });
+
+const referenceDate = computed(() => {
+  return selectedDate.value
+    ? format(selectedDate.value, "dd/MM/yyyy")
+    : format(new Date(), "dd/MM/yyyy");
+});
 </script>
 
 <template>
@@ -206,7 +212,7 @@ const tableData = computed(() => {
       >
         <section>
           <h2 class="text-4xl font-bold flex items-center gap-5">
-            {{ !timeRecordId && !hasFetch ? "Progresso" : "Resumo Diário" }}
+            {{ !timeRecordId && !hasFetch ? "Meu Progresso" : "Resumo Diário" }}
 
             <GUpdatedOn
               v-if="updatedOn"
@@ -215,7 +221,10 @@ const tableData = computed(() => {
               :click-action="init"
             />
           </h2>
-          <span>Estatísticas referentes ao dia selecionado.</span>
+
+          <span>
+            Estatísticas de tempo referentes ao dia {{ referenceDate }}.
+          </span>
         </section>
 
         <div class="max-w-44">
@@ -289,8 +298,15 @@ const tableData = computed(() => {
         <Card class="w-full">
           <CardHeader>
             <CardTitle>
-              {{ "Tarefas" }}
+              {{ "Minhas Tarefas" }}
             </CardTitle>
+            <CardDescription>
+              {{
+                "Horas dedicadas em tarefa que tiveram registros de tempo no dia " +
+                referenceDate +
+                "."
+              }}
+            </CardDescription>
           </CardHeader>
 
           <CardContent class="flex flex-col gap-5">
