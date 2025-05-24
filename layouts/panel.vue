@@ -25,14 +25,14 @@ const data = {
 
   pages: [
     {
-      title: "Tarefas",
-      name: "record.panel",
-      icon: ClipboardList,
-    },
-    {
       title: "Estatísticas",
       name: "statistic.day",
       icon: Flame,
+    },
+    {
+      title: "Tarefas",
+      name: "record.panel",
+      icon: ClipboardList,
     },
     {
       title: "Cronômetros",
