@@ -3,6 +3,20 @@ import { v4 as uuidv4 } from "uuid";
 
 export type PostTimePeriodCallback = (code: string) => Promise<void>;
 
+const saveTimerStoreList = (list: TimerStoreItem[]) => {
+  localStorage.setItem("timerStoreList", JSON.stringify(list));
+  console.log("TimerStoreList saved", list);
+};
+
+const getTimerStoreList = () => {
+  const storeList = localStorage.getItem("timerStoreList");
+  try {
+    return (storeList ? JSON.parse(storeList) : []) as TimerStoreItem[];
+  } catch {
+    return [];
+  }
+};
+
 export const useTimerStore = defineStore("TimerStore", {
   state: () => {
     return {
@@ -16,6 +30,7 @@ export const useTimerStore = defineStore("TimerStore", {
 
   actions: {
     initTimerConfig(id: number | null = null, code = "") {
+      this._timerList = getTimerStoreList();
       const timer = this.getTimer(id);
       timer.code = code;
       timer.isFetch = false;
@@ -52,7 +67,9 @@ export const useTimerStore = defineStore("TimerStore", {
         showOptions: false,
         pomodoroPeriod: 25,
         breakPeriod: 5,
+        intervalSize: 0,
         page: 1,
+        count: 0,
         localRecords: [],
       });
 
@@ -122,6 +139,8 @@ export const useTimerStore = defineStore("TimerStore", {
       if (indexTimer != -1) {
         timer.localRecords.splice(indexTimer, 1);
       }
+
+      saveTimerStoreList(this._timerList);
     },
 
     clearCurrentPeriodList(id: number | null = null) {
@@ -142,9 +161,19 @@ export const useTimerStore = defineStore("TimerStore", {
         this.clearInterval(id);
       }
 
+      timer.intervalSize = interval;
+
       timer.interval = setInterval(() => {
         if (timer.isRun) {
           timer.currentPeriod.end = Date.now();
+
+          timer.count = timer.count + 1;
+          console.log("Timer count:", timer.count);
+
+          if (timer.intervalSize > 1000 || timer.count >= 10) {
+            saveTimerStoreList(this._timerList);
+            timer.count = 0;
+          }
 
           if (timer.type == "break" || timer.type == "pomodoro") {
             this.handleWithPomoOrBreakEnd(id);
@@ -178,10 +207,12 @@ export const useTimerStore = defineStore("TimerStore", {
       const timer = this.getTimer(id);
       if (timer.isRun === true) this.pauseTimer(id);
 
-      this.defineIntervalTimer(id);
       this.resetTimer(id);
+      this.defineIntervalTimer(id);
 
       timer.isRun = true;
+
+      saveTimerStoreList(this._timerList);
     },
 
     pauseTimer(id: number | null = null) {
@@ -198,6 +229,8 @@ export const useTimerStore = defineStore("TimerStore", {
 
       this.resetTimer(id);
       timer.isRun = false;
+
+      saveTimerStoreList(this._timerList);
     },
 
     endTimer(id: number | null = null) {
@@ -250,11 +283,15 @@ export const useTimerStore = defineStore("TimerStore", {
       }
 
       timer.currentPeriodList = [];
+
+      saveTimerStoreList(this._timerList);
     },
 
     stopTimer(id: number | null = null) {
       const timer = this.getTimer(id);
       timer.currentPeriodList = [];
+
+      saveTimerStoreList(this._timerList);
     },
 
     resetTimer(id: number | null = null) {
@@ -263,6 +300,8 @@ export const useTimerStore = defineStore("TimerStore", {
 
       timer.currentPeriod.start = timeNow;
       timer.currentPeriod.end = timeNow;
+      timer.count = 0;
+      timer.intervalSize = 0;
     },
 
     // Seters
@@ -318,5 +357,5 @@ export const useTimerStore = defineStore("TimerStore", {
     },
   },
 
-  persist: true,
+  persist: false,
 });

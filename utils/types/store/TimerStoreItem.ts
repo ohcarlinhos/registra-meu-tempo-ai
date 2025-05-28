@@ -8,7 +8,9 @@ export interface TimerStoreItem {
   isRun: boolean;
   isFetch: boolean;
   interval: NodeJS.Timeout | null;
+  intervalSize: number;
   type: TimerTypes;
+  count: number;
 
   showOptions: boolean;
   pomodoroPeriod: number;
