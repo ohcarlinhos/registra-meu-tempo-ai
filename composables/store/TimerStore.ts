@@ -168,7 +168,7 @@ export const useTimerStore = defineStore("TimerStore", {
           timer.currentPeriod.end = Date.now();
 
           timer.count = timer.count + 1;
-          console.log("Timer count:", timer.count);
+          // console.log("Timer count:", timer.count);
 
           if (timer.intervalSize > 1000 || timer.count >= 10) {
             saveTimerStoreList(this._timerList);
