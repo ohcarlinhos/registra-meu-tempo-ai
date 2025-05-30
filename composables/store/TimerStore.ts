@@ -146,6 +146,7 @@ export const useTimerStore = defineStore("TimerStore", {
     clearCurrentPeriodList(id: number | null = null) {
       const timer = this.getTimer(id);
       timer.currentPeriodList = [];
+      saveTimerStoreList(this._timerList);
     },
 
     // Interval
