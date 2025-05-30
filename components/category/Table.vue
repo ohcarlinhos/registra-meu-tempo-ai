@@ -97,16 +97,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Card>
-    <CardHeader class="flex-row gap-4 justify-between">
-      <section class="flex flex-row gap-4 items-center">
-        <CardTitle>{{ "Categorias" }}</CardTitle>
-
+  <section class="flex flex-col gap-5">
+    <GTitlePage
+      title="Categorias"
+      description="Gerencie suas categorias de tarefas."
+    >
+      <template #title-slot>
         <Button variant="outline" @click="modal.category = true">
           <CirclePlus />
           {{ "Criar" }}
         </Button>
-      </section>
+      </template>
 
       <GSearchV2
         :pagination-query="paginationQuery"
@@ -114,28 +115,26 @@ onBeforeUnmount(() => {
         :is-pagination-fetch="isLoading"
         using-store
       />
-    </CardHeader>
+    </GTitlePage>
 
-    <CardContent>
-      <GDataTable
-        :columns="tableColumns"
-        :data="tableData"
-        :loading="isLoading"
-      />
+    <GDataTable
+      :columns="tableColumns"
+      :data="tableData"
+      :loading="isLoading"
+    />
 
-      <GPaginationV2
-        :page="apiRes?.page"
-        :per-page="apiRes?.perPage"
-        :total-pages="apiRes?.totalPages"
-        :total-items="apiRes?.totalItems"
-        :pagination-query="paginationQuery"
-        :pagination-query-methods="categoryStore"
-        :is-pagination-fetch="isLoading"
-        total-label="Categorias"
-        using-store
-      />
-    </CardContent>
-  </Card>
+    <GPaginationV2
+      :page="apiRes?.page"
+      :per-page="apiRes?.perPage"
+      :total-pages="apiRes?.totalPages"
+      :total-items="apiRes?.totalItems"
+      :pagination-query="paginationQuery"
+      :pagination-query-methods="categoryStore"
+      :is-pagination-fetch="isLoading"
+      total-label="Categorias"
+      using-store
+    />
+  </section>
 
   <GModalConfirm
     v-model:open="modal.confirmDelete.open"

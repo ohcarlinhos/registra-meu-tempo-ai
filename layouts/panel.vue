@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Users,
   Flame,
+  CalendarCheck2,
 } from "lucide-vue-next";
 
 const { breadcrumbPage } = storeToRefs(useConfigStore());
@@ -18,14 +19,14 @@ const data = {
   products: [
     {
       name: "Registra meu tempo aí!",
-      logo: Timer,
+      logo: CalendarCheck2,
       type: "Ferramenta",
     },
   ],
 
   pages: [
     {
-      title: "Estatísticas",
+      title: "Resumo Diário",
       name: "statistic.day",
       icon: Flame,
     },
@@ -35,15 +36,21 @@ const data = {
       icon: ClipboardList,
     },
     {
-      title: "Cronômetros",
-      name: "timer.panel",
-      icon: Timer,
-    },
-    {
       title: "Categorias",
       name: "record.category",
       icon: Tag,
     },
+  ],
+
+  tools: [
+    {
+      title: "Cronômetros",
+      name: "timer.panel",
+      icon: Timer,
+    },
+  ],
+
+  other: [
     {
       title: "Enviar Feedback",
       name: "feedback.page",
@@ -125,7 +132,7 @@ function setActiveProduct(team: (typeof data.products)[number]) {
                     {{ product.name }}
                   </DropdownMenuItem>
 
-                  <DropdownMenuSeparator />
+                  <!-- <DropdownMenuSeparator />
 
                   <DropdownMenuItem class="gap-2 p-2">
                     <div
@@ -136,7 +143,7 @@ function setActiveProduct(team: (typeof data.products)[number]) {
                     <div class="font-medium text-muted-foreground">
                       Adicionar Produto
                     </div>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> -->
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
@@ -144,8 +151,8 @@ function setActiveProduct(team: (typeof data.products)[number]) {
         </SidebarHeader>
 
         <SidebarContent>
-          <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Registro de Tempo</SidebarGroupLabel>
+          <SidebarGroup>
+            <SidebarGroupLabel>Principal</SidebarGroupLabel>
 
             <SidebarMenu>
               <SidebarMenuItem v-for="item in data.pages" :key="item.name">
@@ -163,10 +170,45 @@ function setActiveProduct(team: (typeof data.products)[number]) {
             </SidebarMenu>
           </SidebarGroup>
 
-          <SidebarGroup
-            v-if="isAdmin"
-            class="group-data-[collapsible=icon]:hidden"
-          >
+          <SidebarGroup>
+            <SidebarGroupLabel>Ferramentas</SidebarGroupLabel>
+
+            <SidebarMenu>
+              <SidebarMenuItem v-for="item in data.tools" :key="item.name">
+                <SidebarMenuButton as-child>
+                  <NuxtLink
+                    :to="{ name: item.name }"
+                    as="a"
+                    active-class="text-primary font-bold"
+                  >
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+
+          <SidebarGroup>
+            <SidebarGroupLabel>Geral</SidebarGroupLabel>
+
+            <SidebarMenu>
+              <SidebarMenuItem v-for="item in data.other" :key="item.name">
+                <SidebarMenuButton as-child>
+                  <NuxtLink
+                    :to="{ name: item.name }"
+                    as="a"
+                    active-class="text-primary font-bold"
+                  >
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+
+          <SidebarGroup v-if="isAdmin">
             <SidebarGroupLabel>Administração</SidebarGroupLabel>
 
             <SidebarMenu>

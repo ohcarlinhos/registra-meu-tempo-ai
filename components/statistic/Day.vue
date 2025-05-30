@@ -36,7 +36,9 @@ const dayStatistic = ref<DayStatistic>();
 const isFetchStatistics = ref(false);
 
 onMounted(() => {
-  updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
+  if (props.timeRecordId) {
+    updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
+  }
 
   selectedDate.value = route.query.date
     ? startOfDay(new Date(route.query.date as string))
@@ -56,7 +58,9 @@ watch(
 watch(
   () => props.timeRecord?.title,
   () => {
-    updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
+    if (props.timeRecordId) {
+      updateTimeRecordPageBreadcrumb(props.timeRecord?.title);
+    }
   }
 );
 
@@ -135,7 +139,7 @@ const mountInfoCardList = () => {
   });
 
   infoCardList.value.push({
-    title: "Horas Dedicadas",
+    title: "",
     cards: hourCards,
   });
 };
@@ -206,117 +210,92 @@ const referenceDate = computed(() => {
 
 <template>
   <section class="flex flex-col gap-5 w-full">
-    <section class="col-span-full">
-      <section
-        class="flex items-center justify-between gap-5 max-sm:flex-col max-sm:items-start"
-      >
-        <section>
-          <h2 class="text-4xl font-bold flex items-center gap-5">
-            {{ !timeRecordId && !hasFetch ? "Meu Progresso" : "Resumo Diário" }}
+    <GTitlePage
+      title="Resumo Diário"
+      :description="'Estatísticas de tempo referentes ao dia ' + referenceDate"
+    >
+      <template #title-slot>
+        <GUpdatedOn
+          v-if="props.updatedOn"
+          :loading="hasFetch"
+          :updated-on="props.updatedOn"
+          @click-action="init"
+        />
+      </template>
 
-            <GUpdatedOn
-              v-if="updatedOn"
-              :loading="hasFetch"
-              :updated-on="updatedOn"
-              :click-action="init"
-            />
-          </h2>
+      <div class="max-w-44">
+        <p class="text-sm font-medium leading-none pb-2">
+          {{ "Referência" }}
+        </p>
 
-          <span>
-            Estatísticas de tempo referentes ao dia {{ referenceDate }}.
-          </span>
-        </section>
-
-        <div class="max-w-44">
-          <p class="text-sm font-medium leading-none pb-2">
-            {{ "Referência" }}
-          </p>
-
-          <GDatePicker
-            :modelValue="selectedDate"
-            :disabled="hasFetch"
-            :max-date="maxDate"
-            disableTimePicker
-            utc
-            @update:modelValue="(e: string | Date | undefined) => e != undefined && (selectedDate = startOfDay(e))"
-          />
-        </div>
-      </section>
-    </section>
+        <GDatePicker
+          :modelValue="selectedDate"
+          :disabled="hasFetch"
+          :max-date="maxDate"
+          disableTimePicker
+          utc
+          @update:modelValue="(e: string | Date | undefined) => e != undefined && (selectedDate = startOfDay(e))"
+        />
+      </div>
+    </GTitlePage>
 
     <StatisticSkeleton v-if="hasFetch" />
 
     <section v-else class="w-full grid grid-cols-1 items-start gap-5">
-      <Card
+      <section
         v-for="(section, index) in infoCardList"
         :key="section.title"
-        class="pb-4"
+        class="pb-4 flex flex-col gap-3"
       >
-        <CardHeader>
-          <CardTitle>
-            {{ section.title }}
-          </CardTitle>
-        </CardHeader>
+        <GSubTitlePage v-if="section.title" :title="section.title" />
 
-        <CardContent>
-          <section
-            class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4"
+        <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
+          <Card
+            v-for="card in section.cards"
+            class="min-h-44 flex items-center justify-center"
+            :class="[card.customClass, card.cardRingStyle]"
+            :key="card.title"
           >
-            <Card
-              v-for="card in section.cards"
-              class="min-h-44 flex items-center justify-center"
-              :class="[card.customClass, card.cardRingStyle]"
-              :key="card.title"
-            >
-              <CardContent>
-                <section class="flex flex-col gap-2 items-center w-full h-full">
-                  <h3
-                    class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
-                  >
-                    {{ card.title }}
-                  </h3>
+            <CardContent>
+              <section class="flex flex-col gap-2 items-center w-full h-full">
+                <h3
+                  class="text-xl dark:text-white dark:text-opacity-50 text-black text-opacity-70 text-center"
+                >
+                  {{ card.title }}
+                </h3>
 
-                  <span class="text-3xl font-bold" :class="[card.valueStyle]">
-                    {{ card.value }}
-                  </span>
+                <span class="text-3xl font-bold" :class="[card.valueStyle]">
+                  {{ card.value }}
+                </span>
 
-                  <span
-                    class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
-                  >
-                    {{ card.obs }}
-                  </span>
-                </section>
-              </CardContent>
-            </Card>
-          </section>
+                <span
+                  class="text-sm text-center dark:text-white dark:text-opacity-50 text-black text-opacity-70"
+                >
+                  {{ card.obs }}
+                </span>
+              </section>
+            </CardContent>
+          </Card>
+        </section>
 
-          <Separator class="mt-10" v-if="index + 1 < infoCardList.length" />
-        </CardContent>
-      </Card>
+        <Separator class="mt-10" v-if="index + 1 < infoCardList.length" />
+      </section>
 
-      <section v-if="!timeRecordId" class="flex">
-        <Card class="w-full">
-          <CardHeader>
-            <CardTitle>
-              {{ "Minhas Tarefas" }}
-            </CardTitle>
-            <CardDescription>
-              {{
-                "Horas dedicadas em tarefa que tiveram registros de tempo no dia " +
-                referenceDate +
-                "."
-              }}
-            </CardDescription>
-          </CardHeader>
+      <section v-if="!timeRecordId" class="flex flex-col gap-5">
+        <GSubTitlePage
+          title="Minhas Tarefas"
+          :description="
+            'Horas dedicadas em tarefa que tiveram registros de tempo no dia ' +
+            referenceDate +
+            '.'
+          "
+        />
 
-          <CardContent class="flex flex-col gap-5">
-            <GDataTable
-              :columns="tableColumns"
-              :data="tableData"
-              :loading="isFetchStatistics"
-            />
-          </CardContent>
-        </Card>
+        <GDataTable
+          :columns="tableColumns"
+          :data="tableData"
+          :loading="isFetchStatistics"
+        />
       </section>
     </section>
   </section>

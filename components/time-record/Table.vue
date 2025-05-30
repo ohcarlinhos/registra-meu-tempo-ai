@@ -114,89 +114,80 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex-1">
-    <Card>
-      <CardHeader class="flex-col md:flex-row gap-3 md:gap-5 justify-between">
-        <section class="flex flex-row gap-4 items-center">
-          <CardTitle>
-            {{ "Tarefas" }}
-          </CardTitle>
+  <section class="flex-1 flex flex-col gap-5">
+    <GTitlePage
+      title="Tarefas"
+      description="Aqui você pode encontrar todas suas tarefas."
+    >
+      <template #title-slot>
+        <Button variant="outline" :disabled="isLoading" @click="emit('create')">
+          <CirclePlus />
+          {{ "Criar" }}
+        </Button>
+      </template>
 
-          <Button
-            variant="outline"
-            :disabled="isLoading"
-            @click="emit('create')"
-          >
-            <CirclePlus />
-            {{ "Criar Tarefa" }}
-          </Button>
-        </section>
-
-        <div class="flex flex-col gap-3 md:gap-5 md:flex-row items-start">
-          <GSearchV2
-            class="w-full"
-            :pagination-query="paginationQuery"
-            :pagination-query-methods="trStore"
-            :is-pagination-fetch="isLoading"
-            using-store
-          />
-
-          <section class="flex gap-2 items-center">
-            <section class="w-[120px]">
-              <Select
-                v-model="computedCategory"
-                :disabled="!categories.length || isLoading"
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="item in categories"
-                      :value="item.id.toString()"
-                    >
-                      {{ item.name }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </section>
-
-            <Button
-              :disabled="!computedCategory || isLoading"
-              variant="outline"
-              :color="!computedCategory ? 'white' : 'red'"
-              @click="computedCategory = ''"
-            >
-              <Trash2 />
-              {{ "Limpar" }}
-            </Button>
-          </section>
-        </div>
-      </CardHeader>
-
-      <CardContent class="flex flex-col gap-5">
-        <GDataTable
-          :columns="tableColumns"
-          :data="tableData"
-          :sort="sort"
-          :loading="isLoading"
-          @updated-sort="handleSort"
-        />
-
-        <GPaginationV2
-          :page="apiRes?.page"
-          :per-page="apiRes?.perPage"
-          :total-pages="apiRes?.totalPages"
-          :total-items="apiRes?.totalItems"
+      <div class="flex flex-col gap-3 md:gap-5 md:flex-row items-start">
+        <GSearchV2
+          class="w-full"
           :pagination-query="paginationQuery"
           :pagination-query-methods="trStore"
           :is-pagination-fetch="isLoading"
-          total-label="Tarefas"
           using-store
         />
-      </CardContent>
-    </Card>
-  </div>
+
+        <section class="flex gap-2 items-center">
+          <section class="w-[120px]">
+            <Select
+              v-model="computedCategory"
+              :disabled="!categories.length || isLoading"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="item in categories"
+                    :value="item.id.toString()"
+                  >
+                    {{ item.name }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </section>
+
+          <Button
+            :disabled="!computedCategory || isLoading"
+            variant="outline"
+            :color="!computedCategory ? 'white' : 'red'"
+            @click="computedCategory = ''"
+          >
+            <Trash2 />
+            {{ "Limpar" }}
+          </Button>
+        </section>
+      </div>
+    </GTitlePage>
+
+    <GDataTable
+      :columns="tableColumns"
+      :data="tableData"
+      :sort="sort"
+      :loading="isLoading"
+      @updated-sort="handleSort"
+    />
+
+    <GPaginationV2
+      :page="apiRes?.page"
+      :per-page="apiRes?.perPage"
+      :total-pages="apiRes?.totalPages"
+      :total-items="apiRes?.totalItems"
+      :pagination-query="paginationQuery"
+      :pagination-query-methods="trStore"
+      :is-pagination-fetch="isLoading"
+      total-label="Tarefas"
+      using-store
+    />
+  </section>
 </template>
