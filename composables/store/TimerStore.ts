@@ -5,7 +5,7 @@ export type PostTimePeriodCallback = (code: string) => Promise<void>;
 
 const saveTimerStoreList = (list: TimerStoreItem[]) => {
   localStorage.setItem("timerStoreList", JSON.stringify(list));
-  console.log("TimerStoreList saved", list);
+  // console.log("TimerStoreList saved", list);
 };
 
 const getTimerStoreList = () => {

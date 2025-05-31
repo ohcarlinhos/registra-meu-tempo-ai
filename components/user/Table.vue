@@ -50,47 +50,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex-1">
-    <Card>
-      <CardHeader class="flex-col md:flex-row gap-3 md:gap-5 justify-between">
-        <section class="flex flex-row gap-4 items-center">
-          <CardTitle>
-            {{ "Usuários" }}
-          </CardTitle>
-        </section>
+  <section class="flex-1 flex flex-col gap-5">
+    <GTitlePage title="Usuários" />
 
-        <!-- <div class="flex flex-col gap-3 md:gap-5 md:flex-row items-start">
-          <GSearchV2
-            class="w-full"
-            :pagination-query="paginationQuery"
-            :pagination-query-methods="userStore"
-            :is-pagination-fetch="isLoading"
-            using-store
-          />
-        </div> -->
-      </CardHeader>
+    <GDataTable
+      :columns="tableColumns"
+      :data="tableData"
+      :sort="sort"
+      :loading="isLoading"
+      @updated-sort="handleSort"
+    />
 
-      <CardContent>
-        <GDataTable
-          :columns="tableColumns"
-          :data="tableData"
-          :sort="sort"
-          :loading="isLoading"
-          @updated-sort="handleSort"
-        />
-
-        <GPaginationV2
-          :page="apiRes?.page"
-          :per-page="apiRes?.perPage"
-          :total-pages="apiRes?.totalPages"
-          :total-items="apiRes?.totalItems"
-          :pagination-query="paginationQuery"
-          :pagination-query-methods="userStore"
-          :is-pagination-fetch="isLoading"
-          total-label="Usuários"
-          using-store
-        />
-      </CardContent>
-    </Card>
-  </div>
+    <GPaginationV2
+      :page="apiRes?.page"
+      :per-page="apiRes?.perPage"
+      :total-pages="apiRes?.totalPages"
+      :total-items="apiRes?.totalItems"
+      :pagination-query="paginationQuery"
+      :pagination-query-methods="userStore"
+      :is-pagination-fetch="isLoading"
+      total-label="Usuários"
+      using-store
+    />
+  </section>
 </template>
