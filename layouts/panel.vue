@@ -10,6 +10,7 @@ import {
   Users,
   Flame,
   CalendarCheck2,
+  LayoutDashboard,
 } from "lucide-vue-next";
 
 const { breadcrumbPage } = storeToRefs(useConfigStore());
@@ -23,8 +24,12 @@ const data = {
       type: "Ferramenta",
     },
   ],
-
   pages: [
+    // {
+    //   title: "Dashboard",
+    //   name: "dashboard",
+    //   icon: LayoutDashboard,
+    // },
     {
       title: "Resumo Diário",
       name: "statistic.day",
