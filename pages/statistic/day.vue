@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "statistic.day" });
-useHead({ title: "Resumos Diários" });
+useHead({ title: "Resumo Diário" });
 useConfigStore().setBreadcrumbPage([{ label: "Resumo Diário" }]);
 </script>
 

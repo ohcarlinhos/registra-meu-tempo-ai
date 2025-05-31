@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: ["auth"], name: "record.statistic.day" });
-useHead({ title: "Resumos Diários" });
+useHead({ title: "Resumo Diário" });
 </script>
 
 <template>
