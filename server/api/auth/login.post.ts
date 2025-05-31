@@ -1,3 +1,4 @@
+import { hash } from "crypto";
 import * as yup from "yup";
 import { FetchError } from "ofetch";
 import { JwtData } from "~/utils/types/api/map/JwtData";
@@ -34,6 +35,7 @@ export default defineEventHandler(async (event) => {
       user: {
         name: claim.name,
         email: claim.email,
+        hashEmail: hash("sha256", claim.email),
       },
     });
 

@@ -1,3 +1,4 @@
+import { hash } from "crypto";
 import { JwtData } from "~/utils/types/api/map/JwtData";
 
 export default defineOAuthGoogleEventHandler({
@@ -26,6 +27,7 @@ export default defineOAuthGoogleEventHandler({
         user: {
           name: claim.name,
           email: claim.email,
+          hashEmail: hash("sha256", claim.email),
         },
       });
     } catch (err) {

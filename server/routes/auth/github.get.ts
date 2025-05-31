@@ -1,4 +1,5 @@
 import { JwtData } from "~/utils/types/api/map/JwtData";
+import { hash } from "crypto";
 
 export default defineOAuthGitHubEventHandler({
   config: {
@@ -30,6 +31,7 @@ export default defineOAuthGitHubEventHandler({
         user: {
           name: claim.name,
           email: claim.email,
+          hashEmail: hash("sha256", claim.email),
         },
       });
     } catch (err) {

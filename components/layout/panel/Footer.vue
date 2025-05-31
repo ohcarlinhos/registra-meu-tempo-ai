@@ -7,6 +7,7 @@ const user = computed(() => {
   return {
     name: userFromSession.value?.name,
     email: userFromSession.value?.email,
+    emailHash: userFromSession.value?.hashEmail,
     avatarFallback: userFromSession.value?.name?.split(" ")[0][0],
   };
 });
@@ -23,7 +24,10 @@ const user = computed(() => {
               class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar class="h-8 w-8 rounded-lg">
-                <!-- <AvatarImage :src="user.avatar" :alt="user.name" /> -->
+                <AvatarImage
+                  :src="`https://www.gravatar.com/avatar/${user.emailHash}?s=40`"
+                  :alt="user.name"
+                />
                 <AvatarFallback class="rounded-lg">
                   {{ user.avatarFallback }}
                 </AvatarFallback>
@@ -51,7 +55,11 @@ const user = computed(() => {
                 class="flex items-center gap-2 px-1 py-1.5 text-left text-sm"
               >
                 <Avatar class="h-8 w-8 rounded-lg">
-                  <!-- <AvatarImage :src="user.avatar" :alt="user.name" /> -->
+                  <AvatarImage
+                    :src="`https://www.gravatar.com/avatar/${user.emailHash}?s=40`"
+                    :alt="user.name"
+                  />
+
                   <AvatarFallback class="rounded-lg">
                     {{ user.avatarFallback }}
                   </AvatarFallback>

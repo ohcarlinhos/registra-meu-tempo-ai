@@ -3,7 +3,7 @@ definePageMeta({
   middleware: ["auth"],
   name: "user.me",
 });
-useHead({ title: "Minha conta" });
+useHead({ title: "Minha Conta" });
 
 useConfigStore().setBreadcrumbPage([{ label: "Minha conta" }]);
 </script>

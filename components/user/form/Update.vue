@@ -66,7 +66,7 @@ onMounted(async () => {
     <Card>
       <CardHeader>
         <CardTitle>
-          {{ "Dados do usuário" }}
+          {{ "Dados do Usuário" }}
         </CardTitle>
 
         <CardDescription>
@@ -104,7 +104,7 @@ onMounted(async () => {
             :loading="isFetch"
             class="w-full mt-2"
           >
-            {{ "Atualizar dados" }}
+            {{ "Atualizar" }}
           </Button>
         </form>
       </CardContent>

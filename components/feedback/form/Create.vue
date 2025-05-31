@@ -74,7 +74,7 @@ const submitIsDisabled = computed(() => {
   <Card>
     <CardHeader>
       <CardTitle>
-        {{ "Feedback / Dúvida" }}
+        {{ "Feedback e Dúvidas" }}
       </CardTitle>
 
       <GCloseButton v-if="isForm" @close="close" />
@@ -111,7 +111,7 @@ const submitIsDisabled = computed(() => {
           :loading="isFetch"
           class="w-full mt-2"
         >
-          {{ "Enviar feedback" }}
+          {{ "Enviar" }}
         </Button>
       </form>
     </CardContent>

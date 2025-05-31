@@ -11,6 +11,7 @@ import {
   Flame,
   CalendarCheck2,
   LayoutDashboard,
+  BadgeCheck,
 } from "lucide-vue-next";
 
 const { breadcrumbPage } = storeToRefs(useConfigStore());
@@ -60,6 +61,11 @@ const data = {
       title: "Enviar Feedback",
       name: "feedback.page",
       icon: MessageCircle,
+    },
+    {
+      title: "Minha Conta",
+      name: "user.me",
+      icon: BadgeCheck,
     },
   ],
 
