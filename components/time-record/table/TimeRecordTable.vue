@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { CirclePlus, Trash2 } from "lucide-vue-next";
-import { columns as tableColumns } from "./table/columns";
+import { columns as tableColumns } from "./columns";
 
 import { useDebounceFn } from "@vueuse/core";
 import type { ColumnSort, SortingState } from "@tanstack/vue-table";

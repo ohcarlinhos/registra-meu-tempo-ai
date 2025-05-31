@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { watch } from "vue";
 import { useEventBus } from "@vueuse/core";
-import { columns } from "./table-local/columns";
+import { columns } from "./columns";
 
 const timerStore = useTimerStore();
 

@@ -9,6 +9,6 @@ useConfigStore().setBreadcrumbPage([{ label: "Tarefas" }]);
 
 <template>
   <NuxtLayout name="panel">
-    <TimeRecordPanel />
+    <TimeRecordTableWithModals />
   </NuxtLayout>
 </template>
