@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ClientOnly } from "#components";
 import {
   Timer,
   CloudOff,
@@ -67,13 +66,14 @@ watch(
 const visibilityStateLabel = ref("");
 
 const titlePage = computed(() => {
-  if (timer.value.isRun) {
+  if (timer.value.isRun && !isPipActive.value && !documentIsVisible.value) {
     return (
       timerLabelText.value +
       visibilityStateLabel.value +
       (props.title ? " — " + props.title : "")
     );
   }
+
   return props.title ? props.title : "";
 });
 
@@ -275,7 +275,10 @@ const ifNeedSetTimerSlowMode = () => {
   }
 };
 
-const updateTimerInterval = () => {
+const documentIsVisible = ref(true);
+
+const checkVisibilityAndUpdateTimerInterval = () => {
+  documentIsVisible.value = document.visibilityState === "visible";
   if (!timer.value.isRun) return;
 
   if (document.visibilityState === "visible") {
@@ -293,12 +296,16 @@ const pipWindow = ref<any | null>(null);
 
 const isPipActive = ref(false);
 
+const canShowPip = computed(() => {
+  return (
+    "documentPictureInPicture" in window &&
+    pipElement.value !== null &&
+    pipContainer.value !== null
+  );
+});
+
 const closePIP = () => {
-  if (
-    !("documentPictureInPicture" in window) ||
-    !pipElement.value ||
-    !pipContainer.value
-  ) {
+  if (!canShowPip.value) {
     return;
   }
 
@@ -306,6 +313,7 @@ const closePIP = () => {
 
   focusOnWindow();
   isPipActive.value = false;
+  // @ts-ignore
   pipContainer.value.append(pipElement.value);
 
   if (pipWindow.value) {
@@ -319,16 +327,9 @@ const focusOnWindow = () => {
 };
 
 const openPIP = async () => {
-  if (
-    !("documentPictureInPicture" in window) ||
-    pipElement.value === null ||
-    pipContainer.value === null ||
-    isPipActive.value
-  ) {
+  if (!canShowPip.value || isPipActive.value) {
     return;
   }
-
-  console.log("fui chamado");
 
   isPipActive.value = true;
 
@@ -382,7 +383,11 @@ const openPIP = async () => {
 
 onMounted(() => {
   updateTimerLabelText();
-  document.addEventListener("visibilitychange", updateTimerInterval);
+
+  document.addEventListener(
+    "visibilitychange",
+    checkVisibilityAndUpdateTimerInterval
+  );
 
   if (timer.value.isRun) {
     openFull.value = true;
@@ -390,8 +395,12 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  closePIP();
   clearInterval(offlineCheck);
-  document.removeEventListener("visibilitychange", updateTimerInterval);
+  document.removeEventListener(
+    "visibilitychange",
+    checkVisibilityAndUpdateTimerInterval
+  );
 });
 </script>
 
@@ -539,7 +548,10 @@ onBeforeUnmount(() => {
       </Alert>
     </section>
 
-    <section v-if="openFull" class="flex items-center space-x-2 mt-2">
+    <section
+      v-if="openFull && canShowPip"
+      class="flex items-center space-x-2 mt-2"
+    >
       <Switch
         id="timer-on-pip"
         :model-value="isPipActive"
