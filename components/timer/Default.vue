@@ -267,6 +267,14 @@ const offlineCheck = setInterval(() => {
 
 const openFull = ref(false);
 
+const ifNeedSetTimerSlowMode = () => {
+  if (document.visibilityState === "hidden" && !isPipActive.value) {
+    visibilityStateLabel.value =
+      " — Modo lento, atualizando de 10 em 10 segundos... Clique na aba para visualizar o tempo real.";
+    timerStore.defineIntervalTimer(props.id, 10000, true);
+  }
+};
+
 const updateTimerInterval = () => {
   if (!timer.value.isRun) return;
 
@@ -276,15 +284,11 @@ const updateTimerInterval = () => {
     return;
   }
 
-  if (document.visibilityState === "hidden" && !isPipActive.value) {
-    visibilityStateLabel.value =
-      " — Modo lento, atualizando de 15 em 15 segundos... Clique na aba para visualizar o tempo real.";
-    timerStore.defineIntervalTimer(props.id, 15000, true);
-  }
+  ifNeedSetTimerSlowMode();
 };
 
-const pipElement = ref<HTMLDivElement | null>(null);
-const pipContainer = ref<HTMLDivElement | null>(null);
+const pipElement = ref<HTMLElement | null>(null);
+const pipContainer = ref<HTMLElement | null>(null);
 const pipWindow = ref<any | null>(null);
 
 const isPipActive = ref(false);
@@ -292,11 +296,13 @@ const isPipActive = ref(false);
 const closePIP = () => {
   if (
     !("documentPictureInPicture" in window) ||
-    pipElement.value === null ||
-    pipContainer.value === null
+    !pipElement.value ||
+    !pipContainer.value
   ) {
     return;
   }
+
+  ifNeedSetTimerSlowMode();
 
   focusOnWindow();
   isPipActive.value = false;
