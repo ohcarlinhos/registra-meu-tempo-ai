@@ -26,11 +26,11 @@ const data = {
     },
   ],
   pages: [
-    // {
-    //   title: "Dashboard",
-    //   name: "dashboard",
-    //   icon: LayoutDashboard,
-    // },
+    {
+      title: "Dashboard",
+      name: "dashboard",
+      icon: LayoutDashboard,
+    },
     {
       title: "Resumo Diário",
       name: "statistic.day",
