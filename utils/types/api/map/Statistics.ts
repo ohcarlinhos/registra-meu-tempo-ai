@@ -6,7 +6,7 @@ export type RangeStatistic = {
   isolatedPeriodHours: string;
   timerHours: string;
   pomodoroHours: string;
-  timeManualHours: string;
+  manualHours: string;
 
   breakHours: string;
 

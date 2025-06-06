@@ -112,7 +112,7 @@ const mountInfoCardList = () => {
 
   hourCards.push({
     title: "Manuais",
-    value: statistic.timeManualHours,
+    value: statistic.manualHours,
     obs: `Quantidade: ${statistic.manualCount}`,
     cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
   });
