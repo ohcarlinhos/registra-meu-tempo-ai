@@ -110,7 +110,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getWeekStatistic } from "~/utils/services/dashboard";
+// import { getWeekStatistic } from "~/utils/services/dashboard";
 import type { TaskTimeDistribution } from "~/utils/types/api/map/WeekStatistic";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -176,8 +176,8 @@ const totalSessions = computed(() =>
 
 onMounted(async () => {
   try {
-    const weekStats = await getWeekStatistic();
-    taskDistribution.value = weekStats.taskDistribution || [];
+    // const weekStats = await getWeekStatistic();
+    // taskDistribution.value = weekStats.taskDistribution || [];
   } catch (error) {
     console.error("Erro ao carregar distribuição de tarefas:", error);
     // Dados mockados para demonstração
