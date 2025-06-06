@@ -168,13 +168,14 @@ export const useTimerStore = defineStore("TimerStore", {
         if (timer.isRun) {
           timer.currentPeriod.end = Date.now();
 
-          timer.count = timer.count + 1;
-          // console.log("Timer count:", timer.count);
+          // TODO: mantendo para futuro onde terá alguma persistência em servidor
+          // timer.count = timer.count + 1;
+          // // console.log("Timer count:", timer.count);
 
-          if (timer.intervalSize > 1000 || timer.count >= 10) {
-            saveTimerStoreList(this._timerList);
-            timer.count = 0;
-          }
+          // if (timer.intervalSize > 1000 || timer.count >= 10) {
+          //   saveTimerStoreList(this._timerList);
+          //   timer.count = 0;
+          // }
 
           if (timer.type == "break" || timer.type == "pomodoro") {
             this.handleWithPomoOrBreakEnd(id);

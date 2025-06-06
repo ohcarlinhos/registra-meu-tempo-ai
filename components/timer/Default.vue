@@ -8,6 +8,7 @@ import {
   Save,
   X,
   Loader2,
+  Rocket,
 } from "lucide-vue-next";
 import NoSleep from "nosleep.js";
 import { VisuallyHidden } from "reka-ui";
@@ -124,6 +125,8 @@ const pauseTimer = () => {
 };
 
 const stopTimer = () => {
+  focusOnWindow();
+
   noSleepObject.value?.disable();
   timerStore.pauseTimer(props.id);
   timerStore.playClick();
@@ -270,11 +273,105 @@ const updateTimerInterval = () => {
   if (document.visibilityState === "visible") {
     visibilityStateLabel.value = "";
     timerStore.defineIntervalTimer(props.id, 1000, true);
-  } else if (document.visibilityState === "hidden") {
+    return;
+  }
+
+  if (document.visibilityState === "hidden" && !isPipActive.value) {
     visibilityStateLabel.value =
       " — Modo lento, atualizando de 15 em 15 segundos... Clique na aba para visualizar o tempo real.";
     timerStore.defineIntervalTimer(props.id, 15000, true);
   }
+};
+
+const pipElement = ref<HTMLDivElement | null>(null);
+const pipContainer = ref<HTMLDivElement | null>(null);
+const pipWindow = ref<any | null>(null);
+
+const isPipActive = ref(false);
+
+const closePIP = () => {
+  if (
+    !("documentPictureInPicture" in window) ||
+    pipElement.value === null ||
+    pipContainer.value === null
+  ) {
+    return;
+  }
+
+  focusOnWindow();
+  isPipActive.value = false;
+  pipContainer.value.append(pipElement.value);
+
+  if (pipWindow.value) {
+    pipWindow.value.close();
+    pipWindow.value = null;
+  }
+};
+
+const focusOnWindow = () => {
+  window.focus();
+};
+
+const openPIP = async () => {
+  if (
+    !("documentPictureInPicture" in window) ||
+    pipElement.value === null ||
+    pipContainer.value === null ||
+    isPipActive.value
+  ) {
+    return;
+  }
+
+  console.log("fui chamado");
+
+  isPipActive.value = true;
+
+  // @ts-ignore
+  pipWindow.value = await window.documentPictureInPicture.requestWindow({
+    width: 400,
+    height: 400,
+    preferInitialWindowPlacement: true,
+  });
+
+  [...document.styleSheets].forEach((styleSheet) => {
+    try {
+      const cssRules = [...styleSheet.cssRules]
+        .map((rule) => rule.cssText)
+        .join("");
+      const style = document.createElement("style");
+
+      style.textContent = cssRules;
+      pipWindow.value.document.head.appendChild(style);
+    } catch (e) {
+      const link = document.createElement("link");
+
+      link.rel = "stylesheet";
+      link.type = styleSheet.type;
+      //@ts-ignore
+      link.media = styleSheet.media;
+      //@ts-ignore
+      link.href = styleSheet.href;
+      pipWindow.value.document.head.appendChild(link);
+    }
+  });
+
+  document.documentElement.classList.contains("dark")
+    ? pipWindow.value.document.documentElement.classList.add("dark")
+    : pipWindow.value.document.documentElement.classList.remove("dark");
+
+  const bodyStyle = pipWindow.value.document.body.style;
+
+  bodyStyle.height = "100vh";
+  bodyStyle.display = "flex";
+  bodyStyle.alignItems = "center";
+  bodyStyle.justifyContent = "center";
+  bodyStyle.width = "100vw";
+
+  pipWindow.value.document.body.append(pipElement.value);
+
+  pipWindow.value.addEventListener("pagehide", () => {
+    closePIP();
+  });
 };
 
 onMounted(() => {
@@ -293,37 +390,38 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ClientOnly>
-    <section
-      v-if="timer"
-      class="flex flex-col gap-5 items-center min-w-72 transition duration-300 ease-in-out"
-      :class="
-        openFull &&
-        'fixed top-0 left-0 bg-white dark:bg-black bg-opacity-90 w-svw h-svh z-50 flex justify-center items-center'
-      "
+  <section
+    v-if="timer"
+    class="flex flex-col gap-5 items-center min-w-72 transition duration-300 ease-in-out"
+    :class="
+      openFull &&
+      'fixed top-0 left-0 bg-white dark:bg-black bg-opacity-90 w-svw h-svh z-50 flex justify-center items-center'
+    "
+  >
+    <Button
+      v-if="openFull"
+      variant="outline"
+      :disabled="timer.isRun"
+      @click="openFull = false"
     >
-      <Button
-        v-if="openFull"
-        variant="outline"
-        :disabled="timer.isRun"
-        @click="openFull = false"
-      >
-        Fechar Timer
-      </Button>
+      Fechar Timer
+    </Button>
 
-      <template v-if="isOffline">
-        <div class="text-muted-foreground flex flex-col items-center mb-2">
-          <span class="inline-flex gap-1 items-center text-md">
-            <CloudOff class="size-4" />
-            Estamos sem acesso a internet...
-          </span>
-          <span class="text-sm text-center">
-            Mas não se preocupe! Vamos salvar seu tempo no navegador.
-          </span>
-        </div>
-      </template>
+    <template v-if="isOffline">
+      <div class="text-muted-foreground flex flex-col items-center mb-2">
+        <span class="inline-flex gap-1 items-center text-md">
+          <CloudOff class="size-4" />
+          Estamos sem acesso a internet...
+        </span>
+        <span class="text-sm text-center">
+          Mas não se preocupe! Vamos salvar seu tempo no navegador.
+        </span>
+      </div>
+    </template>
 
+    <section ref="pipContainer">
       <section
+        ref="pipElement"
         :class="[
           'flex flex-col justify-center align-middle relative',
           'w-[280px] md:w-[320px] h-[280px] md:h-[320px] ring-4 shadow-md rounded-full',
@@ -341,7 +439,10 @@ onBeforeUnmount(() => {
             title="Selecione entre Cronômetro, Pomodoro ou Descanso."
             variant="ghost"
             class="opacity-60 hover:opacity-100"
-            @click="timerStore.toggleOptions(props.id)"
+            @click="
+              timerStore.toggleOptions(props.id);
+              focusOnWindow();
+            "
           >
             <Timer />
             Exibir Modos
@@ -420,169 +521,188 @@ onBeforeUnmount(() => {
           </section>
         </section>
       </section>
-
-      <p
-        v-if="props.code"
-        class="flex flex-col"
-        :class="['text-center text-sm', isDark && 'opacity-80']"
-      >
-        <span> Sincronizado com a tarefa: </span>
-
-        <span class="pt-1">
-          <Badge variant="outline" size="md">
-            {{ props.code }}
-          </Badge>
-        </span>
-      </p>
-
-      <Button
-        v-if="modal && timer.localRecords.length >= 1"
-        variant="link"
-        :disabled="timer.isRun"
-        class="text-foreground"
-        @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
-      >
-        <template v-if="!props.id">
-          Há {{ timer.localRecords.length }}
-          {{
-            timer.localRecords.length > 1
-              ? " sessões salvas no navegador."
-              : " sessão salva no navegador."
-          }}
-          <br />
-          Clique aqui para sincronizar!
-        </template>
-
-        <template v-else> Há registro de tempo não sincronizados.</template>
-      </Button>
     </section>
 
-    <Dialog
-      v-bind:open="timer.showOptions"
-      @update:open="timerStore.toggleOptions(props.id)"
+    <section v-if="isPipActive">
+      <Alert>
+        <Rocket class="h-4 w-4" />
+        <AlertTitle>Wow!</AlertTitle>
+        <AlertDescription>
+          Seu cronômetro está ativo em um aba flutuante.
+        </AlertDescription>
+      </Alert>
+    </section>
+
+    <p
+      v-if="props.code"
+      class="flex flex-col"
+      :class="['text-center text-sm', isDark && 'opacity-80']"
     >
-      <DialogContent @interact-outside="$event.preventDefault()">
-        <VisuallyHidden>
-          <DialogHeader>
-            <DialogTitle>Qual modo deseja ativar?</DialogTitle>
+      <span> Sincronizado com a tarefa: </span>
 
-            <DialogDescription>
-              Modos modificam o comportamento do cronômetro.
-            </DialogDescription>
-          </DialogHeader>
-        </VisuallyHidden>
+      <span class="pt-1">
+        <Badge variant="outline" size="md">
+          {{ props.code }}
+        </Badge>
+      </span>
+    </p>
 
-        <section class="flex flex-col gap-4">
-          <h3 class="text-xl text-center">Qual modo deseja ativar?</h3>
-          <TimerOptions :id="props.id" />
+    <section v-if="openFull" class="flex items-center space-x-2 mt-2">
+      <Switch
+        id="timer-on-pip"
+        :model-value="isPipActive"
+        @update:model-value="(event) => (event ? openPIP() : closePIP())"
+      />
+      <Label for="timer-on-pip">Cronômetro Flutuante</Label>
+    </section>
+
+    <Button
+      v-if="modal && timer.localRecords.length >= 1"
+      variant="link"
+      :disabled="timer.isRun"
+      class="text-foreground"
+      @click="modal.timeRecordsTable.open = !modal.timeRecordsTable.open"
+    >
+      <template v-if="!props.id">
+        Há {{ timer.localRecords.length }}
+        {{
+          timer.localRecords.length > 1
+            ? " sessões salvas no navegador."
+            : " sessão salva no navegador."
+        }}
+        <br />
+        Clique aqui para sincronizar!
+      </template>
+
+      <template v-else> Há registro de tempo não sincronizados.</template>
+    </Button>
+  </section>
+
+  <Dialog
+    v-bind:open="timer.showOptions"
+    @update:open="timerStore.toggleOptions(props.id)"
+  >
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <VisuallyHidden>
+        <DialogHeader>
+          <DialogTitle>Qual modo deseja ativar?</DialogTitle>
+
+          <DialogDescription>
+            Modos modificam o comportamento do cronômetro.
+          </DialogDescription>
+        </DialogHeader>
+      </VisuallyHidden>
+
+      <section class="flex flex-col gap-4">
+        <h3 class="text-xl text-center">Qual modo deseja ativar?</h3>
+        <TimerOptions :id="props.id" />
+      </section>
+    </DialogContent>
+  </Dialog>
+
+  <Dialog
+    v-bind:open="modal.timeRecordsTable.open"
+    @update:open="!$event && (modal.timeRecordsTable.open = false)"
+  >
+    <DialogContent @interact-outside="$event.preventDefault()">
+      <DialogHeader>
+        <DialogTitle> Sessões </DialogTitle>
+
+        <DialogDescription>
+          Sessões que aparecem nessa lista estão salvas apenas no navegador.
+        </DialogDescription>
+      </DialogHeader>
+
+      <TimeRecordTableLocal
+        v-if="timer.localRecords.length"
+        :id="props.id"
+        :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
+      />
+
+      <p v-else class="py-3">
+        {{
+          props.id
+            ? "Os períodos de tempo da sua tarefa estão sincronizados."
+            : "Não há mais nenhum registro de tempo local."
+        }}
+      </p>
+
+      <Separator class="mt-1" />
+
+      <DialogFooter>
+        <section class="w-full flex flex-col gap-2">
+          <p class="text-sm">{{ _$t("localRecordObs1") }}</p>
+          <p v-if="!loggedIn || true" class="pt-2 text-xs">
+            {{ _$t("localRecordObs2") }}
+          </p>
         </section>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+
+  <template v-if="modal">
+    <Dialog
+      v-bind:open="modal.confirmPersistMethod.open"
+      @update:open="modal.confirmPersistMethod.open = $event"
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {{ _$t("howDoYouPrefereSaveRecord") }}
+          </DialogTitle>
+          <DialogDescription>
+            Escolha a forma que deseja salvar o seu tempo.
+          </DialogDescription>
+
+          <section class="flex flex-col gap-2 mt-5">
+            <Button @click="bindWithRecord">Vincular a uma tarefa</Button>
+
+            <Button variant="secondary" @click="persistOnServer">
+              Criar tarefa a partir do tempo</Button
+            >
+
+            <Button variant="outline" @click="saveOnBrowser">
+              Salvar no navegador
+            </Button>
+          </section>
+        </DialogHeader>
       </DialogContent>
     </Dialog>
 
+    <GModalConfirm
+      v-model:open="modal.confirmStopTimer.open"
+      custom-width="sm:w-88"
+      title="Deseja parar o cronômetro?"
+      description="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
+      :cancel-text="$t('cancel')"
+      :confirm-text="$t('confirm')"
+      @cancel="modal.confirmStopTimer.open = false"
+      @confirm="stopTimerAction"
+    />
+
     <Dialog
-      v-bind:open="modal.timeRecordsTable.open"
-      @update:open="!$event && (modal.timeRecordsTable.open = false)"
+      v-bind:open="modal.createTimeRecord.open"
+      @update:open="!$event && closeTimeRecordModal(true)"
     >
       <DialogContent @interact-outside="$event.preventDefault()">
         <DialogHeader>
-          <DialogTitle> Sessões </DialogTitle>
+          <DialogTitle>
+            <span class="mr-2"> {{ _$t("task") }} </span>
+            <Badge v-if="editTimeRecordObject?.code" variant="outline">
+              {{ editTimeRecordObject?.code }}
+            </Badge>
+          </DialogTitle>
 
           <DialogDescription>
-            Sessões que aparecem nessa lista estão salvas apenas no navegador.
+            {{ _$t("taskModalDescription") }}
           </DialogDescription>
         </DialogHeader>
 
-        <TimeRecordTableLocal
-          v-if="timer.localRecords.length"
-          :id="props.id"
-          :postTimePeriodCallback="(code: string) => postTimePeriodCallback(code)"
+        <TimeRecordFormCreateAndUpdate
+          :edit-object="editTimeRecordObject"
+          @close="closeTimeRecordModal"
         />
-
-        <p v-else class="py-3">
-          {{
-            props.id
-              ? "Os períodos de tempo da sua tarefa estão sincronizados."
-              : "Não há mais nenhum registro de tempo local."
-          }}
-        </p>
-
-        <Separator class="mt-1" />
-
-        <DialogFooter>
-          <section class="w-full flex flex-col gap-2">
-            <p class="text-sm">{{ _$t("localRecordObs1") }}</p>
-            <p v-if="!loggedIn || true" class="pt-2 text-xs">
-              {{ _$t("localRecordObs2") }}
-            </p>
-          </section>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
-
-    <template v-if="modal">
-      <Dialog
-        v-bind:open="modal.confirmPersistMethod.open"
-        @update:open="modal.confirmPersistMethod.open = $event"
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {{ _$t("howDoYouPrefereSaveRecord") }}
-            </DialogTitle>
-            <DialogDescription>
-              Escolha a forma que deseja salvar o seu tempo.
-            </DialogDescription>
-
-            <section class="flex flex-col gap-2 mt-5">
-              <Button @click="bindWithRecord">Vincular a uma tarefa</Button>
-
-              <Button variant="secondary" @click="persistOnServer">
-                Criar tarefa a partir do tempo</Button
-              >
-
-              <Button variant="outline" @click="saveOnBrowser">
-                Salvar no navegador
-              </Button>
-            </section>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-
-      <GModalConfirm
-        v-model:open="modal.confirmStopTimer.open"
-        custom-width="sm:w-88"
-        title="Deseja parar o cronômetro?"
-        description="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
-        :cancel-text="$t('cancel')"
-        :confirm-text="$t('confirm')"
-        @cancel="modal.confirmStopTimer.open = false"
-        @confirm="stopTimerAction"
-      />
-
-      <Dialog
-        v-bind:open="modal.createTimeRecord.open"
-        @update:open="!$event && closeTimeRecordModal(true)"
-      >
-        <DialogContent @interact-outside="$event.preventDefault()">
-          <DialogHeader>
-            <DialogTitle>
-              <span class="mr-2"> {{ _$t("task") }} </span>
-              <Badge v-if="editTimeRecordObject?.code" variant="outline">
-                {{ editTimeRecordObject?.code }}
-              </Badge>
-            </DialogTitle>
-
-            <DialogDescription>
-              {{ _$t("taskModalDescription") }}
-            </DialogDescription>
-          </DialogHeader>
-
-          <TimeRecordFormCreateAndUpdate
-            :edit-object="editTimeRecordObject"
-            @close="closeTimeRecordModal"
-          />
-        </DialogContent>
-      </Dialog>
-    </template>
-  </ClientOnly>
+  </template>
 </template>
