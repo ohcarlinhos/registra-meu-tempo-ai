@@ -1,54 +1,11 @@
 <script lang="ts" setup>
 import { Clock, Calendar, Target, TrendingUp } from "lucide-vue-next";
-import { getDashboardMetrics } from "~/utils/services/dashboard";
-
-// Mock function para getActiveGoals (assumindo que existe em algum lugar)
-const getActiveGoals = async () => {
-  // Retorna dados mockados por enquanto
-  return [
-    { id: 1, name: "Meta 1" },
-    { id: 2, name: "Meta 2" },
-  ];
-};
 
 // Estados reativas
 const todayStats = ref({ hours: 0, minutes: 0 });
 const weekStats = ref({ totalHours: "0h" });
 const activeGoalsCount = ref(0);
 const productivityScore = ref(0);
-
-// Carregamento inicial
-onMounted(async () => {
-  await loadDashboardData();
-});
-
-const loadDashboardData = async () => {
-  try {
-    // Carregar métricas principais
-    const [metrics, activeGoals] = await Promise.all([
-      getDashboardMetrics().catch(() => null),
-      getActiveGoals().catch(() => []),
-    ]);
-
-    // Dados de hoje (mockados por enquanto)
-    todayStats.value = { hours: 6, minutes: 30 };
-
-    // Estatísticas da semana
-    if (metrics?.weeklyStats) {
-      weekStats.value = { totalHours: metrics.weeklyStats.totalHours };
-    } else {
-      weekStats.value = { totalHours: "28h 45m" };
-    }
-
-    // Contagem de metas ativas
-    activeGoalsCount.value = activeGoals.length;
-
-    // Score de produtividade (mockado)
-    productivityScore.value = 87;
-  } catch (error) {
-    console.error("Erro ao carregar dados da dashboard:", error);
-  }
-};
 </script>
 
 <template>
@@ -60,7 +17,7 @@ const loadDashboardData = async () => {
     />
 
     <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <Card class="p-4">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-full bg-primary/10">
@@ -110,7 +67,7 @@ const loadDashboardData = async () => {
           </div>
         </div>
       </Card>
-    </div>
+    </div> -->
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -137,6 +94,6 @@ const loadDashboardData = async () => {
     </div> -->
 
     <!-- Tasks Summary -->
-    <DashboardTasksSummary />
+    <!-- <DashboardTasksSummary /> -->
   </div>
 </template>

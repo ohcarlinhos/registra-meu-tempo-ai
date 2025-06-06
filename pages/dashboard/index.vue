@@ -9,5 +9,5 @@ definePageMeta({
   middleware: ["auth"],
   name: "dashboard",
 });
-useRouter().push({ name: "statistic.day" });
+// useRouter().push({ name: "statistic.day" });
 </script>

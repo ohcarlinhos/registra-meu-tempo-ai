@@ -1,18 +1,12 @@
 // TODO: revisar pois foi feito pela IA
-import type {
-  WeekStatistic,
-  DashboardMetrics,
-  CommonTask,
-} from "~/utils/types/api/map/WeekStatistic";
 
 export const getWeekStatistic = async (
-  week?: string
-): Promise<WeekStatistic> => {
-  const params = week ? `?week=${week}` : "";
-  const { data } = await $fetch<{ data: WeekStatistic }>(
-    `/api/statistics/week${params}`
+  start: string,
+  end: string
+): Promise<RangeStatisticsWithDays> => {
+  return useCustomFetch()<RangeStatisticsWithDays>(
+    `/statistics/range?start=${start}&end=${end}`
   );
-  return data;
 };
 
 export const getDashboardMetrics = async (): Promise<DashboardMetrics> => {

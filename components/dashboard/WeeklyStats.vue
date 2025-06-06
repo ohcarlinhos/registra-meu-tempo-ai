@@ -1,3 +1,138 @@
+<script lang="ts" setup>
+import { BarChart3 } from "lucide-vue-next";
+import { Line } from "vue-chartjs";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import "chartjs-adapter-date-fns";
+import { addDays, format, startOfDay } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+
+const loading = ref(true);
+const statistics = ref<RangeStatisticsWithDays | null>(null);
+
+const chartData = computed(() => {
+  if (!statistics.value) return null;
+
+  const days = statistics.value.days.map((day) =>
+    format(new Date(day.startDay), "dd/MM/yyy", { locale: ptBR })
+  );
+  const minutes = statistics.value.days.map((day) => day.totalInHours);
+
+  return {
+    labels: days,
+    datasets: [
+      {
+        label: "Horas",
+        data: minutes,
+        borderColor: "rgb(99, 102, 241)",
+        backgroundColor: "rgba(99, 102, 241, 0.1)",
+        fill: true,
+      },
+    ],
+  };
+});
+
+const chartOptions = computed(() => {
+  var callbacks = {
+    title: function (items: any) {
+      return `Dia ${items[0].label}`;
+    },
+    label: function (tooltipItem: any) {
+      const idx = tooltipItem.dataIndex;
+      const formattedTime = statistics.value?.days[idx].totalHours || "";
+      return [formattedTime];
+    },
+  };
+
+  return {
+    responsive: true,
+    scales: {
+      x: {
+        grid: {
+          color: isDark.value ? "#262626" : "#e5e5e5",
+        },
+      },
+      y: {
+        ticks: {
+          stepSize: 1,
+        },
+        grid: {
+          color: isDark.value ? "#262626" : "#e5e5e5",
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        boxPadding: 5,
+        padding: 16,
+        borderWidth: 1,
+        callbacks,
+      },
+    },
+  };
+});
+
+onMounted(async () => {
+  try {
+    const today = startOfDay(new Date());
+    statistics.value = await getWeekStatistic(
+      addDays(today, -6).toUTCString(),
+      today.toUTCString()
+    );
+  } catch (error) {
+    console.error("Erro ao carregar estatísticas semanais:", error);
+  } finally {
+    loading.value = false;
+  }
+});
+
+const formatWeekPeriod = (): string => {
+  if (!statistics.value?.total) return "Esta semana";
+
+  const start = new Date(statistics.value.total.startDay).toLocaleDateString(
+    "pt-BR",
+    { day: "2-digit", month: "short" }
+  );
+
+  const end = new Date(statistics.value.total.endDay).toLocaleDateString(
+    "pt-BR",
+    { day: "2-digit", month: "short" }
+  );
+
+  return `${start} - ${end}`;
+};
+
+const formatCurrency = (value: number): string => {
+  return value.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+</script>
+
 <template>
   <!-- TODO: revisar pois foi feito pela IA -->
   <Card>
@@ -22,12 +157,12 @@
         <Skeleton class="h-[200px] w-full" />
       </div>
 
-      <div v-else-if="weekStats" class="space-y-6">
+      <div v-else-if="statistics" class="space-y-6">
         <!-- Métricas principais -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center p-3 rounded-lg bg-primary/5">
             <div class="text-2xl font-bold text-primary">
-              {{ weekStats.totalHours }}
+              {{ statistics.total.totalHours }}
             </div>
             <div class="text-xs text-muted-foreground">Total de Horas</div>
           </div>
@@ -36,7 +171,7 @@
             class="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20"
           >
             <div class="text-2xl font-bold text-blue-600">
-              {{ weekStats.dailyAverage }}
+              {{ statistics.total.averageHours }}
             </div>
             <div class="text-xs text-muted-foreground">Média Diária</div>
           </div>
@@ -45,19 +180,20 @@
             class="text-center p-3 rounded-lg bg-green-50 dark:bg-green-950/20"
           >
             <div class="text-2xl font-bold text-green-600">
-              {{ weekStats.totalSessions }}
+              {{ statistics.total.activeDaysCount }} de
+              {{ statistics.total.daysCount }}
             </div>
-            <div class="text-xs text-muted-foreground">Sessões</div>
+            <div class="text-xs text-muted-foreground">Dias com Atividade</div>
           </div>
 
-          <div
+          <!-- <div
             class="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950/20"
           >
             <div class="text-2xl font-bold text-purple-600">
-              {{ weekStats.completedGoals }}
+              {{ "0" }}
             </div>
             <div class="text-xs text-muted-foreground">Metas Concluídas</div>
-          </div>
+          </div> -->
         </div>
 
         <!-- Gráfico semanal -->
@@ -71,22 +207,22 @@
         </div>
 
         <!-- Informações adicionais -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div class="flex items-center gap-2">
             <TrendingUp class="h-4 w-4 text-green-500" />
             <span class="text-muted-foreground">Dia mais produtivo:</span>
-            <span class="font-medium">{{ weekStats.mostProductiveDay }}</span>
+            <span class="font-medium">{{ weekStats?.mostProductiveDay }}</span>
           </div>
 
           <div class="flex items-center gap-2">
             <TrendingDown class="h-4 w-4 text-red-500" />
             <span class="text-muted-foreground">Dia menos produtivo:</span>
-            <span class="font-medium">{{ weekStats.leastProductiveDay }}</span>
+            <span class="font-medium">{{ weekStats?.leastProductiveDay }}</span>
           </div>
-        </div>
+        </div> -->
 
         <!-- Receita (se disponível) -->
-        <div v-if="weekStats.totalRevenue" class="border-t pt-4">
+        <!-- <div v-if="weekStats?.totalRevenue" class="border-t pt-4">
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div class="flex items-center gap-2">
               <DollarSign class="h-4 w-4 text-green-500" />
@@ -104,7 +240,7 @@
               >
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div v-else class="text-center py-8 text-muted-foreground">
@@ -117,138 +253,3 @@
     </CardContent>
   </Card>
 </template>
-
-<script lang="ts" setup>
-import {
-  BarChart3,
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  Calculator,
-} from "lucide-vue-next";
-import { Line } from "vue-chartjs";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getWeekStatistic } from "~/utils/services/dashboard";
-import type { WeekStatistic } from "~/utils/types/api/map/WeekStatistic";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
-
-const loading = ref(true);
-const weekStats = ref<WeekStatistic | null>(null);
-
-const chartData = computed(() => {
-  if (!weekStats.value) return null;
-
-  // Dados mockados para o exemplo - em produção viriam da API
-  const days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-  const hours = [0, 6.5, 7.2, 5.8, 8.1, 6.9, 2.3]; // Exemplo
-
-  return {
-    labels: days,
-    datasets: [
-      {
-        label: "Horas Trabalhadas",
-        data: hours,
-        borderColor: "rgb(99, 102, 241)",
-        backgroundColor: "rgba(99, 102, 241, 0.1)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-});
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      mode: "index" as const,
-      intersect: false,
-    },
-  },
-  scales: {
-    x: {
-      display: true,
-      grid: {
-        display: false,
-      },
-    },
-    y: {
-      display: true,
-      beginAtZero: true,
-      grid: {
-        color: "rgba(0, 0, 0, 0.1)",
-      },
-    },
-  },
-  elements: {
-    point: {
-      radius: 4,
-      hoverRadius: 6,
-    },
-  },
-};
-
-onMounted(async () => {
-  try {
-    weekStats.value = await getWeekStatistic();
-  } catch (error) {
-    console.error("Erro ao carregar estatísticas semanais:", error);
-  } finally {
-    loading.value = false;
-  }
-});
-
-const formatWeekPeriod = (): string => {
-  if (!weekStats.value) return "Esta semana";
-
-  const start = new Date(weekStats.value.startWeek).toLocaleDateString(
-    "pt-BR",
-    { day: "2-digit", month: "short" }
-  );
-  const end = new Date(weekStats.value.endWeek).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-  });
-
-  return `${start} - ${end}`;
-};
-
-const formatCurrency = (value: number): string => {
-  return value.toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-};
-</script>

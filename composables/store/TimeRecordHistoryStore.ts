@@ -78,8 +78,8 @@ export const useTimeRecordHistoryStore = defineStore(
         end: lastDay.date,
       }).map<TimeRecordHistoryDayChart>((i) => ({
         date: i.toISOString(),
-        timeOnHours: 0,
-        timeOnMinutes: 0,
+        timeInHours: 0,
+        timeInMinutes: 0,
         formattedTime: "",
       }));
 
@@ -92,8 +92,8 @@ export const useTimeRecordHistoryStore = defineStore(
         if (!day) return;
 
         day.formattedTime = d.formattedTime;
-        day.timeOnHours = d.timeOnHours;
-        day.timeOnMinutes = d.timeOnMinutes;
+        day.timeInHours = d.timeInHours;
+        day.timeInMinutes = d.timeInMinutes;
       });
 
       return days;
@@ -108,7 +108,7 @@ export const useTimeRecordHistoryStore = defineStore(
         datasets: [
           {
             label: "Minutos",
-            data: chartData.value.map((i) => i.timeOnMinutes) || [],
+            data: chartData.value.map((i) => i.timeInMinutes) || [],
             borderWidth: 2,
             pointBorderWidth: 5,
             fill: true,

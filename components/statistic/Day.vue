@@ -32,7 +32,7 @@ const route = useRoute();
 const router = useRouter();
 
 const selectedDate = ref<Date>();
-const dayStatistic = ref<DayStatistic>();
+const rangeStatistic = ref<RangeStatistic>();
 const isFetchStatistics = ref(false);
 
 onMounted(() => {
@@ -79,14 +79,14 @@ const init = async () => {
   infoCardList.value = [];
   isFetchStatistics.value = true;
 
-  getDayStatistic(selectedDate.value, props.timeRecordId)
+  getRangeStatistic(selectedDate.value, props.timeRecordId)
     .then((data) => {
       if (props.updatedOn && props.clearUpdatedOn) {
         props.clearUpdatedOn();
       }
 
       if (data) {
-        dayStatistic.value = data;
+        rangeStatistic.value = data;
         mountInfoCardList();
       }
     })
@@ -96,7 +96,7 @@ const init = async () => {
 };
 
 const mountInfoCardList = () => {
-  const statistic = dayStatistic.value;
+  const statistic = rangeStatistic.value;
 
   if (!statistic) return;
 
@@ -112,28 +112,28 @@ const mountInfoCardList = () => {
 
   hourCards.push({
     title: "Manuais",
-    value: statistic.totalTimeManual,
+    value: statistic.timeManualHours,
     obs: `Quantidade: ${statistic.manualCount}`,
     cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
   });
 
   hourCards.push({
     title: "Cronômetros",
-    value: statistic.totalTimerHours,
+    value: statistic.timerHours,
     obs: `Sessões: ${statistic.timerCount}`,
     cardRingStyle: `ring-1 dark:ring-primary-500/80 ring-primary-500/80`,
   });
 
   hourCards.push({
     title: "Pomodoros",
-    value: statistic.totalPomodoroHours,
+    value: statistic.pomodoroHours,
     obs: `Sessões: ${statistic.pomodoroCount}`,
     cardRingStyle: `ring-1 dark:ring-red-500/80 ring-red-500/80`,
   });
 
   hourCards.push({
     title: "Break (Descanso)",
-    value: statistic.totalBreakHours,
+    value: statistic.breakHours,
     obs: `Sessões: ${statistic.breakCount}`,
     cardRingStyle: `ring-1 dark:ring-blue-500/80 ring-1 ring-blue-500/80`,
   });
@@ -148,8 +148,12 @@ var maxDate = ref(new Date(Date.now()));
 
 const tableColumns: ColumnDef<unknown>[] = [
   {
-    accessorKey: "formattedTime",
-    header: () => h("span", ["Tempo"]),
+    accessorKey: "day",
+    header: () => h("span", ["Dia"]),
+  },
+  {
+    accessorKey: "total",
+    header: () => h("span", ["Total"]),
   },
   {
     accessorKey: "title",
@@ -169,7 +173,7 @@ const tableColumns: ColumnDef<unknown>[] = [
       ),
   },
   {
-    accessorKey: "categoryName",
+    accessorKey: "category",
     header: () => h("span", ["Categoria"]),
   },
   {
@@ -187,14 +191,15 @@ const tableColumns: ColumnDef<unknown>[] = [
 const tableData = computed(() => {
   const timeRecordsTable: unknown[] = [];
 
-  if (dayStatistic.value?.timeRecordRangeProgress)
-    dayStatistic.value?.timeRecordRangeProgress.forEach((trp) => {
+  if (rangeStatistic.value?.timeRecordRangeProgress)
+    rangeStatistic.value?.timeRecordRangeProgress.forEach((trp) => {
       timeRecordsTable.push({
         ...trp,
         code: trp.timeRecord.code || "-",
         title: trp.timeRecord.title || "Sem título",
-        categoryName: trp.timeRecord.categoryName || "-",
-        formattedTime: trp.totalHours || "Nenhum",
+        category: trp.timeRecord.categoryName || "-",
+        day: trp.totalHours,
+        total: trp.timeRecord.meta?.formattedTime,
       });
     });
 

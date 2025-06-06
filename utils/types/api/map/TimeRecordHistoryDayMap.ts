@@ -7,14 +7,14 @@ export type TimeRecordHistoryDayMap = {
   timerSessionsFormattedTime: string;
   timeMinutes: TimeMinutesMap[];
   timeMinutesFormattedTime: string;
-  timeOnMinutes: number;
-  timeOnHours: number;
+  timeInMinutes: number;
+  timeInHours: number;
   formattedTime: string;
 };
 
 export type TimeRecordHistoryDayChart = {
   date: string;
-  timeOnMinutes: number;
-  timeOnHours: number;
+  timeInMinutes: number;
+  timeInHours: number;
   formattedTime: string;
 };

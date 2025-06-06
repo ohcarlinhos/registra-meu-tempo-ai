@@ -1,8 +1,8 @@
-export const getDayStatistic = async (
+export const getRangeStatistic = async (
   date: Date | null = null,
   timeRecordId: number | undefined = undefined
 ) => {
-  return useCustomFetch()<DayStatistic>(
+  return useCustomFetch()<RangeStatistic>(
     `/statistics${
       timeRecordId ? "/" + timeRecordId : ""
     }/day?date=${date?.toISOString()}`,
