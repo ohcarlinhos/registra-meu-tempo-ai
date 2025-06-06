@@ -533,6 +533,15 @@ onBeforeUnmount(() => {
       </Alert>
     </section>
 
+    <section v-if="openFull" class="flex items-center space-x-2 mt-2">
+      <Switch
+        id="timer-on-pip"
+        :model-value="isPipActive"
+        @update:model-value="(event) => (event ? openPIP() : closePIP())"
+      />
+      <Label for="timer-on-pip">Cronômetro Flutuante</Label>
+    </section>
+
     <p
       v-if="props.code"
       class="flex flex-col"
@@ -546,15 +555,6 @@ onBeforeUnmount(() => {
         </Badge>
       </span>
     </p>
-
-    <section v-if="openFull" class="flex items-center space-x-2 mt-2">
-      <Switch
-        id="timer-on-pip"
-        :model-value="isPipActive"
-        @update:model-value="(event) => (event ? openPIP() : closePIP())"
-      />
-      <Label for="timer-on-pip">Cronômetro Flutuante</Label>
-    </section>
 
     <Button
       v-if="modal && timer.localRecords.length >= 1"
