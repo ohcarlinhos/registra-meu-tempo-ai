@@ -12,7 +12,6 @@ import {
   Legend,
   Filler,
 } from "chart.js";
-import "chartjs-adapter-date-fns";
 import { addDays, format, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
