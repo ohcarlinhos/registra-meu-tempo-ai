@@ -106,7 +106,7 @@ const mountInfoCardList = () => {
     title: "Total",
     value: statistic.totalHours,
     obs: "Soma de todo tempo diário registrado.",
-    customClass: "col-span-2 row-span-2 h-full",
+    customClass: "md:col-span-2 md:row-span-2 h-full",
     valueStyle: "text-5xl font-bold",
   });
 
@@ -149,11 +149,17 @@ var maxDate = ref(new Date(Date.now()));
 const tableColumns: ColumnDef<unknown>[] = [
   {
     accessorKey: "day",
-    header: () => h("span", ["Dia"]),
+    header: () => h("span", ["Nesse Dia"]),
+    cell: ({ cell }) => {
+      const value = cell.getValue() as string;
+      return h("div", { class: "font-bold text-primary", title: value }, [
+        value,
+      ]);
+    },
   },
   {
     accessorKey: "total",
-    header: () => h("span", ["Total"]),
+    header: () => h("span", ["Tempo Total"]),
   },
   {
     accessorKey: "title",
@@ -246,7 +252,7 @@ const referenceDate = computed(() => {
 
     <StatisticSkeleton v-if="hasFetch" />
 
-    <section v-else class="w-full grid grid-cols-1 items-start gap-5">
+    <section v-else class="w-full items-start gap-5">
       <section
         v-for="(section, index) in infoCardList"
         :key="section.title"
@@ -257,7 +263,7 @@ const referenceDate = computed(() => {
         <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
           <Card
             v-for="card in section.cards"
-            class="min-h-44 flex items-center justify-center"
+            class="min-h-44 flex items-center justify-center col-span-2 md:col-span-1"
             :class="[card.customClass, card.cardRingStyle]"
             :key="card.title"
           >

@@ -14,6 +14,8 @@ import {
 } from "chart.js";
 import { addDays, format, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import type { ColumnDef } from "@tanstack/vue-table";
+import { NuxtLink } from "#components";
 
 ChartJS.register(
   CategoryScale,
@@ -124,12 +126,71 @@ const formatWeekPeriod = (): string => {
   return `${start} - ${end}`;
 };
 
-const formatCurrency = (value: number): string => {
-  return value.toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-};
+const tableColumns: ColumnDef<unknown>[] = [
+  {
+    accessorKey: "week",
+    header: () => h("span", ["Nessa Semana"]),
+    cell: ({ cell }) => {
+      const value = cell.getValue() as string;
+      return h("div", { class: "font-bold text-primary", title: value }, [
+        value,
+      ]);
+    },
+  },
+  {
+    accessorKey: "total",
+    header: () => h("span", ["Tempo Total"]),
+  },
+  {
+    accessorKey: "title",
+    header: () => h("span", ["Título"]),
+
+    cell: ({ row }) =>
+      h(
+        NuxtLink,
+        {
+          to: {
+            name: "record",
+            params: { code: row.getValue("code") as string },
+          },
+          class: "hover:text-primary hover:underline",
+        },
+        () => [row.getValue("title")]
+      ),
+  },
+  {
+    accessorKey: "category",
+    header: () => h("span", ["Categoria"]),
+  },
+  {
+    accessorKey: "code",
+    header: () => h("span", ["Código"]),
+    cell: ({ cell }) => {
+      const value = cell.getValue() as string;
+      return h("div", { class: "truncate max-w-[100px]", title: value }, [
+        value,
+      ]);
+    },
+  },
+];
+
+const tableData = computed(() => {
+  const timeRecordsTable: unknown[] = [];
+
+  if (statistics.value?.total.timeRecordRangeProgress)
+    statistics.value?.total.timeRecordRangeProgress.forEach((trp) => {
+      timeRecordsTable.push({
+        ...trp,
+        code: trp.timeRecord.code || "-",
+        title: trp.timeRecord.title || "Sem título",
+        category: trp.timeRecord.categoryName || "-",
+        week: trp.totalHours,
+        total: trp.timeRecord.meta?.formattedTime,
+      });
+    });
+
+  return timeRecordsTable;
+});
 </script>
 
 <template>
@@ -146,11 +207,10 @@ const formatCurrency = (value: number): string => {
     </CardHeader>
 
     <CardContent>
-      <div v-if="loading" class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div v-for="i in 4" :key="i" class="space-y-2">
-            <Skeleton class="h-4 w-[100px]" />
-            <Skeleton class="h-8 w-[80px]" />
+      <div v-if="loading" class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div v-for="i in 3" :key="i" class="space-y-2">
+            <Skeleton class="h-20 w-full" />
           </div>
         </div>
         <Skeleton class="h-[200px] w-full" />
@@ -251,4 +311,10 @@ const formatCurrency = (value: number): string => {
       </div>
     </CardContent>
   </Card>
+
+  <section v-if="statistics" class="flex flex-col gap-5">
+    <GSubTitlePage title="Minhas Tarefas" />
+
+    <GDataTable :columns="tableColumns" :data="tableData" :loading />
+  </section>
 </template>
