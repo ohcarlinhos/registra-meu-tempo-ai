@@ -1,13 +1,3 @@
-<script lang="ts" setup>
-import { Clock, Calendar, Target, TrendingUp } from "lucide-vue-next";
-
-// Estados reativas
-const todayStats = ref({ hours: 0, minutes: 0 });
-const weekStats = ref({ totalHours: "0h" });
-const activeGoalsCount = ref(0);
-const productivityScore = ref(0);
-</script>
-
 <template>
   <!-- TODO: revisar pois foi feito pela IA -->
   <div class="flex flex-col gap-5">

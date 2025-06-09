@@ -13,11 +13,11 @@ const { rfMock, rfMockEnable } = storeToRefs(useMockStore());
 const _tokenUserChallenge = ref();
 const isFetch = ref(false);
 
-const submitAction = async (dto: LoginDto) => {
-  const authStore = useAuthStore();
-  const { authModal } = storeToRefs(authStore);
-  const { closeAuthModal } = authStore;
+const authStore = useAuthStore();
+const { authModal } = storeToRefs(authStore);
+const { closeAuthModal } = authStore;
 
+const submitAction = async (dto: LoginDto) => {
   try {
     isFetch.value = true;
 
@@ -77,6 +77,17 @@ if (rfMockEnable.value) {
     password: rfMock.value.password,
   });
 }
+
+const { loggedIn } = useUserSession();
+
+watch(
+  () => loggedIn.value,
+  (newValue) => {
+    if (newValue && authModal.value.open) {
+      closeAuthModal();
+    }
+  }
+);
 </script>
 
 <template>

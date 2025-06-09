@@ -1,9 +1,9 @@
-const clearSession = (needRefresh = false) => {
+export const clearSession = async (needRefresh = false) => {
   const { clear } = useUserSession();
   const { openAuthModal } = useAuthStore();
   const { $i18n } = useNuxtApp();
 
-  clear();
+  await clear();
   openAuthModal(needRefresh);
 
   throw new Error($i18n.t("sessionExpiredError"));
@@ -27,14 +27,14 @@ export const useCustomFetch = (needRefresh = true, stopIfNotAuth = true) => {
       }
     },
 
-    onResponseError({ response }) {
+    async onResponseError({ response }) {
       if (stopIfNotAuth && !loggedIn.value) {
-        clearSession(needRefresh);
+        await clearSession(needRefresh);
         return;
       }
 
       if (response?.status === 401) {
-        clearSession(needRefresh);
+        await clearSession(needRefresh);
         return;
       }
 
