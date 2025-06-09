@@ -161,6 +161,7 @@ const endTimer = async () => {
   }
 
   if (!loggedIn.value) {
+    focusOnWindow();
     timerStore.endTimer(props.id);
     return;
   }
@@ -175,6 +176,7 @@ const endTimer = async () => {
   ];
 
   if (!props.id) {
+    focusOnWindow();
     editTimeRecordObject.value = timeRecordLocalToForm(
       {
         timePeriods,
@@ -335,8 +337,8 @@ const openPIP = async () => {
 
   // @ts-ignore
   pipWindow.value = await window.documentPictureInPicture.requestWindow({
-    width: 400,
-    height: 400,
+    width: 240,
+    height: 135,
     preferInitialWindowPlacement: true,
   });
 
@@ -417,7 +419,10 @@ onBeforeUnmount(() => {
       v-if="openFull"
       variant="outline"
       :disabled="timer.isRun"
-      @click="openFull = false"
+      @click="
+        openFull = false;
+        closePIP();
+      "
     >
       Fechar Timer
     </Button>
@@ -438,17 +443,21 @@ onBeforeUnmount(() => {
       <section
         ref="pipElement"
         :class="[
-          'flex flex-col justify-center align-middle relative',
-          'w-[280px] md:w-[320px] h-[280px] md:h-[320px] ring-4 shadow-md rounded-full',
-          'ring-black ring-opacity-40 border-[12px] dark:ring-white dark:ring-opacity-10',
-          'border-[10px] border-opacity-70 bg-white text-gray-700',
-          'dark:border-[10px] dark:border-opacity-80 dark:bg-gray-800 dark:text-white',
-          timer.type == 'pomodoro' && 'border-red-500',
-          timer.type == 'timer' && 'border-green-500',
-          timer.type == 'break' && 'border-blue-500',
+          cn(
+            'flex flex-col justify-center align-middle relative',
+            'w-[280px] md:w-[320px] h-[280px] md:h-[320px] shadow-md rounded-full',
+            'dark:border-[12px] dark:ring-white dark:ring-opacity-10',
+            'border-[10px] border-opacity-70 bg-white text-gray-700',
+            'dark:border-[10px] dark:border-opacity-80 dark:bg-gray-800 dark:text-white',
+            timer.type == 'pomodoro' && 'border-red-500',
+            timer.type == 'timer' && 'border-green-500',
+            timer.type == 'break' && 'border-blue-500',
+            isPipActive &&
+              'w-auto h-auto md:w-auto md:h-auto pt-4 pb-4 px-4 border-0 dark:border-4'
+          ),
         ]"
       >
-        <section class="flex mb-2 justify-center">
+        <section v-if="!isPipActive" class="flex mb-2 justify-center">
           <Button
             :disabled="timerHasMilliseconds"
             title="Selecione entre Cronômetro, Pomodoro ou Descanso."
@@ -465,10 +474,23 @@ onBeforeUnmount(() => {
         </section>
 
         <section
-          class="flex flex-col gap-5 justify-center items-center relative"
+          :class="
+            cn(
+              'flex flex-col gap-5 justify-center items-center relative',
+              isPipActive && 'gap-1'
+            )
+          "
         >
           <section class="text-center">
-            <h3 v-if="timerDoNotHasMilliseconds" class="text-5xl font-bold">
+            <h3
+              v-if="timerDoNotHasMilliseconds"
+              :class="
+                cn(
+                  'text-5xl font-semibold',
+                  isPipActive && 'text-[22px] font-semibold'
+                )
+              "
+            >
               {{
                 timer.type == "pomodoro" || timer.type == "break"
                   ? timer.type == "pomodoro"
@@ -478,12 +500,20 @@ onBeforeUnmount(() => {
               }}
             </h3>
 
-            <h3 v-else class="text-5xl font-bold">
+            <h3
+              v-else
+              :class="
+                cn(
+                  'text-5xl font-semibold',
+                  isPipActive && 'text-[22px] font-semibold'
+                )
+              "
+            >
               {{ timerLabelText }}
             </h3>
           </section>
 
-          <div class="flex gap-4">
+          <div :class="cn('flex gap-4', isPipActive && 'gap-2')">
             <GIconButton
               v-if="!timer.isRun"
               :title="
@@ -531,7 +561,7 @@ onBeforeUnmount(() => {
             </GIconButton>
           </div>
 
-          <section class="text-sm opacity-30 -mt-2">
+          <section v-if="!isPipActive" class="text-sm opacity-30 -mt-2">
             <label>{{ getLabel }}</label>
           </section>
         </section>
