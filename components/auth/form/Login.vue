@@ -143,7 +143,7 @@ watch(
     <Button
       @click="openInPopup('/auth/google')"
       variant="outline"
-      class="w-full p-6"
+      class="w-full p-5"
       type="button"
     >
       <svg
@@ -164,7 +164,7 @@ watch(
     <Button
       @click="openInPopup('/auth/github')"
       variant="outline"
-      class="w-full p-6"
+      class="w-full p-5"
       type="button"
     >
       <svg
