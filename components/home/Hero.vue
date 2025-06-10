@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ArrowRight } from "lucide-vue-next";
-
-const carouselImages = ["img/record", "img/panel"];
-const colorMode = useColorMode();
+const router = useRouter();
 </script>
 
 <template>
@@ -15,24 +13,24 @@ const colorMode = useColorMode();
           class="max-w-screen-md mx-auto text-center text-4xl md:text-5xl font-bold"
         >
           <h1>
-            Gerencie seu tempo de uma forma
+            Controle o tempo dos seus
             <span
               class="text-transparent bg-gradient-to-r from-blue-500 to-primary bg-clip-text"
             >
-              mais inteligente!
-            </span>
+              freelances</span
+            >, estudos e projetos de uma forma mais inteligente!
           </h1>
         </div>
 
         <p class="max-w-screen-sm mx-auto text-xl text-muted-foreground">
-          Utilize nossas ferramentas para compreender melhor seu tempo gasto
-          estudando, trabalhando ou em seus projetos pessoais.
+          Saiba quanto tempo você gasta em cada tarefa, crie cronômetros
+          personalizados e acompanhe seu progresso com estatísticas detalhadas.
         </p>
 
         <div class="space-y-4 md:space-y-0 md:space-x-4">
           <Button
             class="w-5/6 md:w-1/4 font-bold group/arrow"
-            @click="$router.push({ name: 'register' })"
+            @click="router.push({ name: 'register' })"
           >
             Criar Conta
 
@@ -44,16 +42,15 @@ const colorMode = useColorMode();
           <Button
             variant="secondary"
             class="w-5/6 md:w-1/4 font-bold"
-            @click="$router.push({ name: 'record.panel' })"
+            @click="router.push({ name: 'record.panel' })"
           >
             Acessar Painel
           </Button>
         </div>
       </div>
 
-      <ClientOnly>
+      <!-- <ClientOnly>
         <div class="relative group mt-14">
-          <!-- gradient shadow -->
           <div
             class="absolute -top-6 right-12 w-[90%] h-12 lg:h-[80%] bg-primary/50 blur-3xl rounded-full img-shadow-animation"
           ></div>
@@ -77,7 +74,6 @@ const colorMode = useColorMode();
             <CarouselNext />
           </Carousel>
 
-          <!-- gradient effect img -->
           <div
             class="absolute bottom-0 left-0 w-full h-20 md:h-28 bg-gradient-to-b from-background/0 via-background/50 to-background rounded-lg"
           ></div>
@@ -86,7 +82,7 @@ const colorMode = useColorMode();
         <template #fallback>
           <Skeleton class="mt-14 w-full h-[200px] md:h-[380px] lg:h-[530px]" />
         </template>
-      </ClientOnly>
+      </ClientOnly> -->
     </div>
   </section>
 </template>

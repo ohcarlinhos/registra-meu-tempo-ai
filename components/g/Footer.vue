@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-  <footer class="text-center">
+  <footer class="text-center text-muted-foreground">
     Desenvolvido por
     <br />
     <a
