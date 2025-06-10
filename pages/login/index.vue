@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { _$t } from "#imports";
 definePageMeta({ middleware: ["guest"], name: "login" });
 useHead({ title: "Acessar ferramenta" });
 </script>
@@ -12,7 +13,7 @@ useHead({ title: "Acessar ferramenta" });
         </CardTitle>
 
         <CardDescription>
-          Utilize suas credenciais, ou acesse por um provedor.
+          Utilize um dos provedores de autenticação para acessar a ferramenta.
         </CardDescription>
       </CardHeader>
 

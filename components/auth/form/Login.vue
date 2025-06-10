@@ -92,7 +92,7 @@ watch(
 
 <template>
   <form class="flex flex-col gap-2" @submit="onSubmit">
-    <FormField v-slot="{ componentField }" name="email">
+    <!-- <FormField v-slot="{ componentField }" name="email">
       <FormItem>
         <FormLabel>{{ _$t("email") }}</FormLabel>
         <FormControl>
@@ -132,18 +132,18 @@ watch(
       class="w-full mt-2"
     >
       {{ _$t("access") }}
-    </Button>
-
+    </Button> -->
+    <!-- 
     <Separator label="Provedores" class="mt-6 mb-4" />
 
     <p class="text-xs text-center mb-2">
       Uma conta será criada automaticamente caso seja seu primeiro acesso.
-    </p>
+    </p> -->
 
     <Button
       @click="openInPopup('/auth/google')"
       variant="outline"
-      class="w-full"
+      class="w-full p-6"
       type="button"
     >
       <svg
@@ -164,7 +164,7 @@ watch(
     <Button
       @click="openInPopup('/auth/github')"
       variant="outline"
-      class="w-full"
+      class="w-full p-6"
       type="button"
     >
       <svg
