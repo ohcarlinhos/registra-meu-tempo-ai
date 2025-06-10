@@ -9,5 +9,6 @@ definePageMeta({
   middleware: ["auth"],
   name: "dashboard",
 });
-// useRouter().push({ name: "statistic.day" });
+
+useConfigStore().setBreadcrumbPage([{ label: "Dashboard" }]);
 </script>
