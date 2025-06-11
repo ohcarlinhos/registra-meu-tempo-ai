@@ -144,10 +144,10 @@ const formatWeekPeriod = (): string => {
 const tableColumns: ColumnDef<unknown>[] = [
   {
     accessorKey: "week",
-    header: () => h("span", ["Nessa Semana"]),
+    header: () => h("span", ["Semana"]),
     cell: ({ cell }) => {
       const value = cell.getValue() as string;
-      return h("div", { class: "font-bold text-primary", title: value }, [
+      return h("div", { class: "font-semibold text-primary", title: value }, [
         value,
       ]);
     },
@@ -327,7 +327,15 @@ const tableData = computed(() => {
     </CardContent>
   </Card>
 
-  <section v-if="statistics" class="flex flex-col gap-5">
+  <section v-if="loading" class="w-full flex flex-col gap-4">
+    <section class="col-span-full">
+      <Skeleton class="h-8 w-44" />
+    </section>
+
+    <Skeleton class="h-64 w-full" />
+  </section>
+
+  <section v-else-if="statistics" class="flex flex-col gap-5">
     <GSubTitlePage title="Minhas Tarefas" />
 
     <GDataTable :columns="tableColumns" :data="tableData" :loading />

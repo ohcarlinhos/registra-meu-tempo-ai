@@ -105,37 +105,38 @@ const mountInfoCardList = () => {
   hourCards.push({
     title: "Total",
     value: statistic.totalHours,
-    obs: "Soma de todo tempo diário registrado.",
+    obs: "Soma das horas registradas.",
     customClass: "md:col-span-2 md:row-span-2 h-full",
-    valueStyle: "text-5xl font-bold",
   });
 
   hourCards.push({
-    title: "Manuais",
+    title: "Registro Manual",
     value: statistic.manualHours,
-    obs: `Quantidade: ${statistic.manualCount}`,
-    cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
+    obs: `Qtd: ${statistic.manualCount}`,
+    // cardRingStyle: `ring-1 dark:ring-yellow-500/80 ring-yellow-500/80`,
+    valueStyle: "text-yellow-500",
   });
 
   hourCards.push({
-    title: "Cronômetros",
+    title: "Cronômetro",
     value: statistic.timerHours,
-    obs: `Sessões: ${statistic.timerCount}`,
-    cardRingStyle: `ring-1 dark:ring-primary-500/80 ring-primary-500/80`,
+    obs: `Qtd: ${statistic.timerCount}`,
+    valueStyle: "text-green-500",
+    // cardRingStyle: `ring-1 dark:ring-primary-500/80 ring-primary-500/80`,
   });
 
   hourCards.push({
-    title: "Pomodoros",
+    title: "Pomodoro",
     value: statistic.pomodoroHours,
-    obs: `Sessões: ${statistic.pomodoroCount}`,
-    cardRingStyle: `ring-1 dark:ring-red-500/80 ring-red-500/80`,
+    obs: `Qtd: ${statistic.pomodoroCount}`,
+    valueStyle: "text-red-500",
   });
 
   hourCards.push({
     title: "Break (Descanso)",
     value: statistic.breakHours,
-    obs: `Sessões: ${statistic.breakCount}`,
-    cardRingStyle: `ring-1 dark:ring-blue-500/80 ring-1 ring-blue-500/80`,
+    obs: `Qtd: ${statistic.breakCount}`,
+    valueStyle: "text-blue-500",
   });
 
   infoCardList.value.push({
@@ -149,10 +150,10 @@ var maxDate = ref(new Date(Date.now()));
 const tableColumns: ColumnDef<unknown>[] = [
   {
     accessorKey: "day",
-    header: () => h("span", ["Nesse Dia"]),
+    header: () => h("span", ["Dia"]),
     cell: ({ cell }) => {
       const value = cell.getValue() as string;
-      return h("div", { class: "font-bold text-primary", title: value }, [
+      return h("div", { class: "font-semibold text-primary", title: value }, [
         value,
       ]);
     },
@@ -223,7 +224,7 @@ const referenceDate = computed(() => {
   <section class="flex flex-col gap-5 w-full">
     <GTitlePage
       title="Resumo Diário"
-      :description="'Estatísticas de tempo referentes ao dia ' + referenceDate"
+      :description="'Estatísticas referentes à ' + referenceDate"
     >
       <template #title-slot>
         <GUpdatedOn
@@ -261,9 +262,23 @@ const referenceDate = computed(() => {
         <GSubTitlePage v-if="section.title" :title="section.title" />
 
         <section class="w-full grid md:grid-cols-4 items-start gap-4 md:gap-4">
-          <Card
+          <div
             v-for="card in section.cards"
-            class="min-h-44 flex items-center justify-center col-span-2 md:col-span-1"
+            class="text-center p-3 rounded-lg bg-primary/5 flex flex-col justify-center"
+            :class="[card.customClass, card.cardRingStyle]"
+          >
+            <div class="text-xs text-muted-foreground">{{ card.title }}</div>
+
+            <div class="text-2xl font-bold" :class="[card.valueStyle]">
+              {{ card.value }}
+            </div>
+
+            <div class="text-xs text-muted-foreground">{{ card.obs }}</div>
+          </div>
+
+          <!-- <Card
+            v-for="card in section.cards"
+            class="flex items-center justify-center col-span-2 md:col-span-1"
             :class="[card.customClass, card.cardRingStyle]"
             :key="card.title"
           >
@@ -275,7 +290,7 @@ const referenceDate = computed(() => {
                   {{ card.title }}
                 </h3>
 
-                <span class="text-3xl font-bold" :class="[card.valueStyle]">
+                <span class="text-2xl font-bold" :class="[card.valueStyle]">
                   {{ card.value }}
                 </span>
 
@@ -286,7 +301,7 @@ const referenceDate = computed(() => {
                 </span>
               </section>
             </CardContent>
-          </Card>
+          </Card> -->
         </section>
 
         <Separator class="mt-10" v-if="index + 1 < infoCardList.length" />
@@ -294,11 +309,9 @@ const referenceDate = computed(() => {
 
       <section v-if="!timeRecordId" class="flex flex-col gap-5">
         <GSubTitlePage
-          title="Minhas Tarefas"
+          title="Tarefas"
           :description="
-            'Horas dedicadas em tarefa que tiveram registros de tempo no dia ' +
-            referenceDate +
-            '.'
+            'Horas registradas em tarefas referente à ' + referenceDate + '.'
           "
         />
 

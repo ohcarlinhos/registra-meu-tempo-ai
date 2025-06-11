@@ -15,12 +15,7 @@ interface FeatureProps {
 }
 
 const routeList = computed<RouteProps[]>(() => {
-  const routes = [
-    {
-      name: "timer.page",
-      label: "Cronômetros",
-    },
-  ];
+  const routes = [];
 
   if (!loggedIn.value) {
     routes.push({
@@ -29,8 +24,8 @@ const routeList = computed<RouteProps[]>(() => {
     });
   } else {
     routes.unshift({
-      name: "record.panel",
-      label: "Painel",
+      name: "dashboard",
+      label: "Dashboard",
     });
     routes.push({
       name: "logout",

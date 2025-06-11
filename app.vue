@@ -25,10 +25,10 @@ useHead({
 });
 
 const description =
-  "Ferramenta de gerenciamento de tempo com Cronômetros, Pomodoro e Estatísticas com o objetivo de ajudar no foco ao realizar suas tarefas do dia a dia.";
+  "Ferramenta completa para profissionais que cobram por hora. Controle de tempo preciso, relatórios detalhados e estatísticas para maximizar sua produtividade e faturamento.";
 
 const twitterImageAlt =
-  "Registra meu tempo aí! — Pomodoro, Cronômetro e Estatísticas — Registre o tempo das suas tarefas e mantenha-se focado.";
+  "Registra meu tempo aí! — Controle de tempo para profissionais que cobram por hora.";
 
 useSeoMeta({
   description,

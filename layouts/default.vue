@@ -10,7 +10,6 @@ onMounted(() => {
     route.name &&
     [
       "home",
-      "timer.page",
       "register",
       "login",
       "recovery",

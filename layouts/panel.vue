@@ -108,8 +108,9 @@ function setActiveProduct(team: (typeof data.products)[number]) {
                       <span class="truncate font-bold">
                         <span
                           class="text-transparent bg-gradient-to-r from-blue-500 to-primary bg-clip-text"
-                          >{{ activeProduct.name }}</span
                         >
+                          {{ activeProduct.name }}
+                        </span>
                       </span>
                       <span class="truncate text-xs">
                         {{ activeProduct.type }}

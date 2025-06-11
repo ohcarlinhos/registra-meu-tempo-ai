@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({ name: "home" });
 useHead({
-  title:
-    "Cronômetros, Pomodoro e Estatísticas - Controle de Tempo para Profissionais",
+  title: "Controle de Tempo para Profissionais que Cobram por Hora",
   meta: [
     {
       name: "description",
@@ -121,7 +120,7 @@ useHead({
       <div class="container mx-auto px-4">
         <div class="max-w-2xl mx-auto">
           <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-            Por que nossa ferramenta?
+            Por que utilizar nossa ferramenta?
           </h2>
 
           <div class="space-y-8">

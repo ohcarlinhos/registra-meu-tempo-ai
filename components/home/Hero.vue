@@ -18,7 +18,7 @@ const router = useRouter();
               class="text-transparent bg-gradient-to-r from-blue-500 to-primary bg-clip-text"
             >
               freelances</span
-            >, estudos e projetos de uma forma mais inteligente!
+            >, estudos e projetos de uma forma mais precisa!
           </h1>
         </div>
 
