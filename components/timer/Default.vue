@@ -534,7 +534,9 @@ onBeforeUnmount(() => {
                 timer.currentPeriodList.length ? t('continue') : t('doStart')
               "
               :disabled="timer.isRun || isFetch"
-              class="bg-blue-500 hover:bg-blue-600"
+              :class="
+                cn('bg-blue-500 hover:bg-blue-600', isPipActive && 'w-8 h-8')
+              "
               @click="startTimer"
             >
               <Play class="size-5 opacity-80 text-black" />
