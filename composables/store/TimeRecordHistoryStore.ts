@@ -107,10 +107,10 @@ export const useTimeRecordHistoryStore = defineStore(
           }) || [],
         datasets: [
           {
-            label: "Minutos",
-            data: chartData.value.map((i) => i.timeInMinutes) || [],
-            borderWidth: 2,
-            pointBorderWidth: 5,
+            label: "Horas",
+            data: chartData.value.map((i) => i.timeInHours) || [],
+            borderColor: "rgb(99, 102, 241)",
+            backgroundColor: "rgba(99, 102, 241, 0.1)",
             fill: true,
           },
         ],

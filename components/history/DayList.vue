@@ -42,6 +42,8 @@ import {
   LinearScale,
   Colors,
   Filler,
+  type TooltipCallbacks,
+  type LineOptions,
 } from "chart.js";
 
 ChartJS.register(
@@ -81,14 +83,20 @@ const chartOptions = computed(() => {
     },
     label: function (tooltipItem: any) {
       const idx = tooltipItem.dataIndex;
-      const value = tooltipItem.formattedValue;
-      const formattedTime = chartData.value[idx].formattedTime;
-      return [`${value} minutos`, formattedTime && `(${formattedTime})`];
+      return [chartData.value[idx].formattedTime || "Nenhum registro"];
     },
   };
 
   return {
     responsive: true,
+    elements: {
+      point: {
+        pointStyle: "circle",
+        borderWidth: 4,
+        hitRadius: 4,
+        hoverBorderWidth: 8,
+      },
+    },
     scales: {
       x: {
         grid: {
@@ -96,6 +104,9 @@ const chartOptions = computed(() => {
         },
       },
       y: {
+        ticks: {
+          stepSize: 1,
+        },
         grid: {
           color: isDark.value ? "#262626" : "#e5e5e5",
         },

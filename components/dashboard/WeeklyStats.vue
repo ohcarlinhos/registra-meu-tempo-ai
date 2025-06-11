@@ -35,16 +35,20 @@ const chartData = computed(() => {
   if (!statistics.value) return null;
 
   const days = statistics.value.days.map((day) =>
-    format(new Date(day.startDay), "dd/MM/yyy", { locale: ptBR })
+    format(new Date(day.startDay), "EEE (dd/MM)", { locale: ptBR }).replace(
+      /^./,
+      (c) => c.toUpperCase()
+    )
   );
-  const minutes = statistics.value.days.map((day) => day.totalInHours);
+
+  const hours = statistics.value.days.map((day) => day.totalInHours);
 
   return {
     labels: days,
     datasets: [
       {
         label: "Horas",
-        data: minutes,
+        data: hours,
         borderColor: "rgb(99, 102, 241)",
         backgroundColor: "rgba(99, 102, 241, 0.1)",
         fill: true,
@@ -60,13 +64,24 @@ const chartOptions = computed(() => {
     },
     label: function (tooltipItem: any) {
       const idx = tooltipItem.dataIndex;
-      const formattedTime = statistics.value?.days[idx].totalHours || "";
-      return [formattedTime];
+      return [
+        statistics.value?.days[idx].totalInHours
+          ? statistics.value?.days[idx].totalHours
+          : "Nenhum registro",
+      ];
     },
   };
 
   return {
     responsive: true,
+    elements: {
+      point: {
+        pointStyle: "circle",
+        borderWidth: 4,
+        hitRadius: 4,
+        hoverBorderWidth: 8,
+      },
+    },
     scales: {
       x: {
         grid: {
