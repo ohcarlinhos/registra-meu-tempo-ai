@@ -60,7 +60,7 @@ const chartData = computed(() => {
 const chartOptions = computed(() => {
   var callbacks = {
     title: function (items: any) {
-      return `Dia ${items[0].label}`;
+      return `${items[0].label}`;
     },
     label: function (tooltipItem: any) {
       const idx = tooltipItem.dataIndex;

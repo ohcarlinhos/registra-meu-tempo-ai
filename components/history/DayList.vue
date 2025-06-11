@@ -42,8 +42,6 @@ import {
   LinearScale,
   Colors,
   Filler,
-  type TooltipCallbacks,
-  type LineOptions,
 } from "chart.js";
 
 ChartJS.register(
