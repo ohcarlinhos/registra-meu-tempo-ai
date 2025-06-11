@@ -500,7 +500,7 @@ onBeforeUnmount(() => {
                   ? timer.type == "pomodoro"
                     ? timer.pomodoroPeriod + "m"
                     : timer.breakPeriod + "m"
-                  : "0s"
+                  : "Iniciar!"
               }}
             </h3>
 
