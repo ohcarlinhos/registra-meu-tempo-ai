@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { _$t as _ct, cn, isDark } from "#imports";
+
 import {
   Timer,
   CloudOff,
@@ -11,6 +13,8 @@ import {
 } from "lucide-vue-next";
 import NoSleep from "nosleep.js";
 import { VisuallyHidden } from "reka-ui";
+
+const t = useI18n().t;
 
 const props = defineProps({
   id: {
@@ -203,14 +207,14 @@ const endTimer = async () => {
 
     timerStore.clearCurrentPeriodList(props.id);
 
-    OkToast(_$t("successPeriodSync"));
+    OkToast(_ct("successPeriodSync"));
   } catch (error) {
     submitIsOk = false;
 
     timerStore.endTimer(props.id);
 
     if (error) ErrorToast(error);
-    ErrorToast(_$t("errorPeriodSync"));
+    ErrorToast(_ct("errorPeriodSync"));
   } finally {
     submitIsFetch.value = false;
 
@@ -453,7 +457,7 @@ onBeforeUnmount(() => {
             timer.type == 'timer' && 'border-green-500',
             timer.type == 'break' && 'border-blue-500',
             isPipActive &&
-              'w-auto h-auto md:w-auto md:h-auto pt-4 pb-4 px-4 border-0 dark:border-4'
+              'w-auto h-auto md:w-auto md:h-auto bg-transparent dark:bg-transparent dark:border-none'
           ),
         ]"
       >
@@ -486,7 +490,7 @@ onBeforeUnmount(() => {
               v-if="timerDoNotHasMilliseconds"
               :class="
                 cn(
-                  'text-5xl font-semibold',
+                  'text-5xl font-bold',
                   isPipActive && 'text-[22px] font-semibold'
                 )
               "
@@ -504,7 +508,7 @@ onBeforeUnmount(() => {
               v-else
               :class="
                 cn(
-                  'text-5xl font-semibold',
+                  'text-5xl font-bold',
                   isPipActive && 'text-[22px] font-semibold'
                 )
               "
@@ -513,11 +517,21 @@ onBeforeUnmount(() => {
             </h3>
           </section>
 
-          <div :class="cn('flex gap-4', isPipActive && 'gap-2')">
+          <div
+            :class="
+              cn(
+                'flex gap-4',
+                timer.type == 'pomodoro' && 'border-red-500',
+                timer.type == 'timer' && 'border-green-500',
+                timer.type == 'break' && 'border-blue-500',
+                isPipActive && 'gap-3 border-2 p-2 rounded-full'
+              )
+            "
+          >
             <GIconButton
               v-if="!timer.isRun"
               :title="
-                timer.currentPeriodList.length ? $t('continue') : $t('doStart')
+                timer.currentPeriodList.length ? t('continue') : t('doStart')
               "
               :disabled="timer.isRun || isFetch"
               class="bg-blue-500 hover:bg-blue-600"
@@ -529,8 +543,13 @@ onBeforeUnmount(() => {
             <GIconButton
               v-if="timer.isRun"
               :disabled="!timer.isRun || isFetch"
-              :title="$t('pause')"
-              class="bg-yellow-500 hover:bg-yellow-600"
+              :title="t('pause')"
+              :class="
+                cn(
+                  'bg-yellow-500 hover:bg-yellow-600',
+                  isPipActive && 'w-8 h-8'
+                )
+              "
               @click="pauseTimer"
             >
               <Pause class="size-5 opacity-80 text-black" />
@@ -540,8 +559,10 @@ onBeforeUnmount(() => {
               v-if="timer.type !== 'break'"
               :disabled="timerDoNotHasMilliseconds || isFetch"
               :loading="isFetch"
-              :title="$t('finish')"
-              class="bg-green-500 hover:bg-green-600"
+              :title="t('finish')"
+              :class="
+                cn('bg-green-500 hover:bg-green-600', isPipActive && 'w-8 h-8')
+              "
               @click="endTimer"
             >
               <Loader2
@@ -553,15 +574,19 @@ onBeforeUnmount(() => {
 
             <GIconButton
               :disabled="timerDoNotHasMilliseconds || isFetch"
-              :title="$t('stop')"
-              class="bg-red-500 hover:bg-red-600"
+              :title="t('stop')"
+              :class="
+                cn('bg-red-500 hover:bg-red-600', isPipActive && 'w-8 h-8')
+              "
               @click="stopTimer"
             >
               <X class="size-5 opacity-80 text-black" />
             </GIconButton>
           </div>
 
-          <section v-if="!isPipActive" class="text-sm opacity-30 -mt-2">
+          <section
+            :class="cn('text-sm opacity-30 -mt-2', isPipActive && 'mt-0')"
+          >
             <label>{{ getLabel }}</label>
           </section>
         </section>
@@ -679,9 +704,9 @@ onBeforeUnmount(() => {
 
       <DialogFooter>
         <section class="w-full flex flex-col gap-2">
-          <p class="text-sm">{{ _$t("localRecordObs1") }}</p>
+          <p class="text-sm">{{ _ct("localRecordObs1") }}</p>
           <p v-if="!loggedIn || true" class="pt-2 text-xs">
-            {{ _$t("localRecordObs2") }}
+            {{ _ct("localRecordObs2") }}
           </p>
         </section>
       </DialogFooter>
@@ -696,7 +721,7 @@ onBeforeUnmount(() => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {{ _$t("howDoYouPrefereSaveRecord") }}
+            {{ _ct("howDoYouPrefereSaveRecord") }}
           </DialogTitle>
           <DialogDescription>
             Escolha a forma que deseja salvar o seu tempo.
@@ -722,8 +747,8 @@ onBeforeUnmount(() => {
       custom-width="sm:w-88"
       title="Deseja parar o cronômetro?"
       description="Ao confirmar o tempo registrado em seu pomodoro ou cronômetro será perdido."
-      :cancel-text="$t('cancel')"
-      :confirm-text="$t('confirm')"
+      :cancel-text="t('cancel')"
+      :confirm-text="t('confirm')"
       @cancel="modal.confirmStopTimer.open = false"
       @confirm="stopTimerAction"
     />
@@ -735,14 +760,14 @@ onBeforeUnmount(() => {
       <DialogContent @interact-outside="$event.preventDefault()">
         <DialogHeader>
           <DialogTitle>
-            <span class="mr-2"> {{ _$t("task") }} </span>
+            <span class="mr-2"> {{ _ct("task") }} </span>
             <Badge v-if="editTimeRecordObject?.code" variant="outline">
               {{ editTimeRecordObject?.code }}
             </Badge>
           </DialogTitle>
 
           <DialogDescription>
-            {{ _$t("taskModalDescription") }}
+            {{ _ct("taskModalDescription") }}
           </DialogDescription>
         </DialogHeader>
 
