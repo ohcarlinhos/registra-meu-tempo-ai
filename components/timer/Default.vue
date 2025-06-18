@@ -587,9 +587,21 @@ onBeforeUnmount(() => {
           </div>
 
           <section
-            :class="cn('text-sm opacity-30 -mt-2', isPipActive && 'mt-0')"
+            :class="
+              cn('text-sm opacity-30 -mt-2 text-center', isPipActive && 'mt-0')
+            "
           >
-            <label>{{ getLabel }}</label>
+            <label v-if="!isPipActive">
+              {{ getLabel }}
+            </label>
+
+            <section
+              v-else-if="props.title || props.code"
+              class="max-w-[180px] text-ellipsis overflow-hidden whitespace-nowrap"
+              :title="props.title ? props.title : props.code"
+            >
+              {{ props.title || props.code }}
+            </section>
           </section>
         </section>
       </section>
