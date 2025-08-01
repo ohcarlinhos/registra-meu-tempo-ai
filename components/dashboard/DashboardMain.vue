@@ -60,22 +60,23 @@
     </div> -->
 
     <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-6 gap-6">
       <!-- Left Column -->
-      <div class="lg:col-span-3 space-y-6">
+      <div class="lg:col-span-4 space-y-6">
         <!-- Weekly Stats Chart -->
         <DashboardWeeklyStats />
 
         <!-- Time Distribution Pie Chart -->
-        <!-- <DashboardTimeDistribution /> -->
       </div>
 
       <!-- Right Column -->
-      <!-- <div class="space-y-6">
-        <DashboardCommonTasks />
+      <div class="lg:col-span-2 space-y-6">
+        <DashboardTimeDistribution />
 
-        <DashboardActiveGoals />
-      </div> -->
+        <!-- <DashboardCommonTasks />
+
+        <DashboardActiveGoals /> -->
+      </div>
     </div>
 
     <!-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
